@@ -6,7 +6,9 @@ import { AboutPage } from './routes/AboutPage';
 import { ContactPage } from './routes/ContactPage';
 import { HomePage } from './routes/HomePage';
 import { NotFoundPage } from './routes/NotFoundPage';
+import { PrivacyPage } from './routes/PrivacyPage';
 import { ServicesPage } from './routes/ServicesPage';
+import { TermsPage } from './routes/TermsPage';
 
 export function App() {
   const router = useRouter();
@@ -22,6 +24,8 @@ export function App() {
       },
       { path: '/about', component: AboutPage, meta: { title: 'About — RevealUI Studio' } },
       { path: '/contact', component: ContactPage, meta: { title: 'Contact — RevealUI Studio' } },
+      { path: '/privacy', component: PrivacyPage, meta: { title: 'Privacy — RevealUI Studio' } },
+      { path: '/terms', component: TermsPage, meta: { title: 'Terms — RevealUI Studio' } },
       { path: '/*notfound', component: NotFoundPage, meta: { title: '404 — RevealUI Studio' } },
     ]);
     registered.current = true;

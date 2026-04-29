@@ -46,6 +46,16 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <Link to="/privacy" className="hover:text-gray-950 transition-colors">
+                  Privacy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="hover:text-gray-950 transition-colors">
+                  Terms
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
