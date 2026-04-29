@@ -1,0 +1,52 @@
+{
+  "name": "@revealui-studio/agency",
+  "version": "0.1.0",
+  "description": "RevealUI Studio agency site — services, case studies, hire-us. Hosted at revealuistudio.com.",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/RevealUIStudio/agency.git"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.2.5",
+    "@fontsource-variable/geist-mono": "^5.2.5",
+    "@revealui/contracts": "^1.4.0",
+    "@revealui/core": "^0.6.0",
+    "@revealui/presentation": "^0.4.0",
+    "@revealui/router": "^0.3.8",
+    "@vercel/speed-insights": "^2.0.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.4",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.5",
+    "jsdom": "29.0.2",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.9",
+    "vitest": "^4.1.5"
+  },
+  "engines": {
+    "node": ">=24.13.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "clean": "rm -rf dist",
+    "dev": "vite dev --port 3001",
+    "preview": "vite preview --port 3001",
+    "start": "vite preview --port 3001",
+    "test": "vitest run --passWithNoTests",
+    "test:coverage": "vitest run --coverage --coverage.reporter=json-summary --coverage.reporter=html --coverage.reporter=text",
+    "typecheck": "tsc --noEmit"
+  }
+}
