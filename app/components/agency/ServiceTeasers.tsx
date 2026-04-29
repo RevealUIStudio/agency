@@ -22,7 +22,7 @@ const tiers: ServiceTier[] = [
       'Optional managed hosting',
       'Onboarding included',
     ],
-    startingAt: 'Starting at $X',
+    startingAt: 'Starting at $25,000 + from $2,500/mo support',
   },
   {
     slug: 'custom-build',
@@ -36,7 +36,7 @@ const tiers: ServiceTier[] = [
       'Stripe billing wired',
       '4-12 week sprints',
     ],
-    startingAt: 'From $Y',
+    startingAt: 'From $50,000 per engagement',
   },
   {
     slug: 'ai-integration',
@@ -50,7 +50,7 @@ const tiers: ServiceTier[] = [
       'Agent-tenant scope enforcement',
       'Production-ready handoff',
     ],
-    startingAt: '2-week sprint, fixed bid',
+    startingAt: '$15,000 fixed bid · 2-week sprint',
   },
 ];
 

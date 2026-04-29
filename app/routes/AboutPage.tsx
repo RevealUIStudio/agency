@@ -11,12 +11,25 @@ export function AboutPage() {
         </p>
         <div className="mt-12 rounded-2xl border border-gray-200 bg-gray-50 p-8">
           <h2 className="text-xl font-bold text-gray-950">Founder</h2>
+          {/* TODO: drop in /public/founder.jpg (square, ≥400px) and replace this block with the photo */}
           <p className="mt-3 text-gray-700">
-            <strong>Joshua Vaughn</strong> — full-stack engineer, founder of RevealUI Studio. Built
-            the open-source RevealUI platform (~31 packages, 2,400+ commits) before standing up the
-            agency arm. Previously [bio placeholder — fill in].
+            <strong>Joshua Vaughn</strong> — full-stack engineer and founder of RevealUI Studio,
+            operating from Maryville, Tennessee. Built the open-source RevealUI platform (26
+            packages, 2,400+ commits) before standing up the agency arm.
           </p>
-          <p className="mt-3 text-sm text-gray-600">
+          <p className="mt-3 text-gray-700">
+            Before this, ten years managing teams and operations in telecommunications across the
+            full revenue cycle, plus an event company and a stretch as a teacher. The teaching
+            background shows up in how the work gets framed: explain the system, show the system,
+            hand over the system. Not a first-time founder.
+          </p>
+          <p className="mt-3 text-gray-700">
+            The studio is built on a structural commitment: every engagement runs on the same
+            open-source RevealUI software anyone can install themselves. No private agency layer,
+            no "consulting code" you can't audit. If a tool isn't strong enough for an OSS user to
+            ship to production, it's not strong enough to deploy at yours.
+          </p>
+          <p className="mt-4 text-sm text-gray-600">
             Reach out at{' '}
             <a
               href="mailto:founder@revealui.com"
