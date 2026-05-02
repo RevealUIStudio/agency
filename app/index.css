@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "@revealui/presentation/tokens.css";
 
+/* Scan @revealui/presentation for utility classes used by buttonVariants etc. */
+@source "../node_modules/@revealui/presentation/dist/**/*.js";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
