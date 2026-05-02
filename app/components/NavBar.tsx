@@ -1,4 +1,4 @@
-import { buttonVariants } from '@revealui/presentation';
+import { LinkButton } from '@revealui/presentation';
 import { Link } from '@revealui/router';
 import { useState } from 'react';
 
@@ -44,9 +44,7 @@ export function NavBar() {
         <div className="flex items-center gap-3">
           {/* Desktop CTA (md+) */}
           <div className="hidden md:block">
-            <Link to="/contact" className={buttonVariants()}>
-              Book a call
-            </Link>
+            <LinkButton href="/contact">Book a call</LinkButton>
           </div>
 
           {/* Hamburger (<md) */}
@@ -114,9 +112,9 @@ export function NavBar() {
             </a>
           </div>
           <div className="mt-4 border-t border-gray-100 pt-4">
-            <Link to="/contact" onClick={close} className={buttonVariants({ className: 'w-full' })}>
+            <LinkButton href="/contact" onClick={close} className="w-full">
               Book a call
-            </Link>
+            </LinkButton>
           </div>
         </div>
       )}
