@@ -1,4 +1,5 @@
-import { Routes, useRouter } from '@revealui/router';
+import { LinkBehaviorProvider } from '@revealui/presentation';
+import { Link, Routes, useRouter } from '@revealui/router';
 import { useRef } from 'react';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { RootLayout } from './layouts/RootLayout';
@@ -33,9 +34,11 @@ export function App() {
 
   return (
     <ErrorBoundary>
-      <RootLayout>
-        <Routes />
-      </RootLayout>
+      <LinkBehaviorProvider component={Link} hrefProp="to">
+        <RootLayout>
+          <Routes />
+        </RootLayout>
+      </LinkBehaviorProvider>
     </ErrorBoundary>
   );
 }
