@@ -20,7 +20,7 @@ The same stack the platform itself runs on — this site is a real external cons
 - Tailwind CSS v4 via `@tailwindcss/vite`
 - `@revealui/router` (file-based routing)
 - `@revealui/presentation` (component primitives + design tokens)
-- `@revealui/core`, `@revealui/contracts` (additional primitives, available)
+- `@revealui/core` (additional primitives)
 - `@vercel/speed-insights` (analytics)
 - Vitest
 
