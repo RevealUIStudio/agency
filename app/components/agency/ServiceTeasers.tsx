@@ -11,18 +11,18 @@ interface ServiceTier {
 
 const tiers: ServiceTier[] = [
   {
-    slug: 'forge-stamp',
-    title: 'Forge Stamp',
+    slug: 'fleet-trial-kit',
+    title: 'Fleet trial kit',
     tagline: 'Customer-specific RevealUI deployment',
     description:
-      'A stamped instance of the Forge platform configured for your business — branding, integrations, and rollout in weeks, not quarters.',
+      'A branded RevealUI Fleet deployment configured for your business — branding, integrations, and rollout in weeks, not quarters.',
     bullets: [
       'Branded white-label deployment',
       'Multi-tenant + domain-locked',
       'Optional managed hosting',
       'Onboarding included',
     ],
-    startingAt: 'Starting at $25,000 + from $2,500/mo support',
+    startingAt: 'Discovery call scopes the engagement.',
   },
   {
     slug: 'custom-build',
@@ -36,21 +36,21 @@ const tiers: ServiceTier[] = [
       'Stripe billing wired',
       '4-12 week sprints',
     ],
-    startingAt: 'From $50,000 per engagement',
+    startingAt: 'Fixed-bid SOW. Scoped per project.',
   },
   {
     slug: 'ai-integration',
     title: 'AI Integration',
     tagline: 'Agent-driven product consulting',
     description:
-      'Integrate Claude, GPT, or local models into your existing system using RevealUI Suite primitives. MCP, tool use, sampling, agent-safe tenancy — done right.',
+      'Integrate Claude, GPT, or local models into your existing system using RevealUI primitives. MCP, tool use, sampling, agent-safe tenancy — done right.',
     bullets: [
       'MCP server stand-up',
       'Tool design + safety review',
       'Agent-tenant scope enforcement',
       'Production-ready handoff',
     ],
-    startingAt: '$15,000 fixed bid · 2-week sprint',
+    startingAt: 'Fixed-bid engagement. Scoped in discovery.',
   },
 ];
 
@@ -63,8 +63,7 @@ export function ServiceTeasers() {
             Productized engagements.
           </h2>
           <p className="mt-4 text-base text-gray-600">
-            Three lanes for working with RevealUI Studio. Pricing posted; scope adjustable;
-            discovery call required.
+            Three lanes for working with RevealUI Studio. Discovery call scopes the engagement.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3">

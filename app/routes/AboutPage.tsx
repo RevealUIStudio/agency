@@ -5,9 +5,9 @@ export function AboutPage() {
         <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl">About</h1>
         <p className="mt-6 text-lg text-gray-600">
           RevealUI Studio is a Tennessee software studio building agent-first business systems on
-          the open-source RevealUI runtime. We sell two things: stamped Forge deployments for
-          customers who want a managed RevealUI instance, and bespoke engineering engagements for
-          teams building something custom.
+          the open-source RevealUI runtime. We sell two things: branded RevealUI Fleet deployments
+          for customers who want a managed instance, and bespoke engineering engagements for teams
+          building something custom.
         </p>
         <div className="mt-12 rounded-2xl border border-gray-200 bg-gray-50 p-8">
           <h2 className="text-xl font-bold text-gray-950">Founder</h2>
@@ -41,9 +41,9 @@ export function AboutPage() {
           </p>
         </div>
         <div className="mt-12">
-          <h2 className="text-xl font-bold text-gray-950">The Suite</h2>
+          <h2 className="text-xl font-bold text-gray-950">RevFleet</h2>
           <p className="mt-3 text-gray-600">
-            The Suite is the collection of software RevealUI Studio maintains:
+            RevFleet is the collection of software RevealUI Studio maintains:
           </p>
           <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-gray-700 sm:grid-cols-2">
             <li>
@@ -53,7 +53,7 @@ export function AboutPage() {
               <strong>RevVault</strong> — secrets management
             </li>
             <li>
-              <strong>Forge</strong> — enterprise / white-label tier
+              <strong>Enterprise</strong> — SaaS billing tier for self-hosted RevealUI Fleet deployments
             </li>
             <li>
               <strong>RevealCoin</strong> — Solana token infrastructure
@@ -72,7 +72,7 @@ export function AboutPage() {
             </li>
           </ul>
           <p className="mt-4 text-sm text-gray-500">
-            Most of the Suite is open source under MIT or Fair Source (FSL-1.1-MIT). Browse on{' '}
+            Most of RevFleet is open source under MIT or Fair Source (FSL-1.1-MIT). Browse on{' '}
             <a
               href="https://github.com/RevealUIStudio"
               target="_blank"
