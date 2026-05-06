@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { submitContact } from '../../lib/api';
 
 const topics = [
-  { value: 'forge-stamp', label: 'Forge Stamp engagement' },
+  // TODO(A5): rename form-field value once paired fleet apps/server/contact-form handler audit confirms the migration shape — see spec-2026-05-06-agency-site-audit.md §A5
+  { value: 'forge-stamp', label: 'Fleet trial kit engagement' },
   { value: 'custom-build', label: 'Custom platform build' },
   { value: 'ai-integration', label: 'AI Integration sprint' },
   { value: 'migration', label: 'Migration to RevealUI runtime' },

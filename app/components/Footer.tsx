@@ -18,17 +18,7 @@ export function Footer() {
             <ul className="mt-2 space-y-2 text-sm text-gray-600">
               <li>
                 <Link to="/services" className="hover:text-gray-950 transition-colors">
-                  Forge Stamp
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="hover:text-gray-950 transition-colors">
-                  Custom Build
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="hover:text-gray-950 transition-colors">
-                  AI Integration
+                  All services
                 </Link>
               </li>
             </ul>

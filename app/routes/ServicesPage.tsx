@@ -7,8 +7,8 @@ export function ServicesPage() {
         <div className="mx-auto max-w-3xl px-6">
           <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl">Services</h1>
           <p className="mt-6 text-lg text-gray-600">
-            Three productized lanes for working with RevealUI Studio. Pricing posted; scope
-            adjustable; discovery call required.
+            Three productized lanes for working with RevealUI Studio. Each engagement starts with
+            discovery.
           </p>
         </div>
       </section>
