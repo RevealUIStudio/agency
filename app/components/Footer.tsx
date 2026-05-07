@@ -1,4 +1,5 @@
 import { Link } from '@revealui/router';
+import { publishedCases } from '../data/cases';
 import { PoweredByRevealUI } from './agency/PoweredByRevealUI';
 
 export function Footer() {
@@ -46,6 +47,13 @@ export function Footer() {
                   Terms
                 </Link>
               </li>
+              {publishedCases.length > 0 && (
+                <li>
+                  <Link to="/cases" className="hover:text-gray-950 transition-colors">
+                    Engagements
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
           <div>

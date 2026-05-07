@@ -1,6 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { Link } from '@revealui/router';
 import { useState } from 'react';
+import { publishedCases } from '../data/cases';
 
 const navLinks = [
   { href: '/services', label: 'Services' },
@@ -31,6 +32,11 @@ export function NavBar() {
               {label}
             </Link>
           ))}
+          {publishedCases.length > 0 && (
+            <Link to="/cases" className="hover:text-gray-950 transition-colors">
+              Engagements
+            </Link>
+          )}
           <a
             href="https://revealui.com"
             target="_blank"
@@ -101,6 +107,15 @@ export function NavBar() {
                 {label}
               </Link>
             ))}
+            {publishedCases.length > 0 && (
+              <Link
+                to="/cases"
+                onClick={close}
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-950 transition-colors"
+              >
+                Engagements
+              </Link>
+            )}
             <a
               href="https://revealui.com"
               target="_blank"
