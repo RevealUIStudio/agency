@@ -6,6 +6,8 @@ import { RootLayout } from './layouts/RootLayout';
 import { AboutPage } from './routes/AboutPage';
 import { CasesPage } from './routes/CasesPage';
 import { CaseStudyPage } from './routes/CaseStudyPage';
+import { PressItemPage } from './routes/PressItemPage';
+import { PressPage } from './routes/PressPage';
 import { ContactPage } from './routes/ContactPage';
 import { HomePage } from './routes/HomePage';
 import { NotFoundPage } from './routes/NotFoundPage';
@@ -34,6 +36,12 @@ export function App() {
         path: '/cases/:slug',
         component: CaseStudyPage,
         meta: { title: 'Case study — RevealUI Studio' },
+      },
+      { path: '/press', component: PressPage, meta: { title: 'Press — RevealUI Studio' } },
+      {
+        path: '/press/:slug',
+        component: PressItemPage,
+        meta: { title: 'Press — RevealUI Studio' },
       },
       { path: '/*notfound', component: NotFoundPage, meta: { title: '404 — RevealUI Studio' } },
     ]);
