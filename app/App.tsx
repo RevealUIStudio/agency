@@ -4,6 +4,8 @@ import { useRef } from 'react';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { RootLayout } from './layouts/RootLayout';
 import { AboutPage } from './routes/AboutPage';
+import { CasesPage } from './routes/CasesPage';
+import { CaseStudyPage } from './routes/CaseStudyPage';
 import { ContactPage } from './routes/ContactPage';
 import { HomePage } from './routes/HomePage';
 import { NotFoundPage } from './routes/NotFoundPage';
@@ -27,6 +29,12 @@ export function App() {
       { path: '/contact', component: ContactPage, meta: { title: 'Contact — RevealUI Studio' } },
       { path: '/privacy', component: PrivacyPage, meta: { title: 'Privacy — RevealUI Studio' } },
       { path: '/terms', component: TermsPage, meta: { title: 'Terms — RevealUI Studio' } },
+      { path: '/cases', component: CasesPage, meta: { title: 'Engagements — RevealUI Studio' } },
+      {
+        path: '/cases/:slug',
+        component: CaseStudyPage,
+        meta: { title: 'Case study — RevealUI Studio' },
+      },
       { path: '/*notfound', component: NotFoundPage, meta: { title: '404 — RevealUI Studio' } },
     ]);
     registered.current = true;
