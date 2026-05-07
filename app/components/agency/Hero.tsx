@@ -1,5 +1,38 @@
 import { Link } from '@revealui/router';
 
+interface ProofPoint {
+  metric: string;
+  detail: string;
+}
+
+const proofPoints: ProofPoint[] = [
+  {
+    metric: 'Three engagement shapes',
+    detail:
+      'Fleet trial kit, Custom Build, AI Integration — scoped in a 30-minute discovery call before any SOW is written.',
+  },
+  {
+    metric: 'Fixed-bid statements of work',
+    detail:
+      'Scope is locked before work starts. Discovery call defines deliverables; fixed-bid SOW defines cost and timeline.',
+  },
+  {
+    metric: '@revealui/core, @revealui/router, @revealui/presentation',
+    detail:
+      'The three RevealUI primitives used in every engagement — the same packages that build this site.',
+  },
+  {
+    metric: '19 MIT packages + 2 FSL-1.1-MIT',
+    detail:
+      'Customer work inherits this license posture. FSL packages auto-convert to MIT two years after each release.',
+  },
+  {
+    metric: '4–12 week sprints, typical',
+    detail:
+      'Custom Build engagements run in defined sprints. Larger platforms are scoped per discovery — not estimated blind.',
+  },
+];
+
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-white">
@@ -28,6 +61,34 @@ export function Hero() {
               View services →
             </Link>
           </div>
+        </div>
+
+        <div className="mt-16 border-t border-gray-100 pt-10">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-600 mb-6">
+            How engagements work
+          </h2>
+          <ul className="grid grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-3 list-none">
+            {proofPoints.map((point) => (
+              <li key={point.metric} className="flex gap-3">
+                <svg
+                  className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{point.metric}</p>
+                  <p className="mt-0.5 text-sm text-gray-600">{point.detail}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
