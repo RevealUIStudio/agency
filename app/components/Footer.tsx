@@ -1,5 +1,6 @@
 import { Link } from '@revealui/router';
 import { publishedCases } from '../data/cases';
+import { publishedPress } from '../data/press';
 import { PoweredByRevealUI } from './agency/PoweredByRevealUI';
 
 export function Footer() {
@@ -51,6 +52,13 @@ export function Footer() {
                 <li>
                   <Link to="/cases" className="hover:text-gray-950 transition-colors">
                     Engagements
+                  </Link>
+                </li>
+              )}
+              {publishedPress.length > 0 && (
+                <li>
+                  <Link to="/press" className="hover:text-gray-950 transition-colors">
+                    Press
                   </Link>
                 </li>
               )}
