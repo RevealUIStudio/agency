@@ -41,56 +41,48 @@ export function AboutPage() {
           </p>
         </div>
         <div className="mt-12">
-          <h2 className="text-xl font-bold text-gray-950">RevFleet</h2>
+          <h2 className="text-xl font-bold text-gray-950">What we build with</h2>
           <p className="mt-3 text-gray-600">
-            RevFleet is the collection of software RevealUI Studio maintains:
+            Every engagement draws from the RevFleet toolset. We use these primitives daily — so
+            when a customer asks why something works a particular way, the answer is always the
+            same: we built it, we run it, we maintain it.
           </p>
           <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-gray-700 sm:grid-cols-2">
             <li>
-              <strong>RevealUI</strong> — the agent-first business runtime
+              <strong>RevealUI</strong> — agent-first business runtime powering every engagement
             </li>
             <li>
-              <strong>RevVault</strong> — secrets management
+              <strong>RevVault</strong> — zero-plaintext secrets management
             </li>
             <li>
-              <strong>Enterprise</strong> — SaaS billing tier for self-hosted RevealUI Fleet deployments
+              <strong>Enterprise</strong> — SaaS billing tier for self-hosted Fleet deployments
             </li>
             <li>
               <strong>RevealCoin</strong> — Solana token infrastructure
             </li>
             <li>
-              <strong>RevCon</strong> — editor configurations
+              <strong>RevCon</strong> — portable editor configuration layer
             </li>
             <li>
-              <strong>RevDev</strong> — agent runtime + coordination
+              <strong>RevDev</strong> — agent runtime and inter-agent coordination
             </li>
             <li>
               <strong>RevSkills</strong> — Claude Code skills library
             </li>
             <li>
-              <strong>RevKit</strong> — portable WSL dev kit
+              <strong>RevKit</strong> — portable WSL developer environment
             </li>
           </ul>
           <p className="mt-4 text-sm text-gray-500">
-            Most of RevFleet is open source under MIT or Fair Source (FSL-1.1-MIT). Browse on{' '}
+            Most of RevFleet ships under MIT or Fair Source (FSL-1.1-MIT).{' '}
             <a
-              href="https://github.com/RevealUIStudio"
+              href="https://revealui.com/products"
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold text-gray-950 hover:underline"
             >
-              GitHub
-            </a>{' '}
-            or read the docs at{' '}
-            <a
-              href="https://docs.revealui.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-gray-950 hover:underline"
-            >
-              docs.revealui.com
+              Browse the full product catalog →
             </a>
-            .
           </p>
         </div>
       </div>
