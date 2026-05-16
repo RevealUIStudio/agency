@@ -41,14 +41,14 @@ const tiers: ServiceTier[] = [
   {
     slug: 'ai-integration',
     title: 'AI Integration',
-    tagline: 'Agent-driven product consulting',
+    tagline: 'Multi-model integration, your choice of provider',
     description:
-      'Integrate Claude, GPT, or local models into your existing system using RevealUI primitives. MCP, tool use, sampling, agent-safe tenancy — done right.',
+      'We productionize the model stack you choose — Claude, OpenAI, Llama, Ollama, or whatever your team already runs. MCP server stand-up, tool design, evals, cost/latency budgets, audit integration, and a written model-selection ADR delivered at handoff.',
     bullets: [
-      'MCP server stand-up',
-      'Tool design + safety review',
-      'Agent-tenant scope enforcement',
-      'Production-ready handoff',
+      'Provider-agnostic delivery (Claude, OpenAI, Llama, Ollama)',
+      'MCP server stand-up + tool design',
+      'Evals, cost/latency budgets, audit integration',
+      'Written use-case + model-selection ADR at handoff',
     ],
     startingAt: 'Fixed-bid engagement. Scoped in discovery.',
   },
