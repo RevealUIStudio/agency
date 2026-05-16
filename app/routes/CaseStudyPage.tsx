@@ -4,7 +4,7 @@ import type { CaseStudy } from '../data/cases';
 import { NotFoundPage } from './NotFoundPage';
 
 const engagementLabels: Record<CaseStudy['engagementShape'], string> = {
-  'fleet-trial-kit': 'Fleet trial kit',
+  'fleet-trial-kit': 'Fleet Stamp',
   'custom-build': 'Custom build',
   'ai-integration': 'AI integration',
   composite: 'Composite engagement',

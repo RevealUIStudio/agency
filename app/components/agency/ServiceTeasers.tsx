@@ -12,7 +12,7 @@ interface ServiceTier {
 const tiers: ServiceTier[] = [
   {
     slug: 'fleet-trial-kit',
-    title: 'Fleet trial kit',
+    title: 'Fleet Stamp',
     tagline: 'Customer-specific RevealUI deployment',
     description:
       'A branded RevealUI Fleet deployment configured for your business — branding, integrations, and rollout in weeks, not quarters.',

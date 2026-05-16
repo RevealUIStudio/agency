@@ -9,7 +9,7 @@ const proofPoints: ProofPoint[] = [
   {
     metric: 'Three engagement shapes',
     detail:
-      'Fleet trial kit, Custom Build, AI Integration — scoped in a 30-minute discovery call before any SOW is written.',
+      'Fleet Stamp, Custom Build, AI Integration — scoped in a 30-minute discovery call before any SOW is written.',
   },
   {
     metric: 'Fixed-bid statements of work',

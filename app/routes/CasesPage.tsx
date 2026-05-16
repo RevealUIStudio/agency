@@ -3,7 +3,7 @@ import { publishedCases } from '../data/cases';
 import type { CaseStudy } from '../data/cases';
 
 const engagementLabels: Record<CaseStudy['engagementShape'], string> = {
-  'fleet-trial-kit': 'Fleet trial kit',
+  'fleet-trial-kit': 'Fleet Stamp',
   'custom-build': 'Custom build',
   'ai-integration': 'AI integration',
   composite: 'Composite engagement',
