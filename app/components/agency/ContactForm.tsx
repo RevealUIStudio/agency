@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { submitContact } from '../../lib/api';
 
 const topics = [
-  { value: 'fleet-trial-kit', label: 'Fleet trial kit engagement' },
+  { value: 'fleet-trial-kit', label: 'Fleet Stamp engagement' },
   { value: 'custom-build', label: 'Custom platform build' },
   { value: 'ai-integration', label: 'AI Integration sprint' },
   { value: 'migration', label: 'Migration to RevealUI runtime' },
