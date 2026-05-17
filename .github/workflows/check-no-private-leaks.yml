@@ -1,0 +1,23 @@
+name: Private Leak Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check-no-private-leaks:
+    name: Private path / customer name / operator ID leak scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 1
+      - name: Run leak scanner
+        run: bash scripts/check-no-private-leaks.sh
