@@ -44,7 +44,7 @@ pnpm preview      # serves dist/ on :3001
 
 Vercel project pointed at this repo. `vercel.json` declares the framework + headers; deploys auto-trigger on push to `main`.
 
-- **Domain:** `revealuistudio.com` (apex `A 76.76.21.21`, `www` CNAME `cname.vercel-dns.com`)
+- **Domain:** `revealuistudio.com` (Deployed via Vercel)
 - **Build:** `pnpm build` (Vercel auto-detects via `framework: vite`)
 - **Output:** `dist/`
 
@@ -52,13 +52,13 @@ Vercel project pointed at this repo. `vercel.json` declares the framework + head
 
 | Phase | What ships | Status |
 |---|---|---|
-| **1** | Scaffold + Hero + service teasers + placeholder routes | shipped (extracted from `RevealUIStudio/revealui` PR #658) |
-| **2** | Real Hero / Services / About copy, ContactForm wired to API, Privacy + Terms | next |
-| **3** | First case study (Allevia, after deal close + permission); reusable case-study template | post-Allevia |
+| **1** | Scaffold + Hero + service teasers + placeholder routes | shipped |
+| **2** | Real Hero / Services / About copy, ContactForm wired to API, Privacy + Terms | shipped |
+| **3** | First case study (customer TBD, only after deal close + written permission); reusable case-study template | when ready |
 | **4** | Process page, blog (if/when warranted) | as needed |
 | **5** | SEO polish, OG images, sitemap, structured data | ongoing |
 
-Strategy doc + design decisions live in the private coordination repo (`RevealUIStudio/revealui-jv` → `docs/agency-site-strategy.md`).
+Strategy and design decisions are coordinated internally; see the founder for context if you're contributing.
 
 ## Conventions
 
@@ -68,8 +68,6 @@ Strategy doc + design decisions live in the private coordination repo (`RevealUI
 
 ## Origin
 
-Phase 1 scaffold was originally landed in `RevealUIStudio/revealui` as `apps/agency/` via [PR #658](https://github.com/RevealUIStudio/revealui/pull/658), then extracted to this dedicated repo on 2026-04-29 to:
-
-1. Decouple agency-site deploy cadence from the RevealUI monorepo CI pipeline.
-2. Keep customer-facing pricing, positioning, and case studies private (the OSS repo is public).
-3. Dogfood the `@revealui/*` npm distribution as a real external consumer (workspace links in the monorepo papered over packaging gaps that surface here first).
+The agency site lives in its own repo so deploys are decoupled from the
+main RevealUI monorepo CI and so the site doubles as a real external
+consumer of the published `@revealui/*` npm packages.

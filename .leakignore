@@ -1,0 +1,16 @@
+# .leakignore — allowlist for check-no-private-leaks.sh
+#
+# Format per line: <path-glob> <tag[,tag...]>  # reason
+# Blank lines and lines starting with # are skipped.
+#
+# A violation is suppressed only if BOTH the path matches the glob AND
+# the emitted tag is listed.
+#
+# Keep entries to path-globs + tags only — the scanner reads this file
+# too, so paths/credentials in a comment or entry are not suppressed.
+#
+# .vercel/project.json is gitignored (.gitignore:34) and never committed.
+# The scanner flags it from the on-disk working-tree file. Suppressed here
+# because the public repo never contains these IDs; re-verify with
+# `git ls-files .vercel/` before any public flip (must return empty).
+.vercel/project.json vercel-org-id,vercel-project-id
