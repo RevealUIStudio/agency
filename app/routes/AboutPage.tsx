@@ -5,9 +5,10 @@ export function AboutPage() {
         <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl">About</h1>
         <p className="mt-6 text-lg text-gray-600">
           RevealUI Studio is a Tennessee software studio building agent-first business systems on
-          the open-source RevealUI runtime. We sell two things: branded RevealUI Fleet deployments
-          for customers who want a managed instance, and bespoke engineering engagements for teams
-          building something custom.
+          the open-source RevealUI runtime. Three productized engagements: Fleet Stamp (a 30-day
+          branded RevealUI Fleet deployment), Custom Build (bespoke platform engineering on the
+          runtime), and AI Integration (productionizing the provider your team chose, on the
+          workloads you scope). Architecture Review available as an optional paid intake.
         </p>
         <div className="mt-12 rounded-2xl border border-gray-200 bg-gray-50 p-8">
           <h2 className="text-xl font-bold text-gray-950">Founder</h2>
@@ -52,19 +53,10 @@ export function AboutPage() {
               <strong>RevealUI</strong> — agent-first business runtime powering every engagement
             </li>
             <li>
-              <strong>RevVault</strong> — zero-plaintext secrets management
+              <strong>RevVault</strong> — age-encrypted secret vault used on every engagement
             </li>
             <li>
-              <strong>Enterprise</strong> — SaaS billing tier for self-hosted Fleet deployments
-            </li>
-            <li>
-              <strong>RevealCoin</strong> — Solana token infrastructure
-            </li>
-            <li>
-              <strong>RevCon</strong> — portable editor configuration layer
-            </li>
-            <li>
-              <strong>RevDev</strong> — agent runtime and inter-agent coordination
+              <strong>RevDev</strong> — native developer tools (Studio + Console + harness daemon)
             </li>
             <li>
               <strong>RevSkills</strong> — Claude Code skills library

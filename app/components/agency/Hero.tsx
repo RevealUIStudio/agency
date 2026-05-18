@@ -9,7 +9,7 @@ const proofPoints: ProofPoint[] = [
   {
     metric: 'Three engagement shapes',
     detail:
-      'Fleet Stamp, Custom Build, AI Integration — scoped in a 30-minute discovery call before any SOW is written.',
+      'Fleet Stamp, Custom Build, AI Integration — scoped in a free 30-minute discovery call, or via a $3,500 fixed-bid Architecture Review SOW when you want a written assessment first.',
   },
   {
     metric: 'Fixed-bid statements of work',
@@ -22,9 +22,9 @@ const proofPoints: ProofPoint[] = [
       'The three RevealUI primitives used in every engagement — the same packages that build this site.',
   },
   {
-    metric: '19 MIT packages + 2 FSL-1.1-MIT',
+    metric: '26 packages on npm',
     detail:
-      'Customer work inherits this license posture. FSL packages auto-convert to MIT two years after each release.',
+      '24 MIT — forever. 2 Pro packages are Fair Source (FSL-1.1-MIT) and auto-convert to MIT two years after each release. Customer work inherits this license posture.',
   },
   {
     metric: '4–12 week sprints, typical',

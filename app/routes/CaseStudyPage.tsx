@@ -5,8 +5,8 @@ import { NotFoundPage } from './NotFoundPage';
 
 const engagementLabels: Record<CaseStudy['engagementShape'], string> = {
   'fleet-trial-kit': 'Fleet Stamp',
-  'custom-build': 'Custom build',
-  'ai-integration': 'AI integration',
+  'custom-build': 'Custom Build',
+  'ai-integration': 'AI Integration',
   composite: 'Composite engagement',
 };
 
