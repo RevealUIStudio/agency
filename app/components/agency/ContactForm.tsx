@@ -6,6 +6,7 @@ const topics = [
   { value: 'fleet-trial-kit', label: 'Fleet Stamp engagement' },
   { value: 'custom-build', label: 'Custom platform build' },
   { value: 'ai-integration', label: 'AI Integration sprint' },
+  { value: 'architecture-review', label: 'Architecture Review ($3,500)' },
   { value: 'migration', label: 'Migration to RevealUI runtime' },
   { value: 'general', label: 'General inquiry' },
 ] as const;

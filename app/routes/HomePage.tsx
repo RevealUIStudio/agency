@@ -15,9 +15,12 @@ export function HomePage() {
             Discovery → scope → ship.
           </h2>
           <p className="mt-6 text-base text-gray-600">
-            We start every engagement with a 30-minute discovery call to understand the system
+            We start every engagement with a free 30-minute discovery call to understand the system
             you're trying to build and whether we're the right team for it. If we are, we scope with
-            a fixed-bid statement of work; if we aren't, we'll point you somewhere that is.
+            a fixed-bid statement of work. If you want an outside-eye written assessment before
+            committing to a full engagement, that's a $3,500 fixed-bid Architecture Review SOW with
+            a written architecture-review ADR at handoff. If we're not the right team, we'll point
+            you somewhere that is.
           </p>
           <div className="mt-10">
             <a

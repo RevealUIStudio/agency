@@ -15,12 +15,12 @@ const tiers: ServiceTier[] = [
     title: 'Fleet Stamp',
     tagline: 'Customer-specific RevealUI deployment',
     description:
-      'A branded RevealUI Fleet deployment configured for your business — branding, integrations, and rollout in weeks, not quarters.',
+      'A branded RevealUI Fleet deployment — your domain, your cloud, your brand, on the open-source platform we maintain. 30-day fixed-bid engagement, in early access until the public Docker images publish.',
     bullets: [
-      'Branded white-label deployment',
-      'Multi-tenant + domain-locked',
-      'Optional managed hosting',
-      'Onboarding included',
+      '30-day fixed-bid delivery',
+      'Branded, multi-tenant, domain-locked',
+      'Self-hosted on your cloud, owned by you',
+      'Early access — Loom walkthroughs until images publish',
     ],
     startingAt: 'Discovery call scopes the engagement.',
   },
