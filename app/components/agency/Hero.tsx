@@ -24,7 +24,7 @@ const proofPoints: ProofPoint[] = [
   {
     metric: '26 packages on npm',
     detail:
-      '24 MIT — forever. 2 Pro packages are Fair Source (FSL-1.1-MIT) and auto-convert to MIT two years after each release. Customer work inherits this license posture.',
+      '20 MIT — forever. 5 Pro packages are Fair Source (FSL-1.1-MIT) and auto-convert to MIT two years after each release. Customer work inherits this license posture.',
   },
   {
     metric: '4–12 week sprints, typical',
