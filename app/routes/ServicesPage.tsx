@@ -29,7 +29,9 @@ export function ServicesPage() {
           </p>
           <div className="mt-6">
             <a
-              href="/contact"
+              href="https://cal.com/revealuistudio/discovery"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-950 hover:bg-gray-50 transition-colors"
             >
               Schedule discovery →
