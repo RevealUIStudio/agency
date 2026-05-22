@@ -32,9 +32,16 @@ export function ContactPage() {
           <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6">
             <h2 className="text-lg font-semibold text-gray-950">Discovery call</h2>
             <p className="mt-2 text-sm text-gray-600">
-              30-minute scoping call, no commitment. Mention preferred times in your message and
-              we&apos;ll send a confirmation.
+              30-minute scoping call, no commitment. Book a time that works for you:
             </p>
+            <a
+              href="https://cal.com/revealuistudio/discovery"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center rounded-lg bg-gray-950 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+            >
+              Book a 30-minute call →
+            </a>
           </div>
         </div>
       </div>
