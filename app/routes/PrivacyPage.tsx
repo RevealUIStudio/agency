@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '../lib/site';
+
 export function PrivacyPage() {
   const lastUpdated = 'April 29, 2026';
   return (
@@ -140,10 +142,10 @@ export function PrivacyPage() {
           <p>
             To exercise any of these rights, email{' '}
             <a
-              href="mailto:founder@revealui.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="font-semibold text-gray-950 hover:underline"
             >
-              founder@revealui.com
+              {CONTACT_EMAIL}
             </a>
             . We will respond within 30 days.
           </p>
@@ -187,10 +189,10 @@ export function PrivacyPage() {
           <p>
             For privacy questions or to exercise your rights, contact us at{' '}
             <a
-              href="mailto:founder@revealui.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="font-semibold text-gray-950 hover:underline"
             >
-              founder@revealui.com
+              {CONTACT_EMAIL}
             </a>
             .
           </p>

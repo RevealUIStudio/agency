@@ -1,4 +1,5 @@
 import { ContactForm } from '../components/agency/ContactForm';
+import { CONTACT_EMAIL, DISCOVERY_CALL_URL } from '../lib/site';
 
 export function ContactPage() {
   return (
@@ -21,10 +22,10 @@ export function ContactPage() {
             <p className="mt-2 text-sm text-gray-600">
               Send directly to{' '}
               <a
-                href="mailto:founder@revealui.com"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="font-semibold text-gray-950 hover:underline"
               >
-                founder@revealui.com
+                {CONTACT_EMAIL}
               </a>
               . The form above just relays to the same inbox.
             </p>
@@ -35,7 +36,7 @@ export function ContactPage() {
               30-minute scoping call, no commitment. Book a time that works for you:
             </p>
             <a
-              href="https://cal.com/revealuistudio/discovery"
+              href={DISCOVERY_CALL_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center rounded-lg bg-gray-950 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
