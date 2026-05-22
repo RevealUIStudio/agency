@@ -2,6 +2,7 @@ import { Link } from '@revealui/router';
 import { publishedCases } from '../data/cases';
 import { publishedPress } from '../data/press';
 import { PoweredByRevealUI } from './agency/PoweredByRevealUI';
+import { CONTACT_EMAIL } from '../lib/site';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -104,7 +105,7 @@ export function Footer() {
           <p className="text-xs text-gray-500">
             © {year} REVEALUI STUDIO L.L.C. All rights reserved.
           </p>
-          <p className="text-xs text-gray-500">Tennessee LLC · founder@revealui.com</p>
+          <p className="text-xs text-gray-500">Tennessee LLC · {CONTACT_EMAIL}</p>
         </div>
       </div>
     </footer>

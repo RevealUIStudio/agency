@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { submitContact } from '../../lib/api';
+import { CONTACT_EMAIL } from '../../lib/site';
 
 const topics = [
   { value: 'fleet-trial-kit', label: 'Fleet Stamp engagement' },
@@ -103,10 +104,10 @@ export function ContactForm() {
         <p className="mt-2 text-sm text-gray-600">
           We&apos;ll respond within 1-2 business days. If it&apos;s urgent, email{' '}
           <a
-            href="mailto:founder@revealui.com"
+            href={`mailto:${CONTACT_EMAIL}`}
             className="font-semibold text-gray-950 hover:underline"
           >
-            founder@revealui.com
+            {CONTACT_EMAIL}
           </a>{' '}
           directly.
         </p>

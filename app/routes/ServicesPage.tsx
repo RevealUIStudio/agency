@@ -1,4 +1,5 @@
 import { ServiceTeasers } from '../components/agency/ServiceTeasers';
+import { DISCOVERY_CALL_URL } from '../lib/site';
 
 export function ServicesPage() {
   return (
@@ -29,7 +30,7 @@ export function ServicesPage() {
           </p>
           <div className="mt-6">
             <a
-              href="https://cal.com/revealuistudio/discovery"
+              href={DISCOVERY_CALL_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-950 hover:bg-gray-50 transition-colors"

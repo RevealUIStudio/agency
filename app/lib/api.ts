@@ -10,6 +10,8 @@
  * Hono server (e.g. http://localhost:3004) during dev.
  */
 
+import { CONTACT_EMAIL } from './site';
+
 const API_URL = import.meta.env.VITE_API_URL ?? 'https://api.revealui.com';
 
 export interface ContactFormData {
@@ -45,14 +47,14 @@ export async function submitContact(data: ContactFormData): Promise<string | nul
       const body = (await res.json().catch(() => ({}))) as ContactResponseError;
       return (
         body.error ??
-        `We couldn't deliver your message right now (status ${res.status}). Email founder@revealui.com directly and we'll respond within one business day.`
+        `We couldn't deliver your message right now (status ${res.status}). Email ${CONTACT_EMAIL} directly and we'll respond within one business day.`
       );
     }
 
     return null;
   } catch (err) {
     return err instanceof Error
-      ? `Network error: ${err.message}. Email founder@revealui.com directly.`
-      : 'Network error — please try again, or email founder@revealui.com directly.';
+      ? `Network error: ${err.message}. Email ${CONTACT_EMAIL} directly.`
+      : `Network error — please try again, or email ${CONTACT_EMAIL} directly.`;
   }
 }

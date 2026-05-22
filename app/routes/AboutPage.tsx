@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '../lib/site';
+
 export function AboutPage() {
   return (
     <section className="bg-white py-16 sm:py-24">
@@ -33,10 +35,10 @@ export function AboutPage() {
           <p className="mt-4 text-sm text-gray-600">
             Reach out at{' '}
             <a
-              href="mailto:founder@revealui.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="font-semibold text-gray-950 hover:underline"
             >
-              founder@revealui.com
+              {CONTACT_EMAIL}
             </a>
             .
           </p>

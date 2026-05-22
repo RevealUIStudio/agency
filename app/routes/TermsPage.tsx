@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '../lib/site';
+
 export function TermsPage() {
   const lastUpdated = 'April 29, 2026';
   return (
@@ -134,10 +136,10 @@ export function TermsPage() {
           <p>
             For questions about these Terms, contact us at{' '}
             <a
-              href="mailto:founder@revealui.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="font-semibold text-gray-950 hover:underline"
             >
-              founder@revealui.com
+              {CONTACT_EMAIL}
             </a>
             .
           </p>
