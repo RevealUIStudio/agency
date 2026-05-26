@@ -8,7 +8,7 @@ export function PoweredByRevealUI({ className }: PoweredByRevealUIProps) {
       href="https://revealui.com"
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-2 text-xs text-gray-500 hover:text-gray-950 transition-colors ${
+      className={`inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors ${
         className ?? ''
       }`}
     >

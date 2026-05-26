@@ -1,4 +1,4 @@
-import { Link } from '@revealui/router';
+import { LinkButton } from '@revealui/presentation';
 
 interface ServiceTier {
   slug: string;
@@ -56,13 +56,13 @@ const tiers: ServiceTier[] = [
 
 export function ServiceTeasers() {
   return (
-    <section className="bg-gray-50 py-24 sm:py-32">
+    <section className="bg-muted py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Productized engagements.
           </h2>
-          <p className="mt-4 text-base text-gray-600">
+          <p className="mt-4 text-base text-muted-foreground">
             Three lanes for working with RevealUI Studio. Discovery call scopes the engagement.
           </p>
         </div>
@@ -70,18 +70,18 @@ export function ServiceTeasers() {
           {tiers.map((tier) => (
             <article
               key={tier.slug}
-              className="flex flex-col rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow"
+              className="flex flex-col rounded-2xl border border-border bg-card p-8 shadow-sm hover:shadow-md transition-shadow"
             >
-              <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600">
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
                 {tier.tagline}
               </p>
-              <h3 className="mt-2 text-xl font-bold text-gray-950">{tier.title}</h3>
-              <p className="mt-3 text-sm text-gray-600">{tier.description}</p>
-              <ul className="mt-6 flex-1 space-y-2 text-sm text-gray-700">
+              <h3 className="mt-2 text-xl font-bold text-foreground">{tier.title}</h3>
+              <p className="mt-3 text-sm text-muted-foreground">{tier.description}</p>
+              <ul className="mt-6 flex-1 space-y-2 text-sm text-card-foreground">
                 {tier.bullets.map((bullet) => (
                   <li key={bullet} className="flex items-start gap-2">
                     <svg
-                      className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-600"
+                      className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary"
                       fill="none"
                       viewBox="0 0 24 24"
                       strokeWidth={2}
@@ -98,16 +98,13 @@ export function ServiceTeasers() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-8 border-t border-gray-100 pt-6">
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <div className="mt-8 border-t border-border pt-6">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {tier.startingAt}
                 </p>
-                <Link
-                  to="/contact"
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-gray-50 transition-colors"
-                >
+                <LinkButton href="/contact" variant="outline" className="mt-4 w-full justify-center">
                   Inquire
-                </Link>
+                </LinkButton>
               </div>
             </article>
           ))}

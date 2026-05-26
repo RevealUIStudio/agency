@@ -1,14 +1,16 @@
+import { CONTACT_EMAIL } from '../lib/site';
+
 export function PrivacyPage() {
   const lastUpdated = 'April 29, 2026';
   return (
-    <section className="bg-white py-16 sm:py-24">
+    <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
           Privacy Policy
         </h1>
-        <p className="mt-3 text-sm text-gray-500">Last updated: {lastUpdated}</p>
+        <p className="mt-3 text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
 
-        <div className="mt-8 space-y-6 text-base leading-7 text-gray-700">
+        <div className="mt-8 space-y-6 text-base leading-7 text-foreground">
           <p>
             REVEALUI STUDIO L.L.C. (&quot;RevealUI Studio,&quot; &quot;we,&quot; &quot;us,&quot;
             &quot;our&quot;) operates revealuistudio.com (the &quot;Site&quot;). This Privacy Policy
@@ -26,30 +28,30 @@ export function PrivacyPage() {
               href="https://revealui.com/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-gray-950 hover:underline"
+              className="font-semibold text-foreground hover:underline"
             >
               revealui.com/privacy
             </a>
             .
           </p>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">1. Information We Collect</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">1. Information We Collect</h2>
 
-          <h3 className="mt-6 text-lg font-semibold text-gray-950">Contact form submissions</h3>
+          <h3 className="mt-6 text-lg font-semibold text-foreground">Contact form submissions</h3>
           <p>
             When you submit our contact form, we collect the information you provide: your name,
             email address, an optional company name, an inquiry topic, and your message. This is
             the only first-party personal information we collect through the Site.
           </p>
 
-          <h3 className="mt-6 text-lg font-semibold text-gray-950">Server logs</h3>
+          <h3 className="mt-6 text-lg font-semibold text-foreground">Server logs</h3>
           <p>
             Our hosting provider (Vercel) records standard server logs for security and reliability:
             IP address, request path, user agent, and timestamp. We do not augment these logs with
             additional identifiers.
           </p>
 
-          <h3 className="mt-6 text-lg font-semibold text-gray-950">What we do not collect</h3>
+          <h3 className="mt-6 text-lg font-semibold text-foreground">What we do not collect</h3>
           <ul className="list-disc space-y-2 pl-6">
             <li>No tracking cookies, advertising cookies, or third-party analytics</li>
             <li>No fingerprinting, session replay, or behavioral profiling</li>
@@ -57,7 +59,7 @@ export function PrivacyPage() {
             <li>No accounts, no user credentials — the Site has no login</li>
           </ul>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">2. How We Use Your Information</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">2. How We Use Your Information</h2>
           <ul className="list-disc space-y-2 pl-6">
             <li>To respond to your inquiry and assess fit for an engagement</li>
             <li>To track our sales pipeline and customer relationships</li>
@@ -68,7 +70,7 @@ export function PrivacyPage() {
             We do not sell or rent personal information. We do not use your data for advertising.
           </p>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">3. Data Sharing</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">3. Data Sharing</h2>
           <p>We share data only with the service providers necessary to operate the Site:</p>
           <ul className="list-disc space-y-2 pl-6">
             <li>
@@ -77,7 +79,7 @@ export function PrivacyPage() {
                 href="https://vercel.com/legal/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-gray-950 hover:underline"
+                className="font-semibold text-foreground hover:underline"
               >
                 Vercel Privacy Policy
               </a>
@@ -90,7 +92,7 @@ export function PrivacyPage() {
                 href="https://policies.google.com/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-gray-950 hover:underline"
+                className="font-semibold text-foreground hover:underline"
               >
                 Google Privacy Policy
               </a>
@@ -103,7 +105,7 @@ export function PrivacyPage() {
             unless legally prohibited.
           </p>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">4. Retention</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">4. Retention</h2>
           <ul className="list-disc space-y-2 pl-6">
             <li>
               <strong>Contact form submissions:</strong> retained for up to 24 months for sales
@@ -118,7 +120,7 @@ export function PrivacyPage() {
             <li>You may request earlier deletion at any time — see Section 5.</li>
           </ul>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">5. Your Rights (GDPR / CCPA)</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">5. Your Rights (GDPR / CCPA)</h2>
           <p>You have the right to:</p>
           <ul className="list-disc space-y-2 pl-6">
             <li>
@@ -140,10 +142,10 @@ export function PrivacyPage() {
           <p>
             To exercise any of these rights, email{' '}
             <a
-              href="mailto:founder@revealui.com"
-              className="font-semibold text-gray-950 hover:underline"
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="font-semibold text-foreground hover:underline"
             >
-              founder@revealui.com
+              {CONTACT_EMAIL}
             </a>
             . We will respond within 30 days.
           </p>
@@ -153,7 +155,7 @@ export function PrivacyPage() {
             deletion. We do not sell personal information.
           </p>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">6. Security</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">6. Security</h2>
           <p>
             All data in transit is encrypted via HTTPS / TLS. Contact form submissions are stored
             in a database access-restricted to RevealUI Studio. We use standard security practices
@@ -162,20 +164,20 @@ export function PrivacyPage() {
             you in line with applicable law.
           </p>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">7. Cookies</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">7. Cookies</h2>
           <p>
             The Site uses essential cookies only — currently none. We do not use tracking
             cookies, analytics cookies, or advertising cookies. If we ever introduce them, we will
             update this policy and surface a consent control.
           </p>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">8. Children</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">8. Children</h2>
           <p>
             The Site is intended for business audiences and is not directed at children under 13.
             We do not knowingly collect personal information from children under 13.
           </p>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">9. Changes</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">9. Changes</h2>
           <p>
             We may update this Privacy Policy from time to time. The &quot;Last updated&quot; date
             at the top reflects the most recent revision. Material changes will be reflected here;
@@ -183,18 +185,18 @@ export function PrivacyPage() {
             affect your data.
           </p>
 
-          <h2 className="mt-12 text-2xl font-bold text-gray-950">10. Contact</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">10. Contact</h2>
           <p>
             For privacy questions or to exercise your rights, contact us at{' '}
             <a
-              href="mailto:founder@revealui.com"
-              className="font-semibold text-gray-950 hover:underline"
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="font-semibold text-foreground hover:underline"
             >
-              founder@revealui.com
+              {CONTACT_EMAIL}
             </a>
             .
           </p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             REVEALUI STUDIO L.L.C., a Tennessee single-member limited liability company.
           </p>
         </div>
