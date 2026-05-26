@@ -15,31 +15,31 @@ export function NavBar() {
   const close = () => setOpen(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link
           to="/"
           onClick={close}
           className="flex items-center gap-2 text-lg font-semibold tracking-tight"
         >
-          <span className="text-gray-950">RevealUI</span>
-          <span className="text-gray-500">Studio</span>
+          <span className="text-foreground">RevealUI</span>
+          <span className="text-muted-foreground">Studio</span>
         </Link>
 
         {/* Desktop links (md+) */}
-        <div className="hidden items-center gap-8 text-sm font-medium text-gray-600 md:flex">
+        <div className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
           {navLinks.map(({ href, label }) => (
-            <Link key={href} to={href} className="hover:text-gray-950 transition-colors">
+            <Link key={href} to={href} className="hover:text-foreground transition-colors">
               {label}
             </Link>
           ))}
           {publishedCases.length > 0 && (
-            <Link to="/cases" className="hover:text-gray-950 transition-colors">
+            <Link to="/cases" className="hover:text-foreground transition-colors">
               Engagements
             </Link>
           )}
           {publishedPress.length > 0 && (
-            <Link to="/press" className="hover:text-gray-950 transition-colors">
+            <Link to="/press" className="hover:text-foreground transition-colors">
               Press
             </Link>
           )}
@@ -47,7 +47,7 @@ export function NavBar() {
             href="https://revealui.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-500 hover:text-gray-950 transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             revealui.com →
           </a>
@@ -66,7 +66,7 @@ export function NavBar() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             onClick={() => setOpen((o) => !o)}
-            className="-mr-1 flex h-9 w-9 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 transition-colors md:hidden"
+            className="-mr-1 flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-muted transition-colors md:hidden"
           >
             {open ? (
               <svg
@@ -101,14 +101,14 @@ export function NavBar() {
 
       {/* Mobile menu (<md) */}
       {open && (
-        <div id="mobile-nav" className="border-t border-gray-100 bg-white px-6 py-4 md:hidden">
+        <div id="mobile-nav" className="border-t border-border bg-card px-6 py-4 md:hidden">
           <div className="flex flex-col gap-1">
             {navLinks.map(({ href, label }) => (
               <Link
                 key={href}
                 to={href}
                 onClick={close}
-                className="rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-950 transition-colors"
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 {label}
               </Link>
@@ -117,7 +117,7 @@ export function NavBar() {
               <Link
                 to="/cases"
                 onClick={close}
-                className="rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-950 transition-colors"
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 Engagements
               </Link>
@@ -126,7 +126,7 @@ export function NavBar() {
               <Link
                 to="/press"
                 onClick={close}
-                className="rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-950 transition-colors"
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 Press
               </Link>
@@ -136,12 +136,12 @@ export function NavBar() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={close}
-              className="rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-950 transition-colors"
+              className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
             >
               revealui.com →
             </a>
           </div>
-          <div className="mt-4 border-t border-gray-100 pt-4">
+          <div className="mt-4 border-t border-border pt-4">
             <LinkButton href="/contact" onClick={close} className="w-full">
               Book a call
             </LinkButton>

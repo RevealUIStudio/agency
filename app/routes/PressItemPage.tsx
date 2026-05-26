@@ -27,15 +27,15 @@ export function PressItemPage() {
         <meta name="robots" content="noindex,nofollow" />
       )}
 
-      <section className="bg-white py-16 sm:py-24">
+      <section className="bg-background py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-6">
-          <p className="text-xs font-medium uppercase tracking-widest text-emerald-600">
+          <p className="text-xs font-medium uppercase tracking-widest text-primary">
             {kindLabels[press.kind]} · {press.outlet}
           </p>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl">
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {press.title}
           </h1>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg text-muted-foreground">
             {new Date(press.date).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
@@ -45,16 +45,16 @@ export function PressItemPage() {
         </div>
       </section>
 
-      <div className="bg-gray-50 py-16 sm:py-24">
+      <div className="bg-muted py-16 sm:py-24">
         <div className="mx-auto max-w-3xl space-y-16 px-6">
           <section>
-            <p className="text-base text-gray-700">{press.summary}</p>
+            <p className="text-base text-foreground">{press.summary}</p>
           </section>
 
           {press.pullQuote && (
             <section>
-              <blockquote className="border-l-4 border-emerald-500 pl-6">
-                <p className="text-lg font-medium italic text-gray-800">
+              <blockquote className="border-l-4 border-primary pl-6">
+                <p className="text-lg font-medium italic text-foreground">
                   &ldquo;{press.pullQuote.text}&rdquo;
                 </p>
               </blockquote>
@@ -63,12 +63,12 @@ export function PressItemPage() {
 
           {press.topics.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-950">Topics</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground">Topics</h2>
               <ul className="mt-4 flex flex-wrap gap-2">
                 {press.topics.map((topic) => (
                   <li
                     key={topic}
-                    className="rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-medium text-gray-700"
+                    className="rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium text-card-foreground"
                   >
                     {topic}
                   </li>
@@ -78,11 +78,11 @@ export function PressItemPage() {
           )}
 
           {press.externalUrl && (
-            <section className="rounded-xl border border-gray-200 bg-white p-8">
-              <h2 className="text-xl font-bold tracking-tight text-gray-950">
+            <section className="rounded-xl border border-border bg-card p-8">
+              <h2 className="text-xl font-bold tracking-tight text-foreground">
                 Read or listen at {press.outlet}
               </h2>
-              <p className="mt-2 text-base text-gray-600">
+              <p className="mt-2 text-base text-muted-foreground">
                 The original piece is published at {press.outlet}. The link below goes directly to
                 the source.
               </p>
@@ -91,7 +91,7 @@ export function PressItemPage() {
                   href={press.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center rounded-lg bg-gray-950 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+                  className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   View at {press.outlet} →
                 </a>
@@ -99,11 +99,11 @@ export function PressItemPage() {
             </section>
           )}
 
-          <section className="rounded-xl border border-gray-200 bg-white p-8">
-            <h2 className="text-xl font-bold tracking-tight text-gray-950">
+          <section className="rounded-xl border border-border bg-card p-8">
+            <h2 className="text-xl font-bold tracking-tight text-foreground">
               Want to interview Joshua?
             </h2>
-            <p className="mt-2 text-base text-gray-600">
+            <p className="mt-2 text-base text-muted-foreground">
               Joshua talks about RevealUI, building agent-first business systems, and operating a
               software studio as a solo founder. If you're booking guests for a podcast, panel, or
               publication, reach out.
@@ -111,7 +111,7 @@ export function PressItemPage() {
             <div className="mt-6">
               <Link
                 to="/contact"
-                className="inline-flex items-center rounded-lg bg-gray-950 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 Contact
               </Link>

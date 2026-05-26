@@ -35,14 +35,14 @@ const proofPoints: ProofPoint[] = [
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section className="relative overflow-hidden bg-background">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32 lg:py-40">
         <div className="hero-stagger max-w-3xl">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             We build agent-first business systems with{' '}
-            <span className="text-emerald-600">RevealUI</span>.
+            <span className="text-primary">RevealUI</span>.
           </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">
             RevealUI Studio is the agency that builds and integrates with the open-source RevealUI
             runtime — for engineering teams shipping real AI products. We start where the tutorial
             ends.
@@ -50,28 +50,28 @@ export function Hero() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Link
               to="/contact"
-              className="inline-flex items-center rounded-lg bg-gray-950 px-6 py-3 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+              className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               Book a discovery call
             </Link>
             <Link
               to="/services"
-              className="inline-flex items-center rounded-lg border border-gray-300 px-6 py-3 text-sm font-semibold text-gray-950 hover:bg-gray-50 transition-colors"
+              className="inline-flex items-center rounded-lg border border-border px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
             >
               View services →
             </Link>
           </div>
         </div>
 
-        <div className="mt-16 border-t border-gray-100 pt-10">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-600 mb-6">
+        <div className="mt-16 border-t border-border pt-10">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-6">
             How engagements work
           </h2>
           <ul className="grid grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-3 list-none">
             {proofPoints.map((point) => (
               <li key={point.metric} className="flex gap-3">
                 <svg
-                  className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500"
+                  className="mt-0.5 h-4 w-4 shrink-0 text-primary"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   aria-hidden="true"
@@ -83,8 +83,8 @@ export function Hero() {
                   />
                 </svg>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{point.metric}</p>
-                  <p className="mt-0.5 text-sm text-gray-600">{point.detail}</p>
+                  <p className="text-sm font-medium text-foreground">{point.metric}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{point.detail}</p>
                 </div>
               </li>
             ))}

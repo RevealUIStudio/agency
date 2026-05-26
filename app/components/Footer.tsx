@@ -8,57 +8,57 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-gray-200 bg-gray-50">
+    <footer className="border-t border-border bg-muted">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <h3 className="text-sm font-semibold text-gray-950">RevealUI Studio</h3>
-            <p className="mt-2 text-sm text-gray-600">The agency that builds with RevealUI.</p>
+            <h3 className="text-sm font-semibold text-foreground">RevealUI Studio</h3>
+            <p className="mt-2 text-sm text-muted-foreground">The agency that builds with RevealUI.</p>
             <PoweredByRevealUI className="mt-4" />
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-gray-950">Services</h4>
-            <ul className="mt-2 space-y-2 text-sm text-gray-600">
+            <h4 className="text-sm font-semibold text-foreground">Services</h4>
+            <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/services" className="hover:text-gray-950 transition-colors">
+                <Link to="/services" className="hover:text-foreground transition-colors">
                   All services
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-gray-950">Company</h4>
-            <ul className="mt-2 space-y-2 text-sm text-gray-600">
+            <h4 className="text-sm font-semibold text-foreground">Company</h4>
+            <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/about" className="hover:text-gray-950 transition-colors">
+                <Link to="/about" className="hover:text-foreground transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-gray-950 transition-colors">
+                <Link to="/contact" className="hover:text-foreground transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-gray-950 transition-colors">
+                <Link to="/privacy" className="hover:text-foreground transition-colors">
                   Privacy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-gray-950 transition-colors">
+                <Link to="/terms" className="hover:text-foreground transition-colors">
                   Terms
                 </Link>
               </li>
               {publishedCases.length > 0 && (
                 <li>
-                  <Link to="/cases" className="hover:text-gray-950 transition-colors">
+                  <Link to="/cases" className="hover:text-foreground transition-colors">
                     Engagements
                   </Link>
                 </li>
               )}
               {publishedPress.length > 0 && (
                 <li>
-                  <Link to="/press" className="hover:text-gray-950 transition-colors">
+                  <Link to="/press" className="hover:text-foreground transition-colors">
                     Press
                   </Link>
                 </li>
@@ -66,14 +66,14 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-gray-950">Open source</h4>
-            <ul className="mt-2 space-y-2 text-sm text-gray-600">
+            <h4 className="text-sm font-semibold text-foreground">Open source</h4>
+            <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
               <li>
                 <a
                   href="https://revealui.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-gray-950 transition-colors"
+                  className="hover:text-foreground transition-colors"
                 >
                   RevealUI platform
                 </a>
@@ -83,7 +83,7 @@ export function Footer() {
                   href="https://github.com/RevealUIStudio"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-gray-950 transition-colors"
+                  className="hover:text-foreground transition-colors"
                 >
                   GitHub
                 </a>
@@ -93,7 +93,7 @@ export function Footer() {
                   href="https://docs.revealui.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-gray-950 transition-colors"
+                  className="hover:text-foreground transition-colors"
                 >
                   Documentation
                 </a>
@@ -101,11 +101,11 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-gray-200 pt-8 sm:flex-row sm:items-center">
-          <p className="text-xs text-gray-500">
+        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-8 sm:flex-row sm:items-center">
+          <p className="text-xs text-muted-foreground">
             © {year} REVEALUI STUDIO L.L.C. All rights reserved.
           </p>
-          <p className="text-xs text-gray-500">Tennessee LLC · {CONTACT_EMAIL}</p>
+          <p className="text-xs text-muted-foreground">Tennessee LLC · {CONTACT_EMAIL}</p>
         </div>
       </div>
     </footer>
