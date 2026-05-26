@@ -1,3 +1,5 @@
+import { LinkButton } from '@revealui/presentation';
+
 export function NotFoundPage() {
   return (
     <section className="flex min-h-[60vh] items-center justify-center bg-background px-6 py-16">
@@ -11,12 +13,7 @@ export function NotFoundPage() {
           something is broken.
         </p>
         <div className="mt-8 flex items-center justify-center gap-4">
-          <a
-            href="/"
-            className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Return home
-          </a>
+          <LinkButton href="/">Return home</LinkButton>
           <a
             href="/contact"
             className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"

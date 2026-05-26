@@ -1,4 +1,5 @@
-import { Link, useParams } from '@revealui/router';
+import { LinkButton } from '@revealui/presentation';
+import { useParams } from '@revealui/router';
 import { findPressBySlug } from '../data/press';
 import type { PressItem } from '../data/press';
 import { NotFoundPage } from './NotFoundPage';
@@ -87,14 +88,9 @@ export function PressItemPage() {
                 the source.
               </p>
               <div className="mt-6">
-                <a
-                  href={press.externalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
+                <LinkButton href={press.externalUrl} external>
                   View at {press.outlet} →
-                </a>
+                </LinkButton>
               </div>
             </section>
           )}
@@ -109,12 +105,7 @@ export function PressItemPage() {
               publication, reach out.
             </p>
             <div className="mt-6">
-              <Link
-                to="/contact"
-                className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                Contact
-              </Link>
+              <LinkButton href="/contact">Contact</LinkButton>
             </div>
           </section>
         </div>

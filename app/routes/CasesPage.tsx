@@ -1,3 +1,4 @@
+import { LinkButton } from '@revealui/presentation';
 import { Link } from '@revealui/router';
 import { publishedCases } from '../data/cases';
 import type { CaseStudy } from '../data/cases';
@@ -33,12 +34,7 @@ export function CasesPage() {
               reference customer about working with us, mention it on your discovery call.
             </p>
             <div className="mt-8">
-              <Link
-                to="/contact"
-                className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                Schedule a discovery call
-              </Link>
+              <LinkButton href="/contact">Schedule a discovery call</LinkButton>
             </div>
           </div>
         </section>

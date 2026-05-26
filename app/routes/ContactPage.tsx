@@ -1,3 +1,4 @@
+import { LinkButton } from '@revealui/presentation';
 import { ContactForm } from '../components/agency/ContactForm';
 import { CONTACT_EMAIL, DISCOVERY_CALL_URL } from '../lib/site';
 
@@ -35,14 +36,9 @@ export function ContactPage() {
             <p className="mt-2 text-sm text-muted-foreground">
               30-minute scoping call, no commitment. Book a time that works for you:
             </p>
-            <a
-              href={DISCOVERY_CALL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
+            <LinkButton href={DISCOVERY_CALL_URL} external className="mt-4">
               Book a 30-minute call →
-            </a>
+            </LinkButton>
           </div>
         </div>
       </div>

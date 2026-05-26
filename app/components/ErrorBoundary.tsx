@@ -1,3 +1,4 @@
+import { LinkButton } from '@revealui/presentation';
 import { Component, type ReactNode } from 'react';
 
 interface Props {
@@ -35,12 +36,7 @@ function DefaultErrorFallback({ error }: { error: Error | null }) {
       <p className="mt-4 max-w-md text-sm text-muted-foreground">
         {error?.message ?? 'An unexpected error occurred while rendering this page.'}
       </p>
-      <a
-        href="/"
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-      >
-        Return home
-      </a>
+      <LinkButton href="/" className="mt-6">Return home</LinkButton>
     </div>
   );
 }
