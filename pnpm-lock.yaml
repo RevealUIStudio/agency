@@ -18,8 +18,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
       '@revealui/presentation':
-        specifier: ^0.5.0
-        version: 0.5.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: ^0.7.0
+        version: 0.7.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@revealui/router':
         specifier: ^0.3.8
         version: 0.3.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -353,8 +353,8 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  '@revealui/presentation@0.5.0':
-    resolution: {integrity: sha512-f5KzxLw1WkgdiwiO9HvwlNqaVdEi4v6Z5ju74wXe9zTH2HNQsnHa1OzHfpTbAJvu6zVAPgIh4OJe+I+TjqLxBQ==}
+  '@revealui/presentation@0.7.0':
+    resolution: {integrity: sha512-M0MF6kBD0VLgQfYYBTyxSlkkiC8oIr//d4T6qx39U0BZGUXaqUGw0wJ9PIynfq2fOIcn74zowHANDW5qP5kGAg==}
     engines: {node: '>=24.13.0'}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
@@ -1138,6 +1138,9 @@ packages:
   tabbable@6.4.0:
     resolution: {integrity: sha512-05PUHKSNE8ou2dwIxTngl4EzcnsCDZGJ/iCLtDflR/SHB/ny14rXc+qU5P4mG9JkusiV7EivzY9Mhm55AzAvCg==}
 
+  tailwind-merge@3.6.0:
+    resolution: {integrity: sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==}
+
   tailwindcss@4.2.4:
     resolution: {integrity: sha512-HhKppgO81FQof5m6TEnuBWCZGgfRAWbaeOaGT00KOy/Pf/j6oUihdvBpA7ltCeAvZpFhW3j0PTclkxsd4IXYDA==}
 
@@ -1690,10 +1693,11 @@ snapshots:
       - pg-native
       - typescript
 
-  '@revealui/presentation@0.5.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@revealui/presentation@0.7.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
+      tailwind-merge: 3.6.0
 
   '@revealui/resilience@0.2.4': {}
 
@@ -2348,6 +2352,8 @@ snapshots:
   symbol-tree@3.2.4: {}
 
   tabbable@6.4.0: {}
+
+  tailwind-merge@3.6.0: {}
 
   tailwindcss@4.2.4: {}
 
