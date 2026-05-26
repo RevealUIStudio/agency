@@ -1,3 +1,4 @@
+import { LinkButton } from '@revealui/presentation';
 import { Hero } from '../components/agency/Hero';
 import { ServiceTeasers } from '../components/agency/ServiceTeasers';
 
@@ -23,12 +24,7 @@ export function HomePage() {
             you somewhere that is.
           </p>
           <div className="mt-10">
-            <a
-              href="/contact"
-              className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Schedule discovery
-            </a>
+            <LinkButton href="/contact">Schedule discovery</LinkButton>
           </div>
         </div>
       </section>

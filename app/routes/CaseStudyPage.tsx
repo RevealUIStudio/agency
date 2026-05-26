@@ -1,4 +1,5 @@
-import { Link, useParams } from '@revealui/router';
+import { LinkButton } from '@revealui/presentation';
+import { useParams } from '@revealui/router';
 import { findCaseBySlug } from '../data/cases';
 import type { CaseStudy } from '../data/cases';
 import { NotFoundPage } from './NotFoundPage';
@@ -107,12 +108,7 @@ export function CaseStudyPage() {
               that is.
             </p>
             <div className="mt-6">
-              <Link
-                to="/contact"
-                className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                Schedule discovery
-              </Link>
+              <LinkButton href="/contact">Schedule discovery</LinkButton>
             </div>
           </section>
         </div>

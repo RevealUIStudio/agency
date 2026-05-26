@@ -1,4 +1,4 @@
-import { Link } from '@revealui/router';
+import { LinkButton } from '@revealui/presentation';
 
 interface ServiceTier {
   slug: string;
@@ -102,12 +102,9 @@ export function ServiceTeasers() {
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {tier.startingAt}
                 </p>
-                <Link
-                  to="/contact"
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
-                >
+                <LinkButton href="/contact" variant="outline" className="mt-4 w-full justify-center">
                   Inquire
-                </Link>
+                </LinkButton>
               </div>
             </article>
           ))}

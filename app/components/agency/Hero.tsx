@@ -1,4 +1,4 @@
-import { Link } from '@revealui/router';
+import { LinkButton } from '@revealui/presentation';
 
 interface ProofPoint {
   metric: string;
@@ -48,18 +48,8 @@ export function Hero() {
             ends.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Link
-              to="/contact"
-              className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Book a discovery call
-            </Link>
-            <Link
-              to="/services"
-              className="inline-flex items-center rounded-lg border border-border px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
-            >
-              View services →
-            </Link>
+            <LinkButton href="/contact">Book a discovery call</LinkButton>
+            <LinkButton href="/services" variant="outline">View services →</LinkButton>
           </div>
         </div>
 
