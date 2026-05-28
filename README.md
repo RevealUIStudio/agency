@@ -21,6 +21,7 @@ The same stack the platform itself runs on — this site is a real external cons
 - `@revealui/router` (file-based routing)
 - `@revealui/presentation` (component primitives + design tokens)
 - `@revealui/core` (additional primitives)
+- Zod (schema + form validation)
 - `@vercel/speed-insights` (analytics)
 - Vitest
 
@@ -54,7 +55,7 @@ Vercel project pointed at this repo. `vercel.json` declares the framework + head
 |---|---|---|
 | **1** | Scaffold + Hero + service teasers + placeholder routes | shipped |
 | **2** | Real Hero / Services / About copy, ContactForm wired to API, Privacy + Terms | shipped |
-| **3** | First case study (customer TBD, only after deal close + written permission); reusable case-study template | when ready |
+| **3** | Reusable case-study template + `/cases` and `/cases/:slug` routes; Press section (`/press`, `/press/:slug`) | template + routes shipped; first *published* case study gated on customer permission |
 | **4** | Process page, blog (if/when warranted) | as needed |
 | **5** | SEO polish, OG images, sitemap, structured data | ongoing |
 
@@ -62,7 +63,7 @@ Strategy and design decisions are coordinated internally; see the founder for co
 
 ## Conventions
 
-- **Visual identity is fully shared with RevealUI** — same Tailwind tokens (`@revealui/presentation/tokens.css`), same Geist font stack, same emerald accent. Same team signal.
+- **Visual identity is fully shared with RevealUI** — same Tailwind tokens (`@revealui/presentation/tokens.css`), same Geist font stack, same Cobalt brand accent — consumed from `tokens.css` and never overridden, so the site is system-adaptive (dark/light) automatically. Same team signal.
 - **Cross-link to revealui.com** prominently (NavBar external link + Footer "Powered by RevealUI" badge). Customers should easily discover the OSS platform underneath.
 - **No "L.L.C." in any user-facing copy** except the legal-form footer line — brand surface is `RevealUI Studio`, not `RevealUI Studio L.L.C.`.
 
