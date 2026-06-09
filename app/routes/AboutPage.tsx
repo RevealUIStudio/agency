@@ -16,7 +16,7 @@ export function AboutPage() {
           <h2 className="text-xl font-bold text-foreground">Founder</h2>
           {/* TODO: drop in /public/founder.jpg (square, ≥400px) and replace this block with the photo */}
           <p className="mt-3 text-card-foreground">
-            <strong>Joshua Vaughn</strong> — full-stack engineer and founder of RevealUI Studio,
+            <strong>Joshua Vaughn</strong>, full-stack engineer and founder of RevealUI Studio,
             operating from Maryville, Tennessee. Built the open-source RevealUI platform (26
             packages, 2,400+ commits) before standing up the agency arm.
           </p>
@@ -46,25 +46,25 @@ export function AboutPage() {
         <div className="mt-12">
           <h2 className="text-xl font-bold text-foreground">What we build with</h2>
           <p className="mt-3 text-muted-foreground">
-            Every engagement draws from the RevFleet toolset. We use these primitives daily — so
+            Every engagement draws from the RevFleet toolset. We use these primitives daily, so
             when a customer asks why something works a particular way, the answer is always the
             same: we built it, we run it, we maintain it.
           </p>
           <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-foreground sm:grid-cols-2">
             <li>
-              <strong>RevealUI</strong> — agent-first business runtime powering every engagement
+              <strong>RevealUI</strong>: agent-first business runtime powering every engagement
             </li>
             <li>
-              <strong>RevVault</strong> — age-encrypted secret vault used on every engagement
+              <strong>RevVault</strong>: age-encrypted secret vault used on every engagement
             </li>
             <li>
-              <strong>RevDev</strong> — native developer tools (Studio + Console + harness daemon)
+              <strong>RevDev</strong>: native developer tools (Studio + Console + harness daemon)
             </li>
             <li>
-              <strong>RevSkills</strong> — Claude Code skills library
+              <strong>RevSkills</strong>: Claude Code skills library
             </li>
             <li>
-              <strong>RevKit</strong> — portable WSL developer environment
+              <strong>RevKit</strong>: portable WSL developer environment
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
