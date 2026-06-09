@@ -55,6 +55,6 @@ export async function submitContact(data: ContactFormData): Promise<string | nul
   } catch (err) {
     return err instanceof Error
       ? `Network error: ${err.message}. Email ${CONTACT_EMAIL} directly.`
-      : `Network error — please try again, or email ${CONTACT_EMAIL} directly.`;
+      : `Network error: please try again, or email ${CONTACT_EMAIL} directly.`;
   }
 }
