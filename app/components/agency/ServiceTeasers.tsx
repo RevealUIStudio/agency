@@ -22,7 +22,7 @@ const tiers: ServiceTier[] = [
       'Self-hosted on your cloud, owned by you',
       'Early access — Loom walkthroughs until images publish',
     ],
-    startingAt: 'Discovery call scopes the engagement.',
+    startingAt: 'From $25,000. Scoped in discovery.',
   },
   {
     slug: 'custom-build',
@@ -36,7 +36,7 @@ const tiers: ServiceTier[] = [
       'Stripe billing wired',
       '4-12 week sprints',
     ],
-    startingAt: 'Fixed-bid SOW. Scoped per project.',
+    startingAt: 'From $50,000. Fixed-bid SOW.',
   },
   {
     slug: 'ai-integration',

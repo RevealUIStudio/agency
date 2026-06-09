@@ -26,7 +26,8 @@ export function ServicesPage() {
             The optional written-assessment step before any of the three engagements above. A
             $3,500 fixed-bid SOW delivering a written architecture-review ADR at handoff — useful
             when you want an outside-eye assessment before committing to a 30-day Fleet Stamp, a
-            4–12 week Custom Build, or an AI Integration sprint.
+            4–12 week Custom Build, or an AI Integration sprint. The $3,500 is credited toward a
+            Fleet deployment if you proceed within 30 days.
           </p>
           <div className="mt-6">
             <a
