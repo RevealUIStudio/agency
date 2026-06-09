@@ -56,7 +56,7 @@ export function PrivacyPage() {
             <li>No tracking cookies, advertising cookies, or third-party analytics</li>
             <li>No fingerprinting, session replay, or behavioral profiling</li>
             <li>No data brokers, ad networks, or marketing pixels</li>
-            <li>No accounts, no user credentials — the Site has no login</li>
+            <li>No accounts, no user credentials: the Site has no login</li>
           </ul>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">2. How We Use Your Information</h2>
@@ -74,7 +74,7 @@ export function PrivacyPage() {
           <p>We share data only with the service providers necessary to operate the Site:</p>
           <ul className="list-disc space-y-2 pl-6">
             <li>
-              <strong>Vercel</strong> — Site hosting and server logs (
+              <strong>Vercel</strong>: Site hosting and server logs (
               <a
                 href="https://vercel.com/legal/privacy-policy"
                 target="_blank"
@@ -86,7 +86,7 @@ export function PrivacyPage() {
               )
             </li>
             <li>
-              <strong>Google Workspace</strong> — email correspondence at our @revealui.com
+              <strong>Google Workspace</strong>: email correspondence at our @revealui.com
               addresses (
               <a
                 href="https://policies.google.com/privacy"
@@ -117,7 +117,7 @@ export function PrivacyPage() {
               <strong>Server logs:</strong> retained per our hosting provider&apos;s policy
               (typically ≤ 90 days for Vercel).
             </li>
-            <li>You may request earlier deletion at any time — see Section 5.</li>
+            <li>You may request earlier deletion at any time. See Section 5.</li>
           </ul>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">5. Your Rights (GDPR / CCPA)</h2>
@@ -166,7 +166,7 @@ export function PrivacyPage() {
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">7. Cookies</h2>
           <p>
-            The Site uses essential cookies only — currently none. We do not use tracking
+            The Site uses essential cookies only, currently none. We do not use tracking
             cookies, analytics cookies, or advertising cookies. If we ever introduce them, we will
             update this policy and surface a consent control.
           </p>
