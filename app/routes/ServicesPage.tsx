@@ -20,11 +20,11 @@ export function ServicesPage() {
             Optional paid intake
           </p>
           <h2 className="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Architecture Review — $3,500 fixed-bid SOW.
+            Architecture Review: $3,500 fixed-bid SOW.
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
             The optional written-assessment step before any of the three engagements above. A
-            $3,500 fixed-bid SOW delivering a written architecture-review ADR at handoff — useful
+            $3,500 fixed-bid SOW delivering a written architecture-review ADR at handoff, useful
             when you want an outside-eye assessment before committing to a 30-day Fleet Stamp, a
             4–12 week Custom Build, or an AI Integration sprint.
           </p>

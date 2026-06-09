@@ -9,7 +9,7 @@ const proofPoints: ProofPoint[] = [
   {
     metric: 'Three engagement shapes',
     detail:
-      'Fleet Stamp, Custom Build, AI Integration — scoped in a free 30-minute discovery call, or via a $3,500 fixed-bid Architecture Review SOW when you want a written assessment first.',
+      'Fleet Stamp, Custom Build, AI Integration: scoped in a free 30-minute discovery call, or via a $3,500 fixed-bid Architecture Review SOW when you want a written assessment first.',
   },
   {
     metric: 'Fixed-bid statements of work',
@@ -19,17 +19,17 @@ const proofPoints: ProofPoint[] = [
   {
     metric: '@revealui/core, @revealui/router, @revealui/presentation',
     detail:
-      'The three RevealUI primitives used in every engagement — the same packages that build this site.',
+      'The three RevealUI primitives used in every engagement, the same packages that build this site.',
   },
   {
     metric: '26 packages on npm',
     detail:
-      '20 MIT — forever. 5 Pro packages are Fair Source (FSL-1.1-MIT) and auto-convert to MIT two years after each release. Customer work inherits this license posture.',
+      '20 MIT, forever. 5 Pro packages are Fair Source (FSL-1.1-MIT) and auto-convert to MIT two years after each release. Customer work inherits this license posture.',
   },
   {
     metric: '4–12 week sprints, typical',
     detail:
-      'Custom Build engagements run in defined sprints. Larger platforms are scoped per discovery — not estimated blind.',
+      'Custom Build engagements run in defined sprints. Larger platforms are scoped per discovery, not estimated blind.',
   },
 ];
 
@@ -44,7 +44,7 @@ export function Hero() {
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
             RevealUI Studio is the agency that builds and integrates with the open-source RevealUI
-            runtime — for engineering teams shipping real AI products. We start where the tutorial
+            runtime, for engineering teams shipping real AI products. We start where the tutorial
             ends.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">

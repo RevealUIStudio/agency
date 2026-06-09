@@ -15,12 +15,12 @@ const tiers: ServiceTier[] = [
     title: 'Fleet Stamp',
     tagline: 'Customer-specific RevealUI deployment',
     description:
-      'A branded RevealUI Fleet deployment — your domain, your cloud, your brand, on the open-source platform we maintain. 30-day fixed-bid engagement, in early access until the public Docker images publish.',
+      'A branded RevealUI Fleet deployment: your domain, your cloud, your brand, on the open-source platform we maintain. 30-day fixed-bid engagement, in early access until the public Docker images publish.',
     bullets: [
       '30-day fixed-bid delivery',
       'Branded, multi-tenant, domain-locked',
       'Self-hosted on your cloud, owned by you',
-      'Early access — Loom walkthroughs until images publish',
+      'Early access: Loom walkthroughs until images publish',
     ],
     startingAt: 'Discovery call scopes the engagement.',
   },
@@ -29,7 +29,7 @@ const tiers: ServiceTier[] = [
     title: 'Custom Build',
     tagline: 'Bespoke platform engagement',
     description:
-      'Full custom platform engineering on the RevealUI runtime — we design, build, and ship the system your AI agents actually need.',
+      'Full custom platform engineering on the RevealUI runtime: we design, build, and ship the system your AI agents actually need.',
     bullets: [
       'Discovery + scoping',
       'TypeScript + Postgres + RevealUI primitives',
@@ -43,7 +43,7 @@ const tiers: ServiceTier[] = [
     title: 'AI Integration',
     tagline: 'Multi-model integration, your choice of provider',
     description:
-      'We productionize the model stack you choose — Claude, OpenAI, Llama, Ollama, or whatever your team already runs. MCP server stand-up, tool design, evals, cost/latency budgets, audit integration, and a written model-selection ADR delivered at handoff.',
+      'We productionize the model stack you choose: Claude, OpenAI, Llama, Ollama, or whatever your team already runs. MCP server stand-up, tool design, evals, cost/latency budgets, audit integration, and a written model-selection ADR delivered at handoff.',
     bullets: [
       'Provider-agnostic delivery (Claude, OpenAI, Llama, Ollama)',
       'MCP server stand-up + tool design',
