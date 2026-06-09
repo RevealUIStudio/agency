@@ -1,6 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { Hero } from '../components/agency/Hero';
 import { ServiceTeasers } from '../components/agency/ServiceTeasers';
+import { DISCOVERY_CALL_URL } from '../lib/site';
 
 export function HomePage() {
   return (
@@ -20,11 +21,13 @@ export function HomePage() {
             you're trying to build and whether we're the right team for it. If we are, we scope with
             a fixed-bid statement of work. If you want an outside-eye written assessment before
             committing to a full engagement, that's a $3,500 fixed-bid Architecture Review SOW with
-            a written architecture-review ADR at handoff. If we're not the right team, we'll point
-            you somewhere that is.
+            a written architecture-review ADR at handoff, credited toward a Fleet deployment if you
+            proceed within 30 days. If we're not the right team, we'll point you somewhere that is.
           </p>
           <div className="mt-10">
-            <LinkButton href="/contact">Schedule discovery</LinkButton>
+            <LinkButton href={DISCOVERY_CALL_URL} external>
+              Schedule discovery
+            </LinkButton>
           </div>
         </div>
       </section>
