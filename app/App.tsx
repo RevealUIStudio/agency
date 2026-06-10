@@ -25,25 +25,25 @@ export function App() {
       {
         path: '/services',
         component: ServicesPage,
-        meta: { title: 'Services — RevealUI Studio' },
+        meta: { title: 'Services | RevealUI Studio' },
       },
-      { path: '/about', component: AboutPage, meta: { title: 'About — RevealUI Studio' } },
-      { path: '/contact', component: ContactPage, meta: { title: 'Contact — RevealUI Studio' } },
-      { path: '/privacy', component: PrivacyPage, meta: { title: 'Privacy — RevealUI Studio' } },
-      { path: '/terms', component: TermsPage, meta: { title: 'Terms — RevealUI Studio' } },
-      { path: '/cases', component: CasesPage, meta: { title: 'Engagements — RevealUI Studio' } },
+      { path: '/about', component: AboutPage, meta: { title: 'About | RevealUI Studio' } },
+      { path: '/contact', component: ContactPage, meta: { title: 'Contact | RevealUI Studio' } },
+      { path: '/privacy', component: PrivacyPage, meta: { title: 'Privacy | RevealUI Studio' } },
+      { path: '/terms', component: TermsPage, meta: { title: 'Terms | RevealUI Studio' } },
+      { path: '/cases', component: CasesPage, meta: { title: 'Engagements | RevealUI Studio' } },
       {
         path: '/cases/:slug',
         component: CaseStudyPage,
-        meta: { title: 'Case study — RevealUI Studio' },
+        meta: { title: 'Case study | RevealUI Studio' },
       },
-      { path: '/press', component: PressPage, meta: { title: 'Press — RevealUI Studio' } },
+      { path: '/press', component: PressPage, meta: { title: 'Press | RevealUI Studio' } },
       {
         path: '/press/:slug',
         component: PressItemPage,
-        meta: { title: 'Press — RevealUI Studio' },
+        meta: { title: 'Press | RevealUI Studio' },
       },
-      { path: '/*notfound', component: NotFoundPage, meta: { title: '404 — RevealUI Studio' } },
+      { path: '/*notfound', component: NotFoundPage, meta: { title: '404 | RevealUI Studio' } },
     ]);
     registered.current = true;
   }

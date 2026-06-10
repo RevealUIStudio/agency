@@ -54,7 +54,7 @@ export function TermsPage() {
               revealui.com/terms
             </a>
             , and by the MIT and Fair Source licenses applied to its source code in the public
-            repository. Those terms — not these — govern your use of the open-source software.
+            repository. Those terms, not these, govern your use of the open-source software.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">3. Acceptable Use</h2>
@@ -74,7 +74,7 @@ export function TermsPage() {
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">4. Intellectual Property</h2>
           <p>
-            All content on the Site — text, design, logos, the &quot;RevealUI Studio&quot; brand —
+            All content on the Site (text, design, logos, the &quot;RevealUI Studio&quot; brand)
             is the property of RevealUI Studio. The Site&apos;s source code is private. You may
             not copy or republish Site content without written permission.
           </p>

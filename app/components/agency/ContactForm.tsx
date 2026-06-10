@@ -39,7 +39,7 @@ function validateField(field: keyof FieldErrors, value: string): string | undefi
       return undefined;
     case 'message':
       if (!value.trim()) return 'Message is required';
-      if (value.trim().length < 20) return 'Tell us a bit more — at least 20 characters';
+      if (value.trim().length < 20) return 'Tell us a bit more: at least 20 characters';
       return undefined;
   }
 }
