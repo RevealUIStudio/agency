@@ -51,6 +51,16 @@ export function Hero() {
             <LinkButton href="/contact">Book a discovery call</LinkButton>
             <LinkButton href="/services" variant="outline">View services →</LinkButton>
           </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Prefer a written assessment first?{' '}
+            <a
+              href="/services#architecture-review"
+              className="font-semibold text-foreground underline-offset-4 hover:underline"
+            >
+              Start with the $3,500 Architecture Review
+            </a>
+            .
+          </p>
         </div>
 
         <div className="mt-16 border-t border-border pt-10">

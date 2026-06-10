@@ -109,6 +109,28 @@ export function ServiceTeasers() {
             </article>
           ))}
         </div>
+        <aside
+          id="architecture-review"
+          className="mt-6 flex flex-col gap-6 rounded-2xl border border-primary/30 bg-card p-8 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+              Optional paid intake
+            </p>
+            <h3 className="mt-2 text-xl font-bold text-foreground">
+              Architecture Review: $3,500 fixed-bid SOW
+            </h3>
+            <p className="mt-3 text-sm text-muted-foreground">
+              The written-assessment step before any lane above: a fixed-bid SOW delivering an
+              architecture-review ADR at handoff, for teams that want an outside-eye assessment
+              before committing. The $3,500 is credited toward a Fleet deployment if you proceed
+              within 30 days.
+            </p>
+          </div>
+          <LinkButton href="/contact" className="w-full justify-center sm:w-auto sm:flex-shrink-0">
+            Book the Architecture Review
+          </LinkButton>
+        </aside>
       </div>
     </section>
   );
