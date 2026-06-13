@@ -47,5 +47,10 @@
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --coverage.reporter=json-summary --coverage.reporter=html --coverage.reporter=text",
     "typecheck": "tsc --noEmit"
+  },
+  "pnpm": {
+    "overrides": {
+      "hono": ">=4.12.21"
+    }
   }
 }
