@@ -12,13 +12,13 @@ interface State {
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false, error: null };
+  override state: State = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  render(): ReactNode {
+  override render(): ReactNode {
     if (this.state.hasError) {
       return this.props.fallback ?? <DefaultErrorFallback error={this.state.error} />;
     }
@@ -34,9 +34,13 @@ function DefaultErrorFallback({ error }: { error: Error | null }) {
         Something went wrong
       </h1>
       <p className="mt-4 max-w-md text-sm text-muted-foreground">
-        {error?.message ?? 'An unexpected error occurred while rendering this page.'}
+        {import.meta.env.DEV
+          ? (error?.message ?? 'An unexpected error occurred while rendering this page.')
+          : 'An unexpected error occurred. Please try again, or contact us if it persists.'}
       </p>
-      <LinkButton href="/" className="mt-6">Return home</LinkButton>
+      <LinkButton href="/" className="mt-6">
+        Return home
+      </LinkButton>
     </div>
   );
 }
