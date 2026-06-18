@@ -1,6 +1,7 @@
 import { Link } from '@revealui/router';
 import { publishedPress } from '../data/press';
 import type { PressItem } from '../data/press';
+import { formatPressDate } from '../lib/format';
 
 const kindLabels: Record<PressItem['kind'], string> = {
   podcast: 'Podcast',
@@ -59,13 +60,7 @@ export function PressPage() {
                   <h2 className="mt-2 text-lg font-bold tracking-tight text-foreground">
                     {item.title}
                   </h2>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {new Date(item.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">{formatPressDate(item.date)}</p>
                   <p className="mt-4 flex-1 text-sm text-muted-foreground">{item.summary}</p>
                   <div className="mt-6 flex items-center gap-4">
                     <Link

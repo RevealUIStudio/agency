@@ -17,9 +17,9 @@ const proofPoints: ProofPoint[] = [
       'Scope is locked before work starts. Discovery call defines deliverables; fixed-bid SOW defines cost and timeline.',
   },
   {
-    metric: '@revealui/core, @revealui/router, @revealui/presentation',
+    metric: '@revealui/router, @revealui/presentation',
     detail:
-      'The three RevealUI primitives used in every engagement, the same packages that build this site.',
+      'The RevealUI primitives that build this site, the same packages used in every engagement.',
   },
   {
     metric: '26 packages on npm',

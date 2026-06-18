@@ -1,0 +1,55 @@
+name: CI
+
+# Build / typecheck / test gate for the agency site.
+#
+# This repo is a real external consumer of the published @revealui/* npm
+# packages and doubles as a smoke test for the npm distribution (see
+# README.md). A breaking @revealui publish or a TypeScript regression must
+# surface as a red PR check HERE — not as a broken production deploy on
+# revealuistudio.com.
+#
+# Runs on PRs into test and main, plus push to test (the integration branch
+# where feature work lands first). Production deploys still run via Vercel on
+# push to main.
+
+on:
+  pull_request:
+    branches: [main, test]
+  push:
+    branches: [test]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  NODE_VERSION: "24"
+  PNPM_VERSION: "10.28.2"
+
+jobs:
+  build-test:
+    name: typecheck · test · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Test
+        run: pnpm test
+      - name: Build
+        run: pnpm build
