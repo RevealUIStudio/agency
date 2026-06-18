@@ -2,6 +2,7 @@ import { LinkButton } from '@revealui/presentation';
 import { useParams } from '@revealui/router';
 import { findPressBySlug } from '../data/press';
 import type { PressItem } from '../data/press';
+import { formatPressDate } from '../lib/format';
 import { NotFoundPage } from './NotFoundPage';
 
 const kindLabels: Record<PressItem['kind'], string> = {
@@ -22,11 +23,7 @@ export function PressItemPage() {
 
   return (
     <>
-      {press.published ? (
-        <meta name="robots" content="index,follow" />
-      ) : (
-        <meta name="robots" content="noindex,nofollow" />
-      )}
+      <meta name="robots" content="index,follow" />
 
       <section className="bg-background py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-6">
@@ -36,13 +33,7 @@ export function PressItemPage() {
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {press.title}
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground">
-            {new Date(press.date).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
+          <p className="mt-4 text-lg text-muted-foreground">{formatPressDate(press.date)}</p>
         </div>
       </section>
 
