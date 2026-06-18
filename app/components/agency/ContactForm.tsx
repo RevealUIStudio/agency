@@ -21,6 +21,9 @@ const topics = [
   { value: 'general', label: 'General inquiry' },
 ] as const;
 
+/** Allowed topic values — defends the payload if formData.topic is ever off-list. */
+const validTopics = new Set<string>(topics.map((t) => t.value));
+
 interface FieldErrors {
   name?: string;
   email?: string;
@@ -74,12 +77,19 @@ export function ContactForm() {
     setFieldErrors(errors);
     if (Object.values(errors).some(Boolean)) return;
 
+    // Honeypot: a filled 'website' field means a bot. Show a fake success and
+    // skip the network call entirely so the bot gets no signal either way.
+    if (formData.website) {
+      setStatus('success');
+      return;
+    }
+
     setStatus('loading');
     const error = await submitContact({
       name: formData.name.trim(),
       email: formData.email.trim(),
       company: formData.company.trim() || undefined,
-      topic: formData.topic,
+      topic: validTopics.has(formData.topic) ? formData.topic : 'general',
       message: formData.message.trim(),
       website: formData.website,
     });

@@ -14,8 +14,8 @@ const kindLabels: Record<PressItem['kind'], string> = {
 };
 
 export function PressItemPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const press = findPressBySlug(slug);
+  const { slug } = useParams<{ slug?: string }>();
+  const press = slug ? findPressBySlug(slug) : undefined;
 
   if (!press || !press.published) {
     return <NotFoundPage />;
