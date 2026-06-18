@@ -12,8 +12,8 @@ const engagementLabels: Record<CaseStudy['engagementShape'], string> = {
 };
 
 export function CaseStudyPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const study = findCaseBySlug(slug);
+  const { slug } = useParams<{ slug?: string }>();
+  const study = slug ? findCaseBySlug(slug) : undefined;
 
   if (!study || !study.published) {
     return <NotFoundPage />;
