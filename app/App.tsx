@@ -21,7 +21,11 @@ export function App() {
 
   if (!registered.current && router.getRoutes().length === 0) {
     router.registerRoutes([
-      { path: '/', component: HomePage, meta: { title: 'RevealUI Studio' } },
+      {
+        path: '/',
+        component: HomePage,
+        meta: { title: 'RevealUI Studio | We build agent-first business systems' },
+      },
       {
         path: '/services',
         component: ServicesPage,
