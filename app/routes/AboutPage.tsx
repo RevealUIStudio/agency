@@ -63,9 +63,6 @@ export function AboutPage() {
             <li>
               <strong>RevSkills</strong>: Claude Code skills library
             </li>
-            <li>
-              <strong>RevKit</strong>: portable WSL developer environment
-            </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
             Most of RevFleet ships under MIT or Fair Source (FSL-1.1-MIT).{' '}
