@@ -12,8 +12,8 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
-    "@revealui/presentation": "^0.8.0",
-    "@revealui/router": "^0.3.9",
+    "@revealui/presentation": "^0.9.1",
+    "@revealui/router": "^0.3.10",
     "@vercel/speed-insights": "^2.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
