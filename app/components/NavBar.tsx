@@ -1,6 +1,6 @@
-import { LinkButton } from '@revealui/presentation';
-import { Link } from '@revealui/router';
-import { useState } from 'react';
+import { LinkButton, useClickOutside, useEscapeKey, useScrollLock } from '@revealui/presentation';
+import { Link, useLocation } from '@revealui/router';
+import { useEffect, useRef, useState } from 'react';
 import { publishedCases } from '../data/cases';
 import { publishedPress } from '../data/press';
 
@@ -12,7 +12,26 @@ const navLinks = [
 
 export function NavBar() {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const close = () => setOpen(false);
+  const { pathname } = useLocation();
+
+  // Mobile-menu closers, matching the marketing NavBar: lock body scroll while
+  // open, close on Escape, and close on a pointer-down outside the panel. We
+  // pass both the panel and the toggle to useClickOutside so tapping the
+  // hamburger to close doesn't double-fire. A visual `fixed` backdrop is
+  // intentionally avoided — the sticky header's backdrop-blur creates a
+  // containing block that would clip it.
+  useScrollLock(open);
+  useEscapeKey(close, open);
+  useClickOutside([menuRef, toggleRef], close, open);
+
+  // Close after a client-side navigation (also covers browser back/forward,
+  // where a link's own onClick never fires).
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
@@ -61,6 +80,7 @@ export function NavBar() {
 
           {/* Hamburger (<md) */}
           <button
+            ref={toggleRef}
             type="button"
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
@@ -101,7 +121,11 @@ export function NavBar() {
 
       {/* Mobile menu (<md) */}
       {open && (
-        <div id="mobile-nav" className="border-t border-border bg-card px-6 py-4 md:hidden">
+        <div
+          id="mobile-nav"
+          ref={menuRef}
+          className="border-t border-border bg-card px-6 py-4 md:hidden"
+        >
           <div className="flex flex-col gap-1">
             {navLinks.map(({ href, label }) => (
               <Link
