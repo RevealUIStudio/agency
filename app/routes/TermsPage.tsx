@@ -12,15 +12,16 @@ export function TermsPage() {
 
         <div className="mt-8 space-y-6 text-base leading-7 text-foreground">
           <p>
-            These Terms of Use (&quot;Terms&quot;) govern your access to and use of revealuistudio.com
-            (the &quot;Site&quot;), operated by REVEALUI STUDIO L.L.C. (&quot;RevealUI Studio,&quot;
-            &quot;we,&quot; &quot;us,&quot; &quot;our&quot;), a Tennessee single-member limited
-            liability company. By using the Site, you agree to these Terms.
+            These Terms of Use (&quot;Terms&quot;) govern your access to and use of
+            revealuistudio.com (the &quot;Site&quot;), operated by REVEALUI STUDIO L.L.C.
+            (&quot;RevealUI Studio,&quot; &quot;we,&quot; &quot;us,&quot; &quot;our&quot;), a
+            Tennessee single-member limited liability company. By using the Site, you agree to these
+            Terms.
           </p>
 
           <p>
-            The Site is informational. It exists to describe our services and to let you reach
-            out about a potential engagement. The Site does not provide a software service, host
+            The Site is informational. It exists to describe our services and to let you reach out
+            about a potential engagement. The Site does not provide a software service, host
             customer applications, or process payments.
           </p>
 
@@ -65,7 +66,9 @@ export function TermsPage() {
             <li>Submit spam, malware, or harmful content via the contact form</li>
             <li>Misrepresent your identity or impersonate another party</li>
             <li>Scrape or copy content for republication without permission</li>
-            <li>Probe, scan, or test the vulnerability of the Site without prior written consent</li>
+            <li>
+              Probe, scan, or test the vulnerability of the Site without prior written consent
+            </li>
           </ul>
           <p>
             We reserve the right to block IPs, suspend access, or refuse to respond to inquiries
@@ -74,9 +77,9 @@ export function TermsPage() {
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">4. Intellectual Property</h2>
           <p>
-            All content on the Site (text, design, logos, the &quot;RevealUI Studio&quot; brand)
-            is the property of RevealUI Studio. The Site&apos;s source code is private. You may
-            not copy or republish Site content without written permission.
+            All content on the Site (text, design, logos, the &quot;RevealUI Studio&quot; brand) is
+            the property of RevealUI Studio. The Site&apos;s source code is private. You may not
+            copy or republish Site content without written permission.
           </p>
           <p>
             The open-source RevealUI platform code, hosted at{' '}
@@ -88,27 +91,27 @@ export function TermsPage() {
             >
               github.com/RevealUIStudio
             </a>
-            , is licensed under MIT (most packages) or Fair Source / FSL-1.1-MIT (the Pro
-            packages). Those repository licenses are the controlling terms for the open-source
-            code, not these Terms.
+            , is licensed under MIT (most packages) or Fair Source / FSL-1.1-MIT (the Pro packages).
+            Those repository licenses are the controlling terms for the open-source code, not these
+            Terms.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">5. Disclaimers</h2>
           <p>
-            The Site is provided on an &quot;as is&quot; and &quot;as available&quot; basis. We
-            make no warranties, express or implied, regarding accuracy, completeness, fitness for a
-            particular purpose, or non-infringement. The Site may include forward-looking
-            statements about our services or roadmap; those are not guarantees.
+            The Site is provided on an &quot;as is&quot; and &quot;as available&quot; basis. We make
+            no warranties, express or implied, regarding accuracy, completeness, fitness for a
+            particular purpose, or non-infringement. The Site may include forward-looking statements
+            about our services or roadmap; those are not guarantees.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">6. Limitation of Liability</h2>
           <p>
             To the maximum extent permitted by law, REVEALUI STUDIO L.L.C., its members, and its
             agents shall not be liable for any indirect, incidental, special, consequential, or
-            punitive damages arising out of your use of the Site, even if advised of the
-            possibility of such damages. Our total aggregate liability for any claims arising from
-            or related to the Site is limited to one hundred U.S. dollars (USD $100). For
-            engagement liabilities, the cap in the engagement&apos;s signed agreement controls.
+            punitive damages arising out of your use of the Site, even if advised of the possibility
+            of such damages. Our total aggregate liability for any claims arising from or related to
+            the Site is limited to one hundred U.S. dollars (USD $100). For engagement liabilities,
+            the cap in the engagement&apos;s signed agreement controls.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">7. Indemnification</h2>

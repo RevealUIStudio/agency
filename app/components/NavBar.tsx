@@ -29,6 +29,9 @@ export function NavBar() {
 
   // Close after a client-side navigation (also covers browser back/forward,
   // where a link's own onClick never fires).
+  // `pathname` is the trigger, not a value the body reads. The rule's autofix
+  // would drop it and leave the mobile menu open across navigations.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the navigation trigger
   useEffect(() => {
     setOpen(false);
   }, [pathname]);

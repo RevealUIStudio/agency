@@ -1,8 +1,8 @@
 import { Link } from '@revealui/router';
 import { publishedCases } from '../data/cases';
 import { publishedPress } from '../data/press';
-import { PoweredByRevealUI } from './agency/PoweredByRevealUI';
 import { CONTACT_EMAIL } from '../lib/site';
+import { PoweredByRevealUI } from './agency/PoweredByRevealUI';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -13,7 +13,9 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <h3 className="text-sm font-semibold text-foreground">RevealUI Studio</h3>
-            <p className="mt-2 text-sm text-muted-foreground">The agency that builds with RevealUI.</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              The agency that builds with RevealUI.
+            </p>
             <PoweredByRevealUI className="mt-4" />
           </div>
           <div>
