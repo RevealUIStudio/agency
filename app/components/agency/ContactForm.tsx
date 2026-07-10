@@ -1,5 +1,3 @@
-import type { FormEvent } from 'react';
-import { useState } from 'react';
 import {
   ButtonCVA as Button,
   Callout,
@@ -8,6 +6,8 @@ import {
   Select,
   Textarea,
 } from '@revealui/presentation';
+import type { FormEvent } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
 import { submitContact } from '../../lib/api';
 import { CONTACT_EMAIL } from '../../lib/site';
@@ -150,11 +150,7 @@ export function ContactForm() {
           />
         </FormField>
       </div>
-      <FormField
-        id="contact-company"
-        label="Company"
-        description="Optional"
-      >
+      <FormField id="contact-company" label="Company" description="Optional">
         <Input
           id="contact-company"
           type="text"
@@ -219,9 +215,7 @@ export function ContactForm() {
         </label>
       </div>
 
-      {status === 'error' && (
-        <Callout variant="error">{errorMessage}</Callout>
-      )}
+      {status === 'error' && <Callout variant="error">{errorMessage}</Callout>}
 
       <Button
         type="submit"

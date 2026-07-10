@@ -1,6 +1,6 @@
 import { Link } from '@revealui/router';
-import { publishedPress } from '../data/press';
 import type { PressItem } from '../data/press';
+import { publishedPress } from '../data/press';
 import { formatPressDate } from '../lib/format';
 
 const kindLabels: Record<PressItem['kind'], string> = {
@@ -31,7 +31,10 @@ export function PressPage() {
               Joshua's public talks, podcast appearances, and press mentions appear here when they
               air or publish. Nothing scheduled at the moment. If you want to interview him about
               RevealUI Studio's work,{' '}
-              <Link to="/contact" className="font-medium text-foreground underline underline-offset-2">
+              <Link
+                to="/contact"
+                className="font-medium text-foreground underline underline-offset-2"
+              >
                 reach out via the contact form
               </Link>
               .

@@ -28,9 +28,9 @@ export function AboutPage() {
           </p>
           <p className="mt-3 text-card-foreground">
             The studio is built on a structural commitment: every engagement runs on the same
-            open-source RevealUI software anyone can install themselves. No private agency layer,
-            no "consulting code" you can't audit. If a tool isn't strong enough for an OSS user to
-            ship to production, it's not strong enough to deploy at yours.
+            open-source RevealUI software anyone can install themselves. No private agency layer, no
+            "consulting code" you can't audit. If a tool isn't strong enough for an OSS user to ship
+            to production, it's not strong enough to deploy at yours.
           </p>
           <p className="mt-4 text-sm text-muted-foreground">
             Reach out at{' '}
@@ -46,9 +46,9 @@ export function AboutPage() {
         <div className="mt-12">
           <h2 className="text-xl font-bold text-foreground">What we build with</h2>
           <p className="mt-3 text-muted-foreground">
-            Every engagement draws from the RevFleet toolset. We use these primitives daily, so
-            when a customer asks why something works a particular way, the answer is always the
-            same: we built it, we run it, we maintain it.
+            Every engagement draws from the RevFleet toolset. We use these primitives daily, so when
+            a customer asks why something works a particular way, the answer is always the same: we
+            built it, we run it, we maintain it.
           </p>
           <ul className="mt-4 grid grid-cols-1 gap-2 text-sm text-foreground sm:grid-cols-2">
             <li>
