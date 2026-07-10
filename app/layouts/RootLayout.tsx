@@ -12,6 +12,10 @@ export function RootLayout({ children }: { children: ReactNode }) {
   // On client-side navigation (not the initial load), move focus to <main> and
   // reset scroll so keyboard and screen-reader users land on the new page's
   // content instead of staying on the just-clicked nav link (WCAG 2.4.3 / 4.1.3).
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `pathname` is the
+  // trigger, not a value the body reads. Removing it (the rule's autofix) would
+  // run this once on mount and never again, silently breaking focus + scroll
+  // reset on every client-side navigation.
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
