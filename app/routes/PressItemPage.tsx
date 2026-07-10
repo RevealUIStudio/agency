@@ -17,7 +17,7 @@ export function PressItemPage() {
   const { slug } = useParams<{ slug?: string }>();
   const press = slug ? findPressBySlug(slug) : undefined;
 
-  if (!press || !press.published) {
+  if (!press?.published) {
     return <NotFoundPage />;
   }
 
