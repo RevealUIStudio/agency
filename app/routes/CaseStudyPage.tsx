@@ -15,7 +15,7 @@ export function CaseStudyPage() {
   const { slug } = useParams<{ slug?: string }>();
   const study = slug ? findCaseBySlug(slug) : undefined;
 
-  if (!study || !study.published) {
+  if (!study?.published) {
     return <NotFoundPage />;
   }
 
