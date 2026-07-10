@@ -49,7 +49,9 @@ export function Hero() {
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href="/contact">Book a discovery call</LinkButton>
-            <LinkButton href="/services" variant="outline">View services →</LinkButton>
+            <LinkButton href="/services" variant="outline">
+              View services →
+            </LinkButton>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
             Prefer a written assessment first?{' '}

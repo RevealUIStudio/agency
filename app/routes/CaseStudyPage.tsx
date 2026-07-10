@@ -1,7 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { useParams } from '@revealui/router';
-import { findCaseBySlug } from '../data/cases';
 import type { CaseStudy } from '../data/cases';
+import { findCaseBySlug } from '../data/cases';
 import { NotFoundPage } from './NotFoundPage';
 
 const engagementLabels: Record<CaseStudy['engagementShape'], string> = {
@@ -15,7 +15,7 @@ export function CaseStudyPage() {
   const { slug } = useParams<{ slug?: string }>();
   const study = slug ? findCaseBySlug(slug) : undefined;
 
-  if (!study || !study.published) {
+  if (!study?.published) {
     return <NotFoundPage />;
   }
 
@@ -104,8 +104,8 @@ export function CaseStudyPage() {
             </h2>
             <p className="mt-2 text-base text-muted-foreground">
               Every engagement starts with a 30-minute discovery call. If we're the right fit, we
-              scope with a fixed-bid statement of work. If we're not, we'll point you somewhere
-              that is.
+              scope with a fixed-bid statement of work. If we're not, we'll point you somewhere that
+              is.
             </p>
             <div className="mt-6">
               <LinkButton href="/contact">Schedule discovery</LinkButton>

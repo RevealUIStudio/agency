@@ -31,7 +31,7 @@ env:
 
 jobs:
   build-test:
-    name: typecheck · test · build
+    name: lint · typecheck · test · build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -47,6 +47,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Lint (Biome, hard fail)
+        run: pnpm lint
       - name: Typecheck
         run: pnpm typecheck
       - name: Test

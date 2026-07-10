@@ -111,11 +111,18 @@ body {
     scroll-behavior: auto;
   }
 
+  /* biome-ignore lint/style/noDescendingSpecificity: the universal selector is
+     the whole point here, and it must come after the `html` rule above. */
   *,
   *::before,
   *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: a reduced-motion reset has
+       to beat the entrance animations it neutralizes; without `!important` the
+       opt-out silently does nothing. */
     animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: see above. */
     animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: see above. */
     transition-duration: 0.01ms !important;
   }
 }

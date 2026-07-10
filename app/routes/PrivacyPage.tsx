@@ -14,16 +14,16 @@ export function PrivacyPage() {
           <p>
             REVEALUI STUDIO L.L.C. (&quot;RevealUI Studio,&quot; &quot;we,&quot; &quot;us,&quot;
             &quot;our&quot;) operates revealuistudio.com (the &quot;Site&quot;). This Privacy Policy
-            describes what we collect when you visit the Site or contact us, how we use it, and
-            the choices you have. The Site is informational and does not provide a software
-            service or process payments. Any agency engagement we enter into with you is governed
-            by a separate, signed agreement, not this Site.
+            describes what we collect when you visit the Site or contact us, how we use it, and the
+            choices you have. The Site is informational and does not provide a software service or
+            process payments. Any agency engagement we enter into with you is governed by a
+            separate, signed agreement, not this Site.
           </p>
 
           <p>
-            For privacy practices governing the open-source RevealUI platform itself
-            (revealui.com, admin.revealui.com, api.revealui.com, docs.revealui.com), see the
-            platform privacy policy at{' '}
+            For privacy practices governing the open-source RevealUI platform itself (revealui.com,
+            admin.revealui.com, api.revealui.com, docs.revealui.com), see the platform privacy
+            policy at{' '}
             <a
               href="https://revealui.com/privacy"
               target="_blank"
@@ -40,8 +40,8 @@ export function PrivacyPage() {
           <h3 className="mt-6 text-lg font-semibold text-foreground">Contact form submissions</h3>
           <p>
             When you submit our contact form, we collect the information you provide: your name,
-            email address, an optional company name, an inquiry topic, and your message. This is
-            the only first-party personal information we collect through the Site.
+            email address, an optional company name, an inquiry topic, and your message. This is the
+            only first-party personal information we collect through the Site.
           </p>
 
           <h3 className="mt-6 text-lg font-semibold text-foreground">Server logs</h3>
@@ -59,7 +59,9 @@ export function PrivacyPage() {
             <li>No accounts, no user credentials: the Site has no login</li>
           </ul>
 
-          <h2 className="mt-12 text-2xl font-bold text-foreground">2. How We Use Your Information</h2>
+          <h2 className="mt-12 text-2xl font-bold text-foreground">
+            2. How We Use Your Information
+          </h2>
           <ul className="list-disc space-y-2 pl-6">
             <li>To respond to your inquiry and assess fit for an engagement</li>
             <li>To track our sales pipeline and customer relationships</li>
@@ -86,8 +88,8 @@ export function PrivacyPage() {
               )
             </li>
             <li>
-              <strong>Google Workspace</strong>: email correspondence at our @revealui.com
-              addresses (
+              <strong>Google Workspace</strong>: email correspondence at our @revealui.com addresses
+              (
               <a
                 href="https://policies.google.com/privacy"
                 target="_blank"
@@ -157,8 +159,8 @@ export function PrivacyPage() {
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">6. Security</h2>
           <p>
-            All data in transit is encrypted via HTTPS / TLS. Contact form submissions are stored
-            in a database access-restricted to RevealUI Studio. We use standard security practices
+            All data in transit is encrypted via HTTPS / TLS. Contact form submissions are stored in
+            a database access-restricted to RevealUI Studio. We use standard security practices
             including rate limiting, input validation, and least-privilege access controls. No
             system is perfect; if we become aware of a breach affecting your data, we will notify
             you in line with applicable law.
@@ -166,15 +168,15 @@ export function PrivacyPage() {
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">7. Cookies</h2>
           <p>
-            The Site uses essential cookies only, currently none. We do not use tracking
-            cookies, analytics cookies, or advertising cookies. If we ever introduce them, we will
-            update this policy and surface a consent control.
+            The Site uses essential cookies only, currently none. We do not use tracking cookies,
+            analytics cookies, or advertising cookies. If we ever introduce them, we will update
+            this policy and surface a consent control.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">8. Children</h2>
           <p>
-            The Site is intended for business audiences and is not directed at children under 13.
-            We do not knowingly collect personal information from children under 13.
+            The Site is intended for business audiences and is not directed at children under 13. We
+            do not knowingly collect personal information from children under 13.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">9. Changes</h2>

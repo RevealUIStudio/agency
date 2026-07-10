@@ -1,7 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { useParams } from '@revealui/router';
-import { findPressBySlug } from '../data/press';
 import type { PressItem } from '../data/press';
+import { findPressBySlug } from '../data/press';
 import { formatPressDate } from '../lib/format';
 import { NotFoundPage } from './NotFoundPage';
 
@@ -17,7 +17,7 @@ export function PressItemPage() {
   const { slug } = useParams<{ slug?: string }>();
   const press = slug ? findPressBySlug(slug) : undefined;
 
-  if (!press || !press.published) {
+  if (!press?.published) {
     return <NotFoundPage />;
   }
 

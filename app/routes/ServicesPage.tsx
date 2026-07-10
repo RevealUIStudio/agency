@@ -5,7 +5,9 @@ export function ServicesPage() {
     <>
       <section className="bg-background py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-6">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Services</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            Services
+          </h1>
           <p className="mt-6 text-lg text-muted-foreground">
             Three productized lanes for working with RevealUI Studio. Each engagement starts with
             discovery.

@@ -1,7 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { Link } from '@revealui/router';
-import { publishedCases } from '../data/cases';
 import type { CaseStudy } from '../data/cases';
+import { publishedCases } from '../data/cases';
 
 const engagementLabels: Record<CaseStudy['engagementShape'], string> = {
   'fleet-trial-kit': 'Fleet Stamp',
