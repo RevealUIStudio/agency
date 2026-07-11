@@ -78,7 +78,7 @@ export function CaseStudyPage() {
                   &ldquo;{study.quote.text}&rdquo;
                 </p>
                 <footer className="mt-2 text-sm text-muted-foreground">
-                  — {study.quote.attribution}
+                  {study.quote.attribution}
                 </footer>
               </blockquote>
             </section>
