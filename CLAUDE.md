@@ -22,7 +22,9 @@ Public-facing agency site at https://revealuistudio.com.
 
 ## Git identity
 
-RevealUI Studio <founder@revealui.com>
+RevealUI Studio <43050008+joshua-v-dev@users.noreply.github.com>
+
+> Amended 2026-07-10. The prior founder@revealui.com address is retired: commits carrying it render Unverified under required signatures. Do not restore it.
 
 ## License
 
