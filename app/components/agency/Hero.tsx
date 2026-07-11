@@ -27,7 +27,7 @@ const proofPoints: ProofPoint[] = [
       '20 MIT, forever. 5 Pro packages are Fair Source (FSL-1.1-MIT) and auto-convert to MIT two years after each release. Customer work inherits this license posture.',
   },
   {
-    metric: '4–12 week sprints, typical',
+    metric: '4-12 week sprints, typical',
     detail:
       'Custom Build engagements run in defined sprints. Larger platforms are scoped per discovery, not estimated blind.',
   },
