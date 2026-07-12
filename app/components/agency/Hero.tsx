@@ -27,7 +27,7 @@ const proofPoints: ProofPoint[] = [
       '20 MIT, forever. 5 Pro packages are Fair Source (FSL-1.1-MIT) and auto-convert to MIT two years after each release. Customer work inherits this license posture.',
   },
   {
-    metric: '4–12 week sprints, typical',
+    metric: '4-12 week sprints, typical',
     detail:
       'Custom Build engagements run in defined sprints. Larger platforms are scoped per discovery, not estimated blind.',
   },
@@ -49,7 +49,9 @@ export function Hero() {
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href="/contact">Book a discovery call</LinkButton>
-            <LinkButton href="/services" variant="outline">View services →</LinkButton>
+            <LinkButton href="/services" variant="outline">
+              View services →
+            </LinkButton>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
             Prefer a written assessment first?{' '}

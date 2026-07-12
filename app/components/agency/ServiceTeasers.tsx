@@ -102,7 +102,11 @@ export function ServiceTeasers() {
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {tier.startingAt}
                 </p>
-                <LinkButton href="/contact" variant="outline" className="mt-4 w-full justify-center">
+                <LinkButton
+                  href="/contact"
+                  variant="outline"
+                  className="mt-4 w-full justify-center"
+                >
                   Inquire
                 </LinkButton>
               </div>
