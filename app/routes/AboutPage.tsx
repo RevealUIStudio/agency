@@ -17,7 +17,7 @@ export function AboutPage() {
           {/* TODO: drop in /public/founder.jpg (square, ≥400px) and replace this block with the photo */}
           <p className="mt-3 text-card-foreground">
             <strong>Joshua Vaughn</strong>, full-stack engineer and founder of RevealUI Studio,
-            operating from Maryville, Tennessee. Built the open-source RevealUI platform (26
+            operating from Maryville, Tennessee. Built the open-source RevealUI platform (27
             packages, 2,400+ commits) before standing up the agency arm.
           </p>
           <p className="mt-3 text-card-foreground">
