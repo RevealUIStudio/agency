@@ -1,7 +1,7 @@
 import { Link } from '@revealui/router';
-import type { PressItem } from '../data/press';
-import { publishedPress } from '../data/press';
-import { formatPressDate } from '../lib/format';
+import type { PressItem } from '@/data/press';
+import { publishedPress } from '@/data/press';
+import { formatPressDate } from '@/lib/format';
 
 const kindLabels: Record<PressItem['kind'], string> = {
   podcast: 'Podcast',

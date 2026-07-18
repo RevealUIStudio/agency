@@ -1,6 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
-import { ContactForm } from '../components/agency/ContactForm';
-import { CONTACT_EMAIL, DISCOVERY_CALL_URL } from '../lib/site';
+import { ContactForm } from '@/components/agency/ContactForm';
+import { CONTACT_EMAIL, DISCOVERY_CALL_URL } from '@/lib/site';
 
 export function ContactPage() {
   return (

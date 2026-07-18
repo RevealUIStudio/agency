@@ -1,7 +1,7 @@
 import { Link } from '@revealui/router';
-import { publishedCases } from '../data/cases';
-import { publishedPress } from '../data/press';
-import { CONTACT_EMAIL } from '../lib/site';
+import { publishedCases } from '@/data/cases';
+import { publishedPress } from '@/data/press';
+import { CONTACT_EMAIL } from '@/lib/site';
 import { PoweredByRevealUI } from './agency/PoweredByRevealUI';
 
 export function Footer() {

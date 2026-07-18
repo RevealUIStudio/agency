@@ -1,8 +1,8 @@
 import { useLocation } from '@revealui/router';
 import { type ReactNode, useEffect, useRef } from 'react';
-import { Footer } from '../components/Footer';
-import { NavBar } from '../components/NavBar';
-import { RouteHead } from '../components/RouteHead';
+import { Footer } from '@/components/Footer';
+import { NavBar } from '@/components/NavBar';
+import { RouteHead } from '@/components/RouteHead';
 
 export function RootLayout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();

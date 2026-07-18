@@ -1,7 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
-import { Hero } from '../components/agency/Hero';
-import { ServiceTeasers } from '../components/agency/ServiceTeasers';
-import { DISCOVERY_CALL_URL } from '../lib/site';
+import { Hero } from '@/components/agency/Hero';
+import { ServiceTeasers } from '@/components/agency/ServiceTeasers';
+import { DISCOVERY_CALL_URL } from '@/lib/site';
 
 export function HomePage() {
   return (

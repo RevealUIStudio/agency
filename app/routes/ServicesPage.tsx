@@ -1,4 +1,4 @@
-import { ServiceTeasers } from '../components/agency/ServiceTeasers';
+import { ServiceTeasers } from '@/components/agency/ServiceTeasers';
 
 export function ServicesPage() {
   return (

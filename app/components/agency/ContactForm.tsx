@@ -9,8 +9,8 @@ import {
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { z } from 'zod';
-import { submitContact } from '../../lib/api';
-import { CONTACT_EMAIL } from '../../lib/site';
+import { submitContact } from '@/lib/api';
+import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
   { value: 'fleet-trial-kit', label: 'Fleet Stamp engagement' },
