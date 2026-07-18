@@ -9,8 +9,8 @@ import {
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { z } from 'zod';
-import { submitContact } from '../../lib/api';
-import { CONTACT_EMAIL } from '../../lib/site';
+import { submitContact } from '@/lib/api';
+import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
   { value: 'fleet-trial-kit', label: 'Fleet Stamp engagement' },
@@ -38,7 +38,7 @@ function validateField(field: keyof FieldErrors, value: string): string | undefi
       return undefined;
     case 'email':
       if (!value.trim()) return 'Email is required';
-      if (!z.string().email().safeParse(value).success) return 'Enter a valid email address';
+      if (!z.email().safeParse(value).success) return 'Enter a valid email address';
       return undefined;
     case 'message':
       if (!value.trim()) return 'Message is required';

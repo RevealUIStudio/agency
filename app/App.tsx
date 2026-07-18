@@ -24,30 +24,101 @@ export function App() {
       {
         path: '/',
         component: HomePage,
-        meta: { title: 'RevealUI Studio | We build agent-first business systems' },
+        meta: {
+          title: 'RevealUI Studio | We build agent-first business systems',
+          description:
+            'RevealUI Studio is the agency that builds and integrates with the open-source RevealUI runtime, for engineering teams shipping real AI products.',
+        },
       },
       {
         path: '/services',
         component: ServicesPage,
-        meta: { title: 'Services | RevealUI Studio' },
+        meta: {
+          title: 'Services | RevealUI Studio',
+          description:
+            'Fixed-bid engagements on the RevealUI runtime: Fleet Stamp deployments, custom platform builds, AI integration sprints, and architecture reviews.',
+        },
       },
-      { path: '/about', component: AboutPage, meta: { title: 'About | RevealUI Studio' } },
-      { path: '/contact', component: ContactPage, meta: { title: 'Contact | RevealUI Studio' } },
-      { path: '/privacy', component: PrivacyPage, meta: { title: 'Privacy | RevealUI Studio' } },
-      { path: '/terms', component: TermsPage, meta: { title: 'Terms | RevealUI Studio' } },
-      { path: '/cases', component: CasesPage, meta: { title: 'Engagements | RevealUI Studio' } },
+      {
+        path: '/about',
+        component: AboutPage,
+        meta: {
+          title: 'About | RevealUI Studio',
+          description:
+            'Who is behind RevealUI Studio, how the agency works, and why every engagement runs on the open-source RevealUI runtime.',
+        },
+      },
+      {
+        path: '/contact',
+        component: ContactPage,
+        meta: {
+          title: 'Contact | RevealUI Studio',
+          description:
+            'Book a discovery call or send us a message. We respond within 1-2 business days.',
+        },
+      },
+      {
+        path: '/privacy',
+        component: PrivacyPage,
+        meta: {
+          title: 'Privacy | RevealUI Studio',
+          description:
+            'How RevealUI Studio collects, uses, and protects the information you share with us.',
+        },
+      },
+      {
+        path: '/terms',
+        component: TermsPage,
+        meta: {
+          title: 'Terms | RevealUI Studio',
+          description:
+            'The terms that govern your use of revealuistudio.com and our engagement process.',
+        },
+      },
+      {
+        path: '/cases',
+        component: CasesPage,
+        meta: {
+          title: 'Engagements | RevealUI Studio',
+          description:
+            'Engagements and case studies from RevealUI Studio, published only with explicit customer permission.',
+        },
+      },
       {
         path: '/cases/:slug',
         component: CaseStudyPage,
-        meta: { title: 'Case study | RevealUI Studio' },
+        meta: {
+          title: 'Case study | RevealUI Studio',
+          description:
+            'Engagements and case studies from RevealUI Studio, published only with explicit customer permission.',
+        },
       },
-      { path: '/press', component: PressPage, meta: { title: 'Press | RevealUI Studio' } },
+      {
+        path: '/press',
+        component: PressPage,
+        meta: {
+          title: 'Press | RevealUI Studio',
+          description:
+            'Public talks, podcast appearances, and press mentions from Joshua Vaughn and RevealUI Studio.',
+        },
+      },
       {
         path: '/press/:slug',
         component: PressItemPage,
-        meta: { title: 'Press | RevealUI Studio' },
+        meta: {
+          title: 'Press | RevealUI Studio',
+          description:
+            'Public talks, podcast appearances, and press mentions from Joshua Vaughn and RevealUI Studio.',
+        },
       },
-      { path: '/*notfound', component: NotFoundPage, meta: { title: '404 | RevealUI Studio' } },
+      {
+        path: '/*notfound',
+        component: NotFoundPage,
+        meta: {
+          title: '404 | RevealUI Studio',
+          description: 'The page you are looking for does not exist or has moved.',
+        },
+      },
     ]);
     registered.current = true;
   }

@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from '../lib/site';
+import { CONTACT_EMAIL } from '@/lib/site';
 
 export function AboutPage() {
   return (

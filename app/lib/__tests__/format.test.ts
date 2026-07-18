@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPressDate } from '../format';
+import { formatPressDate } from '@/lib/format';
 
 describe('formatPressDate', () => {
   it('formats a valid date without producing "Invalid Date"', () => {

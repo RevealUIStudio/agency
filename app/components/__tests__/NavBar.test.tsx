@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { Router, RouterProvider } from '@revealui/router';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { NavBar } from '../NavBar';
+import { NavBar } from '@/components/NavBar';
 
 afterEach(cleanup);
 
