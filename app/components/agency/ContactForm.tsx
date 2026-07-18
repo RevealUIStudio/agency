@@ -38,7 +38,7 @@ function validateField(field: keyof FieldErrors, value: string): string | undefi
       return undefined;
     case 'email':
       if (!value.trim()) return 'Email is required';
-      if (!z.string().email().safeParse(value).success) return 'Enter a valid email address';
+      if (!z.email().safeParse(value).success) return 'Enter a valid email address';
       return undefined;
     case 'message':
       if (!value.trim()) return 'Message is required';
