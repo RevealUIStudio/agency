@@ -25,9 +25,9 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | We build agent-first business systems',
+          title: 'RevealUI Studio | We build and deploy the runtime. You keep it.',
           description:
-            'RevealUI Studio is the agency that builds and integrates with the open-source RevealUI runtime, for engineering teams shipping real AI products.',
+            'For teams with a working agent demo and a production-lift problem. We embed like forward deployed engineers and stamp a customer-owned RevealUI runtime.',
         },
       },
       {
@@ -36,7 +36,7 @@ export function App() {
         meta: {
           title: 'Services | RevealUI Studio',
           description:
-            'Fixed-bid engagements on the RevealUI runtime: Fleet Stamp deployments, custom platform builds, AI integration sprints, and architecture reviews.',
+            'Productized forward-deploy engagements on the RevealUI runtime: Fleet Stamp, Custom Build, AI Integration, and Architecture Review.',
         },
       },
       {
@@ -45,7 +45,7 @@ export function App() {
         meta: {
           title: 'About | RevealUI Studio',
           description:
-            'Who is behind RevealUI Studio, how the agency works, and why every engagement runs on the open-source RevealUI runtime.',
+            'RevealUI Studio is the reference forward-deployed practice on the open-source RevealUI runtime. Ship into your environment, hand over the keys.',
         },
       },
       {

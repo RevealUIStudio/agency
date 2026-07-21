@@ -9,8 +9,8 @@ export function ServicesPage() {
             Services
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            Three productized lanes for working with RevealUI Studio. Each engagement starts with
-            discovery.
+            Three productized forward-deploy lanes on the RevealUI runtime. Each engagement starts
+            with discovery and ends with a system you own.
           </p>
         </div>
       </section>
