@@ -13,9 +13,10 @@ const tiers: ServiceTier[] = [
   {
     slug: 'fleet-trial-kit',
     title: 'Fleet Stamp',
-    tagline: 'Customer-specific RevealUI deployment',
+    // FDE gloss: business/drafts/2026-07-21-fde-copy-pack.md §2.3
+    tagline: 'Productized forward deploy',
     description:
-      'A branded RevealUI Fleet deployment: your domain, your cloud, your brand, on the open-source platform we maintain. 30-day fixed-bid engagement, in early access until the public Docker images publish.',
+      'Branded, customer-owned RevealUI runtime in a fixed window: your domain, your cloud, your brand. 30-day fixed-bid engagement, in early access until the public Docker images publish.',
     bullets: [
       '30-day fixed-bid delivery',
       'Branded, multi-tenant, domain-locked',
@@ -27,9 +28,9 @@ const tiers: ServiceTier[] = [
   {
     slug: 'custom-build',
     title: 'Custom Build',
-    tagline: 'Bespoke platform engagement',
+    tagline: 'Deep embed when stamp shape is not enough',
     description:
-      'Full custom platform engineering on the RevealUI runtime: we design, build, and ship the system your AI agents actually need.',
+      'Full custom platform engineering on the RevealUI runtime when integrations, unusual tenancy, or migration need more than a stamp. We design, build, and hand over the system your agents run on.',
     bullets: [
       'Discovery + scoping',
       'TypeScript + Postgres + RevealUI primitives',
@@ -41,9 +42,9 @@ const tiers: ServiceTier[] = [
   {
     slug: 'ai-integration',
     title: 'AI Integration',
-    tagline: 'Multi-model integration, your choice of provider',
+    tagline: 'Productionize your provider on named workloads',
     description:
-      'We productionize the model stack you choose: Claude, OpenAI, Llama, Ollama, or whatever your team already runs. MCP server stand-up, tool design, evals, cost/latency budgets, audit integration, and a written model-selection ADR delivered at handoff.',
+      'We productionize the model stack you choose: Claude, OpenAI, Llama, Ollama, or whatever your team already runs. MCP server stand-up, tool design, evals, cost and latency budgets, audit integration, and a written model-selection ADR at handoff.',
     bullets: [
       'Provider-agnostic delivery (Claude, OpenAI, Llama, Ollama)',
       'MCP server stand-up + tool design',
@@ -63,7 +64,8 @@ export function ServiceTeasers() {
             Productized engagements.
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Three lanes for working with RevealUI Studio. Discovery call scopes the engagement.
+            Three productized forward-deploy lanes. Discovery call scopes the engagement; handoff
+            leaves you operating the runtime without our laptops.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -125,10 +127,9 @@ export function ServiceTeasers() {
               Architecture Review: $3,500 fixed-bid SOW
             </h3>
             <p className="mt-3 text-sm text-muted-foreground">
-              The written-assessment step before any lane above: a fixed-bid SOW delivering an
-              architecture-review ADR at handoff, for teams that want an outside-eye assessment
-              before committing. The $3,500 is credited toward a Fleet deployment if you proceed
-              within 30 days.
+              Scoped embed: map your domain onto the five primitives and name the risks before a
+              build. Fixed-bid SOW delivering an architecture-review ADR at handoff. The $3,500 is
+              credited toward a Fleet deployment if you proceed within 30 days.
             </p>
           </div>
           <LinkButton href="/contact" className="w-full justify-center sm:w-auto sm:flex-shrink-0">
