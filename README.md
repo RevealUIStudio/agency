@@ -61,10 +61,6 @@ Vercel project pointed at this repo. `vercel.json` declares the framework + head
 
 Strategy and design decisions are coordinated internally; see the founder for context if you're contributing.
 
-## Doc truth (GAP-407 W3)
-
-Present-tense claims in this README and `CLAUDE.md` were checked against the repo on 2026-07-23 (`origin/test` @ worktree tip). Stack versions and routes match `package.json` + `app/App.tsx`. Track D intake prices come from `@revealui/contracts/pricing` via `app/lib/engagements.ts`.
-
 ## Conventions
 
 - **Visual identity shares Cobalt tokens with RevealUI** — Tailwind tokens from `@revealui/presentation/tokens.css`, never overridden, so the site is system-adaptive (dark/light) automatically. **Typeface:** this site uses Geist / Geist Mono; the product marketing site on revealui.com uses Inter / Inter Tight / JetBrains Mono. Tokens and brand accent stay shared; fonts may diverge deliberately.
