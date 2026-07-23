@@ -1,8 +1,8 @@
 import { LinkButton, useClickOutside, useEscapeKey, useScrollLock } from '@revealui/presentation';
 import { Link, useLocation } from '@revealui/router';
 import { useEffect, useRef, useState } from 'react';
-import { publishedCases } from '../data/cases';
-import { publishedPress } from '../data/press';
+import { publishedCases } from '@/data/cases';
+import { publishedPress } from '@/data/press';
 
 const navLinks = [
   { href: '/services', label: 'Services' },

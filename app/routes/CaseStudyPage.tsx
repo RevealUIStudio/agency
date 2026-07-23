@@ -1,7 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { useParams } from '@revealui/router';
-import type { CaseStudy } from '../data/cases';
-import { findCaseBySlug } from '../data/cases';
+import type { CaseStudy } from '@/data/cases';
+import { findCaseBySlug } from '@/data/cases';
 import { NotFoundPage } from './NotFoundPage';
 
 const engagementLabels: Record<CaseStudy['engagementShape'], string> = {

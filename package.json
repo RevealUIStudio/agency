@@ -12,8 +12,9 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
-    "@revealui/presentation": "^0.9.1",
-    "@revealui/router": "^0.3.10",
+    "@revealui/contracts": "^0.8.0",
+    "@revealui/presentation": "^0.12.0",
+    "@revealui/router": "^0.3.11",
     "@vercel/speed-insights": "^2.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -49,10 +50,5 @@
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --coverage.reporter=json-summary --coverage.reporter=html --coverage.reporter=text",
     "typecheck": "tsc --noEmit"
-  },
-  "pnpm": {
-    "overrides": {
-      "hono": ">=4.12.21"
-    }
   }
 }

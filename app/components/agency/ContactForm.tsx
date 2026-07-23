@@ -9,14 +9,22 @@ import {
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { z } from 'zod';
-import { submitContact } from '../../lib/api';
-import { CONTACT_EMAIL } from '../../lib/site';
+import { submitContact } from '@/lib/api';
+import { ARCHITECTURE_REVIEW, LAUNCH_PACKAGE } from '@/lib/engagements';
+import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
   { value: 'fleet-trial-kit', label: 'Fleet Stamp engagement' },
   { value: 'custom-build', label: 'Custom platform build' },
   { value: 'ai-integration', label: 'AI Integration sprint' },
-  { value: 'architecture-review', label: 'Architecture Review ($3,500)' },
+  {
+    value: 'architecture-review',
+    label: `Architecture Review (${ARCHITECTURE_REVIEW.price})`,
+  },
+  {
+    value: 'launch-package',
+    label: `Launch Package (${LAUNCH_PACKAGE.price})`,
+  },
   { value: 'migration', label: 'Migration to RevealUI runtime' },
   { value: 'general', label: 'General inquiry' },
 ] as const;
@@ -38,7 +46,7 @@ function validateField(field: keyof FieldErrors, value: string): string | undefi
       return undefined;
     case 'email':
       if (!value.trim()) return 'Email is required';
-      if (!z.string().email().safeParse(value).success) return 'Enter a valid email address';
+      if (!z.email().safeParse(value).success) return 'Enter a valid email address';
       return undefined;
     case 'message':
       if (!value.trim()) return 'Message is required';
@@ -219,7 +227,7 @@ export function ContactForm() {
 
       <Button
         type="submit"
-        variant="primary"
+        variant="brand"
         isLoading={status === 'loading'}
         disabled={status === 'loading'}
       >

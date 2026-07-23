@@ -18,8 +18,9 @@ The same stack the platform itself runs on — this site is a real external cons
 
 - Vite + React 19 (TypeScript strict)
 - Tailwind CSS v4 via `@tailwindcss/vite`
-- `@revealui/router` (file-based routing)
+- `@revealui/router` (SPA routing via programmatic route registration in `app/App.tsx`)
 - `@revealui/presentation` (component primitives + design tokens)
+- `@revealui/contracts` (Track D prices: Architecture Review + Launch Package)
 - Zod (schema + form validation)
 - `@vercel/speed-insights` (analytics)
 - Vitest
@@ -53,16 +54,16 @@ Vercel project pointed at this repo. `vercel.json` declares the framework + head
 | Phase | What ships | Status |
 |---|---|---|
 | **1** | Scaffold + Hero + service teasers + placeholder routes | shipped |
-| **2** | Real Hero / Services / About copy, ContactForm wired to API, Privacy + Terms | shipped |
-| **3** | Reusable case-study template + `/cases` and `/cases/:slug` routes; Press section (`/press`, `/press/:slug`) | template + routes shipped; first *published* case study gated on customer permission |
-| **4** | Process page, blog (if/when warranted) | as needed |
-| **5** | SEO polish, OG images, sitemap, structured data | ongoing |
+| **2** | Real Hero / Services / About copy, ContactForm wired to API (`POST /api/contact`, `source: 'agency'`), Privacy + Terms | shipped |
+| **3** | Reusable case-study template + `/cases` and `/cases/:slug` routes; Press section (`/press`, `/press/:slug`) | template + routes shipped; `publishedCases` / `publishedPress` empty until customer-approved content is added |
+| **4** | Process page, blog (if/when warranted) | not started (no `/process` or `/blog` routes) |
+| **5** | SEO | mostly shipped: `index.html` OG/Twitter cards, Organization JSON-LD, `public/sitemap.xml`, `public/robots.txt`; residual polish as needed |
 
 Strategy and design decisions are coordinated internally; see the founder for context if you're contributing.
 
 ## Conventions
 
-- **Visual identity is fully shared with RevealUI** — same Tailwind tokens (`@revealui/presentation/tokens.css`), same Geist font stack, same Cobalt brand accent — consumed from `tokens.css` and never overridden, so the site is system-adaptive (dark/light) automatically. Same team signal.
+- **Visual identity shares Cobalt tokens with RevealUI** — Tailwind tokens from `@revealui/presentation/tokens.css`, never overridden, so the site is system-adaptive (dark/light) automatically. **Typeface:** this site uses Geist / Geist Mono; the product marketing site on revealui.com uses Inter / Inter Tight / JetBrains Mono. Tokens and brand accent stay shared; fonts may diverge deliberately.
 - **Cross-link to revealui.com** prominently (NavBar external link + Footer "Powered by RevealUI" badge). Customers should easily discover the OSS platform underneath.
 - **No "L.L.C." in any user-facing copy** except the legal-form footer line — brand surface is `RevealUI Studio`, not `RevealUI Studio L.L.C.`.
 

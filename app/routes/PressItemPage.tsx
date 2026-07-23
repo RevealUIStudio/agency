@@ -1,8 +1,8 @@
 import { LinkButton } from '@revealui/presentation';
 import { useParams } from '@revealui/router';
-import type { PressItem } from '../data/press';
-import { findPressBySlug } from '../data/press';
-import { formatPressDate } from '../lib/format';
+import type { PressItem } from '@/data/press';
+import { findPressBySlug } from '@/data/press';
+import { formatPressDate } from '@/lib/format';
 import { NotFoundPage } from './NotFoundPage';
 
 const kindLabels: Record<PressItem['kind'], string> = {

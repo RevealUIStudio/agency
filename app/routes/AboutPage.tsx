@@ -1,4 +1,11 @@
-import { CONTACT_EMAIL } from '../lib/site';
+import {
+  AI_INTEGRATION,
+  ARCHITECTURE_REVIEW,
+  CUSTOM_BUILD,
+  FLEET_STAMP,
+  LAUNCH_PACKAGE,
+} from '@/lib/engagements';
+import { CONTACT_EMAIL } from '@/lib/site';
 
 export function AboutPage() {
   return (
@@ -7,18 +14,21 @@ export function AboutPage() {
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">About</h1>
         <p className="mt-6 text-lg text-muted-foreground">
           RevealUI Studio is a Tennessee software studio building agent-first business systems on
-          the open-source RevealUI runtime. Three productized engagements: Fleet Stamp (a 30-day
-          branded RevealUI Fleet deployment), Custom Build (bespoke platform engineering on the
-          runtime), and AI Integration (productionizing the provider your team chose, on the
-          workloads you scope). Architecture Review available as an optional paid intake.
+          the open-source RevealUI runtime. Three productized engagements: {FLEET_STAMP.name} (a
+          30-day branded RevealUI Fleet deployment), {CUSTOM_BUILD.name} (bespoke platform
+          engineering on the runtime), and {AI_INTEGRATION.name} (productionizing the provider your
+          team chose, on the workloads you scope). Fixed-bid intake available:{' '}
+          {ARCHITECTURE_REVIEW.name} ({ARCHITECTURE_REVIEW.price}) and {LAUNCH_PACKAGE.name} (
+          {LAUNCH_PACKAGE.price}).
         </p>
         <div className="mt-12 rounded-2xl border border-border bg-muted p-8">
           <h2 className="text-xl font-bold text-foreground">Founder</h2>
           {/* TODO: drop in /public/founder.jpg (square, ≥400px) and replace this block with the photo */}
           <p className="mt-3 text-card-foreground">
             <strong>Joshua Vaughn</strong>, full-stack engineer and founder of RevealUI Studio,
-            operating from Maryville, Tennessee. Built the open-source RevealUI platform (27
-            packages, 2,400+ commits) before standing up the agency arm.
+            operating from Maryville, Tennessee. I build the open self-hosted agentic business
+            runtime and deploy it the way a forward deployed engineer would: ship into the customer
+            environment, hand over the keys, leave a receipt trail for what agents did.
           </p>
           <p className="mt-3 text-card-foreground">
             Before this, ten years managing teams and operations in telecommunications across the

@@ -1,4 +1,5 @@
-import { ServiceTeasers } from '../components/agency/ServiceTeasers';
+import { Link } from '@revealui/router';
+import { ServiceTeasers } from '@/components/agency/ServiceTeasers';
 
 export function ServicesPage() {
   return (
@@ -9,8 +10,9 @@ export function ServicesPage() {
             Services
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            Three productized lanes for working with RevealUI Studio. Each engagement starts with
-            discovery.
+            Three productized forward-deploy lanes on the RevealUI runtime, plus fixed-bid intake
+            when you want a written plan first. Each engagement starts with discovery and ends with
+            a system you own.
           </p>
         </div>
       </section>
@@ -19,9 +21,9 @@ export function ServicesPage() {
         <div className="mx-auto max-w-3xl px-6 text-center">
           <p className="text-sm text-muted-foreground">
             Looking for something else?{' '}
-            <a href="/contact" className="font-semibold text-foreground hover:underline">
+            <Link to="/contact" className="font-semibold text-foreground hover:underline">
               Get in touch
-            </a>{' '}
+            </Link>{' '}
             and we'll tell you whether we're the right fit.
           </p>
         </div>
