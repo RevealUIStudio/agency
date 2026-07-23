@@ -14,9 +14,12 @@ importers:
       '@fontsource-variable/geist-mono':
         specifier: ^5.2.8
         version: 5.2.8
+      '@revealui/contracts':
+        specifier: ^0.8.0
+        version: 0.8.0(typescript@6.0.3)
       '@revealui/presentation':
-        specifier: ^0.11.0
-        version: 0.11.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^0.12.0
+        version: 0.12.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@revealui/router':
         specifier: ^0.3.11
         version: 0.3.11(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -281,8 +284,18 @@ packages:
   '@oxc-project/types@0.138.0':
     resolution: {integrity: sha512-1a7ZKmrRTCoN1XMZ4L0PyyqrMnrNlLyPuOkdSX2MZg7IiIGRUyurNhAm73ptDOraoBcIordsIGKNPKUzy3ZmfA==}
 
-  '@revealui/presentation@0.11.0':
-    resolution: {integrity: sha512-yDO+tS5C4x3NOZuESZO5jVQu2tXTdkONYDtmdau7cF7x85sYL4BpDu9slKmog/7vutTTlIfzwFpf/4f+u5zwhg==}
+  '@revealui/contracts@0.8.0':
+    resolution: {integrity: sha512-9FYmMGKDLulOO/bh6byBv7hojmQQ/1jPnMXkv6XODGwblvIzsTZpDh7R1IkNAn9OPewVgnrVoKCYl88CW642hg==}
+    engines: {node: '>=24.13.0'}
+    peerDependencies:
+      drizzle-zod: ^0.8.3
+      typescript: '>=6.0.0'
+    peerDependenciesMeta:
+      drizzle-zod:
+        optional: true
+
+  '@revealui/presentation@0.12.0':
+    resolution: {integrity: sha512-/C8XMKNW2rhxchgtfsTQiHLNPEsZFgYuXeIIzX4iGPdk+N0YIbHofOSJvA+wc/Tyz1ORfVHrRQgp3pguuPXf3Q==}
     engines: {node: '>=24.13.0'}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
@@ -295,8 +308,8 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
-  '@revealui/tokens@0.2.0':
-    resolution: {integrity: sha512-dLU9Svi65SigQr9eFa5OMtEjBZfqxSd6Yw/ANx3vaDhOUtZaMMT3FFDQsKAXEV21eHOsXLePOoCCfc5HyKKFeQ==}
+  '@revealui/tokens@0.3.0':
+    resolution: {integrity: sha512-ETlCSoEdJXXieWowcnZE577MpFcED8KSUPvGhgBfK7GThuH7QFtAmq0nvD2jEAf0uvP1v+iraCTUmtSH/ZEDYQ==}
     engines: {node: '>=24.13.0'}
 
   '@revealui/utils@0.3.6':
@@ -1305,12 +1318,21 @@ snapshots:
 
   '@oxc-project/types@0.138.0': {}
 
-  '@revealui/presentation@0.11.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@revealui/contracts@0.8.0(typescript@6.0.3)':
     dependencies:
-      '@revealui/tokens': 0.2.0
+      typescript: 6.0.3
+      zod: 4.4.3
+
+  '@revealui/presentation@0.12.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)':
+    dependencies:
+      '@revealui/contracts': 0.8.0(typescript@6.0.3)
+      '@revealui/tokens': 0.3.0
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
       tailwind-merge: 3.6.0
+    transitivePeerDependencies:
+      - drizzle-zod
+      - typescript
 
   '@revealui/router@0.3.11(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
@@ -1320,7 +1342,7 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@revealui/tokens@0.2.0': {}
+  '@revealui/tokens@0.3.0': {}
 
   '@revealui/utils@0.3.6':
     dependencies:

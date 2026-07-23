@@ -1,7 +1,7 @@
 import { CONTACT_EMAIL } from '@/lib/site';
 
 export function PrivacyPage() {
-  const lastUpdated = 'April 29, 2026';
+  const lastUpdated = 'July 22, 2026';
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -51,11 +51,19 @@ export function PrivacyPage() {
             additional identifiers.
           </p>
 
+          <h3 className="mt-6 text-lg font-semibold text-foreground">Performance telemetry</h3>
+          <p>
+            The Site loads Vercel Speed Insights, a first-party performance measurement tool that
+            reports aggregate page-load timings to our Vercel project. It is not used for
+            advertising, remarketing, or cross-site profiling. See Vercel&apos;s privacy policy
+            linked under Data Sharing.
+          </p>
+
           <h3 className="mt-6 text-lg font-semibold text-foreground">What we do not collect</h3>
           <ul className="list-disc space-y-2 pl-6">
-            <li>No tracking cookies, advertising cookies, or third-party analytics</li>
-            <li>No fingerprinting, session replay, or behavioral profiling</li>
-            <li>No data brokers, ad networks, or marketing pixels</li>
+            <li>No advertising cookies, marketing pixels, or behavioral ad analytics</li>
+            <li>No fingerprinting, session replay, or cross-site profiling</li>
+            <li>No data brokers or ad networks</li>
             <li>No accounts, no user credentials: the Site has no login</li>
           </ul>
 
@@ -76,7 +84,8 @@ export function PrivacyPage() {
           <p>We share data only with the service providers necessary to operate the Site:</p>
           <ul className="list-disc space-y-2 pl-6">
             <li>
-              <strong>Vercel</strong>: Site hosting and server logs (
+              <strong>Vercel</strong>: Site hosting, server logs, and Speed Insights performance
+              telemetry (
               <a
                 href="https://vercel.com/legal/privacy-policy"
                 target="_blank"
@@ -168,9 +177,11 @@ export function PrivacyPage() {
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">7. Cookies</h2>
           <p>
-            The Site uses essential cookies only, currently none. We do not use tracking cookies,
-            analytics cookies, or advertising cookies. If we ever introduce them, we will update
-            this policy and surface a consent control.
+            The Site does not set advertising or marketing cookies. Vercel may set cookies required
+            for hosting and Speed Insights performance measurement. We do not use third-party ad
+            trackers or session-replay tools. If we introduce non-essential cookies beyond
+            performance telemetry, we will update this policy and surface a consent control where
+            required.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">8. Children</h2>
