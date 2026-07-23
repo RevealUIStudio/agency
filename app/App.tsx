@@ -36,7 +36,7 @@ export function App() {
         meta: {
           title: 'Services | RevealUI Studio',
           description:
-            'Productized forward-deploy engagements on the RevealUI runtime: Fleet Stamp, Custom Build, AI Integration, and Architecture Review.',
+            'Three productized forward-deploy lanes (Fleet Stamp, Custom Build, AI Integration) plus fixed-bid intake: Architecture Review and Launch Package.',
         },
       },
       {

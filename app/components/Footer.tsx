@@ -14,7 +14,7 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-foreground">RevealUI Studio</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              The agency that builds with RevealUI.
+              Reference forward-deploy practice on the RevealUI runtime.
             </p>
             <PoweredByRevealUI className="mt-4" />
           </div>

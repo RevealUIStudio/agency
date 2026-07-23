@@ -1,4 +1,5 @@
 import { LinkButton } from '@revealui/presentation';
+import { Link } from '@revealui/router';
 
 export function NotFoundPage() {
   return (
@@ -14,12 +15,12 @@ export function NotFoundPage() {
         </p>
         <div className="mt-8 flex items-center justify-center gap-4">
           <LinkButton href="/">Return home</LinkButton>
-          <a
-            href="/contact"
+          <Link
+            to="/contact"
             className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
           >
             Contact us →
-          </a>
+          </Link>
         </div>
       </div>
     </section>

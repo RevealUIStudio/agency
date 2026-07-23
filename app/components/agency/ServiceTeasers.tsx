@@ -1,4 +1,12 @@
 import { LinkButton } from '@revealui/presentation';
+import {
+  AI_INTEGRATION,
+  ARCHITECTURE_REVIEW,
+  CUSTOM_BUILD,
+  engagementPriceDisplay,
+  FLEET_STAMP,
+  LAUNCH_PACKAGE,
+} from '@/lib/engagements';
 
 interface ServiceTier {
   slug: string;
@@ -12,7 +20,7 @@ interface ServiceTier {
 const tiers: ServiceTier[] = [
   {
     slug: 'fleet-trial-kit',
-    title: 'Fleet Stamp',
+    title: FLEET_STAMP.name,
     // FDE gloss: business/drafts/2026-07-21-fde-copy-pack.md §2.3
     tagline: 'Productized forward deploy',
     description:
@@ -23,11 +31,11 @@ const tiers: ServiceTier[] = [
       'Self-hosted on your cloud, owned by you',
       'Early access: Loom walkthroughs until images publish',
     ],
-    startingAt: 'From $25,000. Scoped in discovery.',
+    startingAt: engagementPriceDisplay(FLEET_STAMP),
   },
   {
     slug: 'custom-build',
-    title: 'Custom Build',
+    title: CUSTOM_BUILD.name,
     tagline: 'Deep embed when stamp shape is not enough',
     description:
       'Full custom platform engineering on the RevealUI runtime when integrations, unusual tenancy, or migration need more than a stamp. We design, build, and hand over the system your agents run on.',
@@ -37,11 +45,11 @@ const tiers: ServiceTier[] = [
       'Stripe billing wired',
       '4-12 week sprints',
     ],
-    startingAt: 'From $50,000. Fixed-bid SOW.',
+    startingAt: `From ${CUSTOM_BUILD.price}. Fixed-bid SOW.`,
   },
   {
     slug: 'ai-integration',
-    title: 'AI Integration',
+    title: AI_INTEGRATION.name,
     tagline: 'Productionize your provider on named workloads',
     description:
       'We productionize the model stack you choose: Claude, OpenAI, Llama, Ollama, or whatever your team already runs. MCP server stand-up, tool design, evals, cost and latency budgets, audit integration, and a written model-selection ADR at handoff.',
@@ -51,7 +59,7 @@ const tiers: ServiceTier[] = [
       'Evals, cost/latency budgets, audit integration',
       'Written use-case + model-selection ADR at handoff',
     ],
-    startingAt: 'Fixed-bid engagement. Scoped in discovery.',
+    startingAt: engagementPriceDisplay(AI_INTEGRATION),
   },
 ];
 
@@ -64,8 +72,9 @@ export function ServiceTeasers() {
             Productized engagements.
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Three productized forward-deploy lanes. Discovery call scopes the engagement; handoff
-            leaves you operating the runtime without our laptops.
+            Three productized forward-deploy lanes, plus fixed-bid intake when you want a written
+            plan before a full build. Discovery scopes the engagement; handoff leaves you operating
+            the runtime without our laptops.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -106,7 +115,8 @@ export function ServiceTeasers() {
                 </p>
                 <LinkButton
                   href="/contact"
-                  variant="outline"
+                  appearance="outline"
+                  variant="neutral"
                   className="mt-4 w-full justify-center"
                 >
                   Inquire
@@ -115,27 +125,58 @@ export function ServiceTeasers() {
             </article>
           ))}
         </div>
-        <aside
-          id="architecture-review"
-          className="mt-6 flex flex-col gap-6 rounded-2xl border border-primary/30 bg-card p-8 shadow-sm sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-              Optional paid intake
-            </p>
-            <h3 className="mt-2 text-xl font-bold text-foreground">
-              Architecture Review: $3,500 fixed-bid SOW
-            </h3>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Scoped embed: map your domain onto the five primitives and name the risks before a
-              build. Fixed-bid SOW delivering an architecture-review ADR at handoff. The $3,500 is
-              credited toward a Fleet deployment if you proceed within 30 days.
-            </p>
-          </div>
-          <LinkButton href="/contact" className="w-full justify-center sm:w-auto sm:flex-shrink-0">
-            Book the Architecture Review
-          </LinkButton>
-        </aside>
+
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <aside
+            id="architecture-review"
+            className="flex flex-col gap-6 rounded-2xl border border-primary/30 bg-card p-8 shadow-sm"
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Optional paid intake
+              </p>
+              <h3 className="mt-2 text-xl font-bold text-foreground">
+                {ARCHITECTURE_REVIEW.name}: {ARCHITECTURE_REVIEW.price} fixed-bid SOW
+              </h3>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Scoped embed: map your domain onto the five primitives and name the risks before a
+                build. Fixed-bid SOW delivering an architecture-review ADR at handoff. The{' '}
+                {ARCHITECTURE_REVIEW.price} is credited toward a Fleet deployment if you proceed
+                within 30 days.
+              </p>
+            </div>
+            <LinkButton href="/contact" className="w-full justify-center sm:w-auto sm:self-start">
+              Book the Architecture Review
+            </LinkButton>
+          </aside>
+
+          <aside
+            id="launch-package"
+            className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-8 shadow-sm"
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Optional paid intake
+              </p>
+              <h3 className="mt-2 text-xl font-bold text-foreground">
+                {LAUNCH_PACKAGE.name}: {LAUNCH_PACKAGE.price} fixed-bid SOW
+              </h3>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Fixed-bid setup, live in two to four weeks: we configure your RevealUI instance,
+                deploy it to production, and hand you the keys with a full handoff session. The
+                fastest path from a signed engagement to a live product you operate yourself.
+              </p>
+            </div>
+            <LinkButton
+              href="/contact"
+              appearance="outline"
+              variant="neutral"
+              className="w-full justify-center sm:w-auto sm:self-start"
+            >
+              Book the Launch Package
+            </LinkButton>
+          </aside>
+        </div>
       </div>
     </section>
   );

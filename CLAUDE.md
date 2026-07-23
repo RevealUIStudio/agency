@@ -5,7 +5,7 @@ Public-facing agency site at https://revealuistudio.com.
 ## Stack
 
 - Vite + React 19
-- @revealui/{router, presentation} (consumed via npm)
+- @revealui/{router, presentation, contracts} (consumed via npm; contracts for Track D prices)
 - Vercel-deployed; auto-deploy on `main` push
 
 ## Brand naming

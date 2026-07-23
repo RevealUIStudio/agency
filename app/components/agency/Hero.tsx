@@ -1,4 +1,5 @@
 import { LinkButton } from '@revealui/presentation';
+import { ARCHITECTURE_REVIEW, RUNTIME_METRICS } from '@/lib/engagements';
 
 interface ProofPoint {
   metric: string;
@@ -8,8 +9,7 @@ interface ProofPoint {
 const proofPoints: ProofPoint[] = [
   {
     metric: 'Three engagement shapes',
-    detail:
-      'Fleet Stamp, Custom Build, AI Integration: scoped in a free 30-minute discovery call, or via a $3,500 fixed-bid Architecture Review SOW when you want a written assessment first.',
+    detail: `Fleet Stamp, Custom Build, AI Integration: scoped in a free 30-minute discovery call, or via a ${ARCHITECTURE_REVIEW.price} fixed-bid Architecture Review SOW when you want a written assessment first.`,
   },
   {
     metric: 'Fixed-bid statements of work',
@@ -22,9 +22,8 @@ const proofPoints: ProofPoint[] = [
       'The RevealUI primitives that build this site, the same packages used in every engagement.',
   },
   {
-    metric: '26 packages on npm',
-    detail:
-      '20 MIT, forever. 5 Pro packages are Fair Source (FSL-1.1-MIT) and auto-convert to MIT two years after each release. Customer work inherits this license posture.',
+    metric: `${RUNTIME_METRICS.packages} packages in the runtime monorepo`,
+    detail: `${RUNTIME_METRICS.mit} MIT, forever. ${RUNTIME_METRICS.fsl} Fair Source (FSL-1.1-MIT) packages auto-convert to MIT two years after each release. Customer work inherits this license posture.`,
   },
   {
     metric: '4-12 week sprints, typical',
@@ -39,22 +38,23 @@ export function Hero() {
       <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32 lg:py-40">
         <div className="hero-stagger max-w-3xl">
           {/*
-            Experimental FDE layer copy (ADR 2026-07-21 proposed, Q4 agency-allowed).
+            FDE layer copy (ADR 2026-07-21 accepted, Q4 agency-allowed).
             Product revealui.com hero is unchanged. Source: business/drafts/2026-07-21-fde-copy-pack.md §2.1
           */}
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             We build and deploy the runtime. <span className="text-primary">You keep it.</span>
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            For teams with a working agent demo and a production-lift problem. We embed like
-            forward deployed engineers, stamp a customer-owned RevealUI runtime, and hand over a
-            system your people can operate.
+            For teams with a working agent demo and a production-lift problem. We embed like forward
+            deployed engineers, stamp a customer-owned RevealUI runtime, and hand over a system your
+            people can operate.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href="/contact">Book a discovery call</LinkButton>
             <LinkButton
               href="https://github.com/RevealUIStudio/revealui"
-              variant="outline"
+              appearance="outline"
+              variant="neutral"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -67,7 +67,7 @@ export function Hero() {
               href="/services#architecture-review"
               className="font-semibold text-foreground underline-offset-4 hover:underline"
             >
-              Start with the $3,500 Architecture Review
+              Start with the {ARCHITECTURE_REVIEW.price} Architecture Review
             </a>
             .
           </p>

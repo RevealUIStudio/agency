@@ -9,8 +9,8 @@ export function ContactPage() {
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Contact</h1>
         <p className="mt-6 text-lg text-muted-foreground">
           Tell us what you&apos;re trying to build and the engagement model you&apos;re considering
-          (Fleet Stamp, Custom Build, AI Integration, Architecture Review, or migration). We respond
-          within 1-2 business days.
+          (Fleet Stamp, Custom Build, AI Integration, Architecture Review, Launch Package, or
+          migration). We respond within 1-2 business days.
         </p>
 
         <div className="mt-12">
