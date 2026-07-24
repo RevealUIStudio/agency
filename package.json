@@ -54,7 +54,8 @@
   "pnpm": {
     "overrides": {
       "@hono/node-server": ">=2.0.5",
-      "hono": ">=4.12.27"
+      "hono": ">=4.12.27",
+      "postcss": ">=8.5.18"
     }
   }
 }
