@@ -1,7 +1,7 @@
 {
   "name": "@revealui-studio/agency",
   "version": "0.1.0",
-  "description": "RevealUI Studio agency site — services, case studies, hire-us. Hosted at revealuistudio.com.",
+  "description": "RevealUI Studio agency site \u2014 services, case studies, hire-us. Hosted at revealuistudio.com.",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -50,5 +50,12 @@
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --coverage.reporter=json-summary --coverage.reporter=html --coverage.reporter=text",
     "typecheck": "tsc --noEmit"
+  },
+  "pnpm": {
+    "overrides": {
+      "@hono/node-server": ">=2.0.5",
+      "hono": ">=4.12.27",
+      "postcss": ">=8.5.18"
+    }
   }
 }
