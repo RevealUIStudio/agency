@@ -23,7 +23,6 @@ export function AboutPage() {
         </p>
         <div className="mt-12 rounded-2xl border border-border bg-muted p-8">
           <h2 className="text-xl font-bold text-foreground">Founder</h2>
-          {/* TODO: drop in /public/founder.jpg (square, ≥400px) and replace this block with the photo */}
           <p className="mt-3 text-card-foreground">
             <strong>Joshua Vaughn</strong>, full-stack engineer and founder of RevealUI Studio,
             operating from Maryville, Tennessee. I build the open self-hosted agentic business
