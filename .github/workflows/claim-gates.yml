@@ -1,11 +1,11 @@
 name: Claim gates
 
-# GAP-462 Phase 2: marketing-site profile against the agency tree.
+# Marketing-site claim honesty against the agency tree.
 # Builds @revealui/claim-gates from RevealUIStudio/revealui@test (same engines
 # as monorepo validate:claims; no full-copy scanner in this repo).
 #
-# Requires claim-gates Phase 2 profiles on revealui test
-# (revealui#2293 or later).
+# Requires claim-gates multi-root profiles on revealui test
+# (revealui PR that lands marketing-site profile, or later).
 
 on:
   pull_request:
