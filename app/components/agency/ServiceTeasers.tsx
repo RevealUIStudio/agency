@@ -52,11 +52,11 @@ const tiers: ServiceTier[] = [
     title: AI_INTEGRATION.name,
     tagline: 'Productionize your provider on named workloads',
     description:
-      'We productionize the model stack you choose: Claude, OpenAI, Llama, Ollama, or whatever your team already runs. MCP server stand-up, tool design, evals, cost and latency budgets, audit integration, and a written model-selection ADR at handoff.',
+      'We productionize the model stack you choose: OpenAI-compatible APIs, Ollama, Inference Snaps, Llama, or whatever your team already runs. MCP server stand-up, tool design, evals, cost and latency budgets, and a written model-selection ADR at handoff.',
     bullets: [
-      'Provider-agnostic delivery (Claude, OpenAI, Llama, Ollama)',
+      'Provider-agnostic delivery (OpenAI-compatible, Ollama, Inference Snaps, Llama)',
       'MCP server stand-up + tool design',
-      'Evals, cost/latency budgets, audit integration',
+      'Evals, cost and latency budgets',
       'Written use-case + model-selection ADR at handoff',
     ],
     startingAt: engagementPriceDisplay(AI_INTEGRATION),
