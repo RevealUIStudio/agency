@@ -22,8 +22,8 @@ describe('engagements SSOT', () => {
   });
 
   it('pins monorepo metrics to MARKETING_METRICS shape', () => {
-    expect(RUNTIME_METRICS.packages).toBe(29);
-    expect(RUNTIME_METRICS.mit).toBe(23);
+    expect(RUNTIME_METRICS.packages).toBe(31);
+    expect(RUNTIME_METRICS.mit).toBe(24);
     expect(RUNTIME_METRICS.fsl).toBe(5);
     expect(RUNTIME_METRICS.mit + RUNTIME_METRICS.fsl).toBeLessThanOrEqual(RUNTIME_METRICS.packages);
   });

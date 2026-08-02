@@ -14,8 +14,9 @@ import { ARCHITECTURE_REVIEW_PRICE, LAUNCH_PACKAGE_PRICE } from '@revealui/contr
 
 /** Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1. */
 export const RUNTIME_METRICS = {
-  packages: 29,
-  mit: 23,
+  // Pinned to revealui docs/MARKETING_METRICS.md §1 (claim-drift, 2026-07-27+).
+  packages: 31,
+  mit: 24,
   fsl: 5,
 } as const;
 
