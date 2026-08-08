@@ -2,8 +2,8 @@
 <!--
   Static sitemap for the marketing routes registered in app/App.tsx.
   Hand-maintained (mirrors the fleet marketing-site convention). Update when a
-  top-level route is added/removed, and add /cases/:slug and /press/:slug
-  entries once case studies or press items are published.
+  top-level route is added/removed. /cases and /press stay out of the sitemap
+  until publishedCases / publishedPress are non-empty (thin empty pages).
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -25,16 +25,6 @@
     <loc>https://revealuistudio.com/contact</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://revealuistudio.com/cases</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://revealuistudio.com/press</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://revealuistudio.com/privacy</loc>
