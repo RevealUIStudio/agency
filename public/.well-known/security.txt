@@ -1,0 +1,13 @@
+# Security policy for revealuistudio.com (RFC 9116).
+# Studio is operated by the same team as revealui.com.
+
+Contact: mailto:security@revealui.com
+Contact: mailto:founder@revealui.com
+Expires: 2027-08-07T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://revealuistudio.com/.well-known/security.txt
+Policy: https://revealui.com/security
+
+# We do not currently publish a PGP key. If you need encrypted communication
+# for a sensitive report, email security@revealui.com first and we will
+# arrange a channel.
