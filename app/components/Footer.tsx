@@ -1,7 +1,7 @@
 import { Link } from '@revealui/router';
 import { publishedCases } from '@/data/cases';
 import { publishedPress } from '@/data/press';
-import { CONTACT_EMAIL } from '@/lib/site';
+import { CONTACT_EMAIL, DISCOVERY_CALL_URL, SUBSTACK_URL } from '@/lib/site';
 import { PoweredByRevealUI } from './agency/PoweredByRevealUI';
 
 export function Footer() {
@@ -41,6 +41,28 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <a
+                  href={DISCOVERY_CALL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  Discovery call
+                </a>
+              </li>
+              {SUBSTACK_URL ? (
+                <li>
+                  <a
+                    href={SUBSTACK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Substack
+                  </a>
+                </li>
+              ) : null}
               <li>
                 <Link to="/privacy" className="hover:text-foreground transition-colors">
                   Privacy
