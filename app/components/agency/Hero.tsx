@@ -1,4 +1,10 @@
-import { IconCheckCircle, LinkButton } from '@revealui/presentation';
+import { IconCheckCircle, LinkButton, ReceiptCard } from '@revealui/presentation';
+import {
+  RECEIPT_HERO_CAPTION,
+  RECEIPT_HERO_INTEGRITY,
+  RECEIPT_HERO_LINES,
+  RECEIPT_HERO_TITLE,
+} from '@/content/receipt';
 import { ARCHITECTURE_REVIEW, RUNTIME_METRICS } from '@/lib/engagements';
 
 interface ProofPoint {
@@ -71,6 +77,31 @@ export function Hero() {
             </a>
             .
           </p>
+
+          {/*
+            Receipt motif echo (frontend-excellence Phase 5 rollout).
+            Same ReceiptCard as revealui.com; content depicts agency work (stamp
+            handoff). animate="print" once; prefers-reduced-motion stays static.
+          */}
+          <div className="mt-12 w-full max-w-md min-w-0 text-left">
+            <ReceiptCard
+              title={RECEIPT_HERO_TITLE}
+              lines={[...RECEIPT_HERO_LINES]}
+              integrity={RECEIPT_HERO_INTEGRITY}
+              animate="print"
+            />
+            <p className="mt-4 text-sm text-muted-foreground">
+              {RECEIPT_HERO_CAPTION.text}{' '}
+              <a
+                href={RECEIPT_HERO_CAPTION.link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-foreground underline-offset-4 hover:underline"
+              >
+                {RECEIPT_HERO_CAPTION.link.label}
+              </a>
+            </p>
+          </div>
         </div>
 
         <div className="mt-16 border-t border-border pt-10">

@@ -43,4 +43,14 @@ describe('Hero', () => {
     const { container } = render(<Hero />);
     expect(container.textContent ?? '').not.toContain('\u2014');
   });
+
+  it('echoes the receipt motif with agency stamp content and product-proof link', () => {
+    render(<Hero />);
+    expect(screen.getByRole('region', { name: 'Fleet stamp, handed over' })).toBeInTheDocument();
+    expect(screen.getAllByText('deploy-agent').length).toBeGreaterThan(0);
+    expect(screen.getByText(/customer runtime on their VPC/)).toBeInTheDocument();
+    expect(screen.getByText(/If an agent did it, there's a receipt\./)).toBeInTheDocument();
+    const proof = screen.getByRole('link', { name: 'See the product proof →' });
+    expect(proof).toHaveAttribute('href', 'https://revealui.com/claims');
+  });
 });
