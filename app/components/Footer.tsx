@@ -1,8 +1,8 @@
+import { BuiltWithRevealUI } from '@revealui/presentation';
 import { Link } from '@revealui/router';
 import { publishedCases } from '@/data/cases';
 import { publishedPress } from '@/data/press';
-import { CONTACT_EMAIL } from '@/lib/site';
-import { PoweredByRevealUI } from './agency/PoweredByRevealUI';
+import { CONTACT_EMAIL, DISCOVERY_CALL_URL, SUBSTACK_URL } from '@/lib/site';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -16,7 +16,7 @@ export function Footer() {
             <p className="mt-2 text-sm text-muted-foreground">
               Reference forward-deploy practice on the RevealUI runtime.
             </p>
-            <PoweredByRevealUI className="mt-4" />
+            <BuiltWithRevealUI className="mt-4" />
           </div>
           <div>
             <h4 className="text-sm font-semibold text-foreground">Services</h4>
@@ -41,6 +41,28 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <a
+                  href={DISCOVERY_CALL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  Discovery call
+                </a>
+              </li>
+              {SUBSTACK_URL ? (
+                <li>
+                  <a
+                    href={SUBSTACK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Substack
+                  </a>
+                </li>
+              ) : null}
               <li>
                 <Link to="/privacy" className="hover:text-foreground transition-colors">
                   Privacy

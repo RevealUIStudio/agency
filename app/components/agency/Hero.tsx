@@ -1,4 +1,10 @@
-import { LinkButton } from '@revealui/presentation';
+import { IconCheckCircle, LinkButton, ReceiptCard } from '@revealui/presentation';
+import {
+  RECEIPT_HERO_CAPTION,
+  RECEIPT_HERO_INTEGRITY,
+  RECEIPT_HERO_LINES,
+  RECEIPT_HERO_TITLE,
+} from '@/content/receipt';
 import { ARCHITECTURE_REVIEW, RUNTIME_METRICS } from '@/lib/engagements';
 
 interface ProofPoint {
@@ -71,6 +77,31 @@ export function Hero() {
             </a>
             .
           </p>
+
+          {/*
+            Receipt motif echo (frontend-excellence Phase 5 rollout).
+            Same ReceiptCard as revealui.com; content depicts agency work (stamp
+            handoff). animate="print" once; prefers-reduced-motion stays static.
+          */}
+          <div className="mt-12 w-full max-w-md min-w-0 text-left">
+            <ReceiptCard
+              title={RECEIPT_HERO_TITLE}
+              lines={[...RECEIPT_HERO_LINES]}
+              integrity={RECEIPT_HERO_INTEGRITY}
+              animate="print"
+            />
+            <p className="mt-4 text-sm text-muted-foreground">
+              {RECEIPT_HERO_CAPTION.text}{' '}
+              <a
+                href={RECEIPT_HERO_CAPTION.link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-foreground underline-offset-4 hover:underline"
+              >
+                {RECEIPT_HERO_CAPTION.link.label}
+              </a>
+            </p>
+          </div>
         </div>
 
         <div className="mt-16 border-t border-border pt-10">
@@ -85,18 +116,7 @@ export function Hero() {
           <ul className="grid grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-3 list-none">
             {proofPoints.map((point) => (
               <li key={point.metric} className="flex gap-3">
-                <svg
-                  className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <IconCheckCircle className="mt-0.5 shrink-0 text-primary" size="sm" />
                 <div>
                   <p className="text-sm font-medium text-foreground">{point.metric}</p>
                   <p className="mt-0.5 text-sm text-muted-foreground">{point.detail}</p>

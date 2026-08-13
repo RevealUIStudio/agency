@@ -1,7 +1,7 @@
 {
   "name": "@revealui-studio/agency",
   "version": "0.1.0",
-  "description": "RevealUI Studio agency site \u2014 services, case studies, hire-us. Hosted at revealuistudio.com.",
+  "description": "RevealUI Studio agency site — services, case studies, hire-us. Hosted at revealuistudio.com.",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
@@ -13,7 +13,7 @@
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
     "@revealui/contracts": "^0.8.0",
-    "@revealui/presentation": "^0.12.0",
+    "@revealui/presentation": "^0.13.1",
     "@revealui/router": "^0.3.11",
     "@vercel/speed-insights": "^2.0.0",
     "react": "^19.2.7",
@@ -32,8 +32,8 @@
     "@vitest/coverage-v8": "^4.1.10",
     "jsdom": "29.1.1",
     "tailwindcss": "^4.3.2",
-    "typescript": "^6.0.3",
-    "vite": "^8.1.3",
+    "typescript": "7.0.2",
+    "vite": "8.2.0",
     "vitest": "^4.1.10"
   },
   "engines": {
@@ -54,8 +54,12 @@
   "pnpm": {
     "overrides": {
       "@hono/node-server": ">=2.0.5",
-      "hono": ">=4.12.27",
-      "postcss": ">=8.5.18"
+      "hono": "4.12.34",
+      "postcss": "8.5.25",
+      "undici": ">=7.29.0 <8",
+      "vite": "8.2.0",
+      "typescript": "7.0.2"
     }
-  }
+  },
+  "packageManager": "pnpm@10.28.2"
 }
