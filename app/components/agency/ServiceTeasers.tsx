@@ -1,4 +1,4 @@
-import { LinkButton } from '@revealui/presentation';
+import { IconCheck, LinkButton } from '@revealui/presentation';
 import {
   AI_INTEGRATION,
   ARCHITECTURE_REVIEW,
@@ -91,20 +91,7 @@ export function ServiceTeasers() {
               <ul className="mt-6 flex-1 space-y-2 text-sm text-card-foreground">
                 {tier.bullets.map((bullet) => (
                   <li key={bullet} className="flex items-start gap-2">
-                    <svg
-                      className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="currentColor"
-                    >
-                      <title>Check</title>
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m4.5 12.75 6 6 9-13.5"
-                      />
-                    </svg>
+                    <IconCheck className="mt-0.5 flex-shrink-0 text-primary" size="sm" />
                     <span>{bullet}</span>
                   </li>
                 ))}

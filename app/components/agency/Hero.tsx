@@ -1,4 +1,4 @@
-import { LinkButton } from '@revealui/presentation';
+import { IconCheckCircle, LinkButton } from '@revealui/presentation';
 import { ARCHITECTURE_REVIEW, RUNTIME_METRICS } from '@/lib/engagements';
 
 interface ProofPoint {
@@ -85,18 +85,7 @@ export function Hero() {
           <ul className="grid grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-3 list-none">
             {proofPoints.map((point) => (
               <li key={point.metric} className="flex gap-3">
-                <svg
-                  className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <IconCheckCircle className="mt-0.5 shrink-0 text-primary" size="sm" />
                 <div>
                   <p className="text-sm font-medium text-foreground">{point.metric}</p>
                   <p className="mt-0.5 text-sm text-muted-foreground">{point.detail}</p>

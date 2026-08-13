@@ -1,4 +1,12 @@
-import { LinkButton, useClickOutside, useEscapeKey, useScrollLock } from '@revealui/presentation';
+import {
+  Button,
+  IconClose,
+  IconMenu,
+  LinkButton,
+  useClickOutside,
+  useEscapeKey,
+  useScrollLock,
+} from '@revealui/presentation';
 import { Link, useLocation } from '@revealui/router';
 import { useEffect, useRef, useState } from 'react';
 import { publishedCases } from '@/data/cases';
@@ -81,44 +89,25 @@ export function NavBar() {
             <LinkButton href="/contact">Book a call</LinkButton>
           </div>
 
-          {/* Hamburger (<md) */}
-          <button
+          {/* Hamburger (<md). 44x44 tap target via presentation size=icon. */}
+          <Button
             ref={toggleRef}
             type="button"
+            appearance="ghost"
+            variant="neutral"
+            size="icon"
+            className="-mr-1 text-muted-foreground md:hidden"
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
             aria-controls="mobile-nav"
             onClick={() => setOpen((o) => !o)}
-            className="-mr-1 flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-muted transition-colors md:hidden"
           >
             {open ? (
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
+              <IconClose size="md" strokeWidth={2} />
             ) : (
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
-              </svg>
+              <IconMenu size="md" strokeWidth={2} />
             )}
-          </button>
+          </Button>
         </div>
       </nav>
 
