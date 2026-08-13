@@ -79,7 +79,7 @@ export function Hero() {
           </p>
 
           {/*
-            Receipt motif echo (frontend-excellence Phase 5 / GAP-480 Phase D).
+            Receipt motif echo (frontend-excellence Phase 5 rollout).
             Same ReceiptCard as revealui.com; content depicts agency work (stamp
             handoff). animate="print" once; prefers-reduced-motion stays static.
           */}

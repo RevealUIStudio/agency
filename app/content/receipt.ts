@@ -1,6 +1,6 @@
-// Agency receipt-motif hero content (frontend-excellence Phase 5 rollout echo,
-// GAP-480 Phase D). Demonstration, not live production data: timestamps are
-// static strings (never Date.now()) so the sequence is deterministic.
+// Agency receipt-motif hero content (frontend-excellence Phase 5 rollout echo).
+// Demonstration, not live production data: timestamps are static strings
+// (never Date.now()) so the sequence is deterministic.
 // Depicts agency work: an agent shipping a customer-owned runtime stamp.
 // Rails match marketing honesty (demo sequence, copyable ref, foil caption).
 
