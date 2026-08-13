@@ -212,7 +212,7 @@ export function ContactForm() {
       >
         <label htmlFor="contact-website">
           Website (leave blank)
-          <input
+          <Input
             id="contact-website"
             type="text"
             tabIndex={-1}

@@ -64,7 +64,7 @@ Strategy and design decisions are coordinated internally; see the founder for co
 ## Conventions
 
 - **Visual identity shares Cobalt tokens with RevealUI** — Tailwind tokens from `@revealui/presentation/tokens.css`, never overridden, so the site is system-adaptive (dark/light) automatically. **Typeface:** this site uses Geist / Geist Mono; the product marketing site on revealui.com uses Inter / Inter Tight / JetBrains Mono. Tokens and brand accent stay shared; fonts may diverge deliberately.
-- **Cross-link to revealui.com** prominently (NavBar external link + Footer "Powered by RevealUI" badge). Customers should easily discover the OSS platform underneath.
+- **Cross-link to revealui.com** prominently (NavBar external link + Footer `BuiltWithRevealUI` badge). Customers should easily discover the OSS platform underneath.
 - **No "L.L.C." in any user-facing copy** except the legal-form footer line — brand surface is `RevealUI Studio`, not `RevealUI Studio L.L.C.`.
 
 ## Origin
