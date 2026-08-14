@@ -11,6 +11,7 @@ import { HomePage } from './routes/HomePage';
 import { NotFoundPage } from './routes/NotFoundPage';
 import { PressItemPage } from './routes/PressItemPage';
 import { PressPage } from './routes/PressPage';
+import { CookiesPage } from './routes/CookiesPage';
 import { PrivacyPage } from './routes/PrivacyPage';
 import { ServicesPage } from './routes/ServicesPage';
 import { TermsPage } from './routes/TermsPage';
@@ -55,6 +56,14 @@ export function App() {
           title: 'Contact | RevealUI Studio',
           description:
             'Book a discovery call or send us a message. We respond within 1-2 business days.',
+        },
+      },
+      {
+        path: '/cookies',
+        component: CookiesPage,
+        meta: {
+          title: 'Cookies | RevealUI Studio',
+          description: 'How revealuistudio.com uses cookies and Speed Insights.',
         },
       },
       {

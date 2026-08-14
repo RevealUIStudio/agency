@@ -3,10 +3,10 @@ import '@fontsource-variable/geist-mono';
 import './index.css';
 
 import { Router, RouterProvider } from '@revealui/router';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { CookieConsent } from './components/CookieConsent';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -20,7 +20,7 @@ createRoot(rootElement).render(
   <StrictMode>
     <RouterProvider router={router}>
       <App />
-      <SpeedInsights />
+      <CookieConsent />
     </RouterProvider>
   </StrictMode>,
 );

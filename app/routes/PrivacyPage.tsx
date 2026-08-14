@@ -1,7 +1,7 @@
 import { CONTACT_EMAIL } from '@/lib/site';
 
 export function PrivacyPage() {
-  const lastUpdated = 'July 22, 2026';
+  const lastUpdated = 'August 13, 2026';
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -53,10 +53,13 @@ export function PrivacyPage() {
 
           <h3 className="mt-6 text-lg font-semibold text-foreground">Performance telemetry</h3>
           <p>
-            The Site loads Vercel Speed Insights, a first-party performance measurement tool that
-            reports aggregate page-load timings to our Vercel project. It is not used for
-            advertising, remarketing, or cross-site profiling. See Vercel&apos;s privacy policy
-            linked under Data Sharing.
+            The Site may load Vercel Speed Insights after you accept optional cookies. It reports
+            aggregate page-load timings to our Vercel project and is not used for advertising. It
+            stays off until you accept. See the{' '}
+            <a href="/cookies" className="font-semibold text-foreground hover:underline">
+              Cookie Policy
+            </a>
+            .
           </p>
 
           <h3 className="mt-6 text-lg font-semibold text-foreground">What we do not collect</h3>

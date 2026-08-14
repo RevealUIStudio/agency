@@ -27,6 +27,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://revealuistudio.com/cookies</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://revealuistudio.com/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
