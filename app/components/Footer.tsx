@@ -69,6 +69,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/cookies" className="hover:text-foreground transition-colors">
+                  Cookies
+                </Link>
+              </li>
+              <li>
                 <Link to="/terms" className="hover:text-foreground transition-colors">
                   Terms
                 </Link>
