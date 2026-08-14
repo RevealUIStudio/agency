@@ -61,5 +61,7 @@ export function writeConsent(consent: AgencyConsent): void {
     source: 'explicit',
   };
   const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+  // First-party consent cookie must be JS-readable (not HttpOnly).
+  // biome-ignore lint/suspicious/noDocumentCookie: this module is the consent cookie writer
   document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(payload))}; Path=/; Max-Age=${MAX_AGE}; SameSite=Lax${secure}`;
 }
