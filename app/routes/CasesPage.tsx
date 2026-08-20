@@ -29,12 +29,11 @@ export function CasesPage() {
         <section className="bg-muted py-16 sm:py-24">
           <div className="mx-auto max-w-3xl px-6">
             <p className="text-base text-foreground">
-              We don't publish case studies without explicit customer permission. Engagements live
-              in private until our customers are ready to be named. If you'd like to talk to a
-              reference customer about working with us, mention it on your discovery call.
+              No case studies are published. I do not invent clients or reviews. If we work together
+              later and you want a write-up, that is a separate conversation.
             </p>
             <div className="mt-8">
-              <LinkButton href="/contact">Schedule a discovery call</LinkButton>
+              <LinkButton href="/contact">Contact</LinkButton>
             </div>
           </div>
         </section>

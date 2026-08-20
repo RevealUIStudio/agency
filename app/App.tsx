@@ -26,18 +26,45 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | We build and deploy the runtime. You keep it.',
+          title: 'RevealUI Studio | Working session, written plan, launch package',
           description:
-            'For teams with a working agent demo and a production-lift problem. We embed like forward deployed engineers and stamp a customer-owned RevealUI runtime.',
+            'A Maryville, Tennessee studio. Three paid offers: a $300 working session, a $3,500 written plan, or a $7,500 launch package. Book a 30-minute intro. No account, no payment.',
         },
       },
       {
         path: '/services',
         component: ServicesPage,
         meta: {
-          title: 'Services | RevealUI Studio',
+          title: 'Offers | RevealUI Studio',
           description:
-            'Three productized forward-deploy lanes (Fleet Stamp, Custom Build, AI Integration) plus fixed-bid intake: Architecture Review and Launch Package.',
+            'Working session $300. Written plan $3,500. Launch package $7,500. Invoice after we book. Book a 30-minute intro first.',
+        },
+      },
+      {
+        path: '/pricing',
+        component: ServicesPage,
+        meta: {
+          title: 'Offers | RevealUI Studio',
+          description:
+            'Working session $300. Written plan $3,500. Launch package $7,500. Invoice after we book. Book a 30-minute intro first.',
+        },
+      },
+      {
+        path: '/products',
+        component: ServicesPage,
+        meta: {
+          title: 'Offers | RevealUI Studio',
+          description:
+            'Working session $300. Written plan $3,500. Launch package $7,500. Invoice after we book. Book a 30-minute intro first.',
+        },
+      },
+      {
+        path: '/catalog',
+        component: ServicesPage,
+        meta: {
+          title: 'Offers | RevealUI Studio',
+          description:
+            'Working session $300. Written plan $3,500. Launch package $7,500. Invoice after we book. Book a 30-minute intro first.',
         },
       },
       {
@@ -46,7 +73,7 @@ export function App() {
         meta: {
           title: 'About | RevealUI Studio',
           description:
-            'RevealUI Studio is the reference forward-deployed practice on the open-source RevealUI runtime. Ship into your environment, hand over the keys.',
+            'RevealUI Studio is a one-person software studio in Maryville, Tennessee. Joshua Vaughn. Three paid offers. Invoice after we book.',
         },
       },
       {
@@ -55,7 +82,7 @@ export function App() {
         meta: {
           title: 'Contact | RevealUI Studio',
           description:
-            'Book a discovery call or send us a message. We respond within 1-2 business days.',
+            'Book a 30-minute intro or email founder@revealui.com. No account. No payment to book the intro.',
         },
       },
       {
