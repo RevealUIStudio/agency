@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ContactForm } from '@/components/agency/ContactForm';
 import { submitContact } from '@/lib/api';
-import { ARCHITECTURE_REVIEW, LAUNCH_PACKAGE } from '@/lib/engagements';
+import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 vi.mock('@/lib/api', () => ({
@@ -12,7 +12,7 @@ vi.mock('@/lib/api', () => ({
 
 const mockSubmit = vi.mocked(submitContact);
 
-const validMessage = 'We have a working agent demo and need a production-lift plan for our stack.';
+const validMessage = 'We need a booking page and a written plan for how billing should connect.';
 
 function fillRequiredFields(overrides?: { name?: string; email?: string; message?: string }): void {
   fireEvent.change(screen.getByLabelText(/Name/), {
@@ -31,7 +31,7 @@ describe('ContactForm', () => {
     mockSubmit.mockReset();
   });
 
-  it('renders required fields, topic options, and submit control', () => {
+  it('renders required fields, the three offer topics, and submit control', () => {
     render(<ContactForm />);
     expect(screen.getByLabelText(/Name/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Email/)).toBeInTheDocument();
@@ -40,15 +40,15 @@ describe('ContactForm', () => {
     expect(screen.getByLabelText(/Message/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
     expect(
-      screen.getByRole('option', {
-        name: `Architecture Review (${ARCHITECTURE_REVIEW.price})`,
-      }),
+      screen.getByRole('option', { name: `Working session (${WORKING_SESSION.price})` }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('option', {
-        name: `Launch Package (${LAUNCH_PACKAGE.price})`,
-      }),
+      screen.getByRole('option', { name: `Written plan (${WRITTEN_PLAN.price})` }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: `Launch package (${LAUNCH_PACKAGE.price})` }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: /Fleet Stamp/ })).not.toBeInTheDocument();
   });
 
   it('blocks empty submit with field errors and does not call the API', async () => {

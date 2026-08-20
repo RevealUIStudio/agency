@@ -2,55 +2,30 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Hero } from '@/components/agency/Hero';
-import { ARCHITECTURE_REVIEW, RUNTIME_METRICS } from '@/lib/engagements';
+import { INTRO_CALL_URL } from '@/lib/site';
 
 describe('Hero', () => {
-  it('leads with the FDE experimental H1 and scenario-first subhead', () => {
+  it('leads with the local studio offer, not a runtime pitch', () => {
     render(<Hero />);
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /We build and deploy the runtime\.\s*You keep it\./,
+        name: /A local studio for a site, a booking flow, or a written plan\./,
       }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/working agent demo and a production-lift problem/),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/forward deployed engineers/)).toBeInTheDocument();
+    expect(screen.getByText(/Maryville, Tennessee/)).toBeInTheDocument();
+    expect(screen.queryByText(/Fleet Stamp/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/forward deployed/i)).not.toBeInTheDocument();
   });
 
-  it('keeps discovery as primary CTA and GitHub as secondary', () => {
+  it('uses the Google Calendar intro as the primary CTA', () => {
     render(<Hero />);
-    const discovery = screen.getByRole('link', { name: 'Book a discovery call' });
-    expect(discovery).toHaveAttribute('href', '/contact');
-    const github = screen.getByRole('link', { name: 'Read the runtime on GitHub' });
-    expect(github).toHaveAttribute('href', 'https://github.com/RevealUIStudio/revealui');
-  });
-
-  it('quotes MARKETING_METRICS-backed package counts', () => {
-    render(<Hero />);
-    expect(
-      screen.getByText(`${RUNTIME_METRICS.packages} packages in the runtime monorepo`),
-    ).toBeInTheDocument();
-    expect(screen.getByText(new RegExp(`${RUNTIME_METRICS.mit} MIT, forever`))).toBeInTheDocument();
-    // Price appears in the Architecture Review proof + CTA link text.
-    expect(screen.getAllByText(ARCHITECTURE_REVIEW.price, { exact: false }).length).toBeGreaterThan(
-      0,
-    );
+    const intro = screen.getByRole('link', { name: 'Book a 30-minute intro' });
+    expect(intro).toHaveAttribute('href', INTRO_CALL_URL);
   });
 
   it('contains no em dash in the hero lead copy', () => {
     const { container } = render(<Hero />);
     expect(container.textContent ?? '').not.toContain('\u2014');
-  });
-
-  it('echoes the receipt motif with agency stamp content and product-proof link', () => {
-    render(<Hero />);
-    expect(screen.getByRole('region', { name: 'Fleet stamp, handed over' })).toBeInTheDocument();
-    expect(screen.getAllByText('deploy-agent').length).toBeGreaterThan(0);
-    expect(screen.getByText(/customer runtime on their VPC/)).toBeInTheDocument();
-    expect(screen.getByText(/If an agent did it, there's a receipt\./)).toBeInTheDocument();
-    const proof = screen.getByRole('link', { name: 'See the product proof →' });
-    expect(proof).toHaveAttribute('href', 'https://revealui.com/claims');
   });
 });

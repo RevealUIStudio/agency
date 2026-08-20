@@ -11,9 +11,10 @@ import { Link, useLocation } from '@revealui/router';
 import { useEffect, useRef, useState } from 'react';
 import { publishedCases } from '@/data/cases';
 import { publishedPress } from '@/data/press';
+import { INTRO_CALL_URL } from '@/lib/site';
 
 const navLinks = [
-  { href: '/services', label: 'Services' },
+  { href: '/services', label: 'Offers' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -73,20 +74,14 @@ export function NavBar() {
               Press
             </Link>
           )}
-          <a
-            href="https://revealui.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            revealui.com →
-          </a>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Desktop CTA (md+) */}
           <div className="hidden md:block">
-            <LinkButton href="/contact">Book a call</LinkButton>
+            <LinkButton href={INTRO_CALL_URL} external>
+              Book a 30-minute intro
+            </LinkButton>
           </div>
 
           {/* Hamburger (<md). 44x44 tap target via presentation size=icon. */}
@@ -147,19 +142,10 @@ export function NavBar() {
                 Press
               </Link>
             )}
-            <a
-              href="https://revealui.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={close}
-              className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-            >
-              revealui.com →
-            </a>
           </div>
           <div className="mt-4 border-t border-border pt-4">
-            <LinkButton href="/contact" onClick={close} className="w-full">
-              Book a call
+            <LinkButton href={INTRO_CALL_URL} external onClick={close} className="w-full">
+              Book a 30-minute intro
             </LinkButton>
           </div>
         </div>

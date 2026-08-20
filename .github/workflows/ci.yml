@@ -55,3 +55,19 @@ jobs:
         run: pnpm test
       - name: Build
         run: pnpm build
+      - name: Start preview
+        run: pnpm start &
+      - name: Wait for preview
+        run: |
+          for i in $(seq 1 40); do
+            curl -sf http://localhost:3001 > /dev/null 2>&1 && echo "Agency ready" && break || \
+            echo "Waiting for agency... ($i/40)" && sleep 3
+          done
+          curl -sf http://localhost:3001 > /dev/null 2>&1 || \
+            (echo "::error::Agency preview failed to start within 120s" && exit 1)
+      - name: Lighthouse accessibility ≥ 0.95
+        uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # v12.6.2
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
