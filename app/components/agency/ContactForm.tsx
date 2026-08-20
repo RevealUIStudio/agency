@@ -10,22 +10,13 @@ import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { z } from 'zod';
 import { submitContact } from '@/lib/api';
-import { ARCHITECTURE_REVIEW, LAUNCH_PACKAGE } from '@/lib/engagements';
+import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
-  { value: 'fleet-trial-kit', label: 'Fleet Stamp engagement' },
-  { value: 'custom-build', label: 'Custom platform build' },
-  { value: 'ai-integration', label: 'AI Integration sprint' },
-  {
-    value: 'architecture-review',
-    label: `Architecture Review (${ARCHITECTURE_REVIEW.price})`,
-  },
-  {
-    value: 'launch-package',
-    label: `Launch Package (${LAUNCH_PACKAGE.price})`,
-  },
-  { value: 'migration', label: 'Migration to RevealUI runtime' },
+  { value: 'working-session', label: `Working session (${WORKING_SESSION.price})` },
+  { value: 'written-plan', label: `Written plan (${WRITTEN_PLAN.price})` },
+  { value: 'launch-package', label: `Launch package (${LAUNCH_PACKAGE.price})` },
   { value: 'general', label: 'General inquiry' },
 ] as const;
 
@@ -191,7 +182,7 @@ export function ContactForm() {
           onBlur={() => handleBlur('message')}
           aria-invalid={fieldErrors.message ? true : undefined}
           invalid={!!fieldErrors.message}
-          placeholder="What are you trying to build, and what stage are you at?"
+          placeholder="What do you need help with? Site, booking, forms, or systems that do not talk to each other."
         />
       </FormField>
 

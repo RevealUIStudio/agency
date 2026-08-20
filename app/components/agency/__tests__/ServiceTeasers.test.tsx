@@ -2,35 +2,32 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { ServiceTeasers } from '@/components/agency/ServiceTeasers';
-import { ARCHITECTURE_REVIEW, LAUNCH_PACKAGE } from '@/lib/engagements';
+import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { INTRO_CALL_URL } from '@/lib/site';
 
 describe('ServiceTeasers', () => {
-  it('renders the three productized engagement lanes', () => {
+  it('renders only the three locked studio offers', () => {
     render(<ServiceTeasers />);
-    expect(screen.getByText('Fleet Stamp')).toBeInTheDocument();
-    expect(screen.getByText('Custom Build')).toBeInTheDocument();
-    expect(screen.getByText('AI Integration')).toBeInTheDocument();
+    expect(screen.getByText(WORKING_SESSION.name)).toBeInTheDocument();
+    expect(screen.getByText(WRITTEN_PLAN.name)).toBeInTheDocument();
+    expect(screen.getByText(LAUNCH_PACKAGE.name)).toBeInTheDocument();
+    expect(screen.getByText(WORKING_SESSION.price)).toBeInTheDocument();
+    expect(screen.getByText(WRITTEN_PLAN.price)).toBeInTheDocument();
+    expect(screen.getByText(LAUNCH_PACKAGE.price)).toBeInTheDocument();
+    expect(screen.queryByText('Fleet Stamp')).not.toBeInTheDocument();
+    expect(screen.queryByText('Custom Build')).not.toBeInTheDocument();
+    expect(screen.queryByText('AI Integration')).not.toBeInTheDocument();
   });
 
-  it('surfaces Architecture Review intake with price, anchor, and CTA', () => {
+  it('anchors each offer and points CTAs at the intro calendar', () => {
     render(<ServiceTeasers />);
-    expect(
-      screen.getByText(`${ARCHITECTURE_REVIEW.name}: ${ARCHITECTURE_REVIEW.price} fixed-bid SOW`),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/credited toward a Fleet deployment/)).toBeInTheDocument();
-    const cta = screen.getByRole('link', { name: 'Book the Architecture Review' });
-    expect(cta).toHaveAttribute('href', '/contact');
-    expect(document.getElementById('architecture-review')).not.toBeNull();
-  });
-
-  it('surfaces Launch Package intake with price, anchor, and CTA', () => {
-    render(<ServiceTeasers />);
-    expect(
-      screen.getByText(`${LAUNCH_PACKAGE.name}: ${LAUNCH_PACKAGE.price} fixed-bid SOW`),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/two to four weeks/)).toBeInTheDocument();
-    const cta = screen.getByRole('link', { name: 'Book the Launch Package' });
-    expect(cta).toHaveAttribute('href', '/contact');
+    expect(document.getElementById('working-session')).not.toBeNull();
+    expect(document.getElementById('written-plan')).not.toBeNull();
     expect(document.getElementById('launch-package')).not.toBeNull();
+    const ctas = screen.getAllByRole('link', { name: 'Book a 30-minute intro' });
+    expect(ctas.length).toBe(3);
+    for (const cta of ctas) {
+      expect(cta).toHaveAttribute('href', INTRO_CALL_URL);
+    }
   });
 });

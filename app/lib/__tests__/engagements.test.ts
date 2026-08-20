@@ -1,30 +1,34 @@
 import { describe, expect, it } from 'vitest';
 import {
-  ARCHITECTURE_REVIEW,
   CUSTOM_BUILD,
-  engagementPriceDisplay,
   FLEET_STAMP,
   LAUNCH_PACKAGE,
-  RUNTIME_METRICS,
+  PUBLIC_OFFERS,
+  WORKING_SESSION,
+  WRITTEN_PLAN,
 } from '@/lib/engagements';
 
-describe('engagements SSOT', () => {
-  it('imports Track D prices from @revealui/contracts/pricing', () => {
-    expect(ARCHITECTURE_REVIEW.price).toBe('$3,500');
+describe('public studio offers', () => {
+  it('exposes only the three locked stranger-facing SKUs', () => {
+    expect(PUBLIC_OFFERS.map((offer) => offer.id)).toEqual([
+      'working-session',
+      'written-plan',
+      'launch-package',
+    ]);
+    expect(WORKING_SESSION.price).toBe('$300');
+    expect(WRITTEN_PLAN.price).toBe('$3,500');
     expect(LAUNCH_PACKAGE.price).toBe('$7,500');
   });
 
-  it('keeps agency-only fleet and custom anchors', () => {
-    expect(FLEET_STAMP.price).toBe('$25,000');
-    expect(FLEET_STAMP.startsFrom).toBe(true);
-    expect(CUSTOM_BUILD.price).toBe('$50,000');
-    expect(engagementPriceDisplay(FLEET_STAMP)).toBe('From $25,000. Scoped in discovery.');
+  it('keeps written-plan and launch prices aligned with @revealui/contracts/pricing', () => {
+    expect(WRITTEN_PLAN.price).toBe('$3,500');
+    expect(LAUNCH_PACKAGE.price).toBe('$7,500');
   });
 
-  it('pins monorepo metrics to MARKETING_METRICS shape', () => {
-    expect(RUNTIME_METRICS.packages).toBe(31);
-    expect(RUNTIME_METRICS.mit).toBe(24);
-    expect(RUNTIME_METRICS.fsl).toBe(5);
-    expect(RUNTIME_METRICS.mit + RUNTIME_METRICS.fsl).toBeLessThanOrEqual(RUNTIME_METRICS.packages);
+  it('does not list internal product lanes on the public menu', () => {
+    const names = PUBLIC_OFFERS.map((offer) => offer.name);
+    expect(names).not.toContain(FLEET_STAMP.name);
+    expect(names).not.toContain(CUSTOM_BUILD.name);
+    expect(names).not.toContain('AI Integration');
   });
 });

@@ -4,7 +4,7 @@ import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RouteHead } from '@/components/RouteHead';
 
-const HOME_TITLE = 'RevealUI Studio | We build and deploy the runtime. You keep it.';
+const HOME_TITLE = 'RevealUI Studio | Working session, written plan, launch package';
 
 function renderAt(path: string) {
   const router = new Router();

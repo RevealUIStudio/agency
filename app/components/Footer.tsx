@@ -1,8 +1,14 @@
-import { BuiltWithRevealUI } from '@revealui/presentation';
 import { Link } from '@revealui/router';
 import { publishedCases } from '@/data/cases';
 import { publishedPress } from '@/data/press';
-import { CONTACT_EMAIL, DISCOVERY_CALL_URL, SUBSTACK_URL } from '@/lib/site';
+import {
+  CONTACT_EMAIL,
+  INTRO_CALL_URL,
+  STUDIO_CITY,
+  STUDIO_LEGAL_NAME,
+  STUDIO_REGION,
+  SUBSTACK_URL,
+} from '@/lib/site';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -14,22 +20,22 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-foreground">RevealUI Studio</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Reference forward-deploy practice on the RevealUI runtime.
+              A software studio in {STUDIO_CITY}, {STUDIO_REGION}. Three paid offers. Invoice after
+              we book.
             </p>
-            <BuiltWithRevealUI className="mt-4" />
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-foreground">Services</h4>
+            <h4 className="text-sm font-semibold text-foreground">Offers</h4>
             <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link to="/services" className="hover:text-foreground transition-colors">
-                  All services
+                  Working session, written plan, launch package
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-foreground">Company</h4>
+            <h4 className="text-sm font-semibold text-foreground">Studio</h4>
             <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link to="/about" className="hover:text-foreground transition-colors">
@@ -43,12 +49,12 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href={DISCOVERY_CALL_URL}
+                  href={INTRO_CALL_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-foreground transition-colors"
                 >
-                  Discovery call
+                  Book a 30-minute intro
                 </a>
               </li>
               {SUBSTACK_URL ? (
@@ -95,46 +101,29 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-foreground">Open source</h4>
+            <h4 className="text-sm font-semibold text-foreground">Reach us</h4>
             <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
               <li>
                 <a
-                  href="https://revealui.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="hover:text-foreground transition-colors"
                 >
-                  RevealUI platform
+                  {CONTACT_EMAIL}
                 </a>
               </li>
               <li>
-                <a
-                  href="https://github.com/RevealUIStudio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://docs.revealui.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Documentation
-                </a>
+                {STUDIO_CITY}, {STUDIO_REGION}
               </li>
             </ul>
           </div>
         </div>
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-8 sm:flex-row sm:items-center">
           <p className="text-xs text-muted-foreground">
-            © {year} REVEALUI STUDIO L.L.C. All rights reserved.
+            © {year} {STUDIO_LEGAL_NAME}. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">Tennessee LLC · {CONTACT_EMAIL}</p>
+          <p className="text-xs text-muted-foreground">
+            {STUDIO_REGION} LLC · {STUDIO_CITY} · {CONTACT_EMAIL}
+          </p>
         </div>
       </div>
     </footer>

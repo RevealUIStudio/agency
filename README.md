@@ -9,7 +9,7 @@ This is the customer-facing site for the **agency arm** of RevealUI Studio (serv
 | Site | Repo | Audience | Role |
 |---|---|---|---|
 | revealui.com | `RevealUIStudio/revealui` (`apps/marketing`) | Engineers evaluating the OSS platform | Drive install + adoption |
-| revealuistudio.com | **this repo** | B2B buyers evaluating an agency | Drive discovery calls + engagement signing |
+| revealuistudio.com | **this repo** | Local businesses evaluating the studio | Drive a 30-minute intro and one of three paid offers |
 | docs.revealui.com | `RevealUIStudio/revealui` (`apps/docs`) | Existing platform users | Reference + how-to |
 
 ## Stack
@@ -64,7 +64,7 @@ Strategy and design decisions are coordinated internally; see the founder for co
 ## Conventions
 
 - **Visual identity shares Cobalt tokens with RevealUI** — Tailwind tokens from `@revealui/presentation/tokens.css`, never overridden, so the site is system-adaptive (dark/light) automatically. **Typeface:** this site uses Geist / Geist Mono; the product marketing site on revealui.com uses Inter / Inter Tight / JetBrains Mono. Tokens and brand accent stay shared; fonts may diverge deliberately.
-- **Cross-link to revealui.com** prominently (NavBar external link + Footer `BuiltWithRevealUI` badge). Customers should easily discover the OSS platform underneath.
+- **Public site sells the three studio offers only** (working session, written plan, launch package). Do not add Fleet / stamp / product-tier SKUs to homepage, nav, or pricing. The open-source product lives at revealui.com.
 - **No "L.L.C." in any user-facing copy** except the legal-form footer line — brand surface is `RevealUI Studio`, not `RevealUI Studio L.L.C.`.
 
 ## Origin
