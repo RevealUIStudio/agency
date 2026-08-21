@@ -1,7 +1,7 @@
 import { CONTACT_EMAIL } from '@/lib/site';
 
 export function TermsPage() {
-  const lastUpdated = 'April 29, 2026';
+  const lastUpdated = 'August 21, 2026';
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -78,7 +78,7 @@ export function TermsPage() {
           <h2 className="mt-12 text-2xl font-bold text-foreground">4. Intellectual Property</h2>
           <p>
             All content on the Site (text, design, logos, the &quot;RevealUI Studio&quot; brand) is
-            the property of RevealUI Studio. The Site&apos;s source code is private. You may not
+            the property of RevealUI Studio. The Site&apos;s source is proprietary. You may not
             copy or republish Site content without written permission.
           </p>
           <p>

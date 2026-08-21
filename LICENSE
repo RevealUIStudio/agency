@@ -1,0 +1,15 @@
+Copyright (c) 2026 REVEALUI STUDIO L.L.C.
+
+All rights reserved.
+
+This repository is the source for the RevealUI Studio marketing site
+(https://revealuistudio.com). Site copy, design, and brand assets are
+proprietary property of RevealUI Studio.
+
+You may view this public repository. You may not copy, modify, distribute,
+sublicense, or use the site copy, design, or brand assets without prior
+written permission from RevealUI Studio.
+
+The @revealui/* packages this site consumes are separately licensed
+(MIT or FSL-1.1-MIT) by their own repositories. Those licenses do not
+apply to this site.

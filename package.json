@@ -4,7 +4,7 @@
   "description": "RevealUI Studio agency site — services, case studies, hire-us. Hosted at revealuistudio.com.",
   "private": true,
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/RevealUIStudio/agency.git"

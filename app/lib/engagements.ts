@@ -13,6 +13,18 @@
 
 import { ARCHITECTURE_REVIEW_PRICE, LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 
+/**
+ * Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1
+ * in the revealui monorepo (claim-drift gate, last verified 2026-08-19).
+ * Bump only after that SSOT moves.
+ */
+export const RUNTIME_METRICS = {
+  // Pinned to revealui docs/MARKETING_METRICS.md §1 (claim-drift, 2026-08-19).
+  packages: 32,
+  mit: 25,
+  fsl: 5,
+} as const;
+
 export type PublicOfferId = 'working-session' | 'written-plan' | 'launch-package';
 
 export interface PublicOffer {

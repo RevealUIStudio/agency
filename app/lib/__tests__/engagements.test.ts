@@ -4,6 +4,7 @@ import {
   FLEET_STAMP,
   LAUNCH_PACKAGE,
   PUBLIC_OFFERS,
+  RUNTIME_METRICS,
   WORKING_SESSION,
   WRITTEN_PLAN,
 } from '@/lib/engagements';
@@ -30,5 +31,12 @@ describe('public studio offers', () => {
     expect(names).not.toContain(FLEET_STAMP.name);
     expect(names).not.toContain(CUSTOM_BUILD.name);
     expect(names).not.toContain('AI Integration');
+  });
+
+  it('pins monorepo metrics to MARKETING_METRICS §1 (2026-08-19)', () => {
+    expect(RUNTIME_METRICS.packages).toBe(32);
+    expect(RUNTIME_METRICS.mit).toBe(25);
+    expect(RUNTIME_METRICS.fsl).toBe(5);
+    expect(RUNTIME_METRICS.mit + RUNTIME_METRICS.fsl).toBeLessThanOrEqual(RUNTIME_METRICS.packages);
   });
 });
