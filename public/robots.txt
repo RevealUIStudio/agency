@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /cases
+Disallow: /press
 
 Sitemap: https://revealuistudio.com/sitemap.xml

@@ -13,16 +13,15 @@ export function Hero() {
             A local studio for a site, a booking flow, or a written plan.
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            I work with businesses in {STUDIO_SERVICE_AREA}, and on a call. Three paid offers: a
-            one-hour working session, a written plan, or a launch package. You do not need to
-            understand the tech. If we are not the right fit, I will say so on the call.
+            I work with businesses in {STUDIO_SERVICE_AREA}, and on a call. Answer three questions
+            for a quote, or book a 30-minute intro. You do not need to understand the tech.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>
               Book a 30-minute intro
             </LinkButton>
-            <LinkButton href="/services" appearance="outline" variant="neutral">
-              See the three offers
+            <LinkButton href="/#calculator" appearance="outline" variant="neutral">
+              Get a quote
             </LinkButton>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">

@@ -21,12 +21,8 @@ export function CookiesPage() {
             use advertising cookies or marketing pixels.
           </p>
           <p>
-            This Site does not handle protected health information. Do not send PHI through the
-            contact form. See the{' '}
-            <a href="https://revealui.com/legal/hipaa" className="font-semibold underline">
-              RevealUI HIPAA page
-            </a>{' '}
-            for the product.
+            This Site is informational. Do not send medical records or health information through
+            the contact form.
           </p>
           <p>
             Questions:{' '}
