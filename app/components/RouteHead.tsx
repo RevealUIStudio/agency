@@ -27,6 +27,14 @@ export function RouteHead() {
       const tag = document.querySelector('meta[name="description"]');
       tag?.setAttribute('content', meta.description);
     }
+    const robots = typeof meta?.robots === 'string' ? meta.robots : 'index,follow';
+    let robotsTag = document.querySelector('meta[name="robots"]');
+    if (!robotsTag) {
+      robotsTag = document.createElement('meta');
+      robotsTag.setAttribute('name', 'robots');
+      document.head.appendChild(robotsTag);
+    }
+    robotsTag.setAttribute('content', robots);
   }, [router, pathname]);
 
   return null;

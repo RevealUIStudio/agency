@@ -13,6 +13,18 @@
 
 import { ARCHITECTURE_REVIEW_PRICE, LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 
+/**
+ * Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1
+ * in the revealui monorepo (claim-drift gate, last verified 2026-08-19).
+ * Bump only after that SSOT moves.
+ */
+export const RUNTIME_METRICS = {
+  // Pinned to revealui docs/MARKETING_METRICS.md §1 (claim-drift, 2026-08-19).
+  packages: 32,
+  mit: 25,
+  fsl: 5,
+} as const;
+
 export type PublicOfferId = 'working-session' | 'written-plan' | 'launch-package';
 
 export interface PublicOffer {
@@ -45,7 +57,7 @@ export const WORKING_SESSION = {
     'Notes and a next step',
   ],
   notIncluded: ['A full rebuild', 'Ongoing support'],
-  payment: 'Invoice $300 before we start, or the same day if we meet in person.',
+  payment: 'Invoice $300 before we start. No holdback.',
 } as const satisfies PublicOffer;
 
 export const WRITTEN_PLAN = {
@@ -60,8 +72,8 @@ export const WRITTEN_PLAN = {
     'One system you own: booking, billing, and client work',
     'Credit toward a later build if we start that build within 30 days',
   ],
-  notIncluded: ['Code', 'Hosting or licenses', 'HIPAA, SOC 2, or SSO claims'],
-  payment: '50% to start ($1,750), 50% on delivery.',
+  notIncluded: ['Code', 'Hosting or licenses'],
+  payment: 'Half now, half on delivery. Credits to a launch in 30 days.',
 } as const satisfies PublicOffer;
 
 export const LAUNCH_PACKAGE = {
@@ -77,7 +89,8 @@ export const LAUNCH_PACKAGE = {
     'Live handoff; you own what we ship',
   ],
   notIncluded: ['A multi-month platform', 'An “AI” headline', 'Unlimited revisions'],
-  payment: 'Half up front ($3,750), half when live.',
+  payment:
+    'Half now, half when the four tests pass (your infra, your Stripe checkout, signup-to-paid, one receipted agent action). If we miss, we keep working or you get the first half back and keep the stack.',
 } as const satisfies PublicOffer;
 
 /** The only three offers strangers should see. */

@@ -14,7 +14,7 @@ import { publishedPress } from '@/data/press';
 import { INTRO_CALL_URL } from '@/lib/site';
 
 const navLinks = [
-  { href: '/services', label: 'Offers' },
+  { href: '/#calculator', label: 'Quote' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];

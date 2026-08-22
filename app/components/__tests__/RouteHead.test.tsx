@@ -4,7 +4,7 @@ import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RouteHead } from '@/components/RouteHead';
 
-const HOME_TITLE = 'RevealUI Studio | Working session, written plan, launch package';
+const HOME_TITLE = 'RevealUI Studio | A local studio for a site or booking flow';
 
 function renderAt(path: string) {
   const router = new Router();
@@ -15,6 +15,11 @@ function renderAt(path: string) {
       path: '/about',
       component: () => null,
       meta: { title: 'About | RevealUI Studio', description: 'Per-route description.' },
+    },
+    {
+      path: '/cases',
+      component: () => null,
+      meta: { title: 'Engagements | RevealUI Studio', robots: 'noindex,nofollow' },
     },
   ]);
   window.history.pushState({}, '', path);
@@ -41,6 +46,22 @@ describe('RouteHead', () => {
     renderAt('/about');
     expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toBe(
       'Per-route description.',
+    );
+  });
+
+  it('writes robots from route meta and defaults to index,follow', () => {
+    document.head.innerHTML = '';
+    renderAt('/');
+    expect(document.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe(
+      'index,follow',
+    );
+  });
+
+  it('marks empty engagement routes noindex', () => {
+    document.head.innerHTML = '';
+    renderAt('/cases');
+    expect(document.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe(
+      'noindex,nofollow',
     );
   });
 });

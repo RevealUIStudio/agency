@@ -2,6 +2,8 @@ import { LinkBehaviorProvider } from '@revealui/presentation';
 import { Link, Routes, useRouter } from '@revealui/router';
 import { useRef } from 'react';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { publishedCases } from './data/cases';
+import { publishedPress } from './data/press';
 import { RootLayout } from './layouts/RootLayout';
 import { AboutPage } from './routes/AboutPage';
 import { CaseStudyPage } from './routes/CaseStudyPage';
@@ -13,6 +15,7 @@ import { NotFoundPage } from './routes/NotFoundPage';
 import { PressItemPage } from './routes/PressItemPage';
 import { PressPage } from './routes/PressPage';
 import { PrivacyPage } from './routes/PrivacyPage';
+import { RedirectToCalculator } from './routes/RedirectToCalculator';
 import { ServicesPage } from './routes/ServicesPage';
 import { TermsPage } from './routes/TermsPage';
 
@@ -26,9 +29,9 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | Working session, written plan, launch package',
+          title: 'RevealUI Studio | A local studio for a site or booking flow',
           description:
-            'A Maryville, Tennessee studio. Three paid offers: a $300 working session, a $3,500 written plan, or a $7,500 launch package. Book a 30-minute intro. No account, no payment.',
+            'A Maryville, Tennessee studio. Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500 with a live-or-holdback. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
@@ -37,34 +40,34 @@ export function App() {
         meta: {
           title: 'Offers | RevealUI Studio',
           description:
-            'Working session $300. Written plan $3,500. Launch package $7,500. Invoice after we book. Book a 30-minute intro first.',
+            'Hour $300. Written plan $3,500. Launch $7,500. Invoice after we book. Book a 30-minute intro first.',
         },
       },
       {
         path: '/pricing',
-        component: ServicesPage,
+        component: RedirectToCalculator,
         meta: {
-          title: 'Offers | RevealUI Studio',
-          description:
-            'Working session $300. Written plan $3,500. Launch package $7,500. Invoice after we book. Book a 30-minute intro first.',
+          title: 'Quote | RevealUI Studio',
+          description: 'Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500.',
+          robots: 'noindex,follow',
         },
       },
       {
         path: '/products',
-        component: ServicesPage,
+        component: RedirectToCalculator,
         meta: {
-          title: 'Offers | RevealUI Studio',
-          description:
-            'Working session $300. Written plan $3,500. Launch package $7,500. Invoice after we book. Book a 30-minute intro first.',
+          title: 'Quote | RevealUI Studio',
+          description: 'Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500.',
+          robots: 'noindex,follow',
         },
       },
       {
         path: '/catalog',
-        component: ServicesPage,
+        component: RedirectToCalculator,
         meta: {
-          title: 'Offers | RevealUI Studio',
-          description:
-            'Working session $300. Written plan $3,500. Launch package $7,500. Invoice after we book. Book a 30-minute intro first.',
+          title: 'Quote | RevealUI Studio',
+          description: 'Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500.',
+          robots: 'noindex,follow',
         },
       },
       {
@@ -116,17 +119,17 @@ export function App() {
         component: CasesPage,
         meta: {
           title: 'Engagements | RevealUI Studio',
-          description:
-            'Engagements and case studies from RevealUI Studio, published only with explicit customer permission.',
+          description: 'Published only with explicit customer permission.',
+          robots: publishedCases.length === 0 ? 'noindex,nofollow' : 'index,follow',
         },
       },
       {
         path: '/cases/:slug',
         component: CaseStudyPage,
         meta: {
-          title: 'Case study | RevealUI Studio',
-          description:
-            'Engagements and case studies from RevealUI Studio, published only with explicit customer permission.',
+          title: 'Engagements | RevealUI Studio',
+          description: 'Published only with explicit customer permission.',
+          robots: publishedCases.length === 0 ? 'noindex,nofollow' : 'index,follow',
         },
       },
       {
@@ -134,8 +137,8 @@ export function App() {
         component: PressPage,
         meta: {
           title: 'Press | RevealUI Studio',
-          description:
-            'Public talks, podcast appearances, and press mentions from Joshua Vaughn and RevealUI Studio.',
+          description: 'Public talks and mentions, when they exist.',
+          robots: publishedPress.length === 0 ? 'noindex,nofollow' : 'index,follow',
         },
       },
       {
@@ -143,8 +146,8 @@ export function App() {
         component: PressItemPage,
         meta: {
           title: 'Press | RevealUI Studio',
-          description:
-            'Public talks, podcast appearances, and press mentions from Joshua Vaughn and RevealUI Studio.',
+          description: 'Public talks and mentions, when they exist.',
+          robots: publishedPress.length === 0 ? 'noindex,nofollow' : 'index,follow',
         },
       },
       {
