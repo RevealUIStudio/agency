@@ -29,5 +29,5 @@ RevealUI Studio <43050008+joshua-v-dev@users.noreply.github.com>
 
 ## License
 
-UNLICENSED (private). Site copy is RevealUI Studio property. The
+Proprietary. Site copy is RevealUI Studio property (see LICENSE). The
 underlying `@revealui/*` packages it consumes are MIT / FSL-1.1-MIT.
