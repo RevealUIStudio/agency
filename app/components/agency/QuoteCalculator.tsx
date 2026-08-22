@@ -113,7 +113,7 @@ export function QuoteCalculator() {
             <h3 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
               {quote.heading}
             </h3>
-            <p className="mt-3 text-sm text-muted-foreground">{quote.body}</p>
+            {quote.body ? <p className="mt-3 text-sm text-muted-foreground">{quote.body}</p> : null}
 
             {quote.lines.length > 0 ? (
               <ul className="mt-6 space-y-4">
@@ -144,8 +144,23 @@ export function QuoteCalculator() {
               ))}
             </div>
             <p className="mt-4 text-sm text-muted-foreground">{QUOTE_INTRO_LINE}</p>
-            <div className="mt-8">
-              <LinkButton href={INTRO_CALL_URL} external className="w-full justify-center">
+            <div className="mt-8 flex flex-col gap-3">
+              {quote.productHandoffUrl ? (
+                <LinkButton
+                  href={quote.productHandoffUrl}
+                  external
+                  className="w-full justify-center"
+                >
+                  Start free
+                </LinkButton>
+              ) : null}
+              <LinkButton
+                href={INTRO_CALL_URL}
+                external
+                appearance={quote.productHandoffUrl ? 'outline' : undefined}
+                variant={quote.productHandoffUrl ? 'neutral' : undefined}
+                className="w-full justify-center"
+              >
                 Book a 30-minute intro
               </LinkButton>
             </div>

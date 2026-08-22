@@ -18,6 +18,9 @@ export const CONTACT_EMAIL = 'founder@revealui.com';
 /** Product docs. Footer "Docs" points here. */
 export const DOCS_URL = 'https://docs.revealui.com';
 
+/** Open-source product site. Self-host visitors start free here. */
+export const PRODUCT_SITE_URL = 'https://revealui.com';
+
 /** Legal entity. Use only in the footer legal line and legal pages. */
 export const STUDIO_LEGAL_NAME = 'REVEALUI STUDIO L.L.C.';
 

@@ -44,17 +44,18 @@ describe('buildQuote', () => {
     expect(launch?.detail).toBe(LAUNCH_HOLDBACK);
   });
 
-  it('prints the self-host product quote without Studio prices', () => {
+  it('sends self-host visitors to the product site without quoting product SKUs', () => {
     const quote = buildQuote({
       hoster: 'self-host',
       outcome: 'launch',
       places: 'one',
     });
     expect(quote.kind).toBe('self-host');
-    expect(quote.lines.map((line) => line.id)).toEqual(['free', 'pro-max', 'enterprise']);
-    expect(quote.lines.some((line) => line.holdback)).toBe(false);
-    expect(quote.lines.some((line) => line.detail.includes('$49/mo'))).toBe(true);
-    expect(quote.lines.some((line) => line.detail.includes('$299/mo'))).toBe(true);
+    expect(quote.lines).toEqual([]);
+    expect(quote.productHandoffUrl).toBe('https://revealui.com');
+    expect(JSON.stringify(quote)).not.toMatch(/\$49/);
+    expect(JSON.stringify(quote)).not.toMatch(/\$299/);
+    expect(JSON.stringify(quote)).not.toMatch(/Enterprise/);
   });
 
   it('stops quoting when there is more than one place', () => {

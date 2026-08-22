@@ -45,6 +45,18 @@ describe('public copy gates', () => {
     expect(hits).toEqual([]);
   });
 
+  it('does not print product-tier prices in the studio calculator', () => {
+    const files = [
+      path.join(repoRoot, 'app/lib/quote.ts'),
+      path.join(repoRoot, 'app/components/agency/QuoteCalculator.tsx'),
+    ];
+    for (const file of files) {
+      const text = readFileSync(file, 'utf8');
+      expect(text).not.toMatch(/\$49/);
+      expect(text).not.toMatch(/\$299/);
+    }
+  });
+
   it('308s leftover catalog paths to the homepage calculator', () => {
     const vercel = JSON.parse(readFileSync(path.join(repoRoot, 'vercel.json'), 'utf8')) as {
       redirects: { source: string; destination: string; permanent: boolean }[];

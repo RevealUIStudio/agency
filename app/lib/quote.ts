@@ -2,11 +2,12 @@
  * Three-question studio calculator.
  *
  * Same questions as the product-site tool. This site defaults to Studio
- * ("You will") instead of self-host ("I will"). No fleet math. Enterprise
- * is not priced here.
+ * ("You will") instead of self-host ("I will"). Studio quotes only.
+ * Self-host hops to the product site. No fleet math. No product SKUs.
  */
 
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { PRODUCT_SITE_URL } from '@/lib/site';
 
 export type Hoster = 'self-host' | 'studio';
 export type Outcome = 'hour' | 'plan' | 'launch';
@@ -40,10 +41,7 @@ export const QUOTE_OWNERSHIP = [
 export const QUOTE_INTRO_LINE =
   'Want a human? Book a 30-minute intro on Google Calendar. Meet or sit down.' as const;
 
-export const SELF_HOST_FREE = 'Free: run the open stack. $0 + your infra.' as const;
-export const SELF_HOST_PAID =
-  'If you want agents/memory: Pro $49/mo or Max $299/mo. 7-day trial. 14-day first-month refund.' as const;
-export const SELF_HOST_ENTERPRISE = 'Enterprise: not in the calculator. Book an intro.' as const;
+export const SELF_HOST_HANDOFF = 'Start free on the product site.' as const;
 
 export const LAUNCH_HOLDBACK =
   'Half now, half when the four tests pass (your infra, your Stripe checkout, signup-to-paid, one receipted agent action). If we miss, we keep working or you get the first half back and keep the stack.' as const;
@@ -65,6 +63,7 @@ export interface Quote {
   readonly body: string;
   readonly lines: readonly QuoteLine[];
   readonly stopQuoting: boolean;
+  readonly productHandoffUrl?: string;
 }
 
 export interface QuoteAnswers {
@@ -102,36 +101,18 @@ function studioLines(outcome: Outcome): readonly QuoteLine[] {
   ];
 }
 
-function selfHostLines(): readonly QuoteLine[] {
-  return [
-    {
-      id: 'free',
-      title: 'Free',
-      price: '$0',
-      detail: SELF_HOST_FREE,
-      highlighted: false,
-      holdback: false,
-    },
-    {
-      id: 'pro-max',
-      title: 'Pro or Max',
-      price: '$49 / $299',
-      detail: SELF_HOST_PAID,
-      highlighted: false,
-      holdback: false,
-    },
-    {
-      id: 'enterprise',
-      title: 'Enterprise',
-      price: 'Intro',
-      detail: SELF_HOST_ENTERPRISE,
-      highlighted: false,
-      holdback: false,
-    },
-  ];
-}
-
 export function buildQuote(answers: QuoteAnswers): Quote {
+  if (answers.hoster === 'self-host') {
+    return {
+      kind: 'self-host',
+      heading: SELF_HOST_HANDOFF,
+      body: '',
+      lines: [],
+      stopQuoting: true,
+      productHandoffUrl: PRODUCT_SITE_URL,
+    };
+  }
+
   if (answers.places === 'many') {
     return {
       kind: 'intro',
@@ -139,16 +120,6 @@ export function buildQuote(answers: QuoteAnswers): Quote {
       body: 'More than one business or site is not a calculator quote. We talk it through on a 30-minute intro.',
       lines: [],
       stopQuoting: true,
-    };
-  }
-
-  if (answers.hoster === 'self-host') {
-    return {
-      kind: 'self-host',
-      heading: 'Self-host',
-      body: 'You put it live on your accounts. The open stack is free. Agents and memory are a product subscription.',
-      lines: selfHostLines(),
-      stopQuoting: false,
     };
   }
 
