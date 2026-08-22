@@ -46,6 +46,21 @@
       "has": [{ "type": "host", "value": "www.revealuistudio.com" }],
       "destination": "https://revealuistudio.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/pricing",
+      "destination": "/#calculator",
+      "permanent": true
+    },
+    {
+      "source": "/products",
+      "destination": "/#calculator",
+      "permanent": true
+    },
+    {
+      "source": "/catalog",
+      "destination": "/#calculator",
+      "permanent": true
     }
   ],
   "rewrites": [

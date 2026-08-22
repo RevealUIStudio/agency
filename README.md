@@ -64,7 +64,7 @@ Strategy and design decisions are coordinated internally; see the founder for co
 ## Conventions
 
 - **Visual identity shares Cobalt tokens with RevealUI** — Tailwind tokens from `@revealui/presentation/tokens.css`, never overridden, so the site is system-adaptive (dark/light) automatically. **Typeface:** this site uses Geist / Geist Mono; the product marketing site on revealui.com uses Inter / Inter Tight / JetBrains Mono. Tokens and brand accent stay shared; fonts may diverge deliberately.
-- **Public site sells the three studio offers only** (working session, written plan, launch package). Do not add Fleet / stamp / product-tier SKUs to homepage, nav, or pricing. The open-source product lives at revealui.com.
+- **Public site is a local-operator homepage plus the three-question calculator.** Defaults to "You will" (Studio). Hour $300, written plan $3,500, launch $7,500 with live-or-holdback only on Launch. Do not add Fleet / stamp / kit SKUs, $25k / $50k, or third-party booking hosts. The open-source product lives at revealui.com.
 - **No "L.L.C." in any user-facing copy** except the legal-form footer line — brand surface is `RevealUI Studio`, not `RevealUI Studio L.L.C.`.
 
 ## Origin

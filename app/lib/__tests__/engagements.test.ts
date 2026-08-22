@@ -33,6 +33,16 @@ describe('public studio offers', () => {
     expect(names).not.toContain('AI Integration');
   });
 
+  it('puts the live-or-holdback sentence only on Launch', () => {
+    expect(LAUNCH_PACKAGE.payment).toContain('four tests pass');
+    expect(LAUNCH_PACKAGE.payment).toContain('first half back');
+    expect(WORKING_SESSION.payment).toContain('No holdback');
+    expect(WORKING_SESSION.payment).not.toContain('first half back');
+    expect(WRITTEN_PLAN.payment).toContain('Credits to a launch in 30 days');
+    expect(WRITTEN_PLAN.payment).not.toContain('first half back');
+    expect(WRITTEN_PLAN.payment).not.toContain('holdback');
+  });
+
   it('pins monorepo metrics to MARKETING_METRICS §1 (2026-08-19)', () => {
     expect(RUNTIME_METRICS.packages).toBe(32);
     expect(RUNTIME_METRICS.mit).toBe(25);
