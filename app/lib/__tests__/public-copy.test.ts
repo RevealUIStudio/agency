@@ -80,6 +80,7 @@ describe('public copy gates', () => {
     expect(labels).not.toContain('Fleet Stamp');
     expect(labels).not.toContain('Custom Build');
     expect(labels).not.toContain('AI Integration');
+    expect(labels).not.toContain('Architecture Review');
   });
 
   it('308s leftover catalog paths to the homepage calculator', () => {
