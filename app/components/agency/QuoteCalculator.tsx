@@ -11,6 +11,7 @@ import {
   type Outcome,
   PLACES_OPTIONS,
   type Places,
+  QUOTE_CALCULATOR_LEAD,
   QUOTE_INTRO_LINE,
   QUOTE_OWNERSHIP,
 } from '@/lib/quote';
@@ -74,7 +75,7 @@ export function QuoteCalculator() {
             Three questions. A price you can read.
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Same tool as the product site. This page starts on Studio. No fleet math.
+            {QUOTE_CALCULATOR_LEAD}
           </p>
         </div>
 
