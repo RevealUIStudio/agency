@@ -74,9 +74,7 @@ export function QuoteCalculator() {
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Three questions. A price you can read.
           </h2>
-          <p className="mt-4 text-base text-muted-foreground">
-            {QUOTE_CALCULATOR_LEAD}
-          </p>
+          <p className="mt-4 text-base text-muted-foreground">{QUOTE_CALCULATOR_LEAD}</p>
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
