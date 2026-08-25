@@ -1,8 +1,8 @@
 /**
  * Three-question studio calculator.
  *
- * Same questions as the product-site tool. This site defaults to Studio
- * ("You will") instead of self-host ("I will"). Studio quotes only.
+ * Studio quotes only. Product licenses live on revealui.com.
+ * This site defaults to Studio ("You will") instead of self-host ("I will").
  * Self-host hops to the product site. No fleet math. No product SKUs.
  */
 
@@ -32,6 +32,9 @@ export const PLACES_OPTIONS = [
   { value: 'one', label: 'One business, one site' },
   { value: 'many', label: 'More than one (stop quoting; book an intro)' },
 ] as const satisfies readonly { value: Places; label: string }[];
+
+export const QUOTE_CALCULATOR_LEAD =
+  'This calculator is for Studio quotes only. Product licenses live on revealui.com.' as const;
 
 export const QUOTE_OWNERSHIP = [
   'You own the accounts and the data.',

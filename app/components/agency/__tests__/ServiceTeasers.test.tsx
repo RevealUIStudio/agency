@@ -17,6 +17,7 @@ describe('ServiceTeasers', () => {
     expect(screen.queryByText('Fleet Stamp')).not.toBeInTheDocument();
     expect(screen.queryByText('Custom Build')).not.toBeInTheDocument();
     expect(screen.queryByText('AI Integration')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Architecture Review/i)).not.toBeInTheDocument();
   });
 
   it('anchors each offer and points CTAs at the intro calendar', () => {

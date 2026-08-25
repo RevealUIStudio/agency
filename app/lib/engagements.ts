@@ -66,7 +66,7 @@ export const WRITTEN_PLAN = {
   price: WRITTEN_PLAN_PRICE,
   tagline: 'Scoped review, no code',
   description:
-    'A written architecture review for a business whose systems do not talk to each other. The aim is booking, billing, and client work on one system you own.',
+    'A written plan for a business whose systems do not talk to each other. The aim is booking, billing, and client work on one system you own.',
   includes: [
     'Scoped written review of how the work should fit together',
     'One system you own: booking, billing, and client work',

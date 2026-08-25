@@ -3,7 +3,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import { LAUNCH_HOLDBACK, QUOTE_OWNERSHIP, SELF_HOST_HANDOFF } from '@/lib/quote';
+import {
+  LAUNCH_HOLDBACK,
+  QUOTE_CALCULATOR_LEAD,
+  QUOTE_OWNERSHIP,
+  SELF_HOST_HANDOFF,
+} from '@/lib/quote';
 import { INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 
 describe('QuoteCalculator', () => {
@@ -19,6 +24,8 @@ describe('QuoteCalculator', () => {
     ).toBeChecked();
     expect(screen.getByRole('radio', { name: 'One business, one site' })).toBeChecked();
 
+    expect(screen.getByText(QUOTE_CALCULATOR_LEAD)).toBeInTheDocument();
+    expect(screen.queryByText(/Same tool as the product site/)).not.toBeInTheDocument();
     expect(screen.getByText(WORKING_SESSION.price)).toBeInTheDocument();
     expect(screen.getByText(WRITTEN_PLAN.price)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_PACKAGE.price)).toBeInTheDocument();

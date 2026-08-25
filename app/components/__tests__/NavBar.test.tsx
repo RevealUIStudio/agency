@@ -29,6 +29,17 @@ function renderNavBar() {
 const openMenu = () => fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
 describe('NavBar (agency)', () => {
+  it('uses a logo-only home mark and does not print RevealUI or RevealUI Studio', () => {
+    renderNavBar();
+    const home = screen.getByRole('link', { name: 'Home' });
+    expect(home.querySelector('img')).not.toBeNull();
+    expect(home).toHaveAttribute('href', '/');
+    const nav = screen.getByRole('navigation');
+    expect(nav.textContent ?? '').not.toMatch(/RevealUI/);
+    expect(nav.textContent ?? '').not.toMatch(/Studio/);
+    expect(screen.queryByRole('link', { name: /founder@revealui\.com/i })).not.toBeInTheDocument();
+  });
+
   it('opens the menu and flips the trigger to a disclosure close state', () => {
     renderNavBar();
     expect(document.getElementById(MENU_ID)).not.toBeInTheDocument();

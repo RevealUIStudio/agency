@@ -17,8 +17,8 @@ export function AboutPage() {
             say so on the call. You do not need to understand the tech.
           </p>
           <p className="mt-3 text-card-foreground">
-            Before this, ten years managing teams and operations in telecommunications, plus an
-            event company and a stretch as a teacher. Not a first-time founder.
+            Before this, 5+ years managing retail teams and operations in telecommunications, plus
+            an event company and a stretch as a teacher. Not a first-time founder.
           </p>
           <p className="mt-4 text-sm text-muted-foreground">
             Reach out at{' '}
