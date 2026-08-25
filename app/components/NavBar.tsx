@@ -48,13 +48,8 @@ export function NavBar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link
-          to="/"
-          onClick={close}
-          className="flex items-center gap-2 text-lg font-semibold tracking-tight"
-        >
-          <span className="text-foreground">RevealUI</span>
-          <span className="text-muted-foreground">Studio</span>
+        <Link to="/" onClick={close} aria-label="Home" className="flex items-center">
+          <img src="/favicon.svg" alt="" width={32} height={32} className="h-8 w-8" />
         </Link>
 
         {/* Desktop links (md+) */}
