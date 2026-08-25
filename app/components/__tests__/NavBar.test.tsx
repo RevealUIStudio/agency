@@ -15,6 +15,7 @@ function renderNavBar() {
   router.registerRoutes([
     { path: '/', component: () => null },
     { path: '/services', component: () => null },
+    { path: '/process', component: () => null },
     { path: '/about', component: () => null },
   ]);
   window.history.pushState({}, '', '/');
@@ -43,6 +44,8 @@ describe('NavBar (agency)', () => {
     expect(nav.textContent ?? '').not.toMatch(/RevealUI/);
     expect(nav.textContent ?? '').not.toMatch(/Studio/);
     expect(screen.queryByRole('link', { name: /founder@revealui\.com/i })).not.toBeInTheDocument();
+    const process = screen.getByRole('link', { name: 'Process' });
+    expect(process).toHaveAttribute('href', '/process');
   });
 
   it('opens the menu and flips the trigger to a disclosure close state', () => {

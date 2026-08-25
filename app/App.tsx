@@ -15,6 +15,7 @@ import { NotFoundPage } from './routes/NotFoundPage';
 import { PressItemPage } from './routes/PressItemPage';
 import { PressPage } from './routes/PressPage';
 import { PrivacyPage } from './routes/PrivacyPage';
+import { ProcessPage } from './routes/ProcessPage';
 import { RedirectToCalculator } from './routes/RedirectToCalculator';
 import { ServicesPage } from './routes/ServicesPage';
 import { TermsPage } from './routes/TermsPage';
@@ -68,6 +69,15 @@ export function App() {
           title: 'Quote | RevealUI Studio',
           description: 'Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500.',
           robots: 'noindex,follow',
+        },
+      },
+      {
+        path: '/process',
+        component: ProcessPage,
+        meta: {
+          title: 'How we work | RevealUI Studio',
+          description:
+            'How a RevealUI Studio engagement runs. Hour $300. Written plan $3,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
