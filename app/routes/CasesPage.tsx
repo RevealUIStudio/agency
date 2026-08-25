@@ -1,15 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { Link } from '@revealui/router';
-import type { CaseStudy } from '@/data/cases';
-import { publishedCases } from '@/data/cases';
+import { engagementLabels, publishedCases } from '@/data/cases';
 import { NotFoundPage } from './NotFoundPage';
-
-const engagementLabels: Record<CaseStudy['engagementShape'], string> = {
-  'fleet-trial-kit': 'Fleet Stamp',
-  'custom-build': 'Custom Build',
-  'ai-integration': 'AI Integration',
-  composite: 'Composite engagement',
-};
 
 export function CasesPage() {
   if (publishedCases.length === 0) {

@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { engagementLabels } from '@/data/cases';
 import { INTRO_CALL_URL } from '@/lib/site';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -55,6 +56,31 @@ describe('public copy gates', () => {
       expect(text).not.toMatch(/\$49/);
       expect(text).not.toMatch(/\$299/);
     }
+  });
+
+  it('keeps the About founder bio honest', () => {
+    const about = readFileSync(path.join(repoRoot, 'app/routes/AboutPage.tsx'), 'utf8');
+    expect(about).toContain('5+ years');
+    expect(about).not.toMatch(/ten years/i);
+    expect(about).not.toMatch(/AT&T|T-Mobile/i);
+    expect(about).not.toMatch(/computer science|CS degree/i);
+  });
+
+  it('does not paint retired SKU titles on public routes', () => {
+    const files = walk(path.join(repoRoot, 'app/routes'));
+    const banned = /Fleet Stamp|Custom Build|AI Integration/;
+    const hits: string[] = [];
+    for (const file of files) {
+      if (banned.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
+    }
+    expect(hits).toEqual([]);
+    const labels = Object.values(engagementLabels);
+    expect(labels).not.toContain('Fleet Stamp');
+    expect(labels).not.toContain('Custom Build');
+    expect(labels).not.toContain('AI Integration');
+    expect(labels).not.toContain('Architecture Review');
   });
 
   it('308s leftover catalog paths to the homepage calculator', () => {

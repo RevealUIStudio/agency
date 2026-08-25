@@ -1,15 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { useParams } from '@revealui/router';
-import type { CaseStudy } from '@/data/cases';
-import { findCaseBySlug } from '@/data/cases';
+import { engagementLabels, findCaseBySlug } from '@/data/cases';
 import { NotFoundPage } from './NotFoundPage';
-
-const engagementLabels: Record<CaseStudy['engagementShape'], string> = {
-  'fleet-trial-kit': 'Fleet Stamp',
-  'custom-build': 'Custom Build',
-  'ai-integration': 'AI Integration',
-  composite: 'Composite engagement',
-};
 
 export function CaseStudyPage() {
   const { slug } = useParams<{ slug?: string }>();
