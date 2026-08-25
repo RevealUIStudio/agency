@@ -83,6 +83,21 @@ describe('public copy gates', () => {
     expect(labels).not.toContain('Architecture Review');
   });
 
+  it('keeps chrome free of a nav wordmark, a repeated email, and a raw docs host', () => {
+    const nav = readFileSync(path.join(repoRoot, 'app/components/NavBar.tsx'), 'utf8');
+    const footer = readFileSync(path.join(repoRoot, 'app/components/Footer.tsx'), 'utf8');
+    expect(nav).not.toMatch(/RevealUI/);
+    expect(nav).not.toMatch(/Studio/);
+    expect(nav).not.toContain('CONTACT_EMAIL');
+    expect(footer).toContain('Documentation');
+    expect(footer).not.toMatch(/docs\.revealui\.com/);
+    expect(footer.match(/mailto:\$\{CONTACT_EMAIL\}/g)?.length).toBe(1);
+    expect(footer).toContain('STUDIO_LEGAL_NAME');
+    expect(footer).not.toMatch(/\bLLC\b/);
+    expect(footer).not.toMatch(/RevealUI Studio/);
+    expect(footer).not.toMatch(/Working session|Written plan|Launch package|Fleet Stamp/);
+  });
+
   it('308s leftover catalog paths to the homepage calculator', () => {
     const vercel = JSON.parse(readFileSync(path.join(repoRoot, 'vercel.json'), 'utf8')) as {
       redirects: { source: string; destination: string; permanent: boolean }[];
