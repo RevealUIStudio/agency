@@ -29,10 +29,15 @@ function renderNavBar() {
 const openMenu = () => fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
 describe('NavBar (agency)', () => {
-  it('uses a logo-only home mark and does not print RevealUI or RevealUI Studio', () => {
+  it('uses a Circuit-R-only home mark and does not print RevealUI or RevealUI Studio', () => {
     renderNavBar();
     const home = screen.getByRole('link', { name: 'Home' });
-    expect(home.querySelector('img')).not.toBeNull();
+    const mark = home.querySelector('img');
+    expect(mark).not.toBeNull();
+    expect(mark).toHaveAttribute('src', '/revealui-mark.svg');
+    expect(mark).toHaveAttribute('width', '36');
+    expect(mark).toHaveAttribute('height', '36');
+    expect(mark?.getAttribute('src')).not.toBe('/favicon.svg');
     expect(home).toHaveAttribute('href', '/');
     const nav = screen.getByRole('navigation');
     expect(nav.textContent ?? '').not.toMatch(/RevealUI/);

@@ -16,6 +16,7 @@ describe('Hero', () => {
     expect(screen.getByText(/Maryville, Tennessee/)).toBeInTheDocument();
     expect(screen.queryByText(/Fleet Stamp/)).not.toBeInTheDocument();
     expect(screen.queryByText(/forward deployed/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/live-or-holdback/i)).not.toBeInTheDocument();
   });
 
   it('uses the Google Calendar intro as the primary CTA', () => {

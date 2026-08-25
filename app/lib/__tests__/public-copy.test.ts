@@ -83,6 +83,36 @@ describe('public copy gates', () => {
     expect(labels).not.toContain('Architecture Review');
   });
 
+  it('does not claim live-or-holdback in public title, description, OG, or hero', () => {
+    const files = [
+      path.join(repoRoot, 'index.html'),
+      path.join(repoRoot, 'app/App.tsx'),
+      path.join(repoRoot, 'app/components/agency/Hero.tsx'),
+    ];
+    for (const file of files) {
+      expect(readFileSync(file, 'utf8')).not.toMatch(/live-or-holdback/i);
+    }
+  });
+
+  it('serves the Circuit-R family, not the old geometric R', () => {
+    const favicon = readFileSync(path.join(repoRoot, 'public/favicon.svg'), 'utf8');
+    const mark = readFileSync(path.join(repoRoot, 'public/revealui-mark.svg'), 'utf8');
+    const nav = readFileSync(path.join(repoRoot, 'app/components/NavBar.tsx'), 'utf8');
+    expect(favicon).toContain('fill="#0a2c5a"');
+    expect(favicon).toContain('fill="#002247"');
+    expect(favicon).not.toContain('fill="#003d94"');
+    expect(favicon).not.toContain('rx="22"');
+    expect(favicon).not.toContain('<circle');
+    expect(mark).toBe(favicon);
+    expect(nav).toContain('/revealui-mark.svg');
+    expect(nav).not.toContain('/favicon.svg');
+    expect(nav).not.toContain('/icon-mark.svg');
+    expect(nav).not.toContain('wordmark');
+    expect(readFileSync(path.join(repoRoot, 'index.html'), 'utf8')).toContain(
+      '"logo": "https://revealuistudio.com/favicon.svg"',
+    );
+  });
+
   it('keeps chrome free of a nav wordmark, a repeated email, and a raw docs host', () => {
     const nav = readFileSync(path.join(repoRoot, 'app/components/NavBar.tsx'), 'utf8');
     const footer = readFileSync(path.join(repoRoot, 'app/components/Footer.tsx'), 'utf8');
