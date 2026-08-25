@@ -15,6 +15,7 @@ import { INTRO_CALL_URL } from '@/lib/site';
 
 const navLinks = [
   { href: '/#calculator', label: 'Quote' },
+  { href: '/process', label: 'Process' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
