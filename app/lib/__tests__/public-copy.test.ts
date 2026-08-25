@@ -67,7 +67,10 @@ describe('public copy gates', () => {
   });
 
   it('does not paint retired SKU titles on public routes', () => {
-    const files = walk(path.join(repoRoot, 'app/routes'));
+    const files = [
+      ...walk(path.join(repoRoot, 'app/routes')),
+      path.join(repoRoot, 'app/content/receipt.ts'),
+    ];
     const banned = /Fleet Stamp|Custom Build|AI Integration/;
     const hits: string[] = [];
     for (const file of files) {
@@ -88,6 +91,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'index.html'),
       path.join(repoRoot, 'app/App.tsx'),
       path.join(repoRoot, 'app/components/agency/Hero.tsx'),
+      path.join(repoRoot, 'app/content/receipt.ts'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
     ];
     for (const file of files) {
