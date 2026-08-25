@@ -29,4 +29,17 @@ describe('Hero', () => {
     const { container } = render(<Hero />);
     expect(container.textContent ?? '').not.toContain('\u2014');
   });
+
+  it('shows one honest process receipt under the CTAs', () => {
+    render(<Hero />);
+    const receipt = screen.getByRole('region', { name: 'How we work, on record' });
+    expect(receipt).toHaveTextContent('$300');
+    expect(receipt).toHaveTextContent('30-minute intro');
+    expect(receipt).toHaveTextContent('working session');
+    expect(screen.getByText(/If an agent did it, there's a receipt\./)).toBeInTheDocument();
+    const process = screen.getByRole('link', { name: 'How we work →' });
+    expect(process).toHaveAttribute('href', '/process');
+    expect(screen.queryByText(/Fleet stamp/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/deploy-agent/)).not.toBeInTheDocument();
+  });
 });
