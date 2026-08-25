@@ -31,7 +31,7 @@ export function App() {
         meta: {
           title: 'RevealUI Studio | A local studio for a site or booking flow',
           description:
-            'A Maryville, Tennessee studio. Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500 with a live-or-holdback. Book a 30-minute intro on Google Calendar.',
+            'A Maryville, Tennessee studio. Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
