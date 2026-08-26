@@ -115,7 +115,6 @@ describe('public copy gates', () => {
     expect(mark).not.toContain('fill="#003d94"');
     expect(mark).not.toContain('rx="22"');
     expect(mark).toBe(favicon);
-    expect(existsSync(path.join(repoRoot, 'public/icon-mark.svg'))).toBe(false);
     expect(nav).toContain('/revealui-mark.svg');
     expect(nav).toContain('h-9 w-auto');
     expect(nav).not.toContain('w-9');
@@ -125,6 +124,27 @@ describe('public copy gates', () => {
     expect(nav).not.toContain('wordmark');
     expect(readFileSync(path.join(repoRoot, 'index.html'), 'utf8')).toContain(
       '"logo": "https://revealuistudio.com/favicon.svg"',
+    );
+
+    // Leftover alternate marks from the faceted / tiled / mono / wordmark
+    // families. #153 already dropped icon-mark.svg; keep the inventory shut.
+    const leftoverMarks = [
+      'public/icon-mark.svg',
+      'public/icon-maskable.svg',
+      'public/revealui-mark-mono.svg',
+      'public/revealui-logo.svg',
+      'public/revealui-logo-dark.svg',
+      'public/wordmark-light.svg',
+      'public/wordmark-dark.svg',
+      'public/icon-192.png',
+      'public/icon-512.png',
+      'public/icon-maskable-512.png',
+    ];
+    expect(leftoverMarks.filter((rel) => existsSync(path.join(repoRoot, rel)))).toEqual([]);
+
+    const publicNames = readdirSync(path.join(repoRoot, 'public'));
+    expect(publicNames.filter((name) => /mark|logo|wordmark|favicon|icon/i.test(name)).sort()).toEqual(
+      ['apple-touch-icon.png', 'favicon.ico', 'favicon.png', 'favicon.svg', 'revealui-mark.svg'].sort(),
     );
   });
 
