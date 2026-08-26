@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -99,17 +99,27 @@ describe('public copy gates', () => {
     }
   });
 
-  it('serves the Circuit-R family, not the old geometric R', () => {
+  it('serves the Circuit-R masters, not the faceted navy trace or old geometric R', () => {
     const favicon = readFileSync(path.join(repoRoot, 'public/favicon.svg'), 'utf8');
     const mark = readFileSync(path.join(repoRoot, 'public/revealui-mark.svg'), 'utf8');
     const nav = readFileSync(path.join(repoRoot, 'app/components/NavBar.tsx'), 'utf8');
-    expect(favicon).toContain('fill="#0a2c5a"');
-    expect(favicon).toContain('fill="#002247"');
-    expect(favicon).not.toContain('fill="#003d94"');
-    expect(favicon).not.toContain('rx="22"');
-    expect(favicon).not.toContain('<circle');
+    const pathCount = (mark.match(/<path/g) ?? []).length;
+    const viaCount = (mark.match(/<circle/g) ?? []).length;
+    expect(mark).toContain('viewBox="0 0 512 512"');
+    expect(pathCount).toBeGreaterThanOrEqual(70);
+    expect(viaCount).toBeGreaterThanOrEqual(50);
+    expect(mark).toContain('Q207,159');
+    expect(mark).not.toContain('M26 50');
+    expect(mark).not.toContain('M34 11');
+    expect(mark).not.toContain('viewBox="0 0 82 100"');
+    expect(mark).not.toContain('fill="#003d94"');
+    expect(mark).not.toContain('rx="22"');
     expect(mark).toBe(favicon);
+    expect(existsSync(path.join(repoRoot, 'public/icon-mark.svg'))).toBe(false);
     expect(nav).toContain('/revealui-mark.svg');
+    expect(nav).toContain('h-9 w-auto');
+    expect(nav).not.toContain('w-9');
+    expect(nav).not.toContain('width={36}');
     expect(nav).not.toContain('/favicon.svg');
     expect(nav).not.toContain('/icon-mark.svg');
     expect(nav).not.toContain('wordmark');

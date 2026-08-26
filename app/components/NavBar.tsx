@@ -50,7 +50,7 @@ export function NavBar() {
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link to="/" onClick={close} aria-label="Home" className="flex items-center">
-          <img src="/revealui-mark.svg" alt="" width={36} height={36} className="h-9 w-9" />
+          <img src="/revealui-mark.svg" alt="" height={36} className="h-9 w-auto" />
         </Link>
 
         {/* Desktop links (md+) */}
