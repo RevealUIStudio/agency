@@ -1,4 +1,10 @@
-import { LinkButton } from '@revealui/presentation';
+import { LinkButton, ReceiptCard } from '@revealui/presentation';
+import {
+  RECEIPT_HERO_CAPTION,
+  RECEIPT_HERO_INTEGRITY,
+  RECEIPT_HERO_LINES,
+  RECEIPT_HERO_TITLE,
+} from '@/content/receipt';
 import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_SERVICE_AREA } from '@/lib/site';
 
 export function Hero() {
@@ -33,6 +39,28 @@ export function Hero() {
               {CONTACT_EMAIL}
             </a>
           </p>
+
+          {/*
+            Receipt motif. animate="print" once; presentation keeps
+            prefers-reduced-motion static. Demonstration ledger only.
+          */}
+          <div className="mt-12 w-full max-w-md min-w-0 text-left">
+            <ReceiptCard
+              title={RECEIPT_HERO_TITLE}
+              lines={[...RECEIPT_HERO_LINES]}
+              integrity={RECEIPT_HERO_INTEGRITY}
+              animate="print"
+            />
+            <p className="mt-4 text-sm text-muted-foreground">
+              {RECEIPT_HERO_CAPTION.text}{' '}
+              <a
+                href={RECEIPT_HERO_CAPTION.link.href}
+                className="font-semibold text-foreground underline-offset-4 hover:underline"
+              >
+                {RECEIPT_HERO_CAPTION.link.label}
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </section>

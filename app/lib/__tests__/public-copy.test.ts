@@ -67,7 +67,10 @@ describe('public copy gates', () => {
   });
 
   it('does not paint retired SKU titles on public routes', () => {
-    const files = walk(path.join(repoRoot, 'app/routes'));
+    const files = [
+      ...walk(path.join(repoRoot, 'app/routes')),
+      path.join(repoRoot, 'app/content/receipt.ts'),
+    ];
     const banned = /Fleet Stamp|Custom Build|AI Integration/;
     const hits: string[] = [];
     for (const file of files) {
@@ -88,6 +91,8 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'index.html'),
       path.join(repoRoot, 'app/App.tsx'),
       path.join(repoRoot, 'app/components/agency/Hero.tsx'),
+      path.join(repoRoot, 'app/content/receipt.ts'),
+      path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
     ];
     for (const file of files) {
       expect(readFileSync(file, 'utf8')).not.toMatch(/live-or-holdback/i);
@@ -126,6 +131,11 @@ describe('public copy gates', () => {
     expect(footer).not.toMatch(/\bLLC\b/);
     expect(footer).not.toMatch(/RevealUI Studio/);
     expect(footer).not.toMatch(/Working session|Written plan|Launch package|Fleet Stamp/);
+  });
+
+  it('lists the process page in the public sitemap', () => {
+    const sitemap = readFileSync(path.join(repoRoot, 'public/sitemap.xml'), 'utf8');
+    expect(sitemap).toContain('https://revealuistudio.com/process');
   });
 
   it('308s leftover catalog paths to the homepage calculator', () => {

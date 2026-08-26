@@ -10,7 +10,11 @@ export function ServicesPage() {
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Offers</h1>
           <p className="mt-6 text-lg text-muted-foreground">
             Three paid offers. Use the homepage calculator, or book a 30-minute intro first. I
-            invoice after we agree. There is no public checkout.
+            invoice after we agree. There is no public checkout.{' '}
+            <Link to="/process" className="font-semibold text-foreground hover:underline">
+              How each offer runs
+            </Link>
+            .
           </p>
           <p className="mt-4 text-base text-muted-foreground">
             <a

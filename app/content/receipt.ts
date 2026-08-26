@@ -1,48 +1,48 @@
-// Agency receipt-motif hero content (frontend-excellence Phase 5 rollout echo).
-// Demonstration, not live production data: timestamps are static strings
-// (never Date.now()) so the sequence is deterministic.
-// Depicts agency work: an agent shipping a customer-owned runtime stamp.
-// Rails match marketing honesty (demo sequence, copyable ref, foil caption).
+// Demonstration content for the homepage receipt motif.
+// Static timestamps only (never Date.now()). Not live production data.
+// Shows how a studio engagement runs: intro booked, $300 working session
+// invoiced, notes delivered, audit-log records the receipt. No customer
+// name, no case study, no invented company.
 
 import type { AuditEvent } from '@revealui/presentation';
 
-export const RECEIPT_HERO_TITLE = 'Fleet stamp, handed over' as const;
+export const RECEIPT_HERO_TITLE = 'How we work, on record' as const;
 
 export const RECEIPT_HERO_LINES: readonly AuditEvent[] = [
   {
-    ts: '14:02:11',
-    actor: 'deploy-agent',
-    action: 'signed in as',
-    object: 'agents@studio.demo',
+    ts: '09:00:12',
+    actor: 'calendar',
+    action: 'booked',
+    object: 'a 30-minute intro',
   },
   {
-    ts: '14:02:18',
-    actor: 'deploy-agent',
-    action: 'stamped',
-    object: 'customer runtime on their VPC',
+    ts: '09:42:08',
+    actor: 'studio',
+    action: 'invoiced',
+    object: 'working session $300',
   },
   {
-    ts: '14:02:19',
-    actor: 'policy',
-    action: 'allowed',
-    object: 'domain lock + brand pack',
+    ts: '11:15:03',
+    actor: 'studio',
+    action: 'delivered',
+    object: 'session notes',
   },
   {
-    ts: '14:02:20',
+    ts: '11:15:07',
     actor: 'audit-log',
     action: 'recorded',
     object: 'the receipt',
-    refId: 'rcpt_a7e2c1',
+    refId: 'rcpt_demo1',
   },
 ] as const;
 
 export const RECEIPT_HERO_INTEGRITY = {
   kind: 'sha256',
-  value: '9f2e…c04b',
+  value: '4c1a…9e20',
 } as const;
 
-// Canonical foil (copy-voice.md). Product proof lives on revealui.com/claims.
+// Canonical foil. Process page is the honest next hop, not a second CTA.
 export const RECEIPT_HERO_CAPTION = {
   text: "If an agent did it, there's a receipt.",
-  link: { label: 'See the product proof →', href: 'https://revealui.com/claims' },
+  link: { label: 'How we work →', href: '/process' },
 } as const;
