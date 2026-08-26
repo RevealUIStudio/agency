@@ -36,8 +36,10 @@ describe('NavBar (agency)', () => {
     const mark = home.querySelector('img');
     expect(mark).not.toBeNull();
     expect(mark).toHaveAttribute('src', '/revealui-mark.svg');
-    expect(mark).toHaveAttribute('width', '36');
     expect(mark).toHaveAttribute('height', '36');
+    expect(mark).not.toHaveAttribute('width');
+    expect(mark).toHaveClass('h-9', 'w-auto');
+    expect(mark).not.toHaveClass('w-9');
     expect(mark?.getAttribute('src')).not.toBe('/favicon.svg');
     expect(home).toHaveAttribute('href', '/');
     const nav = screen.getByRole('navigation');
