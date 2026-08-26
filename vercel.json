@@ -3,6 +3,7 @@
   "framework": "vite",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
+  "ignoreCommand": "node scripts/vercel-ignored-build-step.mjs",
   "headers": [
     {
       "source": "/(.*)",

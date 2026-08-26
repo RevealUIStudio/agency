@@ -43,7 +43,7 @@ pnpm preview      # serves dist/ on :3001
 
 ## Deploy
 
-Vercel project pointed at this repo. `vercel.json` declares the framework + headers; deploys auto-trigger on push to `main`.
+Vercel project pointed at this repo. `vercel.json` declares the framework + headers. Deploys run on `main` and `test` only; other refs are skipped by `scripts/vercel-ignored-build-step.mjs`.
 
 - **Domain:** `revealuistudio.com` (Deployed via Vercel)
 - **Build:** `pnpm build` (Vercel auto-detects via `framework: vite`)
