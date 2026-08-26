@@ -143,8 +143,16 @@ describe('public copy gates', () => {
     expect(leftoverMarks.filter((rel) => existsSync(path.join(repoRoot, rel)))).toEqual([]);
 
     const publicNames = readdirSync(path.join(repoRoot, 'public'));
-    expect(publicNames.filter((name) => /mark|logo|wordmark|favicon|icon/i.test(name)).sort()).toEqual(
-      ['apple-touch-icon.png', 'favicon.ico', 'favicon.png', 'favicon.svg', 'revealui-mark.svg'].sort(),
+    expect(
+      publicNames.filter((name) => /mark|logo|wordmark|favicon|icon/i.test(name)).sort(),
+    ).toEqual(
+      [
+        'apple-touch-icon.png',
+        'favicon.ico',
+        'favicon.png',
+        'favicon.svg',
+        'revealui-mark.svg',
+      ].sort(),
     );
   });
 
