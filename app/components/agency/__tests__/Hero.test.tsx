@@ -5,18 +5,20 @@ import { Hero } from '@/components/agency/Hero';
 import { INTRO_CALL_URL } from '@/lib/site';
 
 describe('Hero', () => {
-  it('leads with the local studio offer, not a runtime pitch', () => {
+  it('leads with the product studio, not a local booking shop', () => {
     render(<Hero />);
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /A local studio for a site, a booking flow, or a written plan\./,
+        name: /A product studio for runtime, receipts, Launch, and Enterprise\./,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Maryville, Tennessee/)).toBeInTheDocument();
+    expect(screen.getByText(/RevealUI Studio · Product studio/)).toBeInTheDocument();
+    expect(screen.queryByText(/RevealUI Studio · Maryville, Tennessee/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Fleet Stamp/)).not.toBeInTheDocument();
     expect(screen.queryByText(/forward deployed/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/live-or-holdback/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/written plan/i)).not.toBeInTheDocument();
   });
 
   it('uses the Google Calendar intro as the primary CTA', () => {

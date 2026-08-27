@@ -15,7 +15,10 @@ import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
   { value: 'working-session', label: `Working session (${WORKING_SESSION.price})` },
-  { value: 'written-plan', label: `Written plan (${WRITTEN_PLAN.price})` },
+  {
+    value: 'written-plan',
+    label: `Architecture artifact bundle and review (${WRITTEN_PLAN.price})`,
+  },
   { value: 'launch-package', label: `Launch package (${LAUNCH_PACKAGE.price})` },
   { value: 'general', label: 'General inquiry' },
 ] as const;
@@ -182,7 +185,7 @@ export function ContactForm() {
           onBlur={() => handleBlur('message')}
           aria-invalid={fieldErrors.message ? true : undefined}
           invalid={!!fieldErrors.message}
-          placeholder="What do you need help with? Site, booking, forms, or systems that do not talk to each other."
+          placeholder="What do you need help with? Runtime, receipts, a stuck live flow, or systems that do not talk to each other."
         />
       </FormField>
 

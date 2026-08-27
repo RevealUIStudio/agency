@@ -17,7 +17,8 @@ describe('ServiceTeasers', () => {
     expect(screen.queryByText('Fleet Stamp')).not.toBeInTheDocument();
     expect(screen.queryByText('Custom Build')).not.toBeInTheDocument();
     expect(screen.queryByText('AI Integration')).not.toBeInTheDocument();
-    expect(screen.queryByText(/Architecture Review/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/written plan/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\bdemo\b/i)).not.toBeInTheDocument();
   });
 
   it('anchors each offer and points CTAs at the intro calendar', () => {

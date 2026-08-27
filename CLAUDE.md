@@ -7,7 +7,7 @@ Public-facing agency site at https://revealuistudio.com.
 - Vite + React 19 (see `package.json`; Node engines `>=24.13.0`)
 - @revealui/{router, presentation, contracts} via npm (Track D prices from `@revealui/contracts/pricing` in `app/lib/engagements.ts`)
 - Tailwind v4 + `@revealui/presentation/tokens.css` + Geist fonts (`app/index.css`, `app/entry.client.tsx`)
-- Vercel-deployed; auto-deploy on `main` push (`vercel.json` `framework: vite`)
+- Vercel-deployed; auto-deploy on `main` and `test` (`vercel.json` `ignoreCommand` → `scripts/vercel-ignored-build-step.mjs`)
 
 ## Brand naming
 

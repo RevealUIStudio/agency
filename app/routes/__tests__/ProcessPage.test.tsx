@@ -52,7 +52,9 @@ describe('ProcessPage', () => {
     expect(text).not.toMatch(/Fleet Stamp|RevForge|Custom Build|AI Integration/i);
     expect(text).not.toMatch(/Enterprise/i);
     expect(text).not.toMatch(/hosted.?VM/i);
-    expect(text).not.toMatch(/Architecture Review/i);
+    expect(text).not.toMatch(/written plan/i);
+    expect(text).not.toMatch(/\bdemo\b/i);
+    expect(text).not.toMatch(/\bSpec\b/);
     expect(text).not.toMatch(/live-or-holdback/i);
     expect(text).not.toMatch(/\$25,?000|\$50,?000/);
     expect(text).not.toMatch(/limited (spots|time)|act now|discount|sale ends/i);

@@ -86,6 +86,42 @@ describe('public copy gates', () => {
     expect(labels).not.toContain('Architecture Review');
   });
 
+  it('does not sell the retired local-shop identity', () => {
+    const files = [
+      path.join(repoRoot, 'index.html'),
+      path.join(repoRoot, 'app/App.tsx'),
+      path.join(repoRoot, 'app/components/agency/Hero.tsx'),
+      path.join(repoRoot, 'app/components/agency/ContactForm.tsx'),
+      path.join(repoRoot, 'app/components/agency/QuoteCalculator.tsx'),
+      path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
+      path.join(repoRoot, 'app/content/receipt.ts'),
+      path.join(repoRoot, 'app/lib/engagements.ts'),
+      path.join(repoRoot, 'app/lib/quote.ts'),
+      path.join(repoRoot, 'app/lib/site.ts'),
+      path.join(repoRoot, 'app/routes/AboutPage.tsx'),
+      path.join(repoRoot, 'app/routes/ContactPage.tsx'),
+      path.join(repoRoot, 'app/routes/HomePage.tsx'),
+      path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
+    ];
+    const banned =
+      /written plan|local studio|one-person software studio|call us|Alcoa|Architecture review artifact bundle|plus a demo|and a demo/i;
+    const hits: string[] = [];
+    for (const file of files) {
+      if (banned.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
+    }
+    expect(hits).toEqual([]);
+    expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).toContain(
+      'Architecture artifact bundle and review',
+    );
+    expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).not.toMatch(
+      /\bdemo\b/i,
+    );
+    expect(readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8')).not.toMatch(/\bSpec\b/);
+  });
+
   it('does not claim live-or-holdback in public title, description, OG, or hero', () => {
     const files = [
       path.join(repoRoot, 'index.html'),
@@ -115,7 +151,6 @@ describe('public copy gates', () => {
     expect(mark).not.toContain('fill="#003d94"');
     expect(mark).not.toContain('rx="22"');
     expect(mark).toBe(favicon);
-    expect(existsSync(path.join(repoRoot, 'public/icon-mark.svg'))).toBe(false);
     expect(nav).toContain('/revealui-mark.svg');
     expect(nav).toContain('h-9 w-auto');
     expect(nav).not.toContain('w-9');
@@ -125,6 +160,35 @@ describe('public copy gates', () => {
     expect(nav).not.toContain('wordmark');
     expect(readFileSync(path.join(repoRoot, 'index.html'), 'utf8')).toContain(
       '"logo": "https://revealuistudio.com/favicon.svg"',
+    );
+
+    // Leftover alternate marks from the faceted / tiled / mono / wordmark
+    // families. #153 already dropped icon-mark.svg; keep the inventory shut.
+    const leftoverMarks = [
+      'public/icon-mark.svg',
+      'public/icon-maskable.svg',
+      'public/revealui-mark-mono.svg',
+      'public/revealui-logo.svg',
+      'public/revealui-logo-dark.svg',
+      'public/wordmark-light.svg',
+      'public/wordmark-dark.svg',
+      'public/icon-192.png',
+      'public/icon-512.png',
+      'public/icon-maskable-512.png',
+    ];
+    expect(leftoverMarks.filter((rel) => existsSync(path.join(repoRoot, rel)))).toEqual([]);
+
+    const publicNames = readdirSync(path.join(repoRoot, 'public'));
+    expect(
+      publicNames.filter((name) => /mark|logo|wordmark|favicon|icon/i.test(name)).sort(),
+    ).toEqual(
+      [
+        'apple-touch-icon.png',
+        'favicon.ico',
+        'favicon.png',
+        'favicon.svg',
+        'revealui-mark.svg',
+      ].sort(),
     );
   });
 
@@ -140,7 +204,9 @@ describe('public copy gates', () => {
     expect(footer).toContain('STUDIO_LEGAL_NAME');
     expect(footer).not.toMatch(/\bLLC\b/);
     expect(footer).not.toMatch(/RevealUI Studio/);
-    expect(footer).not.toMatch(/Working session|Written plan|Launch package|Fleet Stamp/);
+    expect(footer).not.toMatch(
+      /Working session|Written plan|Architecture artifact|Launch package|Fleet Stamp/,
+    );
   });
 
   it('lists the process page in the public sitemap', () => {
