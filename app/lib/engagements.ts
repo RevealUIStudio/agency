@@ -1,10 +1,11 @@
 /**
  * Public studio offers for revealuistudio.com.
  *
- * Stranger-facing SKUs are locked: Working session, Written plan, Launch
- * package. Track D prices for the written plan and launch package still
- * import from `@revealui/contracts/pricing` so those two numbers cannot
- * drift from the shared menu. The $300 working session is studio-only.
+ * Stranger-facing SKUs are locked: Working session, Architecture artifact
+ * bundle and review, Launch package. Track D prices for the $3,500 bundle
+ * and the launch package still import from `@revealui/contracts/pricing` so
+ * those two numbers cannot drift from the shared menu. The $300 working
+ * session is studio-only.
  *
  * Fleet Stamp, Custom Build, and AI Integration stay in this file as
  * internal records (case-study shapes, future private use). They must not
@@ -49,11 +50,11 @@ export const WORKING_SESSION = {
   price: WORKING_SESSION_PRICE,
   tagline: 'One focused hour',
   description:
-    'One hour on your site, booking, forms, or “call us” flow. In person in Maryville, Alcoa, or Knoxville, or on a call. You leave with notes and a next step.',
+    'One hour on your system. That can be product, runtime, receipts, a stuck live flow, or launch prep. Remote, or in person in Maryville. You leave with notes and a next step.',
   includes: [
     'One focused hour',
-    'In person in Maryville, Alcoa, or Knoxville, or on a call',
-    'Site, booking, forms, or “call us” flow',
+    'Remote, or in person in Maryville',
+    'Product, runtime, receipts, a stuck live flow, or launch prep',
     'Notes and a next step',
   ],
   notIncluded: ['A full rebuild', 'Ongoing support'],
@@ -62,17 +63,16 @@ export const WORKING_SESSION = {
 
 export const WRITTEN_PLAN = {
   id: 'written-plan',
-  name: 'Written plan',
+  name: 'Architecture artifact bundle and review',
   price: WRITTEN_PLAN_PRICE,
-  tagline: 'Scoped review, no code',
+  tagline: 'One bundle from the review',
   description:
-    'A written plan for a business whose systems do not talk to each other. The aim is booking, billing, and client work on one system you own.',
+    'The architecture artifact bundle and the review. The prototype is inside the artifact bundle. Not a live launch.',
   includes: [
-    'Scoped written review of how the work should fit together',
-    'One system you own: booking, billing, and client work',
+    'The architecture artifact bundle and the review. The prototype is inside the artifact bundle',
     'Credit toward a later build if we start that build within 30 days',
   ],
-  notIncluded: ['Code', 'Hosting or licenses'],
+  notIncluded: ['A live launch', 'Hosting or licenses'],
   payment: 'Half now, half on delivery. Credits to a launch in 30 days.',
 } as const satisfies PublicOffer;
 
@@ -80,11 +80,11 @@ export const LAUNCH_PACKAGE = {
   id: 'launch-package',
   name: 'Launch package',
   price: PUBLIC_LAUNCH_PACKAGE_PRICE,
-  tagline: 'One site or booking flow, live',
+  tagline: 'One live flow on your accounts',
   description:
-    'One site or booking / “call us” flow. We scope it on the call and take it live. You own the result.',
+    'One live flow on your accounts. We scope it on the call and take it live. You own the result.',
   includes: [
-    'One site, or one booking / “call us” flow',
+    'One live flow on your accounts',
     'Scope locked on the intro call',
     'Live handoff; you own what we ship',
   ],

@@ -12,7 +12,7 @@ vi.mock('@/lib/api', () => ({
 
 const mockSubmit = vi.mocked(submitContact);
 
-const validMessage = 'We need a booking page and a written plan for how billing should connect.';
+const validMessage = 'We need help connecting billing to the rest of the system we already run.';
 
 function fillRequiredFields(overrides?: { name?: string; email?: string; message?: string }): void {
   fireEvent.change(screen.getByLabelText(/Name/), {
@@ -43,7 +43,9 @@ describe('ContactForm', () => {
       screen.getByRole('option', { name: `Working session (${WORKING_SESSION.price})` }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('option', { name: `Written plan (${WRITTEN_PLAN.price})` }),
+      screen.getByRole('option', {
+        name: `Architecture artifact bundle and review (${WRITTEN_PLAN.price})`,
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('option', { name: `Launch package (${LAUNCH_PACKAGE.price})` }),

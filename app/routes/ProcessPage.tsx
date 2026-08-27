@@ -1,6 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_SERVICE_AREA } from '@/lib/site';
+import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
 export function ProcessPage() {
   return (
@@ -53,9 +53,9 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
                 <p className="mt-2 text-muted-foreground">
-                  The site, booking, forms, or “call us” flow you want to look at, and the question
-                  you want answered. A link is usually enough. I only need account access if we
-                  cannot see the problem without it.
+                  The system you want to look at, and the question you want answered. That can be
+                  product, runtime, receipts, a stuck live flow, or launch prep. A link is usually
+                  enough. I only need account access if we cannot see the problem without it.
                 </p>
               </div>
               <div>
@@ -67,15 +67,15 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">How long</h3>
                 <p className="mt-2 text-muted-foreground">
-                  One hour. In person in {STUDIO_SERVICE_AREA}, or on a call. I invoice{' '}
-                  {WORKING_SESSION.price} before we start. No holdback.
+                  One hour. Remote, or in person in {STUDIO_CITY}. I invoice {WORKING_SESSION.price}{' '}
+                  before we start. No holdback.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  The hour ends. If you want a written plan or a launch, that is a separate offer
-                  and a new invoice.
+                  The hour ends. If you want {WRITTEN_PLAN.name}, or a launch, that is a separate
+                  offer and a new invoice.
                 </p>
               </div>
             </div>
@@ -93,27 +93,29 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
                 <p className="mt-2 text-muted-foreground">
-                  How the work happens today: booking, billing, and client work, and where those
-                  systems do not talk to each other.
+                  How the work happens today, and where the systems do not talk to each other.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  A scoped written review of how the work should fit together. No code. No hosting.
-                  No licenses. The aim is booking, billing, and client work on one system you own.
+                  The architecture artifact bundle and the review. The prototype is inside the
+                  artifact bundle, not a second line item. Not a live launch. No hosting. No
+                  licenses.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">How long</h3>
                 <p className="mt-2 text-muted-foreground">
-                  We agree when the document lands on the intro. I start after the first half of the
-                  invoice and deliver the plan. Duration is that window, not a standing retainer.
+                  We agree when the bundle lands on the intro. I start after the first half of the
+                  invoice and deliver the review. Duration is that window, not a standing retainer.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
-                <p className="mt-2 text-muted-foreground">{WRITTEN_PLAN.payment}</p>
+                <p className="mt-2 text-muted-foreground">
+                  {WRITTEN_PLAN.payment} Launch is a separate offer.
+                </p>
               </div>
             </div>
           </article>
@@ -131,7 +133,7 @@ export function ProcessPage() {
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
                 <p className="mt-2 text-muted-foreground">
                   Access to the accounts the work will live on. We lock the scope on the intro call:
-                  one site, or one booking / “call us” flow.
+                  one live flow on your accounts.
                 </p>
               </div>
               <div>

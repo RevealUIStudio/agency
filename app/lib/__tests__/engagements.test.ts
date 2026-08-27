@@ -32,8 +32,12 @@ describe('public studio offers', () => {
     expect(names).not.toContain(CUSTOM_BUILD.name);
     expect(names).not.toContain('AI Integration');
     expect(names).not.toContain('Architecture Review');
-    expect(WRITTEN_PLAN.description).toMatch(/written plan/i);
-    expect(WRITTEN_PLAN.description).not.toMatch(/architecture review/i);
+    expect(WRITTEN_PLAN.name).toBe('Architecture artifact bundle and review');
+    expect(WRITTEN_PLAN.description).toMatch(/artifact bundle/i);
+    expect(WRITTEN_PLAN.description).toMatch(/prototype/i);
+    expect(WRITTEN_PLAN.description).not.toMatch(/written plan/i);
+    expect(WRITTEN_PLAN.description).not.toMatch(/\bdemo\b/i);
+    expect(WRITTEN_PLAN.description).not.toMatch(/\bSpec\b/);
   });
 
   it('puts the live-or-holdback sentence only on Launch', () => {

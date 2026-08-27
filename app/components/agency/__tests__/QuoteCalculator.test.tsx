@@ -19,10 +19,13 @@ describe('QuoteCalculator', () => {
     expect(screen.getByRole('radio', { name: 'I will (developer / self-host)' })).not.toBeChecked();
     expect(
       screen.getByRole('radio', {
-        name: 'One live flow on my accounts (site or booking + Stripe)',
+        name: 'One live flow on my accounts',
       }),
     ).toBeChecked();
-    expect(screen.getByRole('radio', { name: 'One business, one site' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'One business, one place' })).toBeChecked();
+    expect(
+      screen.getByRole('radio', { name: 'Architecture artifact bundle and review' }),
+    ).toBeInTheDocument();
 
     expect(screen.getByText(QUOTE_CALCULATOR_LEAD)).toBeInTheDocument();
     expect(screen.queryByText(/Same tool as the product site/)).not.toBeInTheDocument();

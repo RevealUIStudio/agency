@@ -24,12 +24,12 @@ export const HOSTER_OPTIONS = [
 
 export const OUTCOME_OPTIONS = [
   { value: 'hour', label: 'One hour with Joshua (debug / pair)' },
-  { value: 'plan', label: 'A written plan' },
-  { value: 'launch', label: 'One live flow on my accounts (site or booking + Stripe)' },
+  { value: 'plan', label: 'Architecture artifact bundle and review' },
+  { value: 'launch', label: 'One live flow on my accounts' },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
-  { value: 'one', label: 'One business, one site' },
+  { value: 'one', label: 'One business, one place' },
   { value: 'many', label: 'More than one (stop quoting; book an intro)' },
 ] as const satisfies readonly { value: Places; label: string }[];
 
@@ -87,7 +87,7 @@ function studioLines(outcome: Outcome): readonly QuoteLine[] {
     },
     {
       id: WRITTEN_PLAN.id,
-      title: 'Written plan',
+      title: 'Architecture artifact bundle and review',
       price: WRITTEN_PLAN.price,
       detail: 'Half now, half on delivery. Credits to a launch in 30 days.',
       highlighted: outcome === 'plan',

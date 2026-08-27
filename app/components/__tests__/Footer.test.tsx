@@ -35,7 +35,9 @@ describe('Footer (agency)', () => {
     const text = container.textContent ?? '';
     expect(text).not.toMatch(/RevealUI Studio/);
     expect(text).not.toMatch(/\bLLC\b/);
-    expect(text).not.toMatch(/Working session|Written plan|Launch package|Fleet/i);
+    expect(text).not.toMatch(
+      /Working session|Written plan|Architecture artifact|Launch package|Fleet/i,
+    );
   });
 
   it('prints the legal name once in small print', () => {
