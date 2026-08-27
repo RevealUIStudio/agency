@@ -1,4 +1,5 @@
-import { CONTACT_EMAIL, STUDIO_CITY, STUDIO_REGION, STUDIO_SERVICE_AREA } from '@/lib/site';
+import { WRITTEN_PLAN } from '@/lib/engagements';
+import { CONTACT_EMAIL, STUDIO_CITY } from '@/lib/site';
 
 export function AboutPage() {
   return (
@@ -6,9 +7,9 @@ export function AboutPage() {
       <div className="mx-auto max-w-3xl px-6">
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">About</h1>
         <p className="mt-6 text-lg text-muted-foreground">
-          RevealUI Studio is a one-person software studio in {STUDIO_CITY}, {STUDIO_REGION}. I take
-          paid work on sites, booking and “call us” flows, and written plans for businesses whose
-          systems do not talk to each other. I work in {STUDIO_SERVICE_AREA}, and on a call.
+          RevealUI Studio is a product studio. I ship RevealUI, the agent runtime with receipts, and
+          take paid studio work: an hour, {WRITTEN_PLAN.name}, Launch, and Enterprise. Remote first.
+          Sitting down in {STUDIO_CITY} is available on the same calendar.
         </p>
         <div className="mt-12 rounded-2xl border border-border bg-muted p-8">
           <h2 className="text-xl font-bold text-foreground">Founder</h2>

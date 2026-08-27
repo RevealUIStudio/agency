@@ -17,12 +17,12 @@ function renderHome() {
 }
 
 describe('HomePage', () => {
-  it('keeps one local-operator headline, the calculator, and the intro', () => {
+  it('keeps one product-studio headline, the calculator, and the intro', () => {
     renderHome();
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /A local studio for a site, a booking flow, or a written plan\./,
+        name: /A product studio for runtime, receipts, Launch, and Enterprise\./,
       }),
     ).toBeInTheDocument();
     expect(document.getElementById('calculator')).not.toBeNull();

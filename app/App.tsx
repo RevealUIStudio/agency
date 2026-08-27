@@ -30,9 +30,9 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | A local studio for a site or booking flow',
+          title: 'RevealUI Studio | Product studio for runtime, receipts, and Launch',
           description:
-            'A Maryville, Tennessee studio. Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
+            'A product studio. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500. Remote first. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
@@ -41,7 +41,7 @@ export function App() {
         meta: {
           title: 'Offers | RevealUI Studio',
           description:
-            'Hour $300. Written plan $3,500. Launch $7,500. Invoice after we book. Book a 30-minute intro first.',
+            'Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500. Invoice after we book. Book a 30-minute intro first.',
         },
       },
       {
@@ -49,7 +49,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500.',
+          description:
+            'Three questions, a quote. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.',
           robots: 'noindex,follow',
         },
       },
@@ -58,7 +59,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500.',
+          description:
+            'Three questions, a quote. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.',
           robots: 'noindex,follow',
         },
       },
@@ -67,7 +69,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Hour $300. Written plan $3,500. Launch $7,500.',
+          description:
+            'Three questions, a quote. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.',
           robots: 'noindex,follow',
         },
       },
@@ -77,7 +80,7 @@ export function App() {
         meta: {
           title: 'How we work | RevealUI Studio',
           description:
-            'How a RevealUI Studio engagement runs. Hour $300. Written plan $3,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
+            'How a RevealUI Studio engagement runs. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
@@ -86,7 +89,7 @@ export function App() {
         meta: {
           title: 'About | RevealUI Studio',
           description:
-            'RevealUI Studio is a one-person software studio in Maryville, Tennessee. Joshua Vaughn. Three paid offers. Invoice after we book.',
+            'RevealUI Studio is a product studio. Joshua Vaughn runs it. Hour, architecture artifact bundle and review, and Launch. Remote first. Invoice after we agree.',
         },
       },
       {

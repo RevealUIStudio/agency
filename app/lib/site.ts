@@ -26,7 +26,6 @@ export const STUDIO_LEGAL_NAME = 'REVEALUI STUDIO L.L.C.';
 
 export const STUDIO_CITY = 'Maryville';
 export const STUDIO_REGION = 'Tennessee';
-export const STUDIO_SERVICE_AREA = 'Maryville, Alcoa, and Knoxville';
 
 /**
  * Public broadcast list (essays / free subscribe).

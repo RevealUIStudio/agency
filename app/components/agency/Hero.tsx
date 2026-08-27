@@ -5,7 +5,7 @@ import {
   RECEIPT_HERO_LINES,
   RECEIPT_HERO_TITLE,
 } from '@/content/receipt';
-import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_SERVICE_AREA } from '@/lib/site';
+import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
 export function Hero() {
   return (
@@ -13,14 +13,16 @@ export function Hero() {
       <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32 lg:py-40">
         <div className="hero-stagger max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-            RevealUI Studio · Maryville, Tennessee
+            RevealUI Studio · Product studio
           </p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            A local studio for a site, a booking flow, or a written plan.
+            A product studio for runtime, receipts, Launch, and Enterprise.
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            I work with businesses in {STUDIO_SERVICE_AREA}, and on a call. Answer three questions
-            for a quote, or book a 30-minute intro. You do not need to understand the tech.
+            I ship RevealUI, the agent runtime with receipts, and studio work you can book from
+            here. Remote first. Sitting down in {STUDIO_CITY} is an option on the same calendar.
+            Answer three questions for a quote, or book a 30-minute intro. You do not need to
+            understand the tech.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>
