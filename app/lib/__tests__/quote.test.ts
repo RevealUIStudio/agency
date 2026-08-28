@@ -1,12 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import {
-  buildQuote,
-  DEFAULT_HOSTER,
-  DEFAULT_OUTCOME,
-  DEFAULT_PLACES,
-  LAUNCH_HOLDBACK,
-} from '@/lib/quote';
+import { buildQuote, DEFAULT_HOSTER, DEFAULT_OUTCOME, DEFAULT_PLACES } from '@/lib/quote';
 
 describe('buildQuote', () => {
   it('defaults to Studio putting it live', () => {
@@ -15,7 +9,7 @@ describe('buildQuote', () => {
     expect(DEFAULT_PLACES).toBe('one');
   });
 
-  it('prints the three Studio prices with live-or-holdback only on Launch', () => {
+  it('prints the three Studio prices without live-or-holdback on Launch', () => {
     const quote = buildQuote({
       hoster: DEFAULT_HOSTER,
       outcome: DEFAULT_OUTCOME,
@@ -35,13 +29,18 @@ describe('buildQuote', () => {
     const hour = quote.lines.find((line) => line.id === 'working-session');
     const plan = quote.lines.find((line) => line.id === 'written-plan');
     const launch = quote.lines.find((line) => line.id === 'launch-package');
-    expect(hour?.holdback).toBe(false);
     expect(hour?.detail).toContain('No holdback');
-    expect(plan?.holdback).toBe(false);
+    expect(plan?.detail).toBe(WRITTEN_PLAN.payment);
+    expect(plan?.detail).toContain('Credits to a launch in 30 days');
     expect(plan?.detail).not.toContain('first half back');
-    expect(launch?.holdback).toBe(true);
     expect(launch?.highlighted).toBe(true);
-    expect(launch?.detail).toBe(LAUNCH_HOLDBACK);
+    expect(launch?.detail).toBe(LAUNCH_PACKAGE.payment);
+    expect(launch?.detail).toBe('Half now, half on delivery.');
+    expect(JSON.stringify(quote)).not.toMatch(/four tests/i);
+    expect(JSON.stringify(quote)).not.toMatch(/signup-to-paid/i);
+    expect(JSON.stringify(quote)).not.toMatch(/first half back/i);
+    expect(JSON.stringify(quote)).not.toMatch(/keep the stack/i);
+    expect(JSON.stringify(quote)).not.toMatch(/live-or-holdback/i);
   });
 
   it('sends self-host visitors to the product site without quoting product SKUs', () => {

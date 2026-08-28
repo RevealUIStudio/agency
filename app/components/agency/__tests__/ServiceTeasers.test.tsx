@@ -7,7 +7,7 @@ import { INTRO_CALL_URL } from '@/lib/site';
 
 describe('ServiceTeasers', () => {
   it('renders only the three locked studio offers', () => {
-    render(<ServiceTeasers />);
+    const { container } = render(<ServiceTeasers />);
     expect(screen.getByText(WORKING_SESSION.name)).toBeInTheDocument();
     expect(screen.getByText(WRITTEN_PLAN.name)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_PACKAGE.name)).toBeInTheDocument();
@@ -19,6 +19,11 @@ describe('ServiceTeasers', () => {
     expect(screen.queryByText('AI Integration')).not.toBeInTheDocument();
     expect(screen.queryByText(/written plan/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/\bdemo\b/i)).not.toBeInTheDocument();
+    expect(container.textContent ?? '').toContain(LAUNCH_PACKAGE.payment);
+    expect(container.textContent ?? '').toContain(WRITTEN_PLAN.payment);
+    expect(container.textContent ?? '').not.toMatch(/four tests/i);
+    expect(container.textContent ?? '').not.toMatch(/first half back/i);
+    expect(container.textContent ?? '').not.toMatch(/keep the stack/i);
   });
 
   it('anchors each offer and points CTAs at the intro calendar', () => {
