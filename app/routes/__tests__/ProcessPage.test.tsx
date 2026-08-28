@@ -56,6 +56,12 @@ describe('ProcessPage', () => {
     expect(text).not.toMatch(/\bdemo\b/i);
     expect(text).not.toMatch(/\bSpec\b/);
     expect(text).not.toMatch(/live-or-holdback/i);
+    expect(text).not.toMatch(/four tests/i);
+    expect(text).not.toMatch(/signup-to-paid/i);
+    expect(text).not.toMatch(/first half back/i);
+    expect(text).not.toMatch(/keep the stack/i);
+    expect(text).not.toMatch(/make-good/i);
+    expect(text).toContain('Half now, half on delivery.');
     expect(text).not.toMatch(/\$25,?000|\$50,?000/);
     expect(text).not.toMatch(/limited (spots|time)|act now|discount|sale ends/i);
   });
