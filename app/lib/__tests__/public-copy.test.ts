@@ -232,11 +232,17 @@ describe('public copy gates', () => {
       }
     }
     expect(hits).toEqual([]);
-    const fleet = readFileSync(path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'), 'utf8');
+    const fleet = readFileSync(
+      path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
+      'utf8',
+    );
+    const facts = readFileSync(path.join(repoRoot, 'app/lib/fleet.ts'), 'utf8');
     expect(fleet).toContain('RevealFleet');
     expect(fleet).toContain('Buy {LEAD_PRODUCT}');
     expect(fleet).toContain('PRODUCT_SITE_URL');
-    expect(fleet).toContain('RevVault');
+    expect(fleet).toContain('REVVAULT_ROLE');
+    expect(facts).toContain('RevVault');
+    expect(facts).toMatch(/inside Pro/);
     expect(fleet).not.toMatch(/written plan/i);
     expect(fleet).not.toMatch(/\bSpec\b/);
     expect(fleet).not.toContain('\u2014');

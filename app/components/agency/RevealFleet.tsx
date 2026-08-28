@@ -7,7 +7,9 @@ export function RevealFleet() {
   return (
     <section className="border-t border-border bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-3xl px-6">
-        <p className="text-sm font-semibold uppercase tracking-wider text-primary">Product family</p>
+        <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+          Product family
+        </p>
         <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           {FLEET_NAME}
         </h2>
