@@ -103,6 +103,8 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
       path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
+      path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
+      path.join(repoRoot, 'app/lib/fleet.ts'),
     ];
     const banned =
       /written plan|local studio|one-person software studio|call us|Alcoa|Architecture review artifact bundle|plus a demo|and a demo/i;
@@ -211,6 +213,33 @@ describe('public copy gates', () => {
     expect(footer).not.toMatch(
       /Working session|Written plan|Architecture artifact|Launch package|Fleet Stamp/,
     );
+  });
+
+  it('names the product family RevealFleet and does not sell parked fleet members', () => {
+    const files = [
+      path.join(repoRoot, 'app/routes/HomePage.tsx'),
+      path.join(repoRoot, 'app/routes/AboutPage.tsx'),
+      path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
+      path.join(repoRoot, 'app/components/agency/Hero.tsx'),
+      path.join(repoRoot, 'app/lib/fleet.ts'),
+    ];
+    const banned =
+      /RevFleet|revfleet|RevForge|RevKit|RevDev|Agency Perpetual|\$25,?000|8,?499|0\.2\.12/;
+    const hits: string[] = [];
+    for (const file of files) {
+      if (banned.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
+    }
+    expect(hits).toEqual([]);
+    const fleet = readFileSync(path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'), 'utf8');
+    expect(fleet).toContain('RevealFleet');
+    expect(fleet).toContain('Buy {LEAD_PRODUCT}');
+    expect(fleet).toContain('PRODUCT_SITE_URL');
+    expect(fleet).toContain('RevVault');
+    expect(fleet).not.toMatch(/written plan/i);
+    expect(fleet).not.toMatch(/\bSpec\b/);
+    expect(fleet).not.toContain('\u2014');
   });
 
   it('lists the process page in the public sitemap', () => {
