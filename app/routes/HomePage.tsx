@@ -3,6 +3,7 @@ import { useLocation } from '@revealui/router';
 import { useEffect } from 'react';
 import { Hero } from '@/components/agency/Hero';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
+import { RevealFleet } from '@/components/agency/RevealFleet';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
 export function HomePage() {
@@ -16,6 +17,7 @@ export function HomePage() {
   return (
     <>
       <Hero />
+      <RevealFleet />
       <QuoteCalculator />
       <section className="bg-background py-24 sm:py-32">
         <div className="mx-auto max-w-3xl px-6">
