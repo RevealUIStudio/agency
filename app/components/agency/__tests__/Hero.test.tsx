@@ -18,6 +18,9 @@ describe('Hero', () => {
     expect(screen.queryByText(/Fleet Stamp/)).not.toBeInTheDocument();
     expect(screen.queryByText(/forward deployed/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/live-or-holdback/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/four tests/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/first half back/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/keep the stack/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/written plan/i)).not.toBeInTheDocument();
   });
 

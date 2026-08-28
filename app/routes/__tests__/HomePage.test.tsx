@@ -51,5 +51,11 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/case study/i);
     expect(text).not.toMatch(/paying customer/i);
     expect(text).not.toMatch(/cal\.com/i);
+    expect(text).not.toMatch(/live-or-holdback/i);
+    expect(text).not.toMatch(/four tests/i);
+    expect(text).not.toMatch(/signup-to-paid/i);
+    expect(text).not.toMatch(/first half back/i);
+    expect(text).not.toMatch(/keep the stack/i);
+    expect(text).not.toMatch(/make-good/i);
   });
 });

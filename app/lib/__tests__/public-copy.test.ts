@@ -122,17 +122,21 @@ describe('public copy gates', () => {
     expect(readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8')).not.toMatch(/\bSpec\b/);
   });
 
-  it('does not claim live-or-holdback in public title, description, OG, or hero', () => {
+  it('does not sell live-or-holdback, four acceptance tests, or a first-half refund', () => {
     const files = [
+      ...walk(path.join(repoRoot, 'app')),
       path.join(repoRoot, 'index.html'),
-      path.join(repoRoot, 'app/App.tsx'),
-      path.join(repoRoot, 'app/components/agency/Hero.tsx'),
-      path.join(repoRoot, 'app/content/receipt.ts'),
-      path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'README.md'),
     ];
+    const banned =
+      /live-or-holdback|four tests|signup-to-paid|first half back|keep the stack|make-good|receipted agent action/i;
+    const hits: string[] = [];
     for (const file of files) {
-      expect(readFileSync(file, 'utf8')).not.toMatch(/live-or-holdback/i);
+      if (banned.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
     }
+    expect(hits).toEqual([]);
   });
 
   it('serves the Circuit-R masters, not the faceted navy trace or old geometric R', () => {
