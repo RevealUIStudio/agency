@@ -89,8 +89,7 @@ export const LAUNCH_PACKAGE = {
     'Live handoff; you own what we ship',
   ],
   notIncluded: ['A multi-month platform', 'An “AI” headline', 'Unlimited revisions'],
-  payment:
-    'Half now, half when the four tests pass (your infra, your Stripe checkout, signup-to-paid, one receipted agent action). If we miss, we keep working or you get the first half back and keep the stack.',
+  payment: 'Half now, half on delivery.',
 } as const satisfies PublicOffer;
 
 /** The only three offers strangers should see. */

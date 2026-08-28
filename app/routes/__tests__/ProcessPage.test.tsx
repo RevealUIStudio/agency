@@ -56,6 +56,9 @@ describe('ProcessPage', () => {
     expect(text).not.toMatch(/\bdemo\b/i);
     expect(text).not.toMatch(/\bSpec\b/);
     expect(text).not.toMatch(/live-or-holdback/i);
+    expect(text).not.toMatch(/four tests pass/i);
+    expect(text).not.toMatch(/first half back/i);
+    expect(text).not.toMatch(/keep the stack/i);
     expect(text).not.toMatch(/\$25,?000|\$50,?000/);
     expect(text).not.toMatch(/limited (spots|time)|act now|discount|sale ends/i);
   });

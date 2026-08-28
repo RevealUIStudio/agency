@@ -46,9 +46,6 @@ export const QUOTE_INTRO_LINE =
 
 export const SELF_HOST_HANDOFF = 'Start free on the product site.' as const;
 
-export const LAUNCH_HOLDBACK =
-  'Half now, half when the four tests pass (your infra, your Stripe checkout, signup-to-paid, one receipted agent action). If we miss, we keep working or you get the first half back and keep the stack.' as const;
-
 export type QuoteKind = 'studio' | 'self-host' | 'intro';
 
 export interface QuoteLine {
@@ -97,9 +94,9 @@ function studioLines(outcome: Outcome): readonly QuoteLine[] {
       id: LAUNCH_PACKAGE.id,
       title: 'Launch',
       price: LAUNCH_PACKAGE.price,
-      detail: LAUNCH_HOLDBACK,
+      detail: LAUNCH_PACKAGE.payment,
       highlighted: outcome === 'launch',
-      holdback: true,
+      holdback: false,
     },
   ];
 }

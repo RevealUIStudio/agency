@@ -3,12 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import {
-  LAUNCH_HOLDBACK,
-  QUOTE_CALCULATOR_LEAD,
-  QUOTE_OWNERSHIP,
-  SELF_HOST_HANDOFF,
-} from '@/lib/quote';
+import { QUOTE_CALCULATOR_LEAD, QUOTE_OWNERSHIP, SELF_HOST_HANDOFF } from '@/lib/quote';
 import { INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 
 describe('QuoteCalculator', () => {
@@ -32,7 +27,10 @@ describe('QuoteCalculator', () => {
     expect(screen.getByText(WORKING_SESSION.price)).toBeInTheDocument();
     expect(screen.getByText(WRITTEN_PLAN.price)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_PACKAGE.price)).toBeInTheDocument();
-    expect(screen.getByText(LAUNCH_HOLDBACK)).toBeInTheDocument();
+    expect(screen.getByText(LAUNCH_PACKAGE.payment)).toBeInTheDocument();
+    expect(screen.queryByText(/four tests pass/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/first half back/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/keep the stack/i)).not.toBeInTheDocument();
     expect(screen.getByText('Invoice before we start. No holdback.')).toBeInTheDocument();
     expect(screen.queryByText('$25,000')).not.toBeInTheDocument();
     expect(screen.queryByText('$50,000')).not.toBeInTheDocument();
@@ -71,7 +69,7 @@ describe('QuoteCalculator', () => {
       PRODUCT_SITE_URL,
     );
     expect(screen.queryByText(LAUNCH_PACKAGE.price)).not.toBeInTheDocument();
-    expect(screen.queryByText(LAUNCH_HOLDBACK)).not.toBeInTheDocument();
+    expect(screen.queryByText(LAUNCH_PACKAGE.payment)).not.toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/\$49/);
     expect(container.textContent ?? '').not.toMatch(/\$299/);
     expect(container.textContent ?? '').not.toMatch(/Enterprise/);

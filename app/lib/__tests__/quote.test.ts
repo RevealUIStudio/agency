@@ -1,12 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import {
-  buildQuote,
-  DEFAULT_HOSTER,
-  DEFAULT_OUTCOME,
-  DEFAULT_PLACES,
-  LAUNCH_HOLDBACK,
-} from '@/lib/quote';
+import { buildQuote, DEFAULT_HOSTER, DEFAULT_OUTCOME, DEFAULT_PLACES } from '@/lib/quote';
 
 describe('buildQuote', () => {
   it('defaults to Studio putting it live', () => {
@@ -15,7 +9,7 @@ describe('buildQuote', () => {
     expect(DEFAULT_PLACES).toBe('one');
   });
 
-  it('prints the three Studio prices with live-or-holdback only on Launch', () => {
+  it('prints the three Studio prices with half now / half on delivery on Launch', () => {
     const quote = buildQuote({
       hoster: DEFAULT_HOSTER,
       outcome: DEFAULT_OUTCOME,
@@ -38,10 +32,14 @@ describe('buildQuote', () => {
     expect(hour?.holdback).toBe(false);
     expect(hour?.detail).toContain('No holdback');
     expect(plan?.holdback).toBe(false);
+    expect(plan?.detail).toContain('Credits to a launch in 30 days');
     expect(plan?.detail).not.toContain('first half back');
-    expect(launch?.holdback).toBe(true);
+    expect(launch?.holdback).toBe(false);
     expect(launch?.highlighted).toBe(true);
-    expect(launch?.detail).toBe(LAUNCH_HOLDBACK);
+    expect(launch?.detail).toBe(LAUNCH_PACKAGE.payment);
+    expect(launch?.detail).not.toContain('four tests');
+    expect(launch?.detail).not.toContain('first half back');
+    expect(launch?.detail).not.toContain('keep the stack');
   });
 
   it('sends self-host visitors to the product site without quoting product SKUs', () => {

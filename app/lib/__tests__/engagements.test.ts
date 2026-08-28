@@ -40,12 +40,15 @@ describe('public studio offers', () => {
     expect(WRITTEN_PLAN.description).not.toMatch(/\bSpec\b/);
   });
 
-  it('puts the live-or-holdback sentence only on Launch', () => {
-    expect(LAUNCH_PACKAGE.payment).toContain('four tests pass');
-    expect(LAUNCH_PACKAGE.payment).toContain('first half back');
+  it('keeps Launch at half now / half on delivery without live-or-holdback', () => {
+    expect(LAUNCH_PACKAGE.payment).toBe('Half now, half on delivery.');
+    expect(LAUNCH_PACKAGE.payment).not.toContain('four tests');
+    expect(LAUNCH_PACKAGE.payment).not.toContain('first half back');
+    expect(LAUNCH_PACKAGE.payment).not.toContain('keep the stack');
     expect(WORKING_SESSION.payment).toContain('No holdback');
     expect(WORKING_SESSION.payment).not.toContain('first half back');
     expect(WRITTEN_PLAN.payment).toContain('Credits to a launch in 30 days');
+    expect(WRITTEN_PLAN.payment).toContain('Half now, half on delivery');
     expect(WRITTEN_PLAN.payment).not.toContain('first half back');
     expect(WRITTEN_PLAN.payment).not.toContain('holdback');
   });
