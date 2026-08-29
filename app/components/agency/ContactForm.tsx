@@ -14,7 +14,7 @@ import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements
 import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
-  { value: 'working-session', label: `Working session (${WORKING_SESSION.price})` },
+  { value: WORKING_SESSION.id, label: `${WORKING_SESSION.name} (${WORKING_SESSION.price})` },
   {
     value: 'written-plan',
     label: `Architecture artifact bundle and review (${WRITTEN_PLAN.price})`,

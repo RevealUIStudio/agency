@@ -10,7 +10,7 @@ describe('Hero', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /A product studio for runtime, receipts, Launch, and Enterprise\./,
+        name: /A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch\./,
       }),
     ).toBeInTheDocument();
     expect(screen.getByText(/RevealUI Studio · Product studio/)).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('Hero', () => {
     const receipt = screen.getByRole('region', { name: 'How we work, on record' });
     expect(receipt).toHaveTextContent('$300');
     expect(receipt).toHaveTextContent('30-minute intro');
-    expect(receipt).toHaveTextContent('working session');
+    expect(receipt).toHaveTextContent('Hour $300');
     expect(screen.getByText(/If an agent did it, there's a receipt\./)).toBeInTheDocument();
     const process = screen.getByRole('link', { name: 'How we work →' });
     expect(process).toHaveAttribute('href', '/process');

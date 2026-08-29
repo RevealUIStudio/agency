@@ -16,7 +16,8 @@ export function Hero() {
             RevealUI Studio · Product studio
           </p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            A product studio for runtime, receipts, Launch, and Enterprise.
+            A product studio for runtime, receipts, Hour, Architecture artifact bundle and review,
+            and Launch.
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
             I ship RevealUI, the agent runtime with receipts, and studio work you can book from
