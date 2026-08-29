@@ -15,6 +15,7 @@ export const PRODUCT_CATALOG = {
   pro: '$49',
   max: '$299',
   enterprise: 'Inquire',
+  proPerpetual: '$1,499',
 } as const;
 
 export const REVVAULT_ROLE =

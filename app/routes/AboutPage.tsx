@@ -8,8 +8,8 @@ export function AboutPage() {
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">About</h1>
         <p className="mt-6 text-lg text-muted-foreground">
           RevealUI Studio is a product studio. I ship RevealUI, the agent runtime with receipts, and
-          take paid studio work: an hour, {WRITTEN_PLAN.name}, Launch, and Enterprise. Remote first.
-          Sitting down in {STUDIO_CITY} is available on the same calendar.
+          take paid studio work: Hour, {WRITTEN_PLAN.name}, and Launch. Remote first. Sitting down
+          in {STUDIO_CITY} is available on the same calendar.
         </p>
         <div className="mt-12 rounded-2xl border border-border bg-muted p-8">
           <h2 className="text-xl font-bold text-foreground">Founder</h2>

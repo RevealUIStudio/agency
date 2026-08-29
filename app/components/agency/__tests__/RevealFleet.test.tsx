@@ -23,7 +23,10 @@ describe('RevealFleet', () => {
     expect(text).toContain(PRODUCT_CATALOG.pro);
     expect(text).toContain(PRODUCT_CATALOG.max);
     expect(text).toMatch(/Enterprise by inquiry/);
+    expect(text).toContain('Pro Perpetual');
+    expect(text).toContain(PRODUCT_CATALOG.proPerpetual);
     expect(text).toMatch(/RevVault is encrypted secret management inside Pro/);
+    expect(text).toContain(WORKING_SESSION.name);
     expect(text).toContain(WORKING_SESSION.price);
     expect(text).toContain(WRITTEN_PLAN.name);
     expect(text).toContain(WRITTEN_PLAN.price);

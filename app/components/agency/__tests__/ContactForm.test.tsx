@@ -40,7 +40,7 @@ describe('ContactForm', () => {
     expect(screen.getByLabelText(/Message/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
     expect(
-      screen.getByRole('option', { name: `Working session (${WORKING_SESSION.price})` }),
+      screen.getByRole('option', { name: `${WORKING_SESSION.name} (${WORKING_SESSION.price})` }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('option', {
