@@ -75,7 +75,7 @@ function studioLines(outcome: Outcome): readonly QuoteLine[] {
   return [
     {
       id: WORKING_SESSION.id,
-      title: 'Hour',
+      title: WORKING_SESSION.name,
       price: WORKING_SESSION.price,
       detail: 'Invoice before we start. No holdback.',
       highlighted: outcome === 'hour',

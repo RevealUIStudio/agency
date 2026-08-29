@@ -16,6 +16,7 @@ describe('public studio offers', () => {
       'written-plan',
       'launch-package',
     ]);
+    expect(WORKING_SESSION.name).toBe('Hour');
     expect(WORKING_SESSION.price).toBe('$300');
     expect(WRITTEN_PLAN.price).toBe('$3,500');
     expect(LAUNCH_PACKAGE.price).toBe('$7,500');
