@@ -1,11 +1,11 @@
 /**
  * Public studio offers for revealuistudio.com.
  *
- * Stranger-facing SKUs are locked: Working session, Architecture artifact
+ * Stranger-facing SKUs are locked: Hour, Architecture artifact
  * bundle and review, Launch package. Track D prices for the $3,500 bundle
  * and the launch package still import from `@revealui/contracts/pricing` so
- * those two numbers cannot drift from the shared menu. The $300 working
- * session is studio-only.
+ * those two numbers cannot drift from the shared menu. The $300 Hour
+ * is studio-only.
  *
  * Fleet Stamp, Custom Build, and AI Integration stay in this file as
  * internal records (case-study shapes, future private use). They must not
@@ -46,7 +46,7 @@ export const PUBLIC_LAUNCH_PACKAGE_PRICE = LAUNCH_PACKAGE_PRICE;
 
 export const WORKING_SESSION = {
   id: 'working-session',
-  name: 'Working session',
+  name: 'Hour',
   price: WORKING_SESSION_PRICE,
   tagline: 'One focused hour',
   description:

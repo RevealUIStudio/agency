@@ -241,11 +241,65 @@ describe('public copy gates', () => {
     expect(fleet).toContain('Buy {LEAD_PRODUCT}');
     expect(fleet).toContain('PRODUCT_SITE_URL');
     expect(fleet).toContain('REVVAULT_ROLE');
+    expect(fleet).toContain('Pro Perpetual');
     expect(facts).toContain('RevVault');
     expect(facts).toMatch(/inside Pro/);
+    expect(facts).toContain("proPerpetual: '$1,499'");
     expect(fleet).not.toMatch(/written plan/i);
     expect(fleet).not.toMatch(/\bSpec\b/);
     expect(fleet).not.toContain('\u2014');
+  });
+
+  it('does not list Enterprise as paid studio work', () => {
+    const studioSurfaces = [
+      path.join(repoRoot, 'app/components/agency/Hero.tsx'),
+      path.join(repoRoot, 'app/routes/AboutPage.tsx'),
+      path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/lib/engagements.ts'),
+      path.join(repoRoot, 'app/lib/quote.ts'),
+      path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
+      path.join(repoRoot, 'app/components/agency/ContactForm.tsx'),
+      path.join(repoRoot, 'app/components/agency/QuoteCalculator.tsx'),
+      path.join(repoRoot, 'index.html'),
+    ];
+    const hits: string[] = [];
+    for (const file of studioSurfaces) {
+      if (/Enterprise/.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
+    }
+    expect(hits).toEqual([]);
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    const about = readFileSync(path.join(repoRoot, 'app/routes/AboutPage.tsx'), 'utf8');
+    const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
+    const jsonLd = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+    expect(hero).toContain('Hour');
+    expect(hero).toContain('Architecture artifact bundle and review');
+    expect(hero).toContain('Launch');
+    expect(about).toContain('Hour');
+    expect(about).toMatch(/paid studio work: Hour/);
+    expect(offers).toContain("name: 'Hour'");
+    expect(jsonLd).toContain('"name": "Hour"');
+  });
+
+  it('does not print Working session on public routes', () => {
+    const files = [
+      ...walk(path.join(repoRoot, 'app/routes')),
+      ...walk(path.join(repoRoot, 'app/components')),
+      ...walk(path.join(repoRoot, 'app/content')),
+      path.join(repoRoot, 'app/lib/engagements.ts'),
+      path.join(repoRoot, 'app/lib/quote.ts'),
+      path.join(repoRoot, 'app/lib/fleet.ts'),
+      path.join(repoRoot, 'index.html'),
+    ];
+    const banned = /Working session/i;
+    const hits: string[] = [];
+    for (const file of files) {
+      if (banned.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
+    }
+    expect(hits).toEqual([]);
   });
 
   it('lists the process page in the public sitemap', () => {

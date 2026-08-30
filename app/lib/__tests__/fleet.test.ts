@@ -9,6 +9,7 @@ describe('RevealFleet facts', () => {
     expect(PRODUCT_CATALOG.pro).toBe('$49');
     expect(PRODUCT_CATALOG.max).toBe('$299');
     expect(PRODUCT_CATALOG.enterprise).toBe('Inquire');
+    expect(PRODUCT_CATALOG.proPerpetual).toBe('$1,499');
     expect(REVVAULT_ROLE).toMatch(/inside Pro/);
     expect(REVVAULT_ROLE).toMatch(/not a separate paid SKU/);
   });

@@ -19,12 +19,14 @@ export function RevealFleet() {
         </p>
         <p className="mt-4 text-base text-muted-foreground">
           The catalog is {PRODUCT_CATALOG.free}, Pro at {PRODUCT_CATALOG.pro}, Max at{' '}
-          {PRODUCT_CATALOG.max}, and Enterprise by inquiry. {REVVAULT_ROLE}
+          {PRODUCT_CATALOG.max}, Enterprise by inquiry, and Pro Perpetual at{' '}
+          {PRODUCT_CATALOG.proPerpetual}. {REVVAULT_ROLE}
         </p>
         <p className="mt-4 text-base text-muted-foreground">
-          Studio work stays the commercial offer on this site. The public menu is an hour at{' '}
-          {WORKING_SESSION.price}, the {WRITTEN_PLAN.name} at {WRITTEN_PLAN.price} with the
-          prototype inside the bundle, and Launch at {LAUNCH_PACKAGE.price}.
+          Studio work stays the commercial offer on this site. The public menu is{' '}
+          {WORKING_SESSION.name} at {WORKING_SESSION.price}, the {WRITTEN_PLAN.name} at{' '}
+          {WRITTEN_PLAN.price} with the prototype inside the bundle, and Launch at{' '}
+          {LAUNCH_PACKAGE.price}.
         </p>
         <div className="mt-10">
           <LinkButton href={PRODUCT_SITE_URL} external>

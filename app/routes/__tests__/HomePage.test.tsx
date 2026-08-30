@@ -23,7 +23,7 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /A product studio for runtime, receipts, Launch, and Enterprise\./,
+        name: /A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch\./,
       }),
     ).toBeInTheDocument();
     expect(document.getElementById('calculator')).not.toBeNull();
