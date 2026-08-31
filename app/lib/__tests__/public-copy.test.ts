@@ -103,7 +103,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
       path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
-      path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
+      path.join(repoRoot, 'app/components/agency/ProductCatalog.tsx'),
       path.join(repoRoot, 'app/lib/fleet.ts'),
     ];
     const banned =
@@ -241,16 +241,16 @@ describe('public copy gates', () => {
     );
   });
 
-  it('names the product family RevealFleet and does not sell parked fleet members', () => {
+  it('does not promote RevealFleet as a public product family', () => {
     const files = [
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/AboutPage.tsx'),
-      path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
+      path.join(repoRoot, 'app/components/agency/ProductCatalog.tsx'),
       path.join(repoRoot, 'app/components/agency/Hero.tsx'),
       path.join(repoRoot, 'app/lib/fleet.ts'),
     ];
     const banned =
-      /RevFleet|revfleet|RevForge|RevKit|RevDev|Agency Perpetual|\$25,?000|8,?499|0\.2\.12/;
+      /RevealFleet|RevFleet|revfleet|RevForge|RevKit|RevDev|Agency Perpetual|Railway|starter-kit|\/templates|\$25,?000|8,?499|0\.2\.12/;
     const hits: string[] = [];
     for (const file of files) {
       if (banned.test(readFileSync(file, 'utf8'))) {
@@ -258,22 +258,26 @@ describe('public copy gates', () => {
       }
     }
     expect(hits).toEqual([]);
-    const fleet = readFileSync(
-      path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
+    const catalog = readFileSync(
+      path.join(repoRoot, 'app/components/agency/ProductCatalog.tsx'),
       'utf8',
     );
     const facts = readFileSync(path.join(repoRoot, 'app/lib/fleet.ts'), 'utf8');
-    expect(fleet).toContain('RevealFleet');
-    expect(fleet).toContain('Buy {LEAD_PRODUCT}');
-    expect(fleet).toContain('PRODUCT_SITE_URL');
-    expect(fleet).toContain('REVVAULT_ROLE');
-    expect(fleet).toContain('Pro Perpetual');
+    expect(catalog).not.toMatch(/RevealFleet|RevFleet|revfleet/);
+    expect(catalog).not.toMatch(/ships RevealFleet/);
+    expect(catalog).not.toMatch(/Product family/);
+    expect(catalog).toContain('Buy {LEAD_PRODUCT}');
+    expect(catalog).toContain('PRODUCT_SITE_URL');
+    expect(catalog).toContain('REVVAULT_ROLE');
+    expect(catalog).toContain('Pro Perpetual');
+    expect(catalog).toContain('PRODUCT_CATALOG.free');
+    expect(facts).toContain("free: 'Free $0'");
     expect(facts).toContain('RevVault');
     expect(facts).toMatch(/inside Pro/);
     expect(facts).toContain("proPerpetual: '$1,499'");
-    expect(fleet).not.toMatch(/written plan/i);
-    expect(fleet).not.toMatch(/\bSpec\b/);
-    expect(fleet).not.toContain('\u2014');
+    expect(catalog).not.toMatch(/written plan/i);
+    expect(catalog).not.toMatch(/\bSpec\b/);
+    expect(catalog).not.toContain('\u2014');
   });
 
   it('does not list Enterprise as paid studio work', () => {

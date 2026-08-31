@@ -1,17 +1,16 @@
 /**
- * Honest RevealFleet facts for the studio homepage.
+ * Live product facts for the studio homepage.
  *
- * Public copy says RevealFleet. Do not shorten the public family name.
  * Product licenses live on revealui.com. Do not sell parked or internal
- * SKUs on this page.
+ * SKUs on this page. Do not promote a product family name that is not
+ * the live public catalog.
  */
 
-export const FLEET_NAME = 'RevealFleet' as const;
 export const LEAD_PRODUCT = 'RevealUI' as const;
 
 /** Product catalog a stranger can buy on revealui.com. */
 export const PRODUCT_CATALOG = {
-  free: 'Free',
+  free: 'Free $0',
   pro: '$49',
   max: '$299',
   enterprise: 'Inquire',
