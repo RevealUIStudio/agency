@@ -2,7 +2,11 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RevealFleet } from '@/components/agency/RevealFleet';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { FLEET_NAME, PRODUCT_CATALOG } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
@@ -28,8 +32,8 @@ describe('RevealFleet', () => {
     expect(text).toMatch(/RevVault is encrypted secret management inside Pro/);
     expect(text).toContain(WORKING_SESSION.name);
     expect(text).toContain(WORKING_SESSION.price);
-    expect(text).toContain(WRITTEN_PLAN.name);
-    expect(text).toContain(WRITTEN_PLAN.price);
+    expect(text).toContain(ARCHITECTURE_ARTIFACT_BUNDLE.name);
+    expect(text).toContain(ARCHITECTURE_ARTIFACT_BUNDLE.price);
     expect(text).toContain(LAUNCH_PACKAGE.price);
     expect(text).toMatch(/prototype inside the bundle/);
   });

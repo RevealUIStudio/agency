@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { buildQuote, DEFAULT_HOSTER, DEFAULT_OUTCOME, DEFAULT_PLACES } from '@/lib/quote';
 
 describe('buildQuote', () => {
@@ -19,18 +23,18 @@ describe('buildQuote', () => {
     expect(quote.stopQuoting).toBe(false);
     expect(quote.lines.map((line) => line.price)).toEqual([
       WORKING_SESSION.price,
-      WRITTEN_PLAN.price,
+      ARCHITECTURE_ARTIFACT_BUNDLE.price,
       LAUNCH_PACKAGE.price,
     ]);
     expect(WORKING_SESSION.price).toBe('$300');
-    expect(WRITTEN_PLAN.price).toBe('$3,500');
+    expect(ARCHITECTURE_ARTIFACT_BUNDLE.price).toBe('$3,500');
     expect(LAUNCH_PACKAGE.price).toBe('$7,500');
 
     const hour = quote.lines.find((line) => line.id === 'working-session');
-    const plan = quote.lines.find((line) => line.id === 'written-plan');
+    const plan = quote.lines.find((line) => line.id === 'architecture-artifact-bundle');
     const launch = quote.lines.find((line) => line.id === 'launch-package');
     expect(hour?.detail).toContain('No holdback');
-    expect(plan?.detail).toBe(WRITTEN_PLAN.payment);
+    expect(plan?.detail).toBe(ARCHITECTURE_ARTIFACT_BUNDLE.payment);
     expect(plan?.detail).toContain('Credits to a launch in 30 days');
     expect(plan?.detail).not.toContain('first half back');
     expect(launch?.highlighted).toBe(true);

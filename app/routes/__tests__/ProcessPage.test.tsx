@@ -1,7 +1,11 @@
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 import { ProcessPage } from '@/routes/ProcessPage';
 
@@ -12,14 +16,14 @@ describe('ProcessPage', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: 'How we work' })).toBeInTheDocument();
     expect(text).toContain(WORKING_SESSION.name);
-    expect(text).toContain(WRITTEN_PLAN.name);
+    expect(text).toContain(ARCHITECTURE_ARTIFACT_BUNDLE.name);
     expect(text).toContain(LAUNCH_PACKAGE.name);
     expect(text).toContain(WORKING_SESSION.price);
-    expect(text).toContain(WRITTEN_PLAN.price);
+    expect(text).toContain(ARCHITECTURE_ARTIFACT_BUNDLE.price);
     expect(text).toContain(LAUNCH_PACKAGE.price);
 
     expect(document.getElementById(WORKING_SESSION.id)).not.toBeNull();
-    expect(document.getElementById(WRITTEN_PLAN.id)).not.toBeNull();
+    expect(document.getElementById(ARCHITECTURE_ARTIFACT_BUNDLE.id)).not.toBeNull();
     expect(document.getElementById(LAUNCH_PACKAGE.id)).not.toBeNull();
 
     expect(screen.getAllByRole('heading', { name: 'What you send' })).toHaveLength(3);
@@ -28,7 +32,7 @@ describe('ProcessPage', () => {
     expect(screen.getAllByRole('heading', { name: 'What happens next' })).toHaveLength(3);
 
     expect(text).toContain('One hour');
-    expect(text).toContain(WRITTEN_PLAN.payment);
+    expect(text).toContain(ARCHITECTURE_ARTIFACT_BUNDLE.payment);
     expect(text).toContain(LAUNCH_PACKAGE.payment);
   });
 

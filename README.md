@@ -20,7 +20,7 @@ The same stack the platform itself runs on — this site is a real external cons
 - Tailwind CSS v4 via `@tailwindcss/vite`
 - `@revealui/router` (SPA routing via programmatic route registration in `app/App.tsx`)
 - `@revealui/presentation` (component primitives + design tokens)
-- `@revealui/contracts` (Track D prices: Architecture Review + Launch Package)
+- `@revealui/contracts` (Track D prices: Architecture artifact bundle and review + Launch Package)
 - Zod (schema + form validation)
 - `@vercel/speed-insights` (analytics)
 - Vitest

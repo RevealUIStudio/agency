@@ -1,5 +1,9 @@
 import { LinkButton } from '@revealui/presentation';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { FLEET_NAME, LEAD_PRODUCT, PRODUCT_CATALOG, REVVAULT_ROLE } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
@@ -24,8 +28,9 @@ export function RevealFleet() {
         </p>
         <p className="mt-4 text-base text-muted-foreground">
           Studio work stays the commercial offer on this site. The public menu is{' '}
-          {WORKING_SESSION.name} at {WORKING_SESSION.price}, the {WRITTEN_PLAN.name} at{' '}
-          {WRITTEN_PLAN.price} with the prototype inside the bundle, and Launch at{' '}
+          {WORKING_SESSION.name} at {WORKING_SESSION.price}, the {ARCHITECTURE_ARTIFACT_BUNDLE.name}{' '}
+          at {ARCHITECTURE_ARTIFACT_BUNDLE.price} with the prototype inside the bundle, and Launch
+          at{' '}
           {LAUNCH_PACKAGE.price}.
         </p>
         <div className="mt-10">

@@ -3,7 +3,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ContactForm } from '@/components/agency/ContactForm';
 import { submitContact } from '@/lib/api';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 vi.mock('@/lib/api', () => ({
@@ -44,7 +48,7 @@ describe('ContactForm', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole('option', {
-        name: `Architecture artifact bundle and review (${WRITTEN_PLAN.price})`,
+        name: `${ARCHITECTURE_ARTIFACT_BUNDLE.name} (${ARCHITECTURE_ARTIFACT_BUNDLE.price})`,
       }),
     ).toBeInTheDocument();
     expect(

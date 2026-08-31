@@ -107,7 +107,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/lib/fleet.ts'),
     ];
     const banned =
-      /written plan|local studio|one-person software studio|call us|Alcoa|Architecture review artifact bundle|plus a demo|and a demo/i;
+      /written[- _]?plan|WRITTEN_PLAN|local studio|one-person software studio|call us|Alcoa|Architecture review artifact bundle|plus a demo|and a demo/i;
     const hits: string[] = [];
     for (const file of files) {
       if (banned.test(readFileSync(file, 'utf8'))) {
@@ -118,10 +118,36 @@ describe('public copy gates', () => {
     expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).toContain(
       'Architecture artifact bundle and review',
     );
+    expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).toContain(
+      "id: 'architecture-artifact-bundle'",
+    );
     expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).not.toMatch(
       /\bdemo\b/i,
     );
     expect(readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8')).not.toMatch(/\bSpec\b/);
+  });
+
+  it('does not print Written plan or written-plan on public surfaces', () => {
+    const files = [
+      ...walk(path.join(repoRoot, 'app/routes')),
+      ...walk(path.join(repoRoot, 'app/components')),
+      ...walk(path.join(repoRoot, 'app/content')),
+      path.join(repoRoot, 'app/lib/engagements.ts'),
+      path.join(repoRoot, 'app/lib/quote.ts'),
+      path.join(repoRoot, 'app/lib/fleet.ts'),
+      path.join(repoRoot, 'app/lib/site.ts'),
+      path.join(repoRoot, 'app/App.tsx'),
+      path.join(repoRoot, 'index.html'),
+      path.join(repoRoot, 'README.md'),
+    ];
+    const banned = /written[- _]?plan|WRITTEN_PLAN/i;
+    const hits: string[] = [];
+    for (const file of files) {
+      if (banned.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
+    }
+    expect(hits).toEqual([]);
   });
 
   it('does not sell live-or-holdback, four acceptance tests, or a first-half refund', () => {

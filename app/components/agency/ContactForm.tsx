@@ -10,14 +10,18 @@ import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { z } from 'zod';
 import { submitContact } from '@/lib/api';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
   { value: WORKING_SESSION.id, label: `${WORKING_SESSION.name} (${WORKING_SESSION.price})` },
   {
-    value: 'written-plan',
-    label: `Architecture artifact bundle and review (${WRITTEN_PLAN.price})`,
+    value: ARCHITECTURE_ARTIFACT_BUNDLE.id,
+    label: `${ARCHITECTURE_ARTIFACT_BUNDLE.name} (${ARCHITECTURE_ARTIFACT_BUNDLE.price})`,
   },
   { value: 'launch-package', label: `Launch package (${LAUNCH_PACKAGE.price})` },
   { value: 'general', label: 'General inquiry' },

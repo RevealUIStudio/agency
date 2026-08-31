@@ -1,5 +1,9 @@
 import { LinkButton } from '@revealui/presentation';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
 export function ProcessPage() {
@@ -74,21 +78,23 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  The hour ends. If you want {WRITTEN_PLAN.name}, or a launch, that is a separate
-                  offer and a new invoice.
+                  The hour ends. If you want {ARCHITECTURE_ARTIFACT_BUNDLE.name}, or a launch, that
+                  is a separate offer and a new invoice.
                 </p>
               </div>
             </div>
           </article>
 
-          <article id={WRITTEN_PLAN.id}>
+          <article id={ARCHITECTURE_ARTIFACT_BUNDLE.id}>
             <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-              {WRITTEN_PLAN.tagline}
+              {ARCHITECTURE_ARTIFACT_BUNDLE.tagline}
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              {WRITTEN_PLAN.name}. {WRITTEN_PLAN.price}.
+              {ARCHITECTURE_ARTIFACT_BUNDLE.name}. {ARCHITECTURE_ARTIFACT_BUNDLE.price}.
             </h2>
-            <p className="mt-4 text-base text-muted-foreground">{WRITTEN_PLAN.description}</p>
+            <p className="mt-4 text-base text-muted-foreground">
+              {ARCHITECTURE_ARTIFACT_BUNDLE.description}
+            </p>
             <div className="mt-8 space-y-6 text-base leading-7 text-foreground">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
@@ -114,7 +120,7 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  {WRITTEN_PLAN.payment} Launch is a separate offer.
+                  {ARCHITECTURE_ARTIFACT_BUNDLE.payment} Launch is a separate offer.
                 </p>
               </div>
             </div>

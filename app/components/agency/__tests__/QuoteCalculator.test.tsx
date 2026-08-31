@@ -2,7 +2,11 @@ import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { QUOTE_CALCULATOR_LEAD, QUOTE_OWNERSHIP, SELF_HOST_HANDOFF } from '@/lib/quote';
 import { INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 
@@ -25,11 +29,11 @@ describe('QuoteCalculator', () => {
     expect(screen.getByText(QUOTE_CALCULATOR_LEAD)).toBeInTheDocument();
     expect(screen.queryByText(/Same tool as the product site/)).not.toBeInTheDocument();
     expect(screen.getByText(WORKING_SESSION.price)).toBeInTheDocument();
-    expect(screen.getByText(WRITTEN_PLAN.price)).toBeInTheDocument();
+    expect(screen.getByText(ARCHITECTURE_ARTIFACT_BUNDLE.price)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_PACKAGE.price)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_PACKAGE.payment)).toBeInTheDocument();
     expect(screen.getByText('Invoice before we start. No holdback.')).toBeInTheDocument();
-    expect(screen.getByText(WRITTEN_PLAN.payment)).toBeInTheDocument();
+    expect(screen.getByText(ARCHITECTURE_ARTIFACT_BUNDLE.payment)).toBeInTheDocument();
     expect(screen.queryByText(/four tests/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/first half back/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/keep the stack/i)).not.toBeInTheDocument();

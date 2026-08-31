@@ -6,7 +6,11 @@
  * Self-host hops to the product site. No fleet math. No product SKUs.
  */
 
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import {
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+  WORKING_SESSION,
+} from '@/lib/engagements';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
 export type Hoster = 'self-host' | 'studio';
@@ -81,10 +85,10 @@ function studioLines(outcome: Outcome): readonly QuoteLine[] {
       highlighted: outcome === 'hour',
     },
     {
-      id: WRITTEN_PLAN.id,
-      title: 'Architecture artifact bundle and review',
-      price: WRITTEN_PLAN.price,
-      detail: WRITTEN_PLAN.payment,
+      id: ARCHITECTURE_ARTIFACT_BUNDLE.id,
+      title: ARCHITECTURE_ARTIFACT_BUNDLE.name,
+      price: ARCHITECTURE_ARTIFACT_BUNDLE.price,
+      detail: ARCHITECTURE_ARTIFACT_BUNDLE.payment,
       highlighted: outcome === 'plan',
     },
     {

@@ -26,7 +26,10 @@ export const RUNTIME_METRICS = {
   fsl: 5,
 } as const;
 
-export type PublicOfferId = 'working-session' | 'written-plan' | 'launch-package';
+export type PublicOfferId =
+  | 'working-session'
+  | 'architecture-artifact-bundle'
+  | 'launch-package';
 
 export interface PublicOffer {
   readonly id: PublicOfferId;
@@ -41,7 +44,7 @@ export interface PublicOffer {
 }
 
 export const WORKING_SESSION_PRICE = '$300' as const;
-export const WRITTEN_PLAN_PRICE = ARCHITECTURE_REVIEW_PRICE;
+export const ARCHITECTURE_ARTIFACT_BUNDLE_PRICE = ARCHITECTURE_REVIEW_PRICE;
 export const PUBLIC_LAUNCH_PACKAGE_PRICE = LAUNCH_PACKAGE_PRICE;
 
 export const WORKING_SESSION = {
@@ -61,10 +64,10 @@ export const WORKING_SESSION = {
   payment: 'Invoice $300 before we start. No holdback.',
 } as const satisfies PublicOffer;
 
-export const WRITTEN_PLAN = {
-  id: 'written-plan',
+export const ARCHITECTURE_ARTIFACT_BUNDLE = {
+  id: 'architecture-artifact-bundle',
   name: 'Architecture artifact bundle and review',
-  price: WRITTEN_PLAN_PRICE,
+  price: ARCHITECTURE_ARTIFACT_BUNDLE_PRICE,
   tagline: 'One bundle from the review',
   description:
     'The architecture artifact bundle and the review. The prototype is inside the artifact bundle. Not a live launch.',
@@ -93,15 +96,11 @@ export const LAUNCH_PACKAGE = {
 } as const satisfies PublicOffer;
 
 /** The only three offers strangers should see. */
-export const PUBLIC_OFFERS = [WORKING_SESSION, WRITTEN_PLAN, LAUNCH_PACKAGE] as const;
-
-/** @deprecated Use WRITTEN_PLAN. Price is unchanged. */
-export const ARCHITECTURE_REVIEW = {
-  id: 'written-plan',
-  name: WRITTEN_PLAN.name,
-  price: WRITTEN_PLAN.price,
-  startsFrom: false,
-} as const;
+export const PUBLIC_OFFERS = [
+  WORKING_SESSION,
+  ARCHITECTURE_ARTIFACT_BUNDLE,
+  LAUNCH_PACKAGE,
+] as const;
 
 /**
  * Internal product lanes. Do not import from homepage, nav, or pricing.
