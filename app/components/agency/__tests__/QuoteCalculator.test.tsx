@@ -14,9 +14,7 @@ describe('QuoteCalculator', () => {
     expect(screen.getByRole('radio', { name: 'I will (developer / self-host)' })).not.toBeChecked();
     expect(screen.getByRole('radio', { name: 'Launch' })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'One business, one place' })).toBeChecked();
-    expect(
-      screen.getByRole('radio', { name: 'Consultation' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Consultation' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'Pilot' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'Launch' })).toBeInTheDocument();
 
@@ -26,7 +24,9 @@ describe('QuoteCalculator', () => {
     expect(screen.getByText(WRITTEN_PLAN.price)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_PACKAGE.price)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_PACKAGE.payment)).toBeInTheDocument();
-    expect(screen.getByText('Invoice before we start. No leftover site. No holdback.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Invoice before we start. No leftover site. No holdback.'),
+    ).toBeInTheDocument();
     expect(screen.getByText(WRITTEN_PLAN.payment)).toBeInTheDocument();
     expect(screen.queryByText(/four tests/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/first half back/i)).not.toBeInTheDocument();

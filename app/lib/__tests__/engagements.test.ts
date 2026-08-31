@@ -16,11 +16,7 @@ describe('public studio offers', () => {
       'written-plan',
       'launch-package',
     ]);
-    expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual([
-      'Consultation',
-      'Pilot',
-      'Launch',
-    ]);
+    expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual(['Consultation', 'Pilot', 'Launch']);
     expect(WORKING_SESSION.name).toBe('Consultation');
     expect(WORKING_SESSION.price).toBe('$300');
     expect(WRITTEN_PLAN.name).toBe('Pilot');
