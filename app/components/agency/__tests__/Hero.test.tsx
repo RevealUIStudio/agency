@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { Hero } from '@/components/agency/Hero';
+import { HERO_SHOP_LINE, Hero } from '@/components/agency/Hero';
 import { INTRO_CALL_URL } from '@/lib/site';
 
 describe('Hero', () => {
@@ -10,9 +10,15 @@ describe('Hero', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch\./,
+        name: HERO_SHOP_LINE,
       }),
     ).toBeInTheDocument();
+    const lead = screen.getByText(/They operate, or they pay to implement/);
+    expect(lead).toHaveTextContent('Consultation $300');
+    expect(lead).toHaveTextContent('Pilot $1,500');
+    expect(lead).toHaveTextContent('Launch $7,500');
+    expect(screen.queryByText(/Meet the Fleet/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\bHour\b/)).not.toBeInTheDocument();
     expect(screen.getByText(/RevealUI Studio · Product studio/)).toBeInTheDocument();
     expect(screen.queryByText(/RevealUI Studio · Maryville, Tennessee/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Fleet Stamp/)).not.toBeInTheDocument();
@@ -40,7 +46,7 @@ describe('Hero', () => {
     const receipt = screen.getByRole('region', { name: 'How we work, on record' });
     expect(receipt).toHaveTextContent('$300');
     expect(receipt).toHaveTextContent('30-minute intro');
-    expect(receipt).toHaveTextContent('Hour $300');
+    expect(receipt).toHaveTextContent('Consultation $300');
     expect(screen.getByText(/If an agent did it, there's a receipt\./)).toBeInTheDocument();
     const process = screen.getByRole('link', { name: 'How we work →' });
     expect(process).toHaveAttribute('href', '/process');
