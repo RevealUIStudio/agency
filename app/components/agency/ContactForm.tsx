@@ -10,11 +10,7 @@ import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { z } from 'zod';
 import { submitContact } from '@/lib/api';
-import {
-  ARCHITECTURE_ARTIFACT_BUNDLE,
-  LAUNCH_PACKAGE,
-  WORKING_SESSION,
-} from '@/lib/engagements';
+import { ARCHITECTURE_ARTIFACT_BUNDLE, LAUNCH_PACKAGE, WORKING_SESSION } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [

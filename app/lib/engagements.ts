@@ -26,10 +26,7 @@ export const RUNTIME_METRICS = {
   fsl: 5,
 } as const;
 
-export type PublicOfferId =
-  | 'working-session'
-  | 'architecture-artifact-bundle'
-  | 'launch-package';
+export type PublicOfferId = 'working-session' | 'architecture-artifact-bundle' | 'launch-package';
 
 export interface PublicOffer {
   readonly id: PublicOfferId;

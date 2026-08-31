@@ -1,9 +1,5 @@
 import { LinkButton } from '@revealui/presentation';
-import {
-  ARCHITECTURE_ARTIFACT_BUNDLE,
-  LAUNCH_PACKAGE,
-  WORKING_SESSION,
-} from '@/lib/engagements';
+import { ARCHITECTURE_ARTIFACT_BUNDLE, LAUNCH_PACKAGE, WORKING_SESSION } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
 export function ProcessPage() {

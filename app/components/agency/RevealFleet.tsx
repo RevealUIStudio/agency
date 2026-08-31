@@ -1,9 +1,5 @@
 import { LinkButton } from '@revealui/presentation';
-import {
-  ARCHITECTURE_ARTIFACT_BUNDLE,
-  LAUNCH_PACKAGE,
-  WORKING_SESSION,
-} from '@/lib/engagements';
+import { ARCHITECTURE_ARTIFACT_BUNDLE, LAUNCH_PACKAGE, WORKING_SESSION } from '@/lib/engagements';
 import { FLEET_NAME, LEAD_PRODUCT, PRODUCT_CATALOG, REVVAULT_ROLE } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
@@ -30,8 +26,7 @@ export function RevealFleet() {
           Studio work stays the commercial offer on this site. The public menu is{' '}
           {WORKING_SESSION.name} at {WORKING_SESSION.price}, the {ARCHITECTURE_ARTIFACT_BUNDLE.name}{' '}
           at {ARCHITECTURE_ARTIFACT_BUNDLE.price} with the prototype inside the bundle, and Launch
-          at{' '}
-          {LAUNCH_PACKAGE.price}.
+          at {LAUNCH_PACKAGE.price}.
         </p>
         <div className="mt-10">
           <LinkButton href={PRODUCT_SITE_URL} external>

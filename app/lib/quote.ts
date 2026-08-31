@@ -6,11 +6,7 @@
  * Self-host hops to the product site. No fleet math. No product SKUs.
  */
 
-import {
-  ARCHITECTURE_ARTIFACT_BUNDLE,
-  LAUNCH_PACKAGE,
-  WORKING_SESSION,
-} from '@/lib/engagements';
+import { ARCHITECTURE_ARTIFACT_BUNDLE, LAUNCH_PACKAGE, WORKING_SESSION } from '@/lib/engagements';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
 export type Hoster = 'self-host' | 'studio';

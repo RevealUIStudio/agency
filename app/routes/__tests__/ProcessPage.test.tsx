@@ -1,11 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import {
-  ARCHITECTURE_ARTIFACT_BUNDLE,
-  LAUNCH_PACKAGE,
-  WORKING_SESSION,
-} from '@/lib/engagements';
+import { ARCHITECTURE_ARTIFACT_BUNDLE, LAUNCH_PACKAGE, WORKING_SESSION } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 import { ProcessPage } from '@/routes/ProcessPage';
 

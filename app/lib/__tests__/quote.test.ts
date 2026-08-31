@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  ARCHITECTURE_ARTIFACT_BUNDLE,
-  LAUNCH_PACKAGE,
-  WORKING_SESSION,
-} from '@/lib/engagements';
+import { ARCHITECTURE_ARTIFACT_BUNDLE, LAUNCH_PACKAGE, WORKING_SESSION } from '@/lib/engagements';
 import { buildQuote, DEFAULT_HOSTER, DEFAULT_OUTCOME, DEFAULT_PLACES } from '@/lib/quote';
 
 describe('buildQuote', () => {

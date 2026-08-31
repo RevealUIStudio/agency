@@ -2,11 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
-import {
-  ARCHITECTURE_ARTIFACT_BUNDLE,
-  LAUNCH_PACKAGE,
-  WORKING_SESSION,
-} from '@/lib/engagements';
+import { ARCHITECTURE_ARTIFACT_BUNDLE, LAUNCH_PACKAGE, WORKING_SESSION } from '@/lib/engagements';
 import { QUOTE_CALCULATOR_LEAD, QUOTE_OWNERSHIP, SELF_HOST_HANDOFF } from '@/lib/quote';
 import { INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 
