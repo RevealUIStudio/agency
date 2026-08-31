@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { Router, RouterProvider } from '@revealui/router';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { LEAD_PRODUCT } from '@/lib/fleet';
+import { FLEET_NAME } from '@/lib/fleet';
 import { CONTACT_EMAIL, INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 import { HomePage } from '@/routes/HomePage';
 
@@ -36,26 +36,23 @@ describe('HomePage', () => {
     expect(screen.getAllByRole('link', { name: CONTACT_EMAIL }).length).toBeGreaterThan(0);
   });
 
-  it('shows the live RevealUI product catalog before the calculator', () => {
+  it('shows an honest RevealFleet family highlight before the calculator', () => {
     renderHome();
-    expect(screen.getByRole('heading', { level: 2, name: LEAD_PRODUCT })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: FLEET_NAME })).toBeInTheDocument();
+    expect(screen.getByText(/RevealUI Studio ships RevealFleet/)).toBeInTheDocument();
     const buy = screen.getByRole('link', { name: 'Buy RevealUI' });
     expect(buy).toHaveAttribute('href', PRODUCT_SITE_URL);
-    const product = screen
-      .getByRole('heading', { level: 2, name: LEAD_PRODUCT })
-      .closest('section');
+    const fleet = screen.getByRole('heading', { level: 2, name: FLEET_NAME }).closest('section');
     const calculator = document.getElementById('calculator');
-    expect(product).not.toBeNull();
+    expect(fleet).not.toBeNull();
     expect(calculator).not.toBeNull();
     expect(
       Boolean(
-        product &&
+        fleet &&
           calculator &&
-          product.compareDocumentPosition(calculator) & Node.DOCUMENT_POSITION_FOLLOWING,
+          fleet.compareDocumentPosition(calculator) & Node.DOCUMENT_POSITION_FOLLOWING,
       ),
     ).toBe(true);
-    expect(screen.queryByText(/RevealUI Studio ships RevealFleet/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/RevealFleet/)).not.toBeInTheDocument();
   });
 
   it('does not show banned catalog, compliance, or proof copy', () => {
@@ -80,7 +77,7 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/first half back/i);
     expect(text).not.toMatch(/keep the stack/i);
     expect(text).not.toMatch(/make-good/i);
-    expect(text).not.toMatch(/RevealFleet|RevFleet|revfleet/);
+    expect(text).not.toMatch(/RevFleet|revfleet/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
     expect(text).not.toMatch(/Railway|starter-kit|\/templates/i);
     expect(text).not.toContain('\u2014');
