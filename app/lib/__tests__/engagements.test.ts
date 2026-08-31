@@ -16,14 +16,21 @@ describe('public studio offers', () => {
       'written-plan',
       'launch-package',
     ]);
-    expect(WORKING_SESSION.name).toBe('Hour');
+    expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual([
+      'Consultation',
+      'Pilot',
+      'Launch',
+    ]);
+    expect(WORKING_SESSION.name).toBe('Consultation');
     expect(WORKING_SESSION.price).toBe('$300');
-    expect(WRITTEN_PLAN.price).toBe('$3,500');
+    expect(WRITTEN_PLAN.name).toBe('Pilot');
+    expect(WRITTEN_PLAN.price).toBe('$1,500');
+    expect(LAUNCH_PACKAGE.name).toBe('Launch');
     expect(LAUNCH_PACKAGE.price).toBe('$7,500');
   });
 
-  it('keeps written-plan and launch prices aligned with @revealui/contracts/pricing', () => {
-    expect(WRITTEN_PLAN.price).toBe('$3,500');
+  it('keeps Launch aligned with @revealui/contracts/pricing and Pilot studio-only', () => {
+    expect(WRITTEN_PLAN.price).toBe('$1,500');
     expect(LAUNCH_PACKAGE.price).toBe('$7,500');
   });
 
@@ -33,12 +40,18 @@ describe('public studio offers', () => {
     expect(names).not.toContain(CUSTOM_BUILD.name);
     expect(names).not.toContain('AI Integration');
     expect(names).not.toContain('Architecture Review');
-    expect(WRITTEN_PLAN.name).toBe('Architecture artifact bundle and review');
-    expect(WRITTEN_PLAN.description).toMatch(/artifact bundle/i);
-    expect(WRITTEN_PLAN.description).toMatch(/prototype/i);
+    expect(names).not.toContain('Hour');
+    expect(names).not.toContain('Written plan');
+    expect(names).not.toContain('Architecture artifact bundle and review');
+    expect(names).not.toContain('Working session');
+    expect(names).not.toContain('Live page');
+    expect(names).not.toContain('Launch package');
+    expect(WRITTEN_PLAN.description).toMatch(/your domain/i);
+    expect(WRITTEN_PLAN.description).toMatch(/you operate/i);
     expect(WRITTEN_PLAN.description).not.toMatch(/written plan/i);
     expect(WRITTEN_PLAN.description).not.toMatch(/\bdemo\b/i);
     expect(WRITTEN_PLAN.description).not.toMatch(/\bSpec\b/);
+    expect(LAUNCH_PACKAGE.description).toMatch(/inside this offer/i);
   });
 
   it('keeps honest payment terms and does not sell live-or-holdback', () => {
@@ -49,8 +62,11 @@ describe('public studio offers', () => {
     expect(LAUNCH_PACKAGE.payment).not.toMatch(/keep the stack/i);
     expect(LAUNCH_PACKAGE.payment).not.toMatch(/make-good/i);
     expect(WORKING_SESSION.payment).toContain('No holdback');
+    expect(WORKING_SESSION.payment).toContain('Invoice $300 before we start');
     expect(WORKING_SESSION.payment).not.toContain('first half back');
-    expect(WRITTEN_PLAN.payment).toContain('Credits to a launch in 30 days');
+    expect(WRITTEN_PLAN.payment).toContain('Credits 100% to Launch');
+    expect(WRITTEN_PLAN.payment).toContain('30 days');
+    expect(WRITTEN_PLAN.payment).toContain('You keep the site if you walk');
     expect(WRITTEN_PLAN.payment).not.toContain('first half back');
     expect(WRITTEN_PLAN.payment).not.toContain('holdback');
   });

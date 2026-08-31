@@ -32,7 +32,7 @@ export function App() {
         meta: {
           title: 'RevealUI Studio | Product studio for runtime, receipts, and Launch',
           description:
-            'A product studio. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500. Remote first. Book a 30-minute intro on Google Calendar.',
+            'A product studio. Consultation $300. Pilot $1,500. Launch $7,500. Remote first. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
@@ -41,7 +41,7 @@ export function App() {
         meta: {
           title: 'Offers | RevealUI Studio',
           description:
-            'Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500. Invoice after we book. Book a 30-minute intro first.',
+            'Consultation $300. Pilot $1,500. Launch $7,500. Invoice after we book. Book a 30-minute intro first.',
         },
       },
       {
@@ -50,7 +50,7 @@ export function App() {
         meta: {
           title: 'Quote | RevealUI Studio',
           description:
-            'Three questions, a quote. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.',
+            'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
           robots: 'noindex,follow',
         },
       },
@@ -60,7 +60,7 @@ export function App() {
         meta: {
           title: 'Quote | RevealUI Studio',
           description:
-            'Three questions, a quote. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.',
+            'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
           robots: 'noindex,follow',
         },
       },
@@ -70,7 +70,7 @@ export function App() {
         meta: {
           title: 'Quote | RevealUI Studio',
           description:
-            'Three questions, a quote. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.',
+            'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
           robots: 'noindex,follow',
         },
       },
@@ -80,7 +80,7 @@ export function App() {
         meta: {
           title: 'How we work | RevealUI Studio',
           description:
-            'How a RevealUI Studio engagement runs. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
+            'How a RevealUI Studio engagement runs. Consultation $300. Pilot $1,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
@@ -89,7 +89,7 @@ export function App() {
         meta: {
           title: 'About | RevealUI Studio',
           description:
-            'RevealUI Studio is a product studio. Joshua Vaughn runs it. Hour, architecture artifact bundle and review, and Launch. Remote first. Invoice after we agree.',
+            'RevealUI Studio is a product studio. Joshua Vaughn runs it. Consultation, Pilot, and Launch. Remote first. Invoice after we agree.',
         },
       },
       {

@@ -61,21 +61,21 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  Notes and a next step. Not a rebuild. Not ongoing support.
+                  Notes and a next step. Not a leftover site. Not a rebuild. Not ongoing support.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">How long</h3>
                 <p className="mt-2 text-muted-foreground">
-                  One hour. Remote, or in person in {STUDIO_CITY}. I invoice {WORKING_SESSION.price}{' '}
-                  before we start. No holdback.
+                  A single session. Remote, or in person in {STUDIO_CITY}. I invoice{' '}
+                  {WORKING_SESSION.price} before we start. No holdback.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  The hour ends. If you want {WRITTEN_PLAN.name}, or a launch, that is a separate
-                  offer and a new invoice.
+                  The session ends. If you want {WRITTEN_PLAN.name} or {LAUNCH_PACKAGE.name}, that is
+                  a separate offer and a new invoice.
                 </p>
               </div>
             </div>
@@ -93,28 +93,28 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
                 <p className="mt-2 text-muted-foreground">
-                  How the work happens today, and where the systems do not talk to each other.
+                  Your domain, your Vercel project, your model key, and how the work happens today.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  The architecture artifact bundle and the review. The prototype is inside the
-                  artifact bundle, not a second line item. Not a live launch. No hosting. No
-                  licenses.
+                  One site on your domain. One agent you operate on your Vercel, with your model
+                  key. Click-to-call plus book or quote. One receipted action. You keep it if you
+                  walk. Not hosted chatbot SaaS. Product licenses live on revealui.com.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">How long</h3>
                 <p className="mt-2 text-muted-foreground">
-                  We agree when the bundle lands on the intro. I start after the first half of the
-                  invoice and deliver the review. Duration is that window, not a standing retainer.
+                  We agree when the site lands on the intro. I start after the invoice. Duration is
+                  that window, not a standing retainer.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  {WRITTEN_PLAN.payment} Launch is a separate offer.
+                  {WRITTEN_PLAN.payment} {LAUNCH_PACKAGE.name} is a separate offer.
                 </p>
               </div>
             </div>
@@ -133,7 +133,8 @@ export function ProcessPage() {
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
                 <p className="mt-2 text-muted-foreground">
                   Access to the accounts the work will live on. We lock the scope on the intro call:
-                  one live flow on your accounts.
+                  one live flow on your accounts. Architecture work (schema, primitives, review)
+                  happens inside this offer.
                 </p>
               </div>
               <div>
