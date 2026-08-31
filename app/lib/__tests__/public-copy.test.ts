@@ -279,11 +279,12 @@ describe('public copy gates', () => {
       'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
     );
     expect(hero).not.toMatch(/Meet the Fleet/i);
-    expect(hero).toContain('Consultation');
-    expect(hero).toContain('Pilot');
-    expect(hero).toContain('Launch');
-    expect(about).toContain('Consultation');
+    expect(hero).toContain('WORKING_SESSION.name');
+    expect(hero).toContain('WRITTEN_PLAN.name');
+    expect(hero).toContain('LAUNCH_PACKAGE.name');
     expect(about).toMatch(/paid studio work: \{WORKING_SESSION\.name\}/);
+    expect(about).toContain('WRITTEN_PLAN.name');
+    expect(about).toContain('LAUNCH_PACKAGE.name');
     expect(offers).toContain("name: 'Consultation'");
     expect(offers).toContain("name: 'Pilot'");
     expect(offers).toContain("name: 'Launch'");

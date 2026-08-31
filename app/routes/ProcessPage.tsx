@@ -74,8 +74,8 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  The session ends. If you want {WRITTEN_PLAN.name} or {LAUNCH_PACKAGE.name}, that is
-                  a separate offer and a new invoice.
+                  The session ends. If you want {WRITTEN_PLAN.name} or {LAUNCH_PACKAGE.name}, that
+                  is a separate offer and a new invoice.
                 </p>
               </div>
             </div>

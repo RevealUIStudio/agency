@@ -24,11 +24,11 @@ export function Hero() {
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
             They operate, or they pay to implement. {WORKING_SESSION.name} {WORKING_SESSION.price}.{' '}
-            {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}. {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}. I
-            ship RevealUI, the agent runtime with receipts, and studio work you can book from here.
-            Remote first. Sitting down in {STUDIO_CITY} is an option on the same calendar. Answer
-            three questions for a quote, or book a 30-minute intro. You do not need to understand
-            the tech.
+            {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}. {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}.
+            I ship RevealUI, the agent runtime with receipts, and studio work you can book from
+            here. Remote first. Sitting down in {STUDIO_CITY} is an option on the same calendar.
+            Answer three questions for a quote, or book a 30-minute intro. You do not need to
+            understand the tech.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>
