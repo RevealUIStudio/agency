@@ -27,7 +27,11 @@ describe('ProcessPage', () => {
     expect(screen.getAllByRole('heading', { name: 'How long' })).toHaveLength(3);
     expect(screen.getAllByRole('heading', { name: 'What happens next' })).toHaveLength(3);
 
-    expect(text).toContain('One hour');
+    expect(text).toContain('Notes and a next step');
+    expect(text).toContain('No leftover site');
+    expect(text).toContain('One site on your domain');
+    expect(text).toContain('Credits 100% to Launch');
+    expect(text).toContain('Architecture work');
     expect(text).toContain(WRITTEN_PLAN.payment);
     expect(text).toContain(LAUNCH_PACKAGE.payment);
   });

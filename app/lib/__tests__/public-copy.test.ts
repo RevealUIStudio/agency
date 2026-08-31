@@ -115,12 +115,13 @@ describe('public copy gates', () => {
       }
     }
     expect(hits).toEqual([]);
-    expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).toContain(
-      'Architecture artifact bundle and review',
-    );
-    expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).not.toMatch(
-      /\bdemo\b/i,
-    );
+    const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
+    expect(offers).toContain("name: 'Consultation'");
+    expect(offers).toContain("name: 'Pilot'");
+    expect(offers).toContain("name: 'Launch'");
+    expect(offers).toContain("'$1,500'");
+    expect(offers).not.toMatch(/\$3,500/);
+    expect(offers).not.toMatch(/\bdemo\b/i);
     expect(readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8')).not.toMatch(/\bSpec\b/);
   });
 
@@ -273,16 +274,33 @@ describe('public copy gates', () => {
     const about = readFileSync(path.join(repoRoot, 'app/routes/AboutPage.tsx'), 'utf8');
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
     const jsonLd = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
-    expect(hero).toContain('Hour');
-    expect(hero).toContain('Architecture artifact bundle and review');
+    const quote = readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8');
+    expect(hero).toContain(
+      'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
+    );
+    expect(hero).not.toMatch(/Meet the Fleet/i);
+    expect(hero).toContain('Consultation');
+    expect(hero).toContain('Pilot');
     expect(hero).toContain('Launch');
-    expect(about).toContain('Hour');
-    expect(about).toMatch(/paid studio work: Hour/);
-    expect(offers).toContain("name: 'Hour'");
-    expect(jsonLd).toContain('"name": "Hour"');
+    expect(about).toContain('Consultation');
+    expect(about).toMatch(/paid studio work: \{WORKING_SESSION\.name\}/);
+    expect(offers).toContain("name: 'Consultation'");
+    expect(offers).toContain("name: 'Pilot'");
+    expect(offers).toContain("name: 'Launch'");
+    expect(jsonLd).toContain('"name": "Consultation"');
+    expect(jsonLd).toContain('"name": "Pilot"');
+    expect(jsonLd).toContain('"name": "Launch"');
+    expect(jsonLd).toContain('"price": "300"');
+    expect(jsonLd).toContain('"price": "1500"');
+    expect(jsonLd).toContain('"price": "7500"');
+    expect(jsonLd).not.toContain('"price": "3500"');
+    expect(quote).toContain("label: 'Consultation'");
+    expect(quote).toContain("label: 'Pilot'");
+    expect(quote).toContain("label: 'Launch'");
+    expect(quote).not.toMatch(/free website/i);
   });
 
-  it('does not print Working session on public routes', () => {
+  it('does not print retired public SKU titles on public routes', () => {
     const files = [
       ...walk(path.join(repoRoot, 'app/routes')),
       ...walk(path.join(repoRoot, 'app/components')),
@@ -292,10 +310,12 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/lib/fleet.ts'),
       path.join(repoRoot, 'index.html'),
     ];
-    const banned = /Working session/i;
+    const bannedTitles =
+      /Working session|Written plan|Architecture artifact|Architecture Review|Launch package|Live page/i;
     const hits: string[] = [];
     for (const file of files) {
-      if (banned.test(readFileSync(file, 'utf8'))) {
+      const text = readFileSync(file, 'utf8');
+      if (bannedTitles.test(text) || /\bHour\b/.test(text)) {
         hits.push(path.relative(repoRoot, file));
       }
     }
