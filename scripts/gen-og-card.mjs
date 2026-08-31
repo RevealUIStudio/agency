@@ -26,6 +26,11 @@ const URL_LINE = 'revealuistudio.com';
 const PLATE = '#060d1a';
 const AMBER = '#eeb300';
 
+function exportedStringConst(source, name) {
+  const match = source.match(new RegExp(`^export const ${name} = '([^']*)';$`, 'm'));
+  return match?.[1] ?? null;
+}
+
 function assertLiveCopy() {
   const fixture = readFileSync(path.join(ROOT, 'app/lib/og-card.ts'), 'utf8');
   const hero = readFileSync(path.join(ROOT, 'app/components/agency/Hero.tsx'), 'utf8');
@@ -35,8 +40,11 @@ function assertLiveCopy() {
   if (!fixture.includes(SKU_LINE)) {
     throw new Error('app/lib/og-card.ts is missing the locked SKU line');
   }
-  if (!fixture.includes(BOOKING_LINE) || !fixture.includes(URL_LINE)) {
-    throw new Error('app/lib/og-card.ts is missing booking or URL line');
+  if (!fixture.includes(BOOKING_LINE)) {
+    throw new Error('app/lib/og-card.ts is missing the booking line');
+  }
+  if (exportedStringConst(fixture, 'OG_CARD_URL') !== URL_LINE) {
+    throw new Error('app/lib/og-card.ts OG_CARD_URL drifted from the locked host');
   }
 }
 
