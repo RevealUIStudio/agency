@@ -3,6 +3,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { engagementLabels } from '@/data/cases';
+import {
+  OG_CARD_BOOKING_LINE,
+  OG_CARD_HEADLINE,
+  OG_CARD_SKU_FROM_OFFERS,
+  OG_CARD_SKU_LINE,
+  OG_CARD_URL,
+} from '@/lib/og-card';
 import { INTRO_CALL_URL } from '@/lib/site';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -35,6 +42,7 @@ describe('public copy gates', () => {
       ...walk(path.join(repoRoot, 'public')),
       path.join(repoRoot, 'index.html'),
       path.join(repoRoot, 'vercel.json'),
+      path.join(repoRoot, 'scripts/gen-og-card.mjs'),
     ];
     const hits: string[] = [];
     for (const file of files) {
@@ -96,6 +104,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
       path.join(repoRoot, 'app/content/receipt.ts'),
       path.join(repoRoot, 'app/lib/engagements.ts'),
+      path.join(repoRoot, 'app/lib/og-card.ts'),
       path.join(repoRoot, 'app/lib/quote.ts'),
       path.join(repoRoot, 'app/lib/site.ts'),
       path.join(repoRoot, 'app/routes/AboutPage.tsx'),
@@ -210,6 +219,45 @@ describe('public copy gates', () => {
         'revealui-mark.svg',
       ].sort(),
     );
+  });
+
+  it('keeps og-card.png on the live catalog, not the retired local-shop identity', () => {
+    const fixture = readFileSync(path.join(repoRoot, 'app/lib/og-card.ts'), 'utf8');
+    const generator = readFileSync(path.join(repoRoot, 'scripts/gen-og-card.mjs'), 'utf8');
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    const png = readFileSync(path.join(repoRoot, 'public/og-card.png'));
+    const pngLatin1 = png.toString('latin1');
+    const bannedRaster =
+      /written plan|local studio|one-person software studio|\bSpec\b|cal\.com|RevDev|RevForge|RevKit|Fleet Stamp/i;
+
+    expect(OG_CARD_HEADLINE).toBe(
+      'A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch.',
+    );
+    expect(OG_CARD_SKU_LINE).toBe(
+      'Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.',
+    );
+    expect(OG_CARD_SKU_LINE).toBe(OG_CARD_SKU_FROM_OFFERS);
+    expect(OG_CARD_BOOKING_LINE).toBe('Book a 30-minute intro on Google Calendar.');
+    expect(OG_CARD_URL).toBe('revealuistudio.com');
+    expect(hero.replace(/\s+/g, ' ')).toContain(OG_CARD_HEADLINE);
+    expect(fixture).toContain(OG_CARD_HEADLINE);
+    expect(fixture).toContain(OG_CARD_SKU_LINE);
+    expect(fixture).toContain(OG_CARD_BOOKING_LINE);
+    expect(generator).toContain(OG_CARD_HEADLINE);
+    expect(generator).toContain(OG_CARD_SKU_LINE);
+    expect(generator).toContain(OG_CARD_BOOKING_LINE);
+    expect(generator).toContain('#060d1a');
+    expect(fixture).not.toMatch(bannedRaster);
+
+    // Raster walk: utf-8 readFile of public/ misses PNG. tEXt chunks are
+    // written by scripts/gen-og-card.mjs so the committed bytes stay honest.
+    expect(png.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))).toBe(true);
+    expect(pngLatin1).toContain(`Headline\0${OG_CARD_HEADLINE}`);
+    expect(pngLatin1).toContain(`SkuLine\0${OG_CARD_SKU_LINE}`);
+    expect(pngLatin1).toContain(`BookingLine\0${OG_CARD_BOOKING_LINE}`);
+    expect(pngLatin1).not.toMatch(bannedRaster);
+    expect(pngLatin1).not.toContain('A local studio for a site or booking flow.');
+    expect(pngLatin1).not.toContain('Written plan $3,500');
   });
 
   it('keeps chrome free of a nav wordmark, a repeated email, and a raw docs host', () => {
