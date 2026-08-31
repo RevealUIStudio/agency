@@ -10,7 +10,7 @@ describe('Hero', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch\./,
+        name: /A product studio for runtime, receipts, a focused hour, an architecture artifact bundle and review, and a live launch\./,
       }),
     ).toBeInTheDocument();
     expect(screen.getByText(/RevealUI Studio · Product studio/)).toBeInTheDocument();

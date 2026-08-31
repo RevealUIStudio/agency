@@ -8,7 +8,9 @@ describe('AboutPage', () => {
     const { container } = render(<AboutPage />);
     const text = container.textContent ?? '';
     expect(text).toContain('5+ years');
-    expect(text).toContain('Hour');
+    expect(text).toContain(
+      'a focused hour, an architecture artifact bundle and review, and a live launch',
+    );
     expect(text).not.toMatch(/Enterprise/);
     expect(text).not.toMatch(/Working session/i);
     expect(text).not.toMatch(/ten years/i);

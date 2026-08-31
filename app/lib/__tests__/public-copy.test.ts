@@ -231,7 +231,7 @@ describe('public copy gates', () => {
       /written plan|local studio|one-person software studio|\bSpec\b|cal\.com|RevDev|RevForge|RevKit|Fleet Stamp/i;
 
     expect(OG_CARD_HEADLINE).toBe(
-      'A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch.',
+      'A product studio for runtime, receipts, a focused hour, an architecture artifact bundle and review, and a live launch.',
     );
     expect(OG_CARD_SKU_LINE).toBe(
       'Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.',
@@ -335,11 +335,12 @@ describe('public copy gates', () => {
     const about = readFileSync(path.join(repoRoot, 'app/routes/AboutPage.tsx'), 'utf8');
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
     const jsonLd = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
-    expect(hero).toContain('Hour');
-    expect(hero).toContain('Architecture artifact bundle and review');
-    expect(hero).toContain('Launch');
-    expect(about).toContain('Hour');
-    expect(about).toMatch(/paid studio work: Hour/);
+    expect(hero.replace(/\s+/g, ' ')).toContain(
+      'A product studio for runtime, receipts, a focused hour, an architecture artifact bundle and review, and a live launch.',
+    );
+    expect(about.replace(/\s+/g, ' ')).toContain(
+      'paid studio work: a focused hour, an architecture artifact bundle and review, and a live launch.',
+    );
     expect(offers).toContain("name: 'Hour'");
     expect(jsonLd).toContain('"name": "Hour"');
   });

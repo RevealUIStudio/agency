@@ -19,7 +19,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
 const HEADLINE =
-  'A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch.';
+  'A product studio for runtime, receipts, a focused hour, an architecture artifact bundle and review, and a live launch.';
 const SKU_LINE = 'Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500.';
 const BOOKING_LINE = 'Book a 30-minute intro on Google Calendar.';
 const URL_LINE = 'revealuistudio.com';
@@ -107,9 +107,9 @@ async function main() {
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
   <rect x="72" y="248" width="96" height="6" rx="3" fill="${AMBER}"/>
-  <text x="72" y="318" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">A product studio for runtime, receipts, Hour,</text>
-  <text x="72" y="368" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">Architecture artifact bundle and review,</text>
-  <text x="72" y="418" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">and Launch.</text>
+  <text x="72" y="318" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">A product studio for runtime, receipts, a focused hour,</text>
+  <text x="72" y="368" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">an architecture artifact bundle and review,</text>
+  <text x="72" y="418" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">and a live launch.</text>
   <text x="72" y="468" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="22" font-weight="500">${SKU_LINE}</text>
   <text x="72" y="500" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="22" font-weight="500">${BOOKING_LINE}</text>
   <text x="72" y="588" fill="#8aa0bd" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="18" font-weight="400">${URL_LINE}</text>

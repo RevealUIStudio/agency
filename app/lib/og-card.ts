@@ -13,7 +13,7 @@ import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements
 
 /** Hero h1. Same sentence as app/components/agency/Hero.tsx. */
 export const OG_CARD_HEADLINE =
-  'A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch.';
+  'A product studio for runtime, receipts, a focused hour, an architecture artifact bundle and review, and a live launch.';
 
 /**
  * Locked public SKU line (same sentence as index.html / App.tsx meta).

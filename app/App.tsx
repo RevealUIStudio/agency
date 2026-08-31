@@ -30,7 +30,7 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | Product studio for runtime, receipts, and Launch',
+          title: 'RevealUI Studio | Product studio for runtime, receipts, and live launch',
           description:
             'A product studio. Hour $300. Architecture artifact bundle and review $3,500. Launch $7,500. Remote first. Book a 30-minute intro on Google Calendar.',
         },
@@ -89,7 +89,7 @@ export function App() {
         meta: {
           title: 'About | RevealUI Studio',
           description:
-            'RevealUI Studio is a product studio. Joshua Vaughn runs it. Hour, architecture artifact bundle and review, and Launch. Remote first. Invoice after we agree.',
+            'RevealUI Studio is a product studio. Joshua Vaughn runs it. A focused hour, an architecture artifact bundle and review, and a live launch. Remote first. Invoice after we agree.',
         },
       },
       {
