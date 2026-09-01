@@ -152,6 +152,20 @@ describe('public copy gates', () => {
     expect(pathCount).toBeGreaterThanOrEqual(70);
     expect(viaCount).toBeGreaterThanOrEqual(50);
     expect(mark).toContain('Q207,159');
+    // revealui test #2787 / f4ee0bac: optically centered v2 Circuit-R.
+    expect(mark).toContain('translate(256,256) scale(1.06) translate(-300,-320)');
+    expect(mark).not.toContain('translate(-330');
+    expect(mark).toContain('mask="url(#cm)"');
+    expect(mark).toContain('maskUnits="userSpaceOnUse"');
+    expect(mark).toContain('#0a2c5a');
+    expect(mark).toContain('#002247');
+    expect(mark).toContain('#0e3468');
+    expect(mark).toContain('#9fc9ff');
+    expect(mark).toContain('#f0b519');
+    expect(mark).not.toContain('#164687');
+    expect(mark).not.toContain('#1e57a8');
+    expect(mark).not.toContain('#e8f1ff');
+    expect(mark).not.toContain('#f8fafd');
     expect(mark).not.toContain('M26 50');
     expect(mark).not.toContain('M34 11');
     expect(mark).not.toContain('viewBox="0 0 82 100"');
