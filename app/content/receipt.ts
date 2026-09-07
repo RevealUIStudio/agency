@@ -1,6 +1,6 @@
 // Demonstration content for the homepage receipt motif.
 // Static timestamps only (never Date.now()). Not live production data.
-// Shows how a studio engagement runs: intro booked, $300 Hour
+// Shows how a studio engagement runs: intro booked, $300 Consultation
 // invoiced, notes delivered, audit-log records the receipt. No customer
 // name, no case study, no invented company.
 
@@ -19,7 +19,7 @@ export const RECEIPT_HERO_LINES: readonly AuditEvent[] = [
     ts: '09:42:08',
     actor: 'studio',
     action: 'invoiced',
-    object: 'Hour $300',
+    object: 'Consultation $300',
   },
   {
     ts: '11:15:03',

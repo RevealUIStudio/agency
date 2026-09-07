@@ -23,9 +23,9 @@ export function RevealFleet() {
           {PRODUCT_CATALOG.proPerpetual}. {REVVAULT_ROLE}
         </p>
         <p className="mt-4 text-base text-muted-foreground">
-          Studio work stays the commercial offer on this site. The public menu is{' '}
-          {WORKING_SESSION.name} at {WORKING_SESSION.price}, the {WRITTEN_PLAN.name} at{' '}
-          {WRITTEN_PLAN.price} with the prototype inside the bundle, and Launch at{' '}
+          Studio work stays the commercial offer on this site. They operate, or they pay to
+          implement. The public menu is {WORKING_SESSION.name} at {WORKING_SESSION.price},{' '}
+          {WRITTEN_PLAN.name} at {WRITTEN_PLAN.price}, and {LAUNCH_PACKAGE.name} at{' '}
           {LAUNCH_PACKAGE.price}.
         </p>
         <div className="mt-10">

@@ -2,7 +2,15 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { HERO_SHOP_LINE } from '@/components/agency/Hero';
 import { engagementLabels } from '@/data/cases';
+import {
+  OG_CARD_BOOKING_LINE,
+  OG_CARD_HEADLINE,
+  OG_CARD_SKU_FROM_OFFERS,
+  OG_CARD_SKU_LINE,
+  OG_CARD_URL,
+} from '@/lib/og-card';
 import { INTRO_CALL_URL } from '@/lib/site';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -35,6 +43,7 @@ describe('public copy gates', () => {
       ...walk(path.join(repoRoot, 'public')),
       path.join(repoRoot, 'index.html'),
       path.join(repoRoot, 'vercel.json'),
+      path.join(repoRoot, 'scripts/gen-og-card.mjs'),
     ];
     const hits: string[] = [];
     for (const file of files) {
@@ -96,6 +105,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
       path.join(repoRoot, 'app/content/receipt.ts'),
       path.join(repoRoot, 'app/lib/engagements.ts'),
+      path.join(repoRoot, 'app/lib/og-card.ts'),
       path.join(repoRoot, 'app/lib/quote.ts'),
       path.join(repoRoot, 'app/lib/site.ts'),
       path.join(repoRoot, 'app/routes/AboutPage.tsx'),
@@ -115,12 +125,13 @@ describe('public copy gates', () => {
       }
     }
     expect(hits).toEqual([]);
-    expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).toContain(
-      'Architecture artifact bundle and review',
-    );
-    expect(readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8')).not.toMatch(
-      /\bdemo\b/i,
-    );
+    const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
+    expect(offers).toContain("name: 'Consultation'");
+    expect(offers).toContain("name: 'Pilot'");
+    expect(offers).toContain("name: 'Launch'");
+    expect(offers).toContain("'$1,500'");
+    expect(offers).not.toMatch(/\$3,500/);
+    expect(offers).not.toMatch(/\bdemo\b/i);
     expect(readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8')).not.toMatch(/\bSpec\b/);
   });
 
@@ -151,6 +162,20 @@ describe('public copy gates', () => {
     expect(pathCount).toBeGreaterThanOrEqual(70);
     expect(viaCount).toBeGreaterThanOrEqual(50);
     expect(mark).toContain('Q207,159');
+    // revealui test #2787 / f4ee0bac: optically centered v2 Circuit-R.
+    expect(mark).toContain('translate(256,256) scale(1.06) translate(-300,-320)');
+    expect(mark).not.toContain('translate(-330');
+    expect(mark).toContain('mask="url(#cm)"');
+    expect(mark).toContain('maskUnits="userSpaceOnUse"');
+    expect(mark).toContain('#0a2c5a');
+    expect(mark).toContain('#002247');
+    expect(mark).toContain('#0e3468');
+    expect(mark).toContain('#9fc9ff');
+    expect(mark).toContain('#f0b519');
+    expect(mark).not.toContain('#164687');
+    expect(mark).not.toContain('#1e57a8');
+    expect(mark).not.toContain('#e8f1ff');
+    expect(mark).not.toContain('#f8fafd');
     expect(mark).not.toContain('M26 50');
     expect(mark).not.toContain('M34 11');
     expect(mark).not.toContain('viewBox="0 0 82 100"');
@@ -196,6 +221,46 @@ describe('public copy gates', () => {
         'revealui-mark.svg',
       ].sort(),
     );
+  });
+
+  it('keeps og-card.png on the live catalog, not the retired local-shop identity', () => {
+    const fixture = readFileSync(path.join(repoRoot, 'app/lib/og-card.ts'), 'utf8');
+    const generator = readFileSync(path.join(repoRoot, 'scripts/gen-og-card.mjs'), 'utf8');
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    const png = readFileSync(path.join(repoRoot, 'public/og-card.png'));
+    const pngLatin1 = png.toString('latin1');
+    const bannedRaster =
+      /written plan|local studio|one-person software studio|\bSpec\b|cal\.com|RevDev|RevForge|RevKit|Fleet Stamp/i;
+
+    expect(OG_CARD_HEADLINE).toBe(HERO_SHOP_LINE);
+    expect(OG_CARD_SKU_LINE).toBe('Consultation $300. Pilot $1,500. Launch $7,500.');
+    expect(OG_CARD_SKU_LINE).toBe(OG_CARD_SKU_FROM_OFFERS);
+    expect(OG_CARD_BOOKING_LINE).toBe('Book a 30-minute intro on Google Calendar.');
+    expect(OG_CARD_URL).toBe('revealuistudio.com');
+    expect(hero.replace(/\s+/g, ' ')).toContain(OG_CARD_HEADLINE);
+    expect(fixture).toContain(OG_CARD_HEADLINE);
+    expect(fixture).toContain(OG_CARD_SKU_LINE);
+    expect(fixture).toContain(OG_CARD_BOOKING_LINE);
+    expect(generator).toContain(OG_CARD_HEADLINE);
+    expect(generator).toContain(OG_CARD_SKU_LINE);
+    expect(generator).toContain(OG_CARD_BOOKING_LINE);
+    expect(generator).toContain('#060d1a');
+    expect(fixture).not.toMatch(bannedRaster);
+    expect(fixture).not.toMatch(/\bHour\b/);
+    expect(fixture).not.toMatch(/Architecture artifact/);
+    expect(fixture).not.toMatch(/\$3,500/);
+
+    // Raster walk: utf-8 readFile of public/ misses PNG. tEXt chunks are
+    // written by scripts/gen-og-card.mjs so the committed bytes stay honest.
+    expect(png.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))).toBe(true);
+    expect(pngLatin1).toContain(`Headline\0${OG_CARD_HEADLINE}`);
+    expect(pngLatin1).toContain(`SkuLine\0${OG_CARD_SKU_LINE}`);
+    expect(pngLatin1).toContain(`BookingLine\0${OG_CARD_BOOKING_LINE}`);
+    expect(pngLatin1).not.toMatch(bannedRaster);
+    expect(pngLatin1).not.toContain('A local studio for a site or booking flow.');
+    expect(pngLatin1).not.toContain('Written plan $3,500');
+    expect(pngLatin1).not.toContain('Hour $300');
+    expect(pngLatin1).not.toContain('Architecture artifact bundle and review');
   });
 
   it('keeps chrome free of a nav wordmark, a repeated email, and a raw docs host', () => {
@@ -273,16 +338,34 @@ describe('public copy gates', () => {
     const about = readFileSync(path.join(repoRoot, 'app/routes/AboutPage.tsx'), 'utf8');
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
     const jsonLd = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
-    expect(hero).toContain('Hour');
-    expect(hero).toContain('Architecture artifact bundle and review');
-    expect(hero).toContain('Launch');
-    expect(about).toContain('Hour');
-    expect(about).toMatch(/paid studio work: Hour/);
-    expect(offers).toContain("name: 'Hour'");
-    expect(jsonLd).toContain('"name": "Hour"');
+    const quote = readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8');
+    expect(hero).toContain(
+      'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
+    );
+    expect(hero).not.toMatch(/Meet the Fleet/i);
+    expect(hero).toContain('WORKING_SESSION.name');
+    expect(hero).toContain('WRITTEN_PLAN.name');
+    expect(hero).toContain('LAUNCH_PACKAGE.name');
+    expect(about).toMatch(/paid studio work: \{WORKING_SESSION\.name\}/);
+    expect(about).toContain('WRITTEN_PLAN.name');
+    expect(about).toContain('LAUNCH_PACKAGE.name');
+    expect(offers).toContain("name: 'Consultation'");
+    expect(offers).toContain("name: 'Pilot'");
+    expect(offers).toContain("name: 'Launch'");
+    expect(jsonLd).toContain('"name": "Consultation"');
+    expect(jsonLd).toContain('"name": "Pilot"');
+    expect(jsonLd).toContain('"name": "Launch"');
+    expect(jsonLd).toContain('"price": "300"');
+    expect(jsonLd).toContain('"price": "1500"');
+    expect(jsonLd).toContain('"price": "7500"');
+    expect(jsonLd).not.toContain('"price": "3500"');
+    expect(quote).toContain("label: 'Consultation'");
+    expect(quote).toContain("label: 'Pilot'");
+    expect(quote).toContain("label: 'Launch'");
+    expect(quote).not.toMatch(/free website/i);
   });
 
-  it('does not print Working session on public routes', () => {
+  it('does not print retired public SKU titles on public routes', () => {
     const files = [
       ...walk(path.join(repoRoot, 'app/routes')),
       ...walk(path.join(repoRoot, 'app/components')),
@@ -290,12 +373,16 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/lib/engagements.ts'),
       path.join(repoRoot, 'app/lib/quote.ts'),
       path.join(repoRoot, 'app/lib/fleet.ts'),
+      path.join(repoRoot, 'app/lib/og-card.ts'),
+      path.join(repoRoot, 'scripts/gen-og-card.mjs'),
       path.join(repoRoot, 'index.html'),
     ];
-    const banned = /Working session/i;
+    const bannedTitles =
+      /Working session|Written plan|Architecture artifact|Architecture Review|Launch package|Live page/i;
     const hits: string[] = [];
     for (const file of files) {
-      if (banned.test(readFileSync(file, 'utf8'))) {
+      const text = readFileSync(file, 'utf8');
+      if (bannedTitles.test(text) || /\bHour\b/.test(text)) {
         hits.push(path.relative(repoRoot, file));
       }
     }

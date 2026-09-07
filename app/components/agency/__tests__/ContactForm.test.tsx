@@ -43,12 +43,10 @@ describe('ContactForm', () => {
       screen.getByRole('option', { name: `${WORKING_SESSION.name} (${WORKING_SESSION.price})` }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('option', {
-        name: `Architecture artifact bundle and review (${WRITTEN_PLAN.price})`,
-      }),
+      screen.getByRole('option', { name: `${WRITTEN_PLAN.name} (${WRITTEN_PLAN.price})` }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('option', { name: `Launch package (${LAUNCH_PACKAGE.price})` }),
+      screen.getByRole('option', { name: `${LAUNCH_PACKAGE.name} (${LAUNCH_PACKAGE.price})` }),
     ).toBeInTheDocument();
     expect(screen.queryByRole('option', { name: /Fleet Stamp/ })).not.toBeInTheDocument();
   });

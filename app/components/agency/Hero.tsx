@@ -5,7 +5,11 @@ import {
   RECEIPT_HERO_LINES,
   RECEIPT_HERO_TITLE,
 } from '@/content/receipt';
+import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
+
+export const HERO_SHOP_LINE =
+  'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?' as const;
 
 export function Hero() {
   return (
@@ -16,10 +20,11 @@ export function Hero() {
             RevealUI Studio · Product studio
           </p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            A product studio for runtime, receipts, Hour, Architecture artifact bundle and review,
-            and Launch.
+            {HERO_SHOP_LINE}
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
+            They operate, or they pay to implement. {WORKING_SESSION.name} {WORKING_SESSION.price}.{' '}
+            {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}. {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}.
             I ship RevealUI, the agent runtime with receipts, and studio work you can book from
             here. Remote first. Sitting down in {STUDIO_CITY} is an option on the same calendar.
             Answer three questions for a quote, or book a 30-minute intro. You do not need to

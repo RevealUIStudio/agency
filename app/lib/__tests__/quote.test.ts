@@ -23,15 +23,18 @@ describe('buildQuote', () => {
       LAUNCH_PACKAGE.price,
     ]);
     expect(WORKING_SESSION.price).toBe('$300');
-    expect(WRITTEN_PLAN.price).toBe('$3,500');
+    expect(WRITTEN_PLAN.price).toBe('$1,500');
     expect(LAUNCH_PACKAGE.price).toBe('$7,500');
+    expect(quote.lines.map((line) => line.title)).toEqual(['Consultation', 'Pilot', 'Launch']);
 
     const hour = quote.lines.find((line) => line.id === 'working-session');
     const plan = quote.lines.find((line) => line.id === 'written-plan');
     const launch = quote.lines.find((line) => line.id === 'launch-package');
     expect(hour?.detail).toContain('No holdback');
+    expect(hour?.detail).toContain('No leftover site');
     expect(plan?.detail).toBe(WRITTEN_PLAN.payment);
-    expect(plan?.detail).toContain('Credits to a launch in 30 days');
+    expect(plan?.detail).toContain('Credits 100% to Launch');
+    expect(plan?.detail).toContain('30 days');
     expect(plan?.detail).not.toContain('first half back');
     expect(launch?.highlighted).toBe(true);
     expect(launch?.detail).toBe(LAUNCH_PACKAGE.payment);

@@ -8,7 +8,10 @@ describe('AboutPage', () => {
     const { container } = render(<AboutPage />);
     const text = container.textContent ?? '';
     expect(text).toContain('5+ years');
-    expect(text).toContain('Hour');
+    expect(text).toContain('Consultation');
+    expect(text).toContain('Pilot');
+    expect(text).toContain('Launch');
+    expect(text).not.toMatch(/\bHour\b/);
     expect(text).not.toMatch(/Enterprise/);
     expect(text).not.toMatch(/Working session/i);
     expect(text).not.toMatch(/ten years/i);

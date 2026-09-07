@@ -23,7 +23,7 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /A product studio for runtime, receipts, Hour, Architecture artifact bundle and review, and Launch\./,
+        name: /Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt\?/,
       }),
     ).toBeInTheDocument();
     expect(document.getElementById('calculator')).not.toBeNull();
@@ -61,6 +61,10 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/\$50,?000/);
     expect(text).not.toMatch(/8,?499/);
     expect(text).not.toMatch(/Agency Kit/i);
+    expect(text).toContain('Consultation $300');
+    expect(text).toContain('Pilot $1,500');
+    expect(text).toContain('Launch $7,500');
+    expect(text).not.toMatch(/\bHour\b/);
     expect(text).not.toMatch(/Starter Kit/i);
     expect(text).not.toMatch(/waitlist/i);
     expect(text).not.toMatch(/HIPAA/i);

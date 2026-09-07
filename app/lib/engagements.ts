@@ -1,18 +1,18 @@
 /**
  * Public studio offers for revealuistudio.com.
  *
- * Stranger-facing SKUs are locked: Hour, Architecture artifact
- * bundle and review, Launch package. Track D prices for the $3,500 bundle
- * and the launch package still import from `@revealui/contracts/pricing` so
- * those two numbers cannot drift from the shared menu. The $300 Hour
- * is studio-only.
+ * Stranger-facing SKUs are locked: Consultation, Pilot, Launch.
+ * Launch still imports its price from `@revealui/contracts/pricing` so that
+ * number cannot drift from the shared menu. Consultation and Pilot are
+ * studio-only. Architecture work (schema, primitives, review) happens
+ * inside Launch, not as a named SKU.
  *
  * Fleet Stamp, Custom Build, and AI Integration stay in this file as
  * internal records (case-study shapes, future private use). They must not
  * be imported by homepage, nav, or pricing surfaces.
  */
 
-import { ARCHITECTURE_REVIEW_PRICE, LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
+import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 
 /**
  * Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1
@@ -41,50 +41,55 @@ export interface PublicOffer {
 }
 
 export const WORKING_SESSION_PRICE = '$300' as const;
-export const WRITTEN_PLAN_PRICE = ARCHITECTURE_REVIEW_PRICE;
+export const WRITTEN_PLAN_PRICE = '$1,500' as const;
 export const PUBLIC_LAUNCH_PACKAGE_PRICE = LAUNCH_PACKAGE_PRICE;
 
 export const WORKING_SESSION = {
   id: 'working-session',
-  name: 'Hour',
+  name: 'Consultation',
   price: WORKING_SESSION_PRICE,
-  tagline: 'One focused hour',
+  tagline: 'Notes and a next step',
   description:
-    'One hour on your system. That can be product, runtime, receipts, a stuck live flow, or launch prep. Remote, or in person in Maryville. You leave with notes and a next step.',
+    'One focused session on your system. That can be product, runtime, receipts, a stuck live flow, or launch prep. Remote, or in person in Maryville. You leave with notes and a next step. No leftover site.',
   includes: [
-    'One focused hour',
+    'Notes and a next step',
     'Remote, or in person in Maryville',
     'Product, runtime, receipts, a stuck live flow, or launch prep',
-    'Notes and a next step',
+    'No leftover site',
   ],
-  notIncluded: ['A full rebuild', 'Ongoing support'],
+  notIncluded: ['A leftover site', 'A full rebuild', 'Ongoing support'],
   payment: 'Invoice $300 before we start. No holdback.',
 } as const satisfies PublicOffer;
 
 export const WRITTEN_PLAN = {
   id: 'written-plan',
-  name: 'Architecture artifact bundle and review',
+  name: 'Pilot',
   price: WRITTEN_PLAN_PRICE,
-  tagline: 'One bundle from the review',
+  tagline: 'One site you operate',
   description:
-    'The architecture artifact bundle and the review. The prototype is inside the artifact bundle. Not a live launch.',
+    'One site on your domain. One agent you operate on your Vercel, with your model key. Click-to-call plus book or quote. One receipted action. You keep it if you walk.',
   includes: [
-    'The architecture artifact bundle and the review. The prototype is inside the artifact bundle',
-    'Credit toward a later build if we start that build within 30 days',
+    'One site on your domain',
+    'One agent you operate (your Vercel, your model key)',
+    'Click-to-call plus book or quote',
+    'One receipted action',
+    'You keep it if you walk',
   ],
-  notIncluded: ['A live launch', 'Hosting or licenses'],
-  payment: 'Half now, half on delivery. Credits to a launch in 30 days.',
+  notIncluded: ['Hosted chatbot SaaS', 'A multi-site rollout', 'Product licenses'],
+  payment:
+    'Invoice $1,500 before we start. You keep the site if you walk. Credits 100% to Launch if we start Launch within 30 days.',
 } as const satisfies PublicOffer;
 
 export const LAUNCH_PACKAGE = {
   id: 'launch-package',
-  name: 'Launch package',
+  name: 'Launch',
   price: PUBLIC_LAUNCH_PACKAGE_PRICE,
   tagline: 'One live flow on your accounts',
   description:
-    'One live flow on your accounts. We scope it on the call and take it live. You own the result.',
+    'One live flow on your accounts. Architecture work (schema, primitives, review) happens inside this offer, not as a named SKU. We scope it on the call and take it live. You own the result.',
   includes: [
     'One live flow on your accounts',
+    'Architecture work (schema, primitives, review) inside this offer',
     'Scope locked on the intro call',
     'Live handoff; you own what we ship',
   ],
@@ -95,7 +100,7 @@ export const LAUNCH_PACKAGE = {
 /** The only three offers strangers should see. */
 export const PUBLIC_OFFERS = [WORKING_SESSION, WRITTEN_PLAN, LAUNCH_PACKAGE] as const;
 
-/** @deprecated Use WRITTEN_PLAN. Price is unchanged. */
+/** @deprecated Use WRITTEN_PLAN. Public name is Pilot. */
 export const ARCHITECTURE_REVIEW = {
   id: 'written-plan',
   name: WRITTEN_PLAN.name,

@@ -23,9 +23,9 @@ export const HOSTER_OPTIONS = [
 ] as const satisfies readonly { value: Hoster; label: string }[];
 
 export const OUTCOME_OPTIONS = [
-  { value: 'hour', label: 'One hour with Joshua (debug / pair)' },
-  { value: 'plan', label: 'Architecture artifact bundle and review' },
-  { value: 'launch', label: 'One live flow on my accounts' },
+  { value: 'hour', label: 'Consultation' },
+  { value: 'plan', label: 'Pilot' },
+  { value: 'launch', label: 'Launch' },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
@@ -34,7 +34,7 @@ export const PLACES_OPTIONS = [
 ] as const satisfies readonly { value: Places; label: string }[];
 
 export const QUOTE_CALCULATOR_LEAD =
-  'This calculator is for Studio quotes only. Product licenses live on revealui.com.' as const;
+  'This calculator is for Studio quotes only. They operate, or they pay to implement. Product licenses live on revealui.com.' as const;
 
 export const QUOTE_OWNERSHIP = [
   'You own the accounts and the data.',
@@ -77,19 +77,19 @@ function studioLines(outcome: Outcome): readonly QuoteLine[] {
       id: WORKING_SESSION.id,
       title: WORKING_SESSION.name,
       price: WORKING_SESSION.price,
-      detail: 'Invoice before we start. No holdback.',
+      detail: 'Invoice before we start. No leftover site. No holdback.',
       highlighted: outcome === 'hour',
     },
     {
       id: WRITTEN_PLAN.id,
-      title: 'Architecture artifact bundle and review',
+      title: WRITTEN_PLAN.name,
       price: WRITTEN_PLAN.price,
       detail: WRITTEN_PLAN.payment,
       highlighted: outcome === 'plan',
     },
     {
       id: LAUNCH_PACKAGE.id,
-      title: 'Launch',
+      title: LAUNCH_PACKAGE.name,
       price: LAUNCH_PACKAGE.price,
       detail: LAUNCH_PACKAGE.payment,
       highlighted: outcome === 'launch',
@@ -122,7 +122,7 @@ export function buildQuote(answers: QuoteAnswers): Quote {
   return {
     kind: 'studio',
     heading: 'Studio',
-    body: 'I put it live on your accounts. Invoice after we agree. There is no checkout on this site.',
+    body: 'They operate, or they pay to implement. Invoice after we agree. There is no checkout on this site.',
     lines: studioLines(answers.outcome),
     stopQuoting: false,
   };
