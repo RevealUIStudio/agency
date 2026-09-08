@@ -8,10 +8,38 @@ import {
   useScrollLock,
 } from '@revealui/presentation';
 import { Link, useLocation } from '@revealui/router';
-import { useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { publishedCases } from '@/data/cases';
 import { publishedPress } from '@/data/press';
 import { INTRO_CALL_URL } from '@/lib/site';
+
+/** Untiled circuit master in public chrome. Locked 48px box — match revealui.com. */
+const CIRCUIT_R_NAV_SRC = '/revealui-mark.svg';
+const CIRCUIT_R_NAV_PX = 48;
+
+interface CircuitRChromeStyle extends CSSProperties {
+  '--circuit-r-chrome-px': string;
+}
+
+function CircuitRNavMark(): React.JSX.Element {
+  const box: CircuitRChromeStyle = {
+    width: CIRCUIT_R_NAV_PX,
+    height: CIRCUIT_R_NAV_PX,
+    '--circuit-r-chrome-px': `${CIRCUIT_R_NAV_PX}px`,
+  };
+  return (
+    <span data-circuit-r-chrome className="relative block shrink-0 overflow-hidden" style={box}>
+      <img
+        src={CIRCUIT_R_NAV_SRC}
+        alt=""
+        width={CIRCUIT_R_NAV_PX}
+        height={CIRCUIT_R_NAV_PX}
+        className="block size-full max-w-none"
+      />
+    </span>
+  );
+}
 
 const navLinks = [
   { href: '/#calculator', label: 'Quote' },
@@ -50,7 +78,7 @@ export function NavBar() {
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link to="/" onClick={close} aria-label="Home" className="flex items-center">
-          <img src="/revealui-mark.svg" alt="" height={36} className="h-9 w-auto" />
+          <CircuitRNavMark />
         </Link>
 
         {/* Desktop links (md+) */}

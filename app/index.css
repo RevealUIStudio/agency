@@ -126,3 +126,18 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Circuit-R public chrome: one locked box (default 48px), no scrollbar. */
+[data-circuit-r-chrome] {
+  width: var(--circuit-r-chrome-px, 48px);
+  height: var(--circuit-r-chrome-px, 48px);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+[data-circuit-r-chrome] img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  image-rendering: auto;
+}
