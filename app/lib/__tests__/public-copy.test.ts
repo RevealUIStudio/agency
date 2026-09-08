@@ -183,7 +183,9 @@ describe('public copy gates', () => {
     expect(mark).not.toContain('rx="22"');
     expect(mark).toBe(favicon);
     expect(nav).toContain('/revealui-mark.svg');
-    expect(nav).toContain('h-9 w-auto');
+    expect(nav).toContain('CIRCUIT_R_NAV_PX = 48');
+    expect(nav).toContain('overflow-hidden');
+    expect(nav).not.toContain('h-9 w-auto');
     expect(nav).not.toContain('w-9');
     expect(nav).not.toContain('width={36}');
     expect(nav).not.toContain('/favicon.svg');
