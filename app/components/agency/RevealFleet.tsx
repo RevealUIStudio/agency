@@ -23,8 +23,8 @@ export function RevealFleet() {
           {PRODUCT_CATALOG.proPerpetual}. {REVVAULT_ROLE}
         </p>
         <p className="mt-4 text-base text-muted-foreground">
-          Studio work stays the commercial offer on this site. They operate, or they pay to
-          implement. The public menu is {WORKING_SESSION.name} at {WORKING_SESSION.price},{' '}
+          Studio work stays the commercial offer on this site. You run it, or I ship it with you.
+          The public menu is {WORKING_SESSION.name} at {WORKING_SESSION.price},{' '}
           {WRITTEN_PLAN.name} at {WRITTEN_PLAN.price}, and {LAUNCH_PACKAGE.name} at{' '}
           {LAUNCH_PACKAGE.price}.
         </p>

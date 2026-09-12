@@ -56,6 +56,7 @@ describe('buildQuote', () => {
     expect(quote.lines).toEqual([]);
     expect(quote.productHandoffUrl).toBe('https://revealui.com');
     expect(JSON.stringify(quote)).not.toMatch(/\$49/);
+    expect(JSON.stringify(quote)).not.toMatch(/\$99/);
     expect(JSON.stringify(quote)).not.toMatch(/\$299/);
     expect(JSON.stringify(quote)).not.toMatch(/Enterprise/);
   });

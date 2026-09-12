@@ -63,6 +63,7 @@ describe('public copy gates', () => {
     for (const file of files) {
       const text = readFileSync(file, 'utf8');
       expect(text).not.toMatch(/\$49/);
+      expect(text).not.toMatch(/\$99/);
       expect(text).not.toMatch(/\$299/);
     }
   });

@@ -13,7 +13,7 @@ export const LEAD_PRODUCT = 'RevealUI' as const;
 export const PRODUCT_CATALOG = {
   free: 'Free',
   pro: '$49',
-  max: '$299',
+  max: '$99',
   enterprise: 'Inquire',
   proPerpetual: '$1,499',
 } as const;
