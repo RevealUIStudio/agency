@@ -50,10 +50,10 @@ export const WORKING_SESSION = {
   price: WORKING_SESSION_PRICE,
   tagline: 'Notes and a next step',
   description:
-    'One focused session on your system. That can be product, runtime, receipts, a stuck live flow, or launch prep. Remote, or in person in Maryville. You leave with notes and a next step. No leftover site.',
+    'One focused session on your system. That can be product, runtime, receipts, a stuck live flow, or launch prep. Remote, or in person. You leave with notes and a next step. No leftover site.',
   includes: [
     'Notes and a next step',
-    'Remote, or in person in Maryville',
+    'Remote, or in person',
     'Product, runtime, receipts, a stuck live flow, or launch prep',
     'No leftover site',
   ],

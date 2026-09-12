@@ -6,7 +6,7 @@ import {
   RECEIPT_HERO_TITLE,
 } from '@/content/receipt';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
+import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
 export const HERO_SHOP_LINE =
   'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?' as const;
@@ -23,12 +23,13 @@ export function Hero() {
             {HERO_SHOP_LINE}
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            They operate, or they pay to implement. {WORKING_SESSION.name} {WORKING_SESSION.price}.{' '}
+            You run it, or I ship it with you. {WORKING_SESSION.name} {WORKING_SESSION.price}.{' '}
             {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}. {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}.
-            I ship RevealUI, the agent runtime with receipts, and studio work you can book from
-            here. Remote first. Sitting down in {STUDIO_CITY} is an option on the same calendar.
-            Answer three questions for a quote, or book a 30-minute intro. You do not need to
-            understand the tech.
+            I ship RevealUI, the agent runtime with receipts, and founder-led work on your domain.
+            One runtime for people already in an agentic IDE. You keep the keys when a call fails.
+            Receipts when an action fires. Secrets stay on your side of the boundary. Remote first.
+            Sit-down is an option on the same calendar. Answer three questions for a quote, or book
+            a 30-minute intro.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>

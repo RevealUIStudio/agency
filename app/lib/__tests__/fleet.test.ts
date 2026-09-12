@@ -7,7 +7,7 @@ describe('RevealFleet facts', () => {
     expect(LEAD_PRODUCT).toBe('RevealUI');
     expect(PRODUCT_CATALOG.free).toBe('Free');
     expect(PRODUCT_CATALOG.pro).toBe('$49');
-    expect(PRODUCT_CATALOG.max).toBe('$299');
+    expect(PRODUCT_CATALOG.max).toBe('$99');
     expect(PRODUCT_CATALOG.enterprise).toBe('Inquire');
     expect(PRODUCT_CATALOG.proPerpetual).toBe('$1,499');
     expect(REVVAULT_ROLE).toMatch(/inside Pro/);
