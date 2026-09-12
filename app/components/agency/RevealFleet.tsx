@@ -24,9 +24,8 @@ export function RevealFleet() {
         </p>
         <p className="mt-4 text-base text-muted-foreground">
           Studio work stays the commercial offer on this site. You run it, or I ship it with you.
-          The public menu is {WORKING_SESSION.name} at {WORKING_SESSION.price},{' '}
-          {WRITTEN_PLAN.name} at {WRITTEN_PLAN.price}, and {LAUNCH_PACKAGE.name} at{' '}
-          {LAUNCH_PACKAGE.price}.
+          The public menu is {WORKING_SESSION.name} at {WORKING_SESSION.price}, {WRITTEN_PLAN.name}{' '}
+          at {WRITTEN_PLAN.price}, and {LAUNCH_PACKAGE.name} at {LAUNCH_PACKAGE.price}.
         </p>
         <div className="mt-10">
           <LinkButton href={PRODUCT_SITE_URL} external>
