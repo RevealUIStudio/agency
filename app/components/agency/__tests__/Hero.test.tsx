@@ -13,10 +13,15 @@ describe('Hero', () => {
         name: HERO_SHOP_LINE,
       }),
     ).toBeInTheDocument();
-    const lead = screen.getByText(/They operate, or they pay to implement/);
+    const lead = screen.getByText(/You run it, or I ship it with you/);
     expect(lead).toHaveTextContent('Consultation $300');
     expect(lead).toHaveTextContent('Pilot $1,500');
     expect(lead).toHaveTextContent('Launch $7,500');
+    expect(lead).toHaveTextContent('Sit-down is an option on the same calendar.');
+    expect(lead).toHaveTextContent('founder-led work on your domain');
+    expect(lead).not.toHaveTextContent('They operate, or they pay to implement');
+    expect(lead).not.toHaveTextContent('You do not need to understand the tech');
+    expect(lead).not.toHaveTextContent('Maryville');
     expect(screen.queryByText(/Meet the Fleet/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/\bHour\b/)).not.toBeInTheDocument();
     expect(screen.getByText(/RevealUI Studio · Product studio/)).toBeInTheDocument();

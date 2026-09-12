@@ -31,7 +31,7 @@ describe('RevealFleet', () => {
     expect(text).toContain(WRITTEN_PLAN.name);
     expect(text).toContain(WRITTEN_PLAN.price);
     expect(text).toContain(LAUNCH_PACKAGE.price);
-    expect(text).toMatch(/They operate, or they pay to implement/);
+    expect(text).toMatch(/You run it, or I ship it with you/);
   });
 
   it('does not sell parked SKUs or use the RevFleet nickname', () => {

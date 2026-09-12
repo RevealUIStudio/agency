@@ -35,6 +35,7 @@ describe('QuoteCalculator', () => {
     expect(screen.queryByText('$50,000')).not.toBeInTheDocument();
     expect(screen.queryByText(/Fleet from/)).not.toBeInTheDocument();
     expect(screen.queryByText(/\$49/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\$99/)).not.toBeInTheDocument();
     expect(screen.queryByText(/\$299/)).not.toBeInTheDocument();
   });
 
@@ -70,6 +71,7 @@ describe('QuoteCalculator', () => {
     expect(screen.queryByText(LAUNCH_PACKAGE.price)).not.toBeInTheDocument();
     expect(screen.queryByText(LAUNCH_PACKAGE.payment)).not.toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/\$49/);
+    expect(container.textContent ?? '').not.toMatch(/\$99/);
     expect(container.textContent ?? '').not.toMatch(/\$299/);
     expect(container.textContent ?? '').not.toMatch(/Enterprise/);
     expect(screen.getByRole('link', { name: 'Book a 30-minute intro' })).toHaveAttribute(
