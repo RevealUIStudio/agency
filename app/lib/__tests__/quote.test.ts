@@ -16,6 +16,8 @@ describe('buildQuote', () => {
       places: DEFAULT_PLACES,
     });
     expect(quote.kind).toBe('studio');
+    expect(quote.body).toMatch(/You run it, or I ship it with you/);
+    expect(quote.body).not.toMatch(/They operate, or they pay to implement/);
     expect(quote.stopQuoting).toBe(false);
     expect(quote.lines.map((line) => line.price)).toEqual([
       WORKING_SESSION.price,

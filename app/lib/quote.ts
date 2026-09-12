@@ -34,7 +34,7 @@ export const PLACES_OPTIONS = [
 ] as const satisfies readonly { value: Places; label: string }[];
 
 export const QUOTE_CALCULATOR_LEAD =
-  'This calculator is for Studio quotes only. They operate, or they pay to implement. Product licenses live on revealui.com.' as const;
+  'This calculator is for Studio quotes only. You run it, or I ship it with you. Product licenses live on revealui.com.' as const;
 
 export const QUOTE_OWNERSHIP = [
   'You own the accounts and the data.',
@@ -122,7 +122,7 @@ export function buildQuote(answers: QuoteAnswers): Quote {
   return {
     kind: 'studio',
     heading: 'Studio',
-    body: 'They operate, or they pay to implement. Invoice after we agree. There is no checkout on this site.',
+    body: 'You run it, or I ship it with you. Invoice after we agree. There is no checkout on this site.',
     lines: studioLines(answers.outcome),
     stopQuoting: false,
   };
