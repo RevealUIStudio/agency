@@ -103,7 +103,7 @@ export function App() {
         component: CookiesPage,
         meta: {
           title: 'Cookies | RevealUI Studio',
-          description: 'How revealuistudio.com uses cookies and Speed Insights.',
+          description: 'How revealuistudio.com uses cookies, Speed Insights, and Umami.',
         },
       },
       {

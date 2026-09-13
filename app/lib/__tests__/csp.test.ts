@@ -40,3 +40,16 @@ describe('Speed Insights CSP', () => {
     expect(workerSrc).toBeUndefined();
   });
 });
+
+describe('Umami CSP', () => {
+  it('allows the consented self-hosted Umami script and /api/send host', () => {
+    const csp = siteCsp();
+    const scriptSrc = directive(csp, 'script-src');
+    const connectSrc = directive(csp, 'connect-src');
+
+    expect(scriptSrc).toContain('https://revealui-umami.fly.dev');
+    expect(connectSrc).toContain('https://revealui-umami.fly.dev');
+    expect(scriptSrc).not.toContain('unsafe-eval');
+    expect(directive(csp, 'worker-src')).toBeUndefined();
+  });
+});
