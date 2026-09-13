@@ -113,8 +113,12 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/routes/ContactPage.tsx'),
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/content/guardrail.ts'),
       path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
       path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
+      path.join(repoRoot, 'app/components/agency/WhoStudioIsFor.tsx'),
+      path.join(repoRoot, 'app/components/agency/TrustRoadmap.tsx'),
+      path.join(repoRoot, 'app/content/trust.ts'),
       path.join(repoRoot, 'app/lib/fleet.ts'),
     ];
     const banned =
@@ -306,10 +310,11 @@ describe('public copy gates', () => {
     );
     const facts = readFileSync(path.join(repoRoot, 'app/lib/fleet.ts'), 'utf8');
     expect(fleet).toContain('RevealFleet');
-    expect(fleet).toContain('Buy {LEAD_PRODUCT}');
+    expect(fleet).toContain('{LEAD_PRODUCT} on revealui.com');
     expect(fleet).toContain('PRODUCT_SITE_URL');
-    expect(fleet).toContain('REVVAULT_ROLE');
-    expect(fleet).toContain('Pro Perpetual');
+    expect(fleet).not.toContain('REVVAULT_ROLE');
+    expect(fleet).not.toContain('Pro Perpetual');
+    expect(fleet).not.toMatch(/\$49|\$99/);
     expect(facts).toContain('RevVault');
     expect(facts).toMatch(/inside Pro/);
     expect(facts).toContain("proPerpetual: '$1,499'");
@@ -342,14 +347,17 @@ describe('public copy gates', () => {
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
     const jsonLd = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
     const quote = readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8');
+    expect(hero).toContain("HERO_HEADLINE = 'Studio work for startups.'");
     expect(hero).toContain(
       'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
     );
+    expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville|Jobber|QBO/i);
     expect(hero).not.toMatch(/Meet the Fleet/i);
     expect(hero).toContain('WORKING_SESSION.name');
     expect(hero).toContain('WRITTEN_PLAN.name');
     expect(hero).toContain('LAUNCH_PACKAGE.name');
-    expect(about).toMatch(/paid studio work: \{WORKING_SESSION\.name\}/);
+    expect(about).toMatch(/paid studio work:/);
+    expect(about).toContain('{WORKING_SESSION.name}');
     expect(about).toContain('WRITTEN_PLAN.name');
     expect(about).toContain('LAUNCH_PACKAGE.name');
     expect(offers).toContain("name: 'Consultation'");
@@ -390,6 +398,91 @@ describe('public copy gates', () => {
       }
     }
     expect(hits).toEqual([]);
+  });
+
+  it('keeps Guardrail as Process microcopy inside the three-offer ladder', () => {
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    const home = readFileSync(path.join(repoRoot, 'app/routes/HomePage.tsx'), 'utf8');
+    const process = readFileSync(path.join(repoRoot, 'app/routes/ProcessPage.tsx'), 'utf8');
+    const guardrail = readFileSync(path.join(repoRoot, 'app/content/guardrail.ts'), 'utf8');
+    const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
+    const teasers = readFileSync(
+      path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
+      'utf8',
+    );
+
+    expect(hero).toContain(HERO_SHOP_LINE);
+    expect(hero).toContain('<h1');
+    expect(hero).toContain('{HERO_SHOP_LINE}');
+    expect(hero).not.toMatch(/guardrail company/i);
+    expect(hero).not.toMatch(/GUARDRAIL_HEADING/);
+    expect(home).not.toMatch(/GUARDRAIL_HEADING|guardrail-agent/);
+
+    expect(process).toContain('GUARDRAIL_HEADING');
+    expect(process).toContain('GUARDRAIL_BODY');
+    expect(process).toContain('id="guardrail-agent"');
+    expect(process).toContain('<aside');
+    expect(process).not.toContain('<article id="guardrail-agent"');
+
+    expect(guardrail).toContain("GUARDRAIL_HEADING = 'Guardrail agent (template)'");
+    expect(guardrail).toContain('Keep agents honest on your domain.');
+    expect(guardrail).toContain('Price locks, lane locks, receipts.');
+    expect(guardrail).toContain('Included in how we scope Pilot and Launch.');
+    expect(guardrail).toContain('Not a separate SKU.');
+    expect(guardrail).not.toContain('\u2014');
+    expect(guardrail).not.toMatch(/\$3,?500/);
+    expect(guardrail).not.toMatch(/RevDev|RevForge/i);
+    expect(guardrail).not.toMatch(/SOC ?2 certified/i);
+    expect(guardrail).not.toMatch(/Maryville/i);
+
+    expect(offers).toContain("name: 'Consultation'");
+    expect(offers).toContain("name: 'Pilot'");
+    expect(offers).toContain("name: 'Launch'");
+    expect(offers).not.toMatch(/Guardrail/);
+    expect(offers).not.toMatch(/\$3,?500/);
+    expect(teasers).toContain('PUBLIC_OFFERS.map');
+    expect(teasers).not.toMatch(/Guardrail/);
+  });
+
+  it('defines startups on the homepage and keeps Auditor trust copy honest', () => {
+    const app = readFileSync(path.join(repoRoot, 'app/App.tsx'), 'utf8');
+    const who = readFileSync(
+      path.join(repoRoot, 'app/components/agency/WhoStudioIsFor.tsx'),
+      'utf8',
+    );
+    const home = readFileSync(path.join(repoRoot, 'app/routes/HomePage.tsx'), 'utf8');
+    const footer = readFileSync(path.join(repoRoot, 'app/components/Footer.tsx'), 'utf8');
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    const trust = readFileSync(path.join(repoRoot, 'app/content/trust.ts'), 'utf8');
+    const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
+
+    expect(app).not.toMatch(/what-is-a-startup/);
+    expect(home).toContain('WhoStudioIsFor');
+    expect(home).toContain('TrustRoadmap');
+    expect(who).toContain("STUDIO_FOR_TITLE = 'Who Studio is for'");
+    expect(who).toMatch(/For: Technical founders and small agencies/i);
+    expect(who).toMatch(/Not for: Hosted chatbot bolt-ons/);
+    expect(who).toMatch(/The deal: You bring the domain/);
+    expect(who).toMatch(/pay Launch to implement/);
+    expect(who).toMatch(/Jobber swap/);
+    expect(who).not.toMatch(/SOC ?2 certified|SOC2 ready|\baudited\b|SOC 2 compliant/i);
+    expect(who).not.toMatch(/Fortune 500|high-stakes|regulated|mission-driven/i);
+
+    expect(trust).toContain('RevealUI Studio is not SOC 2 or ISO 27001 certified today.');
+    expect(trust).toContain('We are building toward SOC 2\\u2013capable controls');
+    expect(trust).toContain('Neon (database)');
+    expect(trust).toContain('Not claimed until a Studio report exists');
+    expect(trust).toContain('Are you SOC 2 certified?');
+    expect(trust).toContain('Not yet.');
+    expect(trust).not.toMatch(/We are SOC ?2 certified/i);
+    expect(trust).not.toMatch(/In audit/i);
+    expect(trust).not.toMatch(/Our stack is SOC ?2 because Neon/i);
+    expect(footer).not.toMatch(/SOC ?2/);
+    expect(footer).not.toMatch(/Fortune 500/);
+    expect(hero).not.toMatch(/SOC ?2|certified|ISO 27001/i);
+    expect(hero).not.toMatch(/Fortune 500/);
+
+    expect(offers).toContain("tagline: 'One site on your domain, one agent you run, you keep it'");
   });
 
   it('lists the process page in the public sitemap', () => {

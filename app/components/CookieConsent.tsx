@@ -1,5 +1,6 @@
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { useState } from 'react';
+import { UmamiTracker } from '@/components/UmamiTracker';
 import { type AgencyConsent, DENIED, readConsent, writeConsent } from '@/lib/cookie-consent';
 
 export function CookieConsent() {
@@ -15,7 +16,12 @@ export function CookieConsent() {
 
   return (
     <>
-      {decided && consent.analytics ? <SpeedInsights /> : null}
+      {decided && consent.analytics ? (
+        <>
+          <SpeedInsights />
+          <UmamiTracker />
+        </>
+      ) : null}
       {decided ? null : (
         <div
           role="dialog"
@@ -29,8 +35,8 @@ export function CookieConsent() {
                 Cookies
               </h2>
               <p className="text-sm text-muted-foreground">
-                Necessary cookies are not used on this site (there is no login). Speed Insights, a
-                first-party performance tool, stays off until you accept.{' '}
+                Necessary cookies are not used on this site (there is no login). Speed Insights and
+                Umami pageview analytics stay off until you accept.{' '}
                 <a href="/cookies" className="font-medium text-foreground underline">
                   Cookie policy
                 </a>

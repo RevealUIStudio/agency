@@ -65,15 +65,15 @@ export const WRITTEN_PLAN = {
   id: 'written-plan',
   name: 'Pilot',
   price: WRITTEN_PLAN_PRICE,
-  tagline: 'One site you operate',
+  tagline: 'One site on your domain, one agent you run, you keep it',
   description:
-    'One site on your domain. One agent you operate on your Vercel, with your model key. Click-to-call plus book or quote. One receipted action. You keep it if you walk.',
+    'One site on your domain. One agent you run. You keep it. Click-to-call plus book or quote. One receipted action. Your Vercel, your model key.',
   includes: [
     'One site on your domain',
-    'One agent you operate (your Vercel, your model key)',
+    'One agent you run (your Vercel, your model key)',
+    'You keep it',
     'Click-to-call plus book or quote',
     'One receipted action',
-    'You keep it if you walk',
   ],
   notIncluded: ['Hosted chatbot SaaS', 'A multi-site rollout', 'Product licenses'],
   payment:

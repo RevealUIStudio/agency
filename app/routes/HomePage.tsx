@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { Hero } from '@/components/agency/Hero';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
 import { RevealFleet } from '@/components/agency/RevealFleet';
+import { TrustRoadmap } from '@/components/agency/TrustRoadmap';
+import { WhoStudioIsFor } from '@/components/agency/WhoStudioIsFor';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
 export function HomePage() {
@@ -17,8 +19,10 @@ export function HomePage() {
   return (
     <>
       <Hero />
+      <WhoStudioIsFor />
       <RevealFleet />
       <QuoteCalculator />
+      <TrustRoadmap />
       <section className="bg-background py-24 sm:py-32">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">

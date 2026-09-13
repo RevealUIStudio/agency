@@ -11,7 +11,7 @@
 
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 
-/** Hero h1. Same sentence as app/components/agency/Hero.tsx HERO_SHOP_LINE. */
+/** Shop-line next to the startups H1. Same sentence as Hero.tsx HERO_SHOP_LINE. */
 export const OG_CARD_HEADLINE =
   'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?';
 

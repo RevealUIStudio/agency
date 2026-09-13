@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
+import { LAUNCH_PACKAGE, PUBLIC_OFFERS, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 import { ProcessPage } from '@/routes/ProcessPage';
 
@@ -68,5 +69,25 @@ describe('ProcessPage', () => {
     expect(text).toContain('Half now, half on delivery.');
     expect(text).not.toMatch(/\$25,?000|\$50,?000/);
     expect(text).not.toMatch(/limited (spots|time)|act now|discount|sale ends/i);
+  });
+
+  it('mentions Guardrail as a scoping beat, not a fourth priced offer', () => {
+    const { container } = render(<ProcessPage />);
+    const text = container.textContent ?? '';
+
+    expect(PUBLIC_OFFERS).toHaveLength(3);
+    expect(screen.getByRole('heading', { level: 1, name: 'How we work' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: GUARDRAIL_HEADING })).toBeInTheDocument();
+    expect(text).toContain(GUARDRAIL_BODY);
+    expect(text).toContain('Included in how we scope Pilot and Launch');
+    expect(text).toContain('Not a separate SKU');
+    expect(document.getElementById('guardrail-agent')).not.toBeNull();
+
+    expect(text).not.toMatch(/\$3,?500/);
+    expect(text).not.toMatch(/RevDev|RevForge/i);
+    expect(text).not.toMatch(/SOC ?2 certified/i);
+    expect(text).not.toMatch(/Maryville shop/i);
+    expect(container.querySelectorAll('article')).toHaveLength(3);
+    expect(text).not.toMatch(/Guardrail agent \(template\)\. \$/);
   });
 });

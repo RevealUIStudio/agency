@@ -30,9 +30,9 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | Product studio for runtime, receipts, and Launch',
+          title: 'RevealUI Studio | Studio work for startups',
           description:
-            'A product studio. Consultation $300. Pilot $1,500. Launch $7,500. Remote first. Book a 30-minute intro on Google Calendar.',
+            'Studio work for startups. Technical founders and small agencies who already run agents. Consultation $300. Pilot $1,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
@@ -86,7 +86,7 @@ export function App() {
         meta: {
           title: 'About | RevealUI Studio',
           description:
-            'RevealUI Studio is a product studio. Joshua Vaughn runs it. Consultation, Pilot, and Launch. Remote first. Invoice after we agree.',
+            'RevealUI Studio is for startups, and for technical founders and small agencies who already run agents. Joshua Vaughn runs it. Consultation, Pilot, and Launch. Remote first. Invoice after we agree.',
         },
       },
       {
@@ -103,7 +103,7 @@ export function App() {
         component: CookiesPage,
         meta: {
           title: 'Cookies | RevealUI Studio',
-          description: 'How revealuistudio.com uses cookies and Speed Insights.',
+          description: 'How revealuistudio.com uses cookies, Speed Insights, and Umami.',
         },
       },
       {

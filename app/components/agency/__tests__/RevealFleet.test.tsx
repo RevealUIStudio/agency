@@ -3,35 +3,34 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RevealFleet } from '@/components/agency/RevealFleet';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import { FLEET_NAME, PRODUCT_CATALOG } from '@/lib/fleet';
+import { FLEET_NAME } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
 describe('RevealFleet', () => {
   it('names the family, leads with RevealUI, and links to the product site', () => {
     render(<RevealFleet />);
     expect(screen.getByRole('heading', { level: 2, name: FLEET_NAME })).toBeInTheDocument();
-    expect(screen.getByText(/RevealUI is the lead product/)).toBeInTheDocument();
-    expect(screen.getByText(/agent runtime with receipts/)).toBeInTheDocument();
-    const buy = screen.getByRole('link', { name: 'Buy RevealUI' });
-    expect(buy).toHaveAttribute('href', PRODUCT_SITE_URL);
+    expect(screen.getByText(/RevealUI is the agent runtime with receipts/)).toBeInTheDocument();
+    const product = screen.getByRole('link', { name: 'RevealUI on revealui.com' });
+    expect(product).toHaveAttribute('href', PRODUCT_SITE_URL);
   });
 
-  it('prints the buyable catalog and names RevVault only as part of Pro', () => {
+  it('keeps studio offers on this page and does not dump the product catalog', () => {
     const { container } = render(<RevealFleet />);
     const text = container.textContent ?? '';
-    expect(text).toContain(PRODUCT_CATALOG.free);
-    expect(text).toContain(PRODUCT_CATALOG.pro);
-    expect(text).toContain(PRODUCT_CATALOG.max);
-    expect(text).toMatch(/Enterprise by inquiry/);
-    expect(text).toContain('Pro Perpetual');
-    expect(text).toContain(PRODUCT_CATALOG.proPerpetual);
-    expect(text).toMatch(/RevVault is encrypted secret management inside Pro/);
     expect(text).toContain(WORKING_SESSION.name);
     expect(text).toContain(WORKING_SESSION.price);
     expect(text).toContain(WRITTEN_PLAN.name);
     expect(text).toContain(WRITTEN_PLAN.price);
     expect(text).toContain(LAUNCH_PACKAGE.price);
     expect(text).toMatch(/You run it, or I ship it with you/);
+    expect(text).toMatch(/startups/i);
+    expect(text).toMatch(/technical founders and small agencies/i);
+    expect(text).not.toMatch(/\$49/);
+    expect(text).not.toMatch(/\$99/);
+    expect(text).not.toMatch(/Pro Perpetual/);
+    expect(text).not.toMatch(/Enterprise by inquiry/);
+    expect(text).not.toMatch(/RevVault/);
   });
 
   it('does not sell parked SKUs or use the RevFleet nickname', () => {

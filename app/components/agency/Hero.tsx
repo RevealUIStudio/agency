@@ -8,6 +8,13 @@ import {
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
+/** Visible H1. One-word ICP lead. Do not stack the triad here. */
+export const HERO_HEADLINE = 'Studio work for startups.' as const;
+
+/** Narrows the H1: technical founders and small agencies, self-hosted, they operate. */
+export const HERO_SUBLINE =
+  'Technical founders and small agencies who already run agents. A self-hosted business layer on your domain. You operate, or you pay Launch.' as const;
+
 export const HERO_SHOP_LINE =
   'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?' as const;
 
@@ -17,19 +24,18 @@ export function Hero() {
       <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32 lg:py-40">
         <div className="hero-stagger max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-            RevealUI Studio · Product studio
+            RevealUI Studio
           </p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            {HERO_SHOP_LINE}
+            {HERO_HEADLINE}
           </h1>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_SUBLINE}</p>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            You run it, or I ship it with you. {WORKING_SESSION.name} {WORKING_SESSION.price}.{' '}
-            {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}. {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}.
-            I ship RevealUI, the agent runtime with receipts, and founder-led work on your domain.
-            One runtime for people already in an agentic IDE. You keep the keys when a call fails.
-            Receipts when an action fires. Secrets stay on your side of the boundary. Remote first.
-            Sit-down is an option on the same calendar. Answer three questions for a quote, or book
-            a 30-minute intro.
+            {HERO_SHOP_LINE} You run it, or I ship it with you. {WORKING_SESSION.name}{' '}
+            {WORKING_SESSION.price}. {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}. {LAUNCH_PACKAGE.name}{' '}
+            {LAUNCH_PACKAGE.price}. You already live in Cursor. I put booking, invoices, and agents
+            with receipts on your domain. Remote first. Sit-down is an option on the same calendar.
+            Answer three questions for a quote, or book a 30-minute intro.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>

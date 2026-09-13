@@ -2,6 +2,8 @@ import '@testing-library/jest-dom/vitest';
 import { Router, RouterProvider } from '@revealui/router';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { HERO_HEADLINE } from '@/components/agency/Hero';
+import { STUDIO_FOR_TITLE } from '@/components/agency/WhoStudioIsFor';
 import { FLEET_NAME } from '@/lib/fleet';
 import { CONTACT_EMAIL, INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 import { HomePage } from '@/routes/HomePage';
@@ -18,14 +20,18 @@ function renderHome() {
 }
 
 describe('HomePage', () => {
-  it('keeps one product-studio headline, the calculator, and the intro', () => {
+  it('keeps one startups headline, the calculator, and the intro', () => {
     renderHome();
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt\?/,
+        name: HERO_HEADLINE,
       }),
     ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: STUDIO_FOR_TITLE })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Trust' })).toBeInTheDocument();
+    expect(document.getElementById('who')).not.toBeNull();
+    expect(document.getElementById('trust')).not.toBeNull();
     expect(document.getElementById('calculator')).not.toBeNull();
     expect(screen.getByRole('radio', { name: 'You will (Studio)' })).toBeChecked();
     const intros = screen.getAllByRole('link', { name: 'Book a 30-minute intro' });
@@ -39,7 +45,7 @@ describe('HomePage', () => {
   it('shows an honest RevealFleet family highlight before the calculator', () => {
     renderHome();
     expect(screen.getByRole('heading', { level: 2, name: FLEET_NAME })).toBeInTheDocument();
-    const buy = screen.getByRole('link', { name: 'Buy RevealUI' });
+    const buy = screen.getByRole('link', { name: 'RevealUI on revealui.com' });
     expect(buy).toHaveAttribute('href', PRODUCT_SITE_URL);
     const fleet = screen.getByRole('heading', { level: 2, name: FLEET_NAME }).closest('section');
     const calculator = document.getElementById('calculator');
@@ -68,7 +74,11 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/Starter Kit/i);
     expect(text).not.toMatch(/waitlist/i);
     expect(text).not.toMatch(/HIPAA/i);
-    expect(text).not.toMatch(/SOC 2/i);
+    expect(text).toContain('RevealUI Studio is not SOC 2 or ISO 27001 certified today.');
+    expect(text).not.toMatch(/We are SOC ?2 certified/i);
+    expect(text).not.toMatch(/In audit/i);
+    expect(text).not.toMatch(/Our stack is SOC ?2 because Neon/i);
+    expect(text).not.toMatch(/SOC2 ready/i);
     expect(text).not.toMatch(/24\/7/);
     expect(text).not.toMatch(/testimonial/i);
     expect(text).not.toMatch(/case study/i);
