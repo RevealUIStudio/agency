@@ -1,9 +1,4 @@
-import {
-  TRUST_FAQ,
-  TRUST_ROADMAP,
-  TRUST_SHORT,
-  TRUST_TITLE,
-} from '@/content/trust';
+import { TRUST_FAQ, TRUST_ROADMAP, TRUST_SHORT, TRUST_TITLE } from '@/content/trust';
 
 export function TrustRoadmap() {
   return (

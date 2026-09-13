@@ -20,9 +20,7 @@ describe('Hero', () => {
     expect(screen.getByText(HERO_SUBLINE)).toBeInTheDocument();
     expect(HERO_SUBLINE).toMatch(/technical founders and small agencies/i);
     expect(HERO_SUBLINE).toMatch(/already run agents/i);
-    expect(
-      screen.getByText((content) => content.includes(HERO_SHOP_LINE)),
-    ).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes(HERO_SHOP_LINE))).toBeInTheDocument();
     const lead = screen.getByText(/You run it, or I ship it with you/);
     expect(lead).toHaveTextContent('Consultation $300');
     expect(lead).toHaveTextContent('Pilot $1,500');

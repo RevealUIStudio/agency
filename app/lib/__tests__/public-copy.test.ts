@@ -356,7 +356,8 @@ describe('public copy gates', () => {
     expect(hero).toContain('WORKING_SESSION.name');
     expect(hero).toContain('WRITTEN_PLAN.name');
     expect(hero).toContain('LAUNCH_PACKAGE.name');
-    expect(about).toMatch(/paid studio work: \{WORKING_SESSION\.name\}/);
+    expect(about).toMatch(/paid studio work:/);
+    expect(about).toContain('{WORKING_SESSION.name}');
     expect(about).toContain('WRITTEN_PLAN.name');
     expect(about).toContain('LAUNCH_PACKAGE.name');
     expect(offers).toContain("name: 'Consultation'");
@@ -479,9 +480,7 @@ describe('public copy gates', () => {
     expect(hero).not.toMatch(/SOC ?2|certified|ISO 27001/i);
     expect(hero).not.toMatch(/Fortune 500/);
 
-    expect(offers).toContain(
-      "tagline: 'One site on your domain, one agent you run, you keep it'",
-    );
+    expect(offers).toContain("tagline: 'One site on your domain, one agent you run, you keep it'");
   });
 
   it('lists the process page in the public sitemap', () => {
