@@ -1,9 +1,9 @@
 export const STUDIO_FOR_TITLE = 'Who Studio is for' as const;
 
 export const STUDIO_FOR_BEATS = [
-  'For technical founders and small agencies who already ship with agents, and need the business layer on their domain, not a wrapper around it.',
-  'Not for hosted chatbot bolt-ons, Jobber swaps, or buying only for a compliance checkbox.',
-  'You bring the domain. Studio ships booking, invoices, and agents with receipts. You operate, or you pay Launch to implement.',
+  'For: Technical founders and small agencies who already ship with agents, and need the business layer on their domain, not a wrapper around it.',
+  'Not for: Hosted chatbot bolt-ons, Jobber swaps, or buying only for a compliance checkbox.',
+  'The deal: You bring the domain. Studio ships booking, invoices, and agents with receipts. You operate, or you pay Launch to implement.',
 ] as const;
 
 export function WhoStudioIsFor() {

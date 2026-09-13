@@ -16,11 +16,14 @@ describe('WhoStudioIsFor', () => {
       expect(screen.getByText(beat)).toBeInTheDocument();
     }
     expect(STUDIO_FOR_BEATS).toHaveLength(3);
+    expect(STUDIO_FOR_BEATS[0]).toMatch(/^For:/);
     expect(STUDIO_FOR_BEATS[0]).toMatch(/technical founders and small agencies/i);
     expect(STUDIO_FOR_BEATS[0]).toMatch(/business layer on their domain/i);
+    expect(STUDIO_FOR_BEATS[1]).toMatch(/^Not for:/);
     expect(STUDIO_FOR_BEATS[1]).toMatch(/hosted chatbot/i);
     expect(STUDIO_FOR_BEATS[1]).toMatch(/Jobber swap/i);
     expect(STUDIO_FOR_BEATS[1]).toMatch(/compliance checkbox/i);
+    expect(STUDIO_FOR_BEATS[2]).toMatch(/^The deal:/);
     expect(STUDIO_FOR_BEATS[2]).toMatch(/You bring the domain/);
     expect(STUDIO_FOR_BEATS[2]).toMatch(/pay Launch to implement/);
     const text = container.textContent ?? '';

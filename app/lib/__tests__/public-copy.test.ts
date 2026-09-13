@@ -460,7 +460,9 @@ describe('public copy gates', () => {
     expect(home).toContain('WhoStudioIsFor');
     expect(home).toContain('TrustRoadmap');
     expect(who).toContain("STUDIO_FOR_TITLE = 'Who Studio is for'");
-    expect(who).toMatch(/technical founders and small agencies/);
+    expect(who).toMatch(/For: Technical founders and small agencies/i);
+    expect(who).toMatch(/Not for: Hosted chatbot bolt-ons/);
+    expect(who).toMatch(/The deal: You bring the domain/);
     expect(who).toMatch(/pay Launch to implement/);
     expect(who).toMatch(/Jobber swap/);
     expect(who).not.toMatch(/SOC ?2 certified|SOC2 ready|\baudited\b|SOC 2 compliant/i);
