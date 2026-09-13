@@ -45,8 +45,10 @@ describe('public studio offers', () => {
     expect(names).not.toContain('Guardrail');
     expect(names).not.toContain('Guardrail agent');
     expect(names).not.toContain('Guardrail agent (template)');
+    expect(WRITTEN_PLAN.tagline).toBe('One site on your domain, one agent you run, you keep it');
     expect(WRITTEN_PLAN.description).toMatch(/your domain/i);
-    expect(WRITTEN_PLAN.description).toMatch(/you operate/i);
+    expect(WRITTEN_PLAN.description).toMatch(/one agent you run/i);
+    expect(WRITTEN_PLAN.description).toMatch(/you keep it/i);
     expect(WRITTEN_PLAN.description).not.toMatch(/written plan/i);
     expect(WRITTEN_PLAN.description).not.toMatch(/\bdemo\b/i);
     expect(WRITTEN_PLAN.description).not.toMatch(/\bSpec\b/);

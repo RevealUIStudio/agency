@@ -12,7 +12,8 @@ export function ProcessPage() {
             How we work
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            Three paid offers. Every one starts with a 30-minute intro on Google Calendar. No
+            Three paid offers for startups, and for technical founders and small agencies who
+            already run agents. Every one starts with a 30-minute intro on Google Calendar. No
             account. No payment to book. Meet or sit down. If I am not the right fit, I will say so
             on the call. If we agree, I invoice. There is no checkout on this site.
           </p>
@@ -100,9 +101,9 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  One site on your domain. One agent you operate on your Vercel, with your model
-                  key. Click-to-call plus book or quote. One receipted action. You keep it if you
-                  walk. Not hosted chatbot SaaS. Product licenses live on revealui.com.
+                  One site on your domain. One agent you run. You keep it. Click-to-call plus book
+                  or quote. One receipted action. Your Vercel, your model key. Not hosted chatbot
+                  SaaS. Product licenses live on revealui.com.
                 </p>
               </div>
               <div>
