@@ -11,8 +11,8 @@ export function ServiceTeasers() {
             Three offers.
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            That is the public menu. Invoice after we book. There is no checkout button on this
-            site.
+            That is the public menu for startups, and for technical founders and small agencies who
+            already run agents. Invoice after we book. There is no checkout button on this site.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3">

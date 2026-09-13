@@ -34,7 +34,7 @@ export const PLACES_OPTIONS = [
 ] as const satisfies readonly { value: Places; label: string }[];
 
 export const QUOTE_CALCULATOR_LEAD =
-  'This calculator is for Studio quotes only. You run it, or I ship it with you. Product licenses live on revealui.com.' as const;
+  'This calculator is for Studio quotes only. Startups, plus technical founders and small agencies who already run agents. You run it, or I ship it with you. Product licenses live on revealui.com.' as const;
 
 export const QUOTE_OWNERSHIP = [
   'You own the accounts and the data.',

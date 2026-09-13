@@ -1,30 +1,41 @@
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { HERO_SHOP_LINE, Hero } from '@/components/agency/Hero';
+import { HERO_HEADLINE, HERO_SHOP_LINE, HERO_SUBLINE, Hero } from '@/components/agency/Hero';
 import { INTRO_CALL_URL } from '@/lib/site';
 
 describe('Hero', () => {
-  it('leads with the product studio, not a local booking shop', () => {
+  it('leads with startups, then the shop line, not a local booking shop', () => {
     render(<Hero />);
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: HERO_SHOP_LINE,
+        name: HERO_HEADLINE,
       }),
     ).toBeInTheDocument();
+    expect(HERO_HEADLINE).toMatch(/startups/i);
+    expect(HERO_HEADLINE).not.toMatch(
+      /technical founders|small agencies|Fortune 500|SOC ?2|Maryville|Jobber|QBO|chatbot/i,
+    );
+    expect(screen.getByText(HERO_SUBLINE)).toBeInTheDocument();
+    expect(HERO_SUBLINE).toMatch(/technical founders and small agencies/i);
+    expect(HERO_SUBLINE).toMatch(/already run agents/i);
+    expect(screen.getByText((content) => content.includes(HERO_SHOP_LINE))).toBeInTheDocument();
     const lead = screen.getByText(/You run it, or I ship it with you/);
     expect(lead).toHaveTextContent('Consultation $300');
     expect(lead).toHaveTextContent('Pilot $1,500');
     expect(lead).toHaveTextContent('Launch $7,500');
     expect(lead).toHaveTextContent('Sit-down is an option on the same calendar.');
-    expect(lead).toHaveTextContent('founder-led work on your domain');
+    expect(lead).toHaveTextContent('You already live in Cursor');
     expect(lead).not.toHaveTextContent('They operate, or they pay to implement');
     expect(lead).not.toHaveTextContent('You do not need to understand the tech');
     expect(lead).not.toHaveTextContent('Maryville');
+    expect(lead).not.toHaveTextContent('Fortune 500');
+    expect(lead).not.toHaveTextContent('SOC2');
     expect(screen.queryByText(/Meet the Fleet/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/\bHour\b/)).not.toBeInTheDocument();
-    expect(screen.getByText(/RevealUI Studio · Product studio/)).toBeInTheDocument();
+    expect(screen.getByText('RevealUI Studio')).toBeInTheDocument();
+    expect(screen.queryByText(/RevealUI Studio · Product studio/)).not.toBeInTheDocument();
     expect(screen.queryByText(/RevealUI Studio · Maryville, Tennessee/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Fleet Stamp/)).not.toBeInTheDocument();
     expect(screen.queryByText(/forward deployed/i)).not.toBeInTheDocument();

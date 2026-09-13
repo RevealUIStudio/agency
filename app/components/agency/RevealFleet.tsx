@@ -1,6 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import { FLEET_NAME, LEAD_PRODUCT, PRODUCT_CATALOG, REVVAULT_ROLE } from '@/lib/fleet';
+import { FLEET_NAME, LEAD_PRODUCT } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
 export function RevealFleet() {
@@ -14,22 +14,18 @@ export function RevealFleet() {
           {FLEET_NAME}
         </h2>
         <p className="mt-4 text-base text-muted-foreground">
-          RevealUI Studio ships {FLEET_NAME}. {LEAD_PRODUCT} is the lead product. It is the agent
-          runtime with receipts, and you can buy it on revealui.com.
+          {FLEET_NAME} is the family name. {LEAD_PRODUCT} is the agent runtime with receipts.
+          Licenses live on revealui.com. This page does not sell a product catalog.
         </p>
         <p className="mt-4 text-base text-muted-foreground">
-          The catalog is {PRODUCT_CATALOG.free}, Pro at {PRODUCT_CATALOG.pro}, Max at{' '}
-          {PRODUCT_CATALOG.max}, Enterprise by inquiry, and Pro Perpetual at{' '}
-          {PRODUCT_CATALOG.proPerpetual}. {REVVAULT_ROLE}
-        </p>
-        <p className="mt-4 text-base text-muted-foreground">
-          Studio work stays the commercial offer on this site. You run it, or I ship it with you.
-          The public menu is {WORKING_SESSION.name} at {WORKING_SESSION.price}, {WRITTEN_PLAN.name}{' '}
-          at {WRITTEN_PLAN.price}, and {LAUNCH_PACKAGE.name} at {LAUNCH_PACKAGE.price}.
+          Studio work here is for startups, and for technical founders and small agencies who
+          already run agents. You run it, or I ship it with you. The public menu is{' '}
+          {WORKING_SESSION.name} at {WORKING_SESSION.price}, {WRITTEN_PLAN.name} at{' '}
+          {WRITTEN_PLAN.price}, and {LAUNCH_PACKAGE.name} at {LAUNCH_PACKAGE.price}.
         </p>
         <div className="mt-10">
           <LinkButton href={PRODUCT_SITE_URL} external>
-            Buy {LEAD_PRODUCT}
+            {LEAD_PRODUCT} on revealui.com
           </LinkButton>
         </div>
       </div>

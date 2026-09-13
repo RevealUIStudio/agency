@@ -38,6 +38,8 @@ describe('Footer (agency)', () => {
     expect(text).not.toMatch(
       /Working session|Written plan|Architecture artifact|Launch package|Fleet/i,
     );
+    expect(text).not.toMatch(/SOC ?2/);
+    expect(text).not.toMatch(/Fortune 500/);
   });
 
   it('prints the legal name once in small print', () => {
