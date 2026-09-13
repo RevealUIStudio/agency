@@ -3,17 +3,28 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import { QUOTE_CALCULATOR_LEAD, QUOTE_OWNERSHIP, SELF_HOST_HANDOFF } from '@/lib/quote';
+import {
+  HOSTER_OPTIONS,
+  INTRO_HEADING,
+  PLACES_OPTIONS,
+  QUOTE_CALCULATOR_HEADING,
+  QUOTE_CALCULATOR_LEAD,
+  QUOTE_OWNERSHIP,
+  SELF_HOST_HANDOFF,
+} from '@/lib/quote';
 import { INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 
 describe('QuoteCalculator', () => {
-  it('defaults to You will and prints the three Studio quotes', () => {
+  it('defaults to Studio implements with me and prints the three Studio quotes', () => {
     render(<QuoteCalculator />);
 
-    expect(screen.getByRole('radio', { name: 'You will (Studio)' })).toBeChecked();
-    expect(screen.getByRole('radio', { name: 'I will (developer / self-host)' })).not.toBeChecked();
+    expect(
+      screen.getByRole('heading', { level: 2, name: QUOTE_CALCULATOR_HEADING }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: HOSTER_OPTIONS[1].label })).toBeChecked();
+    expect(screen.getByRole('radio', { name: HOSTER_OPTIONS[0].label })).not.toBeChecked();
     expect(screen.getByRole('radio', { name: 'Launch' })).toBeChecked();
-    expect(screen.getByRole('radio', { name: 'One business, one place' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: PLACES_OPTIONS[0].label })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'Consultation' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'Pilot' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'Launch' })).toBeInTheDocument();
@@ -49,10 +60,10 @@ describe('QuoteCalculator', () => {
     expect(intro).toHaveAttribute('href', expect.stringContaining('calendar.google.com'));
   });
 
-  it('stops quoting when they pick more than one place', () => {
+  it('stops quoting when they pick more than one site', () => {
     render(<QuoteCalculator />);
     fireEvent.click(screen.getByRole('radio', { name: /More than one/ }));
-    expect(screen.getByText('Stop quoting. Book an intro.')).toBeInTheDocument();
+    expect(screen.getByText(INTRO_HEADING)).toBeInTheDocument();
     expect(screen.queryByText(LAUNCH_PACKAGE.price)).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Book a 30-minute intro' })).toHaveAttribute(
       'href',
@@ -62,7 +73,7 @@ describe('QuoteCalculator', () => {
 
   it('sends self-host visitors to the product site instead of quoting product SKUs', () => {
     const { container } = render(<QuoteCalculator />);
-    fireEvent.click(screen.getByRole('radio', { name: 'I will (developer / self-host)' }));
+    fireEvent.click(screen.getByRole('radio', { name: HOSTER_OPTIONS[0].label }));
     expect(screen.getByText(SELF_HOST_HANDOFF)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Start free' })).toHaveAttribute(
       'href',

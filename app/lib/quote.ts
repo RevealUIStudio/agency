@@ -1,9 +1,10 @@
 /**
- * Three-question studio calculator.
+ * Studio quote calculator.
  *
  * Studio quotes only. Product licenses live on revealui.com.
- * This site defaults to Studio ("You will") instead of self-host ("I will").
- * Self-host hops to the product site. No fleet math. No product SKUs.
+ * This site defaults to Studio ("Studio implements with me") instead of
+ * self-host ("I self-host (product site)"). Self-host hops to the product
+ * site. No fleet math. No product SKUs.
  */
 
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
@@ -18,8 +19,8 @@ export const DEFAULT_OUTCOME: Outcome = 'launch';
 export const DEFAULT_PLACES: Places = 'one';
 
 export const HOSTER_OPTIONS = [
-  { value: 'self-host', label: 'I will (developer / self-host)' },
-  { value: 'studio', label: 'You will (Studio)' },
+  { value: 'self-host', label: 'I self-host (product site)' },
+  { value: 'studio', label: 'Studio implements with me' },
 ] as const satisfies readonly { value: Hoster; label: string }[];
 
 export const OUTCOME_OPTIONS = [
@@ -29,12 +30,14 @@ export const OUTCOME_OPTIONS = [
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
-  { value: 'one', label: 'One business, one place' },
-  { value: 'many', label: 'More than one (stop quoting; book an intro)' },
+  { value: 'one', label: 'One business, one site' },
+  { value: 'many', label: 'More than one — book an intro' },
 ] as const satisfies readonly { value: Places; label: string }[];
 
+export const QUOTE_CALCULATOR_HEADING = 'Who runs it. What you need. One price.' as const;
+
 export const QUOTE_CALCULATOR_LEAD =
-  'This calculator is for Studio quotes only. Startups, plus technical founders and small agencies who already run agents. You run it, or I ship it with you. Product licenses live on revealui.com.' as const;
+  'Studio quotes only: Consultation $300, Pilot $1,500, Launch $7,500. For startups and small agencies already running agents. Licenses live on revealui.com.' as const;
 
 export const QUOTE_OWNERSHIP = [
   'You own the accounts and the data.',
@@ -42,9 +45,17 @@ export const QUOTE_OWNERSHIP = [
 ] as const;
 
 export const QUOTE_INTRO_LINE =
-  'Want a human? Book a 30-minute intro on Google Calendar. Meet or sit down.' as const;
+  'Want a human? Book a 30-minute intro (Google Calendar / Meet).' as const;
 
-export const SELF_HOST_HANDOFF = 'Start free on the product site.' as const;
+export const SELF_HOST_HANDOFF = 'Self-host licenses are on revealui.com.' as const;
+
+export const INTRO_HEADING = 'More than one site — book an intro' as const;
+
+export const INTRO_BODY =
+  'Multi-site is not a calculator quote. We scope it on a 30-minute intro.' as const;
+
+export const STUDIO_QUOTE_BODY =
+  'You run it, or we implement with you. Invoice after we agree. No checkout on this site.' as const;
 
 export type QuoteKind = 'studio' | 'self-host' | 'intro';
 
@@ -112,8 +123,8 @@ export function buildQuote(answers: QuoteAnswers): Quote {
   if (answers.places === 'many') {
     return {
       kind: 'intro',
-      heading: 'Stop quoting. Book an intro.',
-      body: 'More than one business or site is not a calculator quote. We talk it through on a 30-minute intro.',
+      heading: INTRO_HEADING,
+      body: INTRO_BODY,
       lines: [],
       stopQuoting: true,
     };
@@ -122,7 +133,7 @@ export function buildQuote(answers: QuoteAnswers): Quote {
   return {
     kind: 'studio',
     heading: 'Studio',
-    body: 'You run it, or I ship it with you. Invoice after we agree. There is no checkout on this site.',
+    body: STUDIO_QUOTE_BODY,
     lines: studioLines(answers.outcome),
     stopQuoting: false,
   };

@@ -33,7 +33,7 @@ describe('HomePage', () => {
     expect(document.getElementById('who')).not.toBeNull();
     expect(document.getElementById('trust')).not.toBeNull();
     expect(document.getElementById('calculator')).not.toBeNull();
-    expect(screen.getByRole('radio', { name: 'You will (Studio)' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Studio implements with me' })).toBeChecked();
     const intros = screen.getAllByRole('link', { name: 'Book a 30-minute intro' });
     expect(intros.length).toBeGreaterThanOrEqual(1);
     for (const intro of intros) {
@@ -92,6 +92,7 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/make-good/i);
     expect(text).not.toMatch(/RevFleet|revfleet/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
-    expect(text).not.toContain('\u2014');
+    expect(text).toContain('More than one — book an intro');
+    expect(text.replaceAll('More than one — book an intro', '')).not.toContain('\u2014');
   });
 });

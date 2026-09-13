@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
-import { buildQuote, DEFAULT_HOSTER, DEFAULT_OUTCOME, DEFAULT_PLACES } from '@/lib/quote';
+import {
+  buildQuote,
+  DEFAULT_HOSTER,
+  DEFAULT_OUTCOME,
+  DEFAULT_PLACES,
+  INTRO_BODY,
+  INTRO_HEADING,
+  SELF_HOST_HANDOFF,
+  STUDIO_QUOTE_BODY,
+} from '@/lib/quote';
 
 describe('buildQuote', () => {
   it('defaults to Studio putting it live', () => {
@@ -16,7 +25,9 @@ describe('buildQuote', () => {
       places: DEFAULT_PLACES,
     });
     expect(quote.kind).toBe('studio');
-    expect(quote.body).toMatch(/You run it, or I ship it with you/);
+    expect(quote.body).toBe(STUDIO_QUOTE_BODY);
+    expect(quote.body).toMatch(/You run it, or we implement with you/);
+    expect(quote.body).not.toMatch(/You run it, or I ship it with you/);
     expect(quote.body).not.toMatch(/They operate, or they pay to implement/);
     expect(quote.stopQuoting).toBe(false);
     expect(quote.lines.map((line) => line.price)).toEqual([
@@ -55,6 +66,7 @@ describe('buildQuote', () => {
       places: 'one',
     });
     expect(quote.kind).toBe('self-host');
+    expect(quote.heading).toBe(SELF_HOST_HANDOFF);
     expect(quote.lines).toEqual([]);
     expect(quote.productHandoffUrl).toBe('https://revealui.com');
     expect(JSON.stringify(quote)).not.toMatch(/\$49/);
@@ -63,7 +75,7 @@ describe('buildQuote', () => {
     expect(JSON.stringify(quote)).not.toMatch(/Enterprise/);
   });
 
-  it('stops quoting when there is more than one place', () => {
+  it('stops quoting when there is more than one site', () => {
     const quote = buildQuote({
       hoster: 'studio',
       outcome: 'launch',
@@ -72,6 +84,7 @@ describe('buildQuote', () => {
     expect(quote.kind).toBe('intro');
     expect(quote.stopQuoting).toBe(true);
     expect(quote.lines).toEqual([]);
-    expect(quote.heading).toMatch(/Book an intro/);
+    expect(quote.heading).toBe(INTRO_HEADING);
+    expect(quote.body).toBe(INTRO_BODY);
   });
 });
