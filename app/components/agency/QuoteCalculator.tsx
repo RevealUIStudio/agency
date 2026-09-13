@@ -11,6 +11,7 @@ import {
   type Outcome,
   PLACES_OPTIONS,
   type Places,
+  QUOTE_CALCULATOR_HEADING,
   QUOTE_CALCULATOR_LEAD,
   QUOTE_INTRO_LINE,
   QUOTE_OWNERSHIP,
@@ -72,7 +73,7 @@ export function QuoteCalculator() {
         <div className="max-w-2xl">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">Quote</p>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Three questions. A price you can read.
+            {QUOTE_CALCULATOR_HEADING}
           </h2>
           <p className="mt-4 text-base text-muted-foreground">{QUOTE_CALCULATOR_LEAD}</p>
         </div>

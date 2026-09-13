@@ -49,7 +49,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
+          description:
+            'Studio quote. Consultation $300. Pilot $1,500. Launch $7,500. Licenses live on revealui.com.',
           robots: 'noindex,follow',
         },
       },
@@ -58,7 +59,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
+          description:
+            'Studio quote. Consultation $300. Pilot $1,500. Launch $7,500. Licenses live on revealui.com.',
           robots: 'noindex,follow',
         },
       },
@@ -67,7 +69,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
+          description:
+            'Studio quote. Consultation $300. Pilot $1,500. Launch $7,500. Licenses live on revealui.com.',
           robots: 'noindex,follow',
         },
       },
