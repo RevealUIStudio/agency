@@ -1,7 +1,7 @@
 import { CONTACT_EMAIL } from '@/lib/site';
 
 export function PrivacyPage() {
-  const lastUpdated = 'August 13, 2026';
+  const lastUpdated = 'September 13, 2026';
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -62,6 +62,13 @@ export function PrivacyPage() {
             .
           </p>
 
+          <h3 className="mt-6 text-lg font-semibold text-foreground">Pageview analytics</h3>
+          <p>
+            After you accept optional cookies, the Site may load a self-hosted Umami tracker. It
+            records page views, the referring URL, and UTM campaign parameters. It is not used for
+            advertising and stays off until you accept.
+          </p>
+
           <h3 className="mt-6 text-lg font-semibold text-foreground">What we do not collect</h3>
           <ul className="list-disc space-y-2 pl-6">
             <li>No advertising cookies, marketing pixels, or behavioral ad analytics</li>
@@ -96,6 +103,18 @@ export function PrivacyPage() {
                 className="font-semibold text-foreground hover:underline"
               >
                 Vercel Privacy Policy
+              </a>
+              )
+            </li>
+            <li>
+              <strong>Fly.io</strong>: hosts our Umami instance for consented pageview analytics (
+              <a
+                href="https://fly.io/legal/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-foreground hover:underline"
+              >
+                Fly.io Privacy Policy
               </a>
               )
             </li>
@@ -180,11 +199,11 @@ export function PrivacyPage() {
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">7. Cookies</h2>
           <p>
-            The Site does not set advertising or marketing cookies. Vercel may set cookies required
-            for hosting and Speed Insights performance measurement. We do not use third-party ad
-            trackers or session-replay tools. If we introduce non-essential cookies beyond
-            performance telemetry, we will update this policy and surface a consent control where
-            required.
+            The Site does not set advertising or marketing cookies. After you accept, Vercel Speed
+            Insights may measure performance and our self-hosted Umami tracker may record page
+            views. We do not use third-party ad trackers or session-replay tools. If we introduce
+            non-essential cookies beyond these consented tools, we will update this policy and
+            surface a consent control where required.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">8. Children</h2>

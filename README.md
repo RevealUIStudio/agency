@@ -22,7 +22,8 @@ The same stack the platform itself runs on — this site is a real external cons
 - `@revealui/presentation` (component primitives + design tokens)
 - `@revealui/contracts` (Track D Launch price; Consultation and Pilot are studio-only)
 - Zod (schema + form validation)
-- `@vercel/speed-insights` (analytics)
+- `@vercel/speed-insights` (consented performance)
+- Self-hosted Umami (consented pageviews / UTM)
 - Vitest
 
 ## Development
@@ -48,6 +49,19 @@ Vercel project pointed at this repo. `vercel.json` declares the framework + head
 - **Domain:** `revealuistudio.com` (Deployed via Vercel)
 - **Build:** `pnpm build` (Vercel auto-detects via `framework: vite`)
 - **Output:** `dist/`
+
+## Analytics
+
+Optional, consent-gated. After Accept, the site loads Vercel Speed Insights and the self-hosted Umami tracker (`script.js` with `data-website-id`). Umami records page views, referrer, and UTM query params via History API navigations. Neither tool loads on Reject or before a choice.
+
+Set these **build-time** variables on the Vercel project for `test` and production. They are not required locally — the tracker no-ops when either is missing.
+
+```bash
+VITE_UMAMI_URL=https://revealui-umami.fly.dev
+VITE_UMAMI_WEBSITE_ID=0fbf4090-7768-47f8-9f85-5ab24a822160
+```
+
+`vercel.json` CSP allows `script-src` and `connect-src` for `https://revealui-umami.fly.dev`.
 
 ## Phase plan
 
