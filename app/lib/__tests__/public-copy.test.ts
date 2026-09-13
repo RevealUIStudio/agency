@@ -113,6 +113,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/routes/ContactPage.tsx'),
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/content/guardrail.ts'),
       path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
       path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
       path.join(repoRoot, 'app/lib/fleet.ts'),
@@ -390,6 +391,50 @@ describe('public copy gates', () => {
       }
     }
     expect(hits).toEqual([]);
+  });
+
+  it('keeps Guardrail as Process microcopy inside the three-offer ladder', () => {
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    const home = readFileSync(path.join(repoRoot, 'app/routes/HomePage.tsx'), 'utf8');
+    const process = readFileSync(path.join(repoRoot, 'app/routes/ProcessPage.tsx'), 'utf8');
+    const guardrail = readFileSync(path.join(repoRoot, 'app/content/guardrail.ts'), 'utf8');
+    const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
+    const teasers = readFileSync(
+      path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
+      'utf8',
+    );
+
+    expect(hero).toContain(HERO_SHOP_LINE);
+    expect(hero).toContain('<h1');
+    expect(hero).toContain('{HERO_SHOP_LINE}');
+    expect(hero).not.toMatch(/guardrail company/i);
+    expect(hero).not.toMatch(/GUARDRAIL_HEADING/);
+    expect(home).not.toMatch(/GUARDRAIL_HEADING|guardrail-agent/);
+
+    expect(process).toContain('GUARDRAIL_HEADING');
+    expect(process).toContain('GUARDRAIL_BODY');
+    expect(process).toContain('id="guardrail-agent"');
+    expect(process).toContain('<aside');
+    expect(process).not.toContain('<article id="guardrail-agent"');
+
+    expect(guardrail).toContain("GUARDRAIL_HEADING = 'Guardrail agent (template)'");
+    expect(guardrail).toContain('Keep agents honest on your domain.');
+    expect(guardrail).toContain('Price locks, lane locks, receipts.');
+    expect(guardrail).toContain('Included in how we scope Pilot and Launch.');
+    expect(guardrail).toContain('Not a separate SKU.');
+    expect(guardrail).not.toContain('\u2014');
+    expect(guardrail).not.toMatch(/\$3,?500/);
+    expect(guardrail).not.toMatch(/RevDev|RevForge/i);
+    expect(guardrail).not.toMatch(/SOC ?2 certified/i);
+    expect(guardrail).not.toMatch(/Maryville/i);
+
+    expect(offers).toContain("name: 'Consultation'");
+    expect(offers).toContain("name: 'Pilot'");
+    expect(offers).toContain("name: 'Launch'");
+    expect(offers).not.toMatch(/Guardrail/);
+    expect(offers).not.toMatch(/\$3,?500/);
+    expect(teasers).toContain('PUBLIC_OFFERS.map');
+    expect(teasers).not.toMatch(/Guardrail/);
   });
 
   it('lists the process page in the public sitemap', () => {

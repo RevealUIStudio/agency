@@ -42,6 +42,9 @@ describe('public studio offers', () => {
     expect(names).not.toContain('Working session');
     expect(names).not.toContain('Live page');
     expect(names).not.toContain('Launch package');
+    expect(names).not.toContain('Guardrail');
+    expect(names).not.toContain('Guardrail agent');
+    expect(names).not.toContain('Guardrail agent (template)');
     expect(WRITTEN_PLAN.description).toMatch(/your domain/i);
     expect(WRITTEN_PLAN.description).toMatch(/you operate/i);
     expect(WRITTEN_PLAN.description).not.toMatch(/written plan/i);

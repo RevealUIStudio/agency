@@ -1,4 +1,5 @@
 import { LinkButton } from '@revealui/presentation';
+import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
@@ -159,6 +160,11 @@ export function ProcessPage() {
               </div>
             </div>
           </article>
+
+          <aside id="guardrail-agent" className="border-t border-border pt-16">
+            <h3 className="text-lg font-semibold text-foreground">{GUARDRAIL_HEADING}</h3>
+            <p className="mt-2 text-base leading-7 text-muted-foreground">{GUARDRAIL_BODY}</p>
+          </aside>
         </div>
       </section>
 
