@@ -53,3 +53,17 @@ describe('Umami CSP', () => {
     expect(directive(csp, 'worker-src')).toBeUndefined();
   });
 });
+
+describe('Sentry CSP', () => {
+  it('allows US and default ingest hosts on connect-src without widening script or workers', () => {
+    const csp = siteCsp();
+    const scriptSrc = directive(csp, 'script-src');
+    const connectSrc = directive(csp, 'connect-src');
+
+    expect(connectSrc).toContain('https://*.ingest.sentry.io');
+    expect(connectSrc).toContain('https://*.ingest.us.sentry.io');
+    expect(scriptSrc).not.toContain('sentry');
+    expect(scriptSrc).not.toContain('unsafe-eval');
+    expect(directive(csp, 'worker-src')).toBeUndefined();
+  });
+});

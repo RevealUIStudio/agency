@@ -15,6 +15,7 @@
     "@revealui/contracts": "^0.8.0",
     "@revealui/presentation": "^0.13.1",
     "@revealui/router": "^0.3.11",
+    "@sentry/react": "^10.74.0",
     "@vercel/speed-insights": "^2.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
