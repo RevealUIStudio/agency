@@ -1,5 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
-import { Component, type ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { captureRenderError } from '@/lib/sentry';
 
 interface Props {
   children: ReactNode;
@@ -16,6 +17,12 @@ export class ErrorBoundary extends Component<Props, State> {
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
+  }
+
+  override componentDidCatch(error: Error, info: ErrorInfo): void {
+    // Forward to Sentry if the SDK was initialised. No-op when VITE_SENTRY_DSN
+    // is absent or analytics consent has not been granted.
+    captureRenderError(error, { componentStack: info.componentStack ?? null });
   }
 
   override render(): ReactNode {
