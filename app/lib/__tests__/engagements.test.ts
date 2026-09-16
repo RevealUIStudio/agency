@@ -45,6 +45,7 @@ describe('public studio offers', () => {
     expect(names).not.toContain('Guardrail');
     expect(names).not.toContain('Guardrail agent');
     expect(names).not.toContain('Guardrail agent (template)');
+    expect(names).not.toContain('Knowledge Graph');
     expect(WRITTEN_PLAN.tagline).toBe('One site on your domain, one agent you run, you keep it');
     expect(WRITTEN_PLAN.description).toMatch(/your domain/i);
     expect(WRITTEN_PLAN.description).toMatch(/one agent you run/i);
@@ -53,6 +54,10 @@ describe('public studio offers', () => {
     expect(WRITTEN_PLAN.description).not.toMatch(/\bdemo\b/i);
     expect(WRITTEN_PLAN.description).not.toMatch(/\bSpec\b/);
     expect(LAUNCH_PACKAGE.description).toMatch(/inside this offer/i);
+    expect(LAUNCH_PACKAGE.description).toMatch(/Knowledge Graph is part of the runtime/);
+    expect(LAUNCH_PACKAGE.description).toMatch(/Electric\+CRDT/);
+    expect(LAUNCH_PACKAGE.description).toMatch(/not a fourth Studio offer/);
+    expect(LAUNCH_PACKAGE.description).not.toMatch(/\$\d/);
   });
 
   it('keeps honest payment terms and does not sell live-or-holdback', () => {

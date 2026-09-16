@@ -8,7 +8,7 @@ export function AboutPage() {
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">About</h1>
         <p className="mt-6 text-lg text-muted-foreground">
           RevealUI Studio is for startups, and for technical founders and small agencies who already
-          run agents. I ship RevealUI, the agent runtime with receipts, and take paid studio work:{' '}
+          run agents. I ship RevealUI, the agentic business runtime, and take paid studio work:{' '}
           {WORKING_SESSION.name}, {WRITTEN_PLAN.name}, and {LAUNCH_PACKAGE.name}. Remote first.
           Sitting down in {STUDIO_CITY} is available on the same calendar.
         </p>

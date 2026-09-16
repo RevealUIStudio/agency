@@ -2,7 +2,13 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { HERO_SHOP_LINE } from '@/components/agency/Hero';
+import {
+  HERO_HEADLINE,
+  HERO_SHOP_LINE,
+  HERO_SUBLINE,
+  HOME_DOCUMENT_TITLE,
+  HOME_META_DESCRIPTION,
+} from '@/components/agency/Hero';
 import { engagementLabels } from '@/data/cases';
 import {
   OG_CARD_BOOKING_LINE,
@@ -310,6 +316,11 @@ describe('public copy gates', () => {
     );
     const facts = readFileSync(path.join(repoRoot, 'app/lib/fleet.ts'), 'utf8');
     expect(fleet).toContain('RevealFleet');
+    expect(fleet).toContain('agentic business runtime');
+    expect(fleet).toContain('Knowledge Graph is part of that runtime (Electric+CRDT)');
+    expect(fleet).toContain('not a Studio SKU');
+    expect(fleet).not.toMatch(/Architecture Review/);
+    expect(fleet).not.toMatch(/Knowledge Graph \$/);
     expect(fleet).toContain('{LEAD_PRODUCT} on revealui.com');
     expect(fleet).toContain('PRODUCT_SITE_URL');
     expect(fleet).not.toContain('REVVAULT_ROLE');
@@ -347,11 +358,22 @@ describe('public copy gates', () => {
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
     const jsonLd = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
     const quote = readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8');
-    expect(hero).toContain(
-      "HERO_HEADLINE = 'The agentic runtime startups operate on their own domain.'",
+    expect(jsonLd).toContain(HOME_DOCUMENT_TITLE);
+    expect(jsonLd).toContain(HOME_META_DESCRIPTION);
+    expect(jsonLd).toContain(
+      'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation, Pilot, or Launch. Remote first. Book a 30-minute intro.',
     );
+    expect(jsonLd).not.toContain('The agentic runtime startups operate on their own domain');
+    expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
+    expect(jsonLd).not.toContain('"name": "Architecture Review"');
+    expect(HERO_HEADLINE).toBe(
+      'The agentic business runtime startups operate on their own domain.',
+    );
+    expect(hero).toContain('The agentic business runtime startups operate on their own domain.');
+    expect(hero).not.toMatch(/HERO_HEADLINE = 'The agentic runtime startups/);
     expect(hero).toContain('existing tools report in, you keep the stack');
     expect(hero).toContain('agents leave receipts; catalog matches checkout');
+    expect(hero).toContain('Powerful + safe');
     expect(hero).toContain(
       'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
     );
@@ -360,6 +382,7 @@ describe('public copy gates', () => {
     expect(hero).toContain('WORKING_SESSION.name');
     expect(hero).toContain('WRITTEN_PLAN.name');
     expect(hero).toContain('LAUNCH_PACKAGE.name');
+    expect(about).toContain('the agentic business runtime');
     expect(about).toMatch(/paid studio work:/);
     expect(about).toContain('{WORKING_SESSION.name}');
     expect(about).toContain('WRITTEN_PLAN.name');
@@ -461,8 +484,17 @@ describe('public copy gates', () => {
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
 
     expect(app).not.toMatch(/what-is-a-startup/);
-    expect(app).toContain('The agentic runtime startups operate on their own domain');
-    expect(app).toContain('existing tools report in, you keep the stack');
+    expect(app).toContain('HOME_DOCUMENT_TITLE');
+    expect(app).toContain('HOME_META_DESCRIPTION');
+    expect(HOME_DOCUMENT_TITLE).toBe(
+      'RevealUI Studio | The agentic business runtime startups operate on their own domain',
+    );
+    expect(HOME_META_DESCRIPTION).toContain(HERO_HEADLINE);
+    expect(HOME_META_DESCRIPTION).toContain(HERO_SUBLINE);
+    expect(HOME_META_DESCRIPTION).toContain('Consultation $300. Pilot $1,500. Launch $7,500.');
+    expect(HOME_META_DESCRIPTION).toContain('agents leave receipts; catalog matches checkout');
+    expect(HOME_META_DESCRIPTION).toContain('Powerful + safe');
+    expect(app).not.toContain('The agentic runtime startups operate on their own domain');
     expect(home).toContain('WhoStudioIsFor');
     expect(home).toContain('TrustRoadmap');
     expect(who).toContain("STUDIO_FOR_TITLE = 'Who Studio is for'");
@@ -494,6 +526,67 @@ describe('public copy gates', () => {
   it('lists the process page in the public sitemap', () => {
     const sitemap = readFileSync(path.join(repoRoot, 'public/sitemap.xml'), 'utf8');
     expect(sitemap).toContain('https://revealuistudio.com/process');
+  });
+
+  it('does not sell Contents or Videos as a live Studio CMS', () => {
+    const files = [
+      path.join(repoRoot, 'index.html'),
+      path.join(repoRoot, 'app/App.tsx'),
+      path.join(repoRoot, 'app/components/agency/Hero.tsx'),
+      path.join(repoRoot, 'app/components/agency/QuoteCalculator.tsx'),
+      path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
+      path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
+      path.join(repoRoot, 'app/lib/engagements.ts'),
+      path.join(repoRoot, 'app/lib/quote.ts'),
+      path.join(repoRoot, 'app/routes/AboutPage.tsx'),
+      path.join(repoRoot, 'app/routes/HomePage.tsx'),
+      path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
+    ];
+    const banned = /live Contents|Contents CMS|Videos CMS|unlimited admin collections/i;
+    const hits: string[] = [];
+    for (const file of files) {
+      if (banned.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
+    }
+    expect(hits).toEqual([]);
+  });
+
+  it('does not use relative product admin or signup paths', () => {
+    const files = [
+      ...walk(path.join(repoRoot, 'app')),
+      path.join(repoRoot, 'index.html'),
+    ];
+    const relativeAdmin = /(?:href|to)=['"`]\/(?:admin|signup|login)\b/;
+    const hits: string[] = [];
+    for (const file of files) {
+      if (relativeAdmin.test(readFileSync(file, 'utf8'))) {
+        hits.push(path.relative(repoRoot, file));
+      }
+    }
+    expect(hits).toEqual([]);
+  });
+
+  it('names Knowledge Graph as runtime honesty, never a fourth cash-ladder SKU', () => {
+    const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
+    const quote = readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8');
+    const jsonLd = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    expect(offers).toContain("name: 'Consultation'");
+    expect(offers).toContain("name: 'Pilot'");
+    expect(offers).toContain("name: 'Launch'");
+    expect(offers).not.toMatch(/name: 'Knowledge Graph'/);
+    expect(offers).toContain('Knowledge Graph is part of the runtime (Electric+CRDT)');
+    expect(offers).toContain('not a fourth Studio offer');
+    expect(quote).toContain("label: 'Consultation'");
+    expect(quote).toContain("label: 'Pilot'");
+    expect(quote).toContain("label: 'Launch'");
+    expect(quote).not.toMatch(/Knowledge Graph/);
+    expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
+    expect(hero).not.toMatch(/Knowledge Graph/);
+    expect(offers).not.toMatch(/Knowledge Graph \$\d/);
+    expect(jsonLd).not.toMatch(/Knowledge Graph \$\d/);
   });
 
   it('308s leftover catalog paths to the homepage calculator', () => {
