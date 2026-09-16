@@ -8,6 +8,7 @@ describe('AboutPage', () => {
     const { container } = render(<AboutPage />);
     const text = container.textContent ?? '';
     expect(text).toContain('5+ years');
+    expect(text).toContain('I ship RevealUI, the agentic business runtime');
     expect(text).toContain('Consultation');
     expect(text).toContain('Pilot');
     expect(text).toContain('Launch');

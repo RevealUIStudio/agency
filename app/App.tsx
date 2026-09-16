@@ -1,6 +1,7 @@
 import { LinkBehaviorProvider } from '@revealui/presentation';
 import { Link, Routes, useRouter } from '@revealui/router';
 import { useRef } from 'react';
+import { HOME_DOCUMENT_TITLE, HOME_META_DESCRIPTION } from './components/agency/Hero';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { publishedCases } from './data/cases';
 import { publishedPress } from './data/press';
@@ -30,9 +31,8 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | The agentic runtime startups operate on their own domain',
-          description:
-            'The agentic runtime startups operate on their own domain. Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Consultation $300. Pilot $1,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
+          title: HOME_DOCUMENT_TITLE,
+          description: HOME_META_DESCRIPTION,
         },
       },
       {

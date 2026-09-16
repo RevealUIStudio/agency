@@ -86,7 +86,7 @@ export const LAUNCH_PACKAGE = {
   price: PUBLIC_LAUNCH_PACKAGE_PRICE,
   tagline: 'One live flow on your accounts',
   description:
-    'One live flow on your accounts. Architecture work (schema, primitives, review) happens inside this offer, not as a named SKU. We scope it on the call and take it live. You own the result.',
+    'One live flow on your accounts. Architecture work (schema, primitives, review) happens inside this offer, not as a named SKU. Knowledge Graph is part of the runtime (Electric+CRDT), not a fourth Studio offer. We scope it on the call and take it live. You own the result.',
   includes: [
     'One live flow on your accounts',
     'Architecture work (schema, primitives, review) inside this offer',
