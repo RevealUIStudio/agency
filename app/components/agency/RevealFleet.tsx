@@ -14,9 +14,9 @@ export function RevealFleet() {
           {FLEET_NAME}
         </h2>
         <p className="mt-4 text-base text-muted-foreground">
-          {FLEET_NAME} is the family name. {LEAD_PRODUCT} is the agentic business runtime.
-          Knowledge Graph is part of that runtime (Electric+CRDT), not a Studio SKU. Licenses
-          live on revealui.com. This page does not sell a product catalog.
+          {FLEET_NAME} is the family name. {LEAD_PRODUCT} is the agentic business runtime. Knowledge
+          Graph is part of that runtime (Electric+CRDT), not a Studio SKU. Licenses live on
+          revealui.com. This page does not sell a product catalog.
         </p>
         <p className="mt-4 text-base text-muted-foreground">
           Studio work here is for startups, and for technical founders and small agencies who

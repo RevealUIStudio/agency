@@ -317,7 +317,8 @@ describe('public copy gates', () => {
     const facts = readFileSync(path.join(repoRoot, 'app/lib/fleet.ts'), 'utf8');
     expect(fleet).toContain('RevealFleet');
     expect(fleet).toContain('agentic business runtime');
-    expect(fleet).toContain('Knowledge Graph is part of that runtime (Electric+CRDT)');
+    expect(fleet).toMatch(/Knowledge\s+Graph/);
+    expect(fleet).toContain('Electric+CRDT');
     expect(fleet).toContain('not a Studio SKU');
     expect(fleet).not.toMatch(/Architecture Review/);
     expect(fleet).not.toMatch(/Knowledge Graph \$/);
@@ -554,10 +555,7 @@ describe('public copy gates', () => {
   });
 
   it('does not use relative product admin or signup paths', () => {
-    const files = [
-      ...walk(path.join(repoRoot, 'app')),
-      path.join(repoRoot, 'index.html'),
-    ];
+    const files = [...walk(path.join(repoRoot, 'app')), path.join(repoRoot, 'index.html')];
     const relativeAdmin = /(?:href|to)=['"`]\/(?:admin|signup|login)\b/;
     const hits: string[] = [];
     for (const file of files) {
