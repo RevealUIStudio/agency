@@ -30,9 +30,9 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | Studio work for startups',
+          title: 'RevealUI Studio | The agentic runtime startups operate on their own domain',
           description:
-            'Studio work for startups. Technical founders and small agencies who already run agents. Consultation $300. Pilot $1,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
+            'The agentic runtime startups operate on their own domain. Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Consultation $300. Pilot $1,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
         },
       },
       {

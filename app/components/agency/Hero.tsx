@@ -8,12 +8,12 @@ import {
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
-/** Visible H1. One-word ICP lead. Do not stack the triad here. */
-export const HERO_HEADLINE = 'Studio work for startups.' as const;
+/** Visible H1. Known-for: agentic runtime they operate on their domain. */
+export const HERO_HEADLINE = 'The agentic runtime startups operate on their own domain.' as const;
 
-/** Narrows the H1: technical founders and small agencies, self-hosted, they operate. */
+/** ICP + tools report in / keep the stack. Proof stays in the subline. */
 export const HERO_SUBLINE =
-  'Technical founders and small agencies who already run agents. A self-hosted business layer on your domain. You operate, or you pay Launch.' as const;
+  'Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout.' as const;
 
 export const HERO_SHOP_LINE =
   'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?' as const;

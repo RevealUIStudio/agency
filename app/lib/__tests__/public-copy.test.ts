@@ -147,7 +147,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'README.md'),
     ];
     const banned =
-      /live-or-holdback|four tests|signup-to-paid|first half back|keep the stack|make-good|receipted agent action/i;
+      /live-or-holdback|four tests|signup-to-paid|first half back|make-good|receipted agent action/i;
     const hits: string[] = [];
     for (const file of files) {
       if (banned.test(readFileSync(file, 'utf8'))) {
@@ -347,7 +347,11 @@ describe('public copy gates', () => {
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
     const jsonLd = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
     const quote = readFileSync(path.join(repoRoot, 'app/lib/quote.ts'), 'utf8');
-    expect(hero).toContain("HERO_HEADLINE = 'Studio work for startups.'");
+    expect(hero).toContain(
+      "HERO_HEADLINE = 'The agentic runtime startups operate on their own domain.'",
+    );
+    expect(hero).toContain('existing tools report in, you keep the stack');
+    expect(hero).toContain('agents leave receipts; catalog matches checkout');
     expect(hero).toContain(
       'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
     );
@@ -457,6 +461,8 @@ describe('public copy gates', () => {
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
 
     expect(app).not.toMatch(/what-is-a-startup/);
+    expect(app).toContain('The agentic runtime startups operate on their own domain');
+    expect(app).toContain('existing tools report in, you keep the stack');
     expect(home).toContain('WhoStudioIsFor');
     expect(home).toContain('TrustRoadmap');
     expect(who).toContain("STUDIO_FOR_TITLE = 'Who Studio is for'");
