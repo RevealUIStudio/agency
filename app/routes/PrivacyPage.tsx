@@ -1,7 +1,7 @@
 import { CONTACT_EMAIL } from '@/lib/site';
 
 export function PrivacyPage() {
-  const lastUpdated = 'September 13, 2026';
+  const lastUpdated = 'September 14, 2026';
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -69,10 +69,19 @@ export function PrivacyPage() {
             advertising and stays off until you accept.
           </p>
 
+          <h3 className="mt-6 text-lg font-semibold text-foreground">Error telemetry</h3>
+          <p>
+            After you accept optional cookies, the Site may initialize Sentry to diagnose
+            application errors. Tracing and a partial recording of the moments before a crash may
+            run only after you accept, and only in production. We do not record sessions
+            continuously or proactively. Sentry stays off until you accept, and stays dormant when
+            error telemetry is not configured.
+          </p>
+
           <h3 className="mt-6 text-lg font-semibold text-foreground">What we do not collect</h3>
           <ul className="list-disc space-y-2 pl-6">
             <li>No advertising cookies, marketing pixels, or behavioral ad analytics</li>
-            <li>No fingerprinting, session replay, or cross-site profiling</li>
+            <li>No fingerprinting, continuous session recording, or cross-site profiling</li>
             <li>No data brokers or ad networks</li>
             <li>No accounts, no user credentials: the Site has no login</li>
           </ul>
@@ -117,6 +126,20 @@ export function PrivacyPage() {
                 Fly.io Privacy Policy
               </a>
               )
+            </li>
+            <li>
+              <strong>Sentry</strong>: consented application error tracking and crash-replay
+              diagnostics (
+              <a
+                href="https://sentry.io/privacy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-foreground hover:underline"
+              >
+                Sentry Privacy Policy
+              </a>
+              ). Error data may include browser context, page URL, and a partial session recording
+              captured at the time of an error. No continuous session recording is performed.
             </li>
             <li>
               <strong>Google Workspace</strong>: email correspondence at our @revealui.com addresses
@@ -200,8 +223,9 @@ export function PrivacyPage() {
           <h2 className="mt-12 text-2xl font-bold text-foreground">7. Cookies</h2>
           <p>
             The Site does not set advertising or marketing cookies. After you accept, Vercel Speed
-            Insights may measure performance and our self-hosted Umami tracker may record page
-            views. We do not use third-party ad trackers or session-replay tools. If we introduce
+            Insights may measure performance, our self-hosted Umami tracker may record page views,
+            and Sentry may collect crash diagnostics (including an on-error replay, never a
+            continuous recording). We do not use third-party ad trackers. If we introduce
             non-essential cookies beyond these consented tools, we will update this policy and
             surface a consent control where required.
           </p>

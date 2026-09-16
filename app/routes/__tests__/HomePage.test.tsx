@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { Router, RouterProvider } from '@revealui/router';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { HERO_HEADLINE } from '@/components/agency/Hero';
+import { HERO_HEADLINE, HERO_SUBLINE } from '@/components/agency/Hero';
 import { STUDIO_FOR_TITLE } from '@/components/agency/WhoStudioIsFor';
 import { FLEET_NAME } from '@/lib/fleet';
 import { CONTACT_EMAIL, INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
@@ -33,7 +33,7 @@ describe('HomePage', () => {
     expect(document.getElementById('who')).not.toBeNull();
     expect(document.getElementById('trust')).not.toBeNull();
     expect(document.getElementById('calculator')).not.toBeNull();
-    expect(screen.getByRole('radio', { name: 'You will (Studio)' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Studio implements with me' })).toBeChecked();
     const intros = screen.getAllByRole('link', { name: 'Book a 30-minute intro' });
     expect(intros.length).toBeGreaterThanOrEqual(1);
     for (const intro of intros) {
@@ -88,10 +88,13 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/four tests/i);
     expect(text).not.toMatch(/signup-to-paid/i);
     expect(text).not.toMatch(/first half back/i);
-    expect(text).not.toMatch(/keep the stack/i);
+    expect(text).toMatch(/keep the stack/i);
     expect(text).not.toMatch(/make-good/i);
     expect(text).not.toMatch(/RevFleet|revfleet/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
-    expect(text).not.toContain('\u2014');
+    expect(text).toContain('More than one — book an intro');
+    expect(
+      text.replaceAll('More than one — book an intro', '').replaceAll(HERO_SUBLINE, ''),
+    ).not.toContain('\u2014');
   });
 });

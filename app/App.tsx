@@ -30,9 +30,9 @@ export function App() {
         path: '/',
         component: HomePage,
         meta: {
-          title: 'RevealUI Studio | Studio work for startups',
+          title: 'RevealUI Studio | The agentic runtime startups operate on their own domain',
           description:
-            'Studio work for startups. Technical founders and small agencies who already run agents. Consultation $300. Pilot $1,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
+            'The agentic runtime startups operate on their own domain. Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Consultation $300. Pilot $1,500. Launch $7,500. Book a 30-minute intro on Google Calendar.',
         },
       },
       {
@@ -49,7 +49,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
+          description:
+            'Studio quote. Consultation $300. Pilot $1,500. Launch $7,500. Licenses live on revealui.com.',
           robots: 'noindex,follow',
         },
       },
@@ -58,7 +59,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
+          description:
+            'Studio quote. Consultation $300. Pilot $1,500. Launch $7,500. Licenses live on revealui.com.',
           robots: 'noindex,follow',
         },
       },
@@ -67,7 +69,8 @@ export function App() {
         component: RedirectToCalculator,
         meta: {
           title: 'Quote | RevealUI Studio',
-          description: 'Three questions, a quote. Consultation $300. Pilot $1,500. Launch $7,500.',
+          description:
+            'Studio quote. Consultation $300. Pilot $1,500. Launch $7,500. Licenses live on revealui.com.',
           robots: 'noindex,follow',
         },
       },
@@ -103,7 +106,7 @@ export function App() {
         component: CookiesPage,
         meta: {
           title: 'Cookies | RevealUI Studio',
-          description: 'How revealuistudio.com uses cookies, Speed Insights, and Umami.',
+          description: 'How revealuistudio.com uses cookies, Speed Insights, Umami, and Sentry.',
         },
       },
       {

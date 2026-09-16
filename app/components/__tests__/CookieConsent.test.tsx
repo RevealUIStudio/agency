@@ -5,8 +5,14 @@ import { CookieConsent } from '@/components/CookieConsent';
 import { COOKIE_NAME } from '@/lib/cookie-consent';
 import { UMAMI_SCRIPT_FLAG } from '@/lib/umami';
 
+const initSentry = vi.fn();
+
 vi.mock('@vercel/speed-insights/react', () => ({
   SpeedInsights: () => <div data-testid="speed-insights" />,
+}));
+
+vi.mock('@/lib/sentry', () => ({
+  initSentry: () => initSentry(),
 }));
 
 const websiteId = '0fbf4090-7768-47f8-9f85-5ab24a822160';
@@ -22,11 +28,12 @@ afterEach(() => {
     script.remove();
   }
   vi.unstubAllEnvs();
+  initSentry.mockReset();
   cleanup();
 });
 
 describe('CookieConsent analytics gate', () => {
-  it('loads Speed Insights and Umami only after accept', async () => {
+  it('loads Speed Insights, Umami, and Sentry only after accept', async () => {
     vi.stubEnv('VITE_UMAMI_URL', 'https://revealui-umami.fly.dev');
     vi.stubEnv('VITE_UMAMI_WEBSITE_ID', websiteId);
 
@@ -37,6 +44,7 @@ describe('CookieConsent analytics gate', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Reject all' }));
     expect(screen.queryByTestId('speed-insights')).not.toBeInTheDocument();
     expect(umamiScripts()).toHaveLength(0);
+    expect(initSentry).not.toHaveBeenCalled();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
     cleanup();
@@ -50,5 +58,6 @@ describe('CookieConsent analytics gate', () => {
     await waitFor(() => {
       expect(umamiScripts()).toHaveLength(1);
     });
+    expect(initSentry).toHaveBeenCalledTimes(1);
   });
 });

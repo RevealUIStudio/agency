@@ -1,5 +1,6 @@
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { useState } from 'react';
+import { SentryTracker } from '@/components/SentryTracker';
 import { UmamiTracker } from '@/components/UmamiTracker';
 import { type AgencyConsent, DENIED, readConsent, writeConsent } from '@/lib/cookie-consent';
 
@@ -20,6 +21,7 @@ export function CookieConsent() {
         <>
           <SpeedInsights />
           <UmamiTracker />
+          <SentryTracker />
         </>
       ) : null}
       {decided ? null : (
@@ -35,8 +37,8 @@ export function CookieConsent() {
                 Cookies
               </h2>
               <p className="text-sm text-muted-foreground">
-                Necessary cookies are not used on this site (there is no login). Speed Insights and
-                Umami pageview analytics stay off until you accept.{' '}
+                Necessary cookies are not used on this site (there is no login). Speed Insights,
+                Umami pageview analytics, and Sentry crash tracing stay off until you accept.{' '}
                 <a href="/cookies" className="font-medium text-foreground underline">
                   Cookie policy
                 </a>

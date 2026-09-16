@@ -24,6 +24,7 @@ The same stack the platform itself runs on — this site is a real external cons
 - Zod (schema + form validation)
 - `@vercel/speed-insights` (consented performance)
 - Self-hosted Umami (consented pageviews / UTM)
+- `@sentry/react` (consented crash tracing / on-error replay; no-op without `VITE_SENTRY_DSN`)
 - Vitest
 
 ## Development
@@ -52,16 +53,17 @@ Vercel project pointed at this repo. `vercel.json` declares the framework + head
 
 ## Analytics
 
-Optional, consent-gated. After Accept, the site loads Vercel Speed Insights and the self-hosted Umami tracker (`script.js` with `data-website-id`). Umami records page views, referrer, and UTM query params via History API navigations. Neither tool loads on Reject or before a choice.
+Optional, consent-gated. After Accept, the site loads Vercel Speed Insights, the self-hosted Umami tracker (`script.js` with `data-website-id`), and the Sentry browser SDK when `VITE_SENTRY_DSN` is set. Umami records page views, referrer, and UTM query params via History API navigations. Sentry tracing and on-error replay stay at sample rate 0 until Accept *and* a production build; there is no proactive session recording. None of these tools load on Reject or before a choice. Do not add `@vercel/analytics`.
 
-Set these **build-time** variables on the Vercel project for `test` and production. They are not required locally — the tracker no-ops when either is missing.
+Set these **build-time** variables on the Vercel project for `test` and production. They are not required locally — each sink no-ops when its variable is missing. Do not commit a real Sentry DSN; paste it in Vercel only (org `revealui-studio-llc`, separate agency project preferred).
 
 ```bash
 VITE_UMAMI_URL=https://revealui-umami.fly.dev
 VITE_UMAMI_WEBSITE_ID=0fbf4090-7768-47f8-9f85-5ab24a822160
+# VITE_SENTRY_DSN — paste the agency Sentry project DSN in Vercel only; omit locally.
 ```
 
-`vercel.json` CSP allows `script-src` and `connect-src` for `https://revealui-umami.fly.dev`.
+`vercel.json` CSP allows `script-src` and `connect-src` for `https://revealui-umami.fly.dev`, and `connect-src` for `https://*.ingest.sentry.io` and `https://*.ingest.us.sentry.io`.
 
 ## Phase plan
 
