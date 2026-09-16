@@ -14,12 +14,19 @@ describe('Hero', () => {
       }),
     ).toBeInTheDocument();
     expect(HERO_HEADLINE).toMatch(/startups/i);
+    expect(HERO_HEADLINE).toMatch(/agentic runtime/i);
+    expect(HERO_HEADLINE).toMatch(/own domain/i);
     expect(HERO_HEADLINE).not.toMatch(
-      /technical founders|small agencies|Fortune 500|SOC ?2|Maryville|Jobber|QBO|chatbot/i,
+      /technical founders|small agencies|Fortune 500|SOC ?2|Maryville|Jobber|QBO|chatbot|receipts/i,
     );
     expect(screen.getByText(HERO_SUBLINE)).toBeInTheDocument();
     expect(HERO_SUBLINE).toMatch(/technical founders and small agencies/i);
     expect(HERO_SUBLINE).toMatch(/already run agents/i);
+    expect(HERO_SUBLINE).toMatch(/existing tools report in/i);
+    expect(HERO_SUBLINE).toMatch(/keep the stack/i);
+    expect(HERO_SUBLINE).toMatch(/powerful \+ safe/i);
+    expect(HERO_SUBLINE).toMatch(/agents leave receipts/i);
+    expect(HERO_SUBLINE).toMatch(/catalog matches checkout/i);
     expect(screen.getByText((content) => content.includes(HERO_SHOP_LINE))).toBeInTheDocument();
     const lead = screen.getByText(/You run it, or I ship it with you/);
     expect(lead).toHaveTextContent('Consultation $300');
@@ -42,7 +49,7 @@ describe('Hero', () => {
     expect(screen.queryByText(/live-or-holdback/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/four tests/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/first half back/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/keep the stack/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/keep the stack/i)).toBeInTheDocument();
     expect(screen.queryByText(/written plan/i)).not.toBeInTheDocument();
   });
 
@@ -52,9 +59,10 @@ describe('Hero', () => {
     expect(intro).toHaveAttribute('href', INTRO_CALL_URL);
   });
 
-  it('contains no em dash in the hero lead copy', () => {
+  it('keeps the known-for em dash in the subline only', () => {
     const { container } = render(<Hero />);
-    expect(container.textContent ?? '').not.toContain('\u2014');
+    expect(HERO_SUBLINE).toContain('\u2014');
+    expect((container.textContent ?? '').replaceAll(HERO_SUBLINE, '')).not.toContain('\u2014');
   });
 
   it('shows one honest process receipt under the CTAs', () => {
