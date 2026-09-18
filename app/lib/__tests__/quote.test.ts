@@ -2,23 +2,26 @@ import { describe, expect, it } from 'vitest';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import {
   buildQuote,
+  CONSULTATION_QUOTE_DETAIL,
   DEFAULT_HOSTER,
   DEFAULT_OUTCOME,
   DEFAULT_PLACES,
   INTRO_BODY,
   INTRO_HEADING,
+  LAUNCH_QUOTE_DETAIL,
+  PILOT_QUOTE_DETAIL,
   SELF_HOST_HANDOFF,
   STUDIO_QUOTE_BODY,
 } from '@/lib/quote';
 
 describe('buildQuote', () => {
-  it('defaults to Studio putting it live', () => {
+  it('defaults to Studio putting a Pilot live', () => {
     expect(DEFAULT_HOSTER).toBe('studio');
-    expect(DEFAULT_OUTCOME).toBe('launch');
+    expect(DEFAULT_OUTCOME).toBe('plan');
     expect(DEFAULT_PLACES).toBe('one');
   });
 
-  it('prints the three Studio prices without live-or-holdback on Launch', () => {
+  it('prints the three Studio prices and leads the result card with result + PROOF', () => {
     const quote = buildQuote({
       hoster: DEFAULT_HOSTER,
       outcome: DEFAULT_OUTCOME,
@@ -43,20 +46,30 @@ describe('buildQuote', () => {
     const hour = quote.lines.find((line) => line.id === 'working-session');
     const plan = quote.lines.find((line) => line.id === 'written-plan');
     const launch = quote.lines.find((line) => line.id === 'launch-package');
+    expect(hour?.detail).toBe(CONSULTATION_QUOTE_DETAIL);
+    expect(hour?.detail).toContain('proof gaps');
+    expect(hour?.detail).toContain('Invoice $300 before we start');
     expect(hour?.detail).toContain('No holdback');
     expect(hour?.detail).toContain('No leftover site');
-    expect(plan?.detail).toBe(WRITTEN_PLAN.payment);
+    expect(plan?.highlighted).toBe(true);
+    expect(plan?.detail).toBe(PILOT_QUOTE_DETAIL);
+    expect(plan?.detail).toMatch(/^One site on your domain/);
+    expect(plan?.detail).toContain('One receipted action (PROOF)');
+    expect(plan?.detail).toContain('Invoice $1,500 before we start');
     expect(plan?.detail).toContain('Credits 100% to Launch');
     expect(plan?.detail).toContain('30 days');
     expect(plan?.detail).not.toContain('first half back');
-    expect(launch?.highlighted).toBe(true);
-    expect(launch?.detail).toBe(LAUNCH_PACKAGE.payment);
-    expect(launch?.detail).toBe('Half now, half on delivery.');
+    expect(launch?.highlighted).toBe(false);
+    expect(launch?.detail).toBe(LAUNCH_QUOTE_DETAIL);
+    expect(launch?.detail).toMatch(/^One live money path on your accounts/);
+    expect(launch?.detail).toContain('Half now, half on delivery.');
     expect(JSON.stringify(quote)).not.toMatch(/four tests/i);
     expect(JSON.stringify(quote)).not.toMatch(/signup-to-paid/i);
     expect(JSON.stringify(quote)).not.toMatch(/first half back/i);
     expect(JSON.stringify(quote)).not.toMatch(/keep the stack/i);
     expect(JSON.stringify(quote)).not.toMatch(/live-or-holdback/i);
+    expect(JSON.stringify(quote)).not.toMatch(/outcome validation/i);
+    expect(JSON.stringify(quote)).not.toMatch(/proof of work/i);
   });
 
   it('sends self-host visitors to the product site without quoting product SKUs', () => {

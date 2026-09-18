@@ -378,6 +378,9 @@ describe('public copy gates', () => {
     expect(hero).toContain(
       'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
     );
+    expect(hero).toContain('Zap still owns the critical path');
+    expect(hero).toContain('Agents act without PROOF');
+    expect(hero).toContain('Small agencies disclose work they cannot receipt');
     expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville|Jobber|QBO/i);
     expect(hero).not.toMatch(/Meet the Fleet/i);
     expect(hero).toContain('WORKING_SESSION.name');
@@ -398,9 +401,12 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain('"price": "1500"');
     expect(jsonLd).toContain('"price": "7500"');
     expect(jsonLd).not.toContain('"price": "3500"');
-    expect(quote).toContain("label: 'Consultation'");
-    expect(quote).toContain("label: 'Pilot'");
-    expect(quote).toContain("label: 'Launch'");
+    expect(quote).toContain("DEFAULT_OUTCOME: Outcome = 'plan'");
+    expect(quote).toContain("label: 'Consultation — diagnose the path / proof gap ($300)'");
+    expect(quote).toContain("label: 'Pilot — one site, one agent I run, one receipted action'");
+    expect(quote).toContain("label: 'Launch — money path live on my accounts'");
+    expect(quote).toContain('PROOF means a receipted action');
+    expect(quote).toContain('not outcome validation or proof of work');
     expect(quote).not.toMatch(/free website/i);
   });
 
@@ -577,12 +583,14 @@ describe('public copy gates', () => {
     expect(offers).not.toMatch(/name: 'Knowledge Graph'/);
     expect(offers).toContain('Knowledge Graph is part of the runtime (Electric+CRDT)');
     expect(offers).toContain('not a fourth Studio offer');
-    expect(quote).toContain("label: 'Consultation'");
-    expect(quote).toContain("label: 'Pilot'");
-    expect(quote).toContain("label: 'Launch'");
+    expect(quote).toContain("label: 'Consultation — diagnose the path / proof gap ($300)'");
+    expect(quote).toContain("label: 'Pilot — one site, one agent I run, one receipted action'");
+    expect(quote).toContain("label: 'Launch — money path live on my accounts'");
     expect(quote).not.toMatch(/Knowledge Graph/);
+    expect(quote).not.toMatch(/RevMind/);
     expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
     expect(hero).not.toMatch(/Knowledge Graph/);
+    expect(hero).not.toMatch(/RevMind/);
     expect(offers).not.toMatch(/Knowledge Graph \$\d/);
     expect(jsonLd).not.toMatch(/Knowledge Graph \$\d/);
   });

@@ -32,6 +32,9 @@ describe('Hero', () => {
     expect(HERO_SUBLINE).toMatch(/catalog matches checkout/i);
     expect(screen.getByText((content) => content.includes(HERO_SHOP_LINE))).toBeInTheDocument();
     const lead = screen.getByText(/You run it, or I ship it with you/);
+    expect(lead).toHaveTextContent('Zap still owns the critical path');
+    expect(lead).toHaveTextContent('Agents act without PROOF');
+    expect(lead).toHaveTextContent('Small agencies disclose work they cannot receipt');
     expect(lead).toHaveTextContent('Consultation $300');
     expect(lead).toHaveTextContent('Pilot $1,500');
     expect(lead).toHaveTextContent('Launch $7,500');
@@ -74,7 +77,9 @@ describe('Hero', () => {
     expect(receipt).toHaveTextContent('$300');
     expect(receipt).toHaveTextContent('30-minute intro');
     expect(receipt).toHaveTextContent('Consultation $300');
-    expect(screen.getByText(/If an agent did it, there's a receipt\./)).toBeInTheDocument();
+    expect(
+      screen.getByText(/If an agent did it, there's PROOF: a receipted action you can show\./),
+    ).toBeInTheDocument();
     const process = screen.getByRole('link', { name: 'How we work →' });
     expect(process).toHaveAttribute('href', '/process');
     expect(screen.queryByText(/Fleet stamp/i)).not.toBeInTheDocument();

@@ -43,6 +43,6 @@ export const RECEIPT_HERO_INTEGRITY = {
 
 // Canonical foil. Process page is the honest next hop, not a second CTA.
 export const RECEIPT_HERO_CAPTION = {
-  text: "If an agent did it, there's a receipt.",
+  text: "If an agent did it, there's PROOF: a receipted action you can show.",
   link: { label: 'How we work →', href: '/process' },
 } as const;

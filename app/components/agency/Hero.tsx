@@ -43,11 +43,12 @@ export function Hero() {
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_SUBLINE}</p>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            {HERO_SHOP_LINE} You run it, or I ship it with you. {WORKING_SESSION.name}{' '}
-            {WORKING_SESSION.price}. {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}. {LAUNCH_PACKAGE.name}{' '}
-            {LAUNCH_PACKAGE.price}. You already live in Cursor. I put booking, invoices, and agents
-            with receipts on your domain. Remote first. Sit-down is an option on the same calendar.
-            Answer three questions for a quote, or book a 30-minute intro.
+            {HERO_SHOP_LINE} Zap still owns the critical path. Agents act without PROOF. Small
+            agencies disclose work they cannot receipt. You already live in Cursor. I put booking,
+            invoices, and agents with receipts on your domain. You run it, or I ship it with you.{' '}
+            {WORKING_SESSION.name} {WORKING_SESSION.price}. {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}.{' '}
+            {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}. Remote first. Sit-down is an option on the
+            same calendar. Answer three questions for a quote, or book a 30-minute intro.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>
