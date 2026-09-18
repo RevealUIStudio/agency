@@ -99,9 +99,7 @@ describe('HomePage', () => {
     expect(
       OUTCOME_OPTIONS.reduce(
         (next, option) => next.replaceAll(option.label, ''),
-        text
-          .replaceAll('More than one — book an intro', '')
-          .replaceAll(HERO_PROOF, ''),
+        text.replaceAll('More than one — book an intro', '').replaceAll(HERO_PROOF, ''),
       ),
     ).not.toContain('\u2014');
   });

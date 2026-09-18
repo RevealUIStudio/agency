@@ -49,9 +49,7 @@ describe('Hero', () => {
     expect(screen.getByText(HERO_MENU)).toBeInTheDocument();
     expect(HERO_MENU).toBe('Consultation $300 · Pilot $1,500 · Launch $7,500.');
     expect(screen.getByText(HERO_PROOF)).toBeInTheDocument();
-    expect(HERO_PROOF).toBe(
-      "If an agent did it, there's PROOF — a receipted action you can show.",
-    );
+    expect(HERO_PROOF).toBe("If an agent did it, there's PROOF — a receipted action you can show.");
     const headline = screen.getByRole('heading', { level: 1, name: HERO_HEADLINE });
     const section = headline.closest('section');
     expect(section).not.toBeNull();
