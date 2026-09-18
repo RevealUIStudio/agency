@@ -46,9 +46,9 @@ export function Hero() {
             {HERO_SHOP_LINE} Zap still owns the critical path. Agents act without PROOF. Small
             agencies disclose work they cannot receipt. You already live in Cursor. I put booking,
             invoices, and agents with receipts on your domain. You run it, or I ship it with you.{' '}
-            {WORKING_SESSION.name} {WORKING_SESSION.price}. {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}.{' '}
-            {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}. Remote first. Sit-down is an option on the
-            same calendar. Answer three questions for a quote, or book a 30-minute intro.
+            {WORKING_SESSION.name} {WORKING_SESSION.price}. {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}
+            . {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}. Remote first. Sit-down is an option on
+            the same calendar. Answer three questions for a quote, or book a 30-minute intro.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>

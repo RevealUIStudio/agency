@@ -378,9 +378,10 @@ describe('public copy gates', () => {
     expect(hero).toContain(
       'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
     );
-    expect(hero).toContain('Zap still owns the critical path');
-    expect(hero).toContain('Agents act without PROOF');
-    expect(hero).toContain('Small agencies disclose work they cannot receipt');
+    const heroText = hero.replace(/\s+/g, ' ');
+    expect(heroText).toContain('Zap still owns the critical path');
+    expect(heroText).toContain('Agents act without PROOF');
+    expect(heroText).toContain('Small agencies disclose work they cannot receipt');
     expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville|Jobber|QBO/i);
     expect(hero).not.toMatch(/Meet the Fleet/i);
     expect(hero).toContain('WORKING_SESSION.name');
