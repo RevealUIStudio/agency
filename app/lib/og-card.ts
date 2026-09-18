@@ -11,7 +11,11 @@
 
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 
-/** Shop-line next to the startups H1. Same sentence as Hero.tsx HERO_SHOP_LINE. */
+/**
+ * Raster shop-line on public/og-card.png. Document title / OG title stay the
+ * known-for H1. This card line is not the homepage H1 and is not the live
+ * hero pain breath.
+ */
 export const OG_CARD_HEADLINE =
   'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?';
 

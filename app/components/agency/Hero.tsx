@@ -18,17 +18,26 @@ export const HOME_DOCUMENT_TITLE =
 
 /**
  * Home meta / OG / Twitter description. Known-for H1 + proof subline + ladder.
- * Proof stays out of the H1: receipts, catalog matches checkout, powerful + safe.
+ * Pain is not the document title. Proof stays out of the H1.
  */
 export const HOME_META_DESCRIPTION =
   'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation $300. Pilot $1,500. Launch $7,500. Book a 30-minute intro on Google Calendar.' as const;
 
-/** ICP + tools report in / keep the stack. Proof stays in the subline. */
+/** Meta-only known-for proof line. Visible hero breath is pain → result → menu → PROOF. */
 export const HERO_SUBLINE =
   'Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout.' as const;
 
+/** Pain. Promoted above prices. Not the H1. */
 export const HERO_SHOP_LINE =
-  'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?' as const;
+  'Tired of Zap owning the critical path, agents that act without PROOF, and client updates with nothing receipted?' as const;
+
+export const HERO_RESULT =
+  'You already live in Cursor. I put booking, invoices, and agents with PROOF on your domain. You run it, or I ship it with you.' as const;
+
+export const HERO_MENU =
+  `${WORKING_SESSION.name} ${WORKING_SESSION.price} · ${WRITTEN_PLAN.name} ${WRITTEN_PLAN.price} · ${LAUNCH_PACKAGE.name} ${LAUNCH_PACKAGE.price}.` as const;
+
+export const HERO_PROOF = RECEIPT_HERO_CAPTION.text;
 
 export function Hero() {
   return (
@@ -41,15 +50,10 @@ export function Hero() {
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             {HERO_HEADLINE}
           </h1>
-          <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_SUBLINE}</p>
-          <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            {HERO_SHOP_LINE} Zap still owns the critical path. Agents act without PROOF. Small
-            agencies disclose work they cannot receipt. You already live in Cursor. I put booking,
-            invoices, and agents with receipts on your domain. You run it, or I ship it with you.{' '}
-            {WORKING_SESSION.name} {WORKING_SESSION.price}. {WRITTEN_PLAN.name} {WRITTEN_PLAN.price}
-            . {LAUNCH_PACKAGE.name} {LAUNCH_PACKAGE.price}. Remote first. Sit-down is an option on
-            the same calendar. Answer three questions for a quote, or book a 30-minute intro.
-          </p>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_SHOP_LINE}</p>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_RESULT}</p>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_MENU}</p>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_PROOF}</p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>
               Book a 30-minute intro
@@ -80,7 +84,6 @@ export function Hero() {
               animate="print"
             />
             <p className="mt-4 text-sm text-muted-foreground">
-              {RECEIPT_HERO_CAPTION.text}{' '}
               <a
                 href={RECEIPT_HERO_CAPTION.link.href}
                 className="font-semibold text-foreground underline-offset-4 hover:underline"
