@@ -13,8 +13,11 @@ describe('Hero', () => {
         name: HERO_HEADLINE,
       }),
     ).toBeInTheDocument();
+    expect(HERO_HEADLINE).toBe(
+      'The agentic business runtime startups operate on their own domain.',
+    );
     expect(HERO_HEADLINE).toMatch(/startups/i);
-    expect(HERO_HEADLINE).toMatch(/agentic runtime/i);
+    expect(HERO_HEADLINE).toMatch(/agentic business runtime/i);
     expect(HERO_HEADLINE).toMatch(/own domain/i);
     expect(HERO_HEADLINE).not.toMatch(
       /technical founders|small agencies|Fortune 500|SOC ?2|Maryville|Jobber|QBO|chatbot|receipts/i,

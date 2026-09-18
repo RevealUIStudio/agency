@@ -10,7 +10,11 @@ describe('RevealFleet', () => {
   it('names the family, leads with RevealUI, and links to the product site', () => {
     render(<RevealFleet />);
     expect(screen.getByRole('heading', { level: 2, name: FLEET_NAME })).toBeInTheDocument();
-    expect(screen.getByText(/RevealUI is the agent runtime with receipts/)).toBeInTheDocument();
+    expect(screen.getByText(/RevealUI is the agentic business runtime/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Knowledge Graph is part of that runtime \(Electric\+CRDT\)/),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/not a Studio SKU/)).toBeInTheDocument();
     const product = screen.getByRole('link', { name: 'RevealUI on revealui.com' });
     expect(product).toHaveAttribute('href', PRODUCT_SITE_URL);
   });
@@ -43,5 +47,7 @@ describe('RevealFleet', () => {
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
     expect(text).not.toMatch(/\$25,?000|8,?499/);
     expect(text).not.toMatch(/live-or-holdback|0\.2\.12/);
+    expect(text).not.toMatch(/Architecture Review/);
+    expect(text).not.toMatch(/Knowledge Graph \$/);
   });
 });
