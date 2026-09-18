@@ -245,12 +245,16 @@ describe('public copy gates', () => {
     const bannedRaster =
       /written plan|local studio|one-person software studio|\bSpec\b|cal\.com|RevDev|RevForge|RevKit|Fleet Stamp/i;
 
-    expect(OG_CARD_HEADLINE).toBe(HERO_SHOP_LINE);
+    expect(OG_CARD_HEADLINE).toBe(
+      'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
+    );
+    expect(OG_CARD_HEADLINE).not.toBe(HERO_HEADLINE);
+    expect(OG_CARD_HEADLINE).not.toBe(HERO_SHOP_LINE);
     expect(OG_CARD_SKU_LINE).toBe('Consultation $300. Pilot $1,500. Launch $7,500.');
     expect(OG_CARD_SKU_LINE).toBe(OG_CARD_SKU_FROM_OFFERS);
     expect(OG_CARD_BOOKING_LINE).toBe('Book a 30-minute intro on Google Calendar.');
     expect(OG_CARD_URL).toBe('revealuistudio.com');
-    expect(hero.replace(/\s+/g, ' ')).toContain(OG_CARD_HEADLINE);
+    expect(hero).toContain(HERO_HEADLINE);
     expect(fixture).toContain(OG_CARD_HEADLINE);
     expect(fixture).toContain(OG_CARD_SKU_LINE);
     expect(fixture).toContain(OG_CARD_BOOKING_LINE);
@@ -376,17 +380,17 @@ describe('public copy gates', () => {
     expect(hero).toContain('agents leave receipts; catalog matches checkout');
     expect(hero).toContain('Powerful + safe');
     expect(hero).toContain(
-      'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
+      'Tired of Zap owning the critical path, agents that act without PROOF, and client updates with nothing receipted?',
     );
-    const heroText = hero.replace(/\s+/g, ' ');
-    expect(heroText).toContain('Zap still owns the critical path');
-    expect(heroText).toContain('Agents act without PROOF');
-    expect(heroText).toContain('Small agencies disclose work they cannot receipt');
-    expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville|Jobber|QBO/i);
-    expect(hero).not.toMatch(/Meet the Fleet/i);
+    expect(hero).toContain(
+      'You already live in Cursor. I put booking, invoices, and agents with PROOF on your domain. You run it, or I ship it with you.',
+    );
+    expect(hero).toContain('HERO_MENU');
     expect(hero).toContain('WORKING_SESSION.name');
     expect(hero).toContain('WRITTEN_PLAN.name');
     expect(hero).toContain('LAUNCH_PACKAGE.name');
+    expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville|Jobber|QBO/i);
+    expect(hero).not.toMatch(/Meet the Fleet/i);
     expect(about).toContain('the agentic business runtime');
     expect(about).toMatch(/paid studio work:/);
     expect(about).toContain('{WORKING_SESSION.name}');
@@ -502,10 +506,15 @@ describe('public copy gates', () => {
     expect(HOME_META_DESCRIPTION).toContain('Consultation $300. Pilot $1,500. Launch $7,500.');
     expect(HOME_META_DESCRIPTION).toContain('agents leave receipts; catalog matches checkout');
     expect(HOME_META_DESCRIPTION).toContain('Powerful + safe');
+    expect(HOME_META_DESCRIPTION).not.toContain(HERO_SHOP_LINE);
+    expect(HOME_DOCUMENT_TITLE).not.toContain('Tired of');
     expect(app).not.toContain('The agentic runtime startups operate on their own domain');
     expect(home).toContain('WhoStudioIsFor');
     expect(home).toContain('TrustRoadmap');
     expect(who).toContain("STUDIO_FOR_TITLE = 'Who Studio is for'");
+    expect(who).toContain(
+      'Small agencies: stop disclosing work your agents can’t receipt. Pilot and Launch leave PROOF on the client’s domain.',
+    );
     expect(who).toMatch(/For: Technical founders and small agencies/i);
     expect(who).toMatch(/Not for: Hosted chatbot bolt-ons/);
     expect(who).toMatch(/The deal: You bring the domain/);

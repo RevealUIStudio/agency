@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { Router, RouterProvider } from '@revealui/router';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { HERO_HEADLINE, HERO_SUBLINE } from '@/components/agency/Hero';
+import { HERO_HEADLINE, HERO_PROOF, HERO_RESULT, HERO_SHOP_LINE } from '@/components/agency/Hero';
 import { STUDIO_FOR_TITLE } from '@/components/agency/WhoStudioIsFor';
 import { FLEET_NAME } from '@/lib/fleet';
 import { OUTCOME_OPTIONS } from '@/lib/quote';
@@ -89,7 +89,9 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/four tests/i);
     expect(text).not.toMatch(/signup-to-paid/i);
     expect(text).not.toMatch(/first half back/i);
-    expect(text).toMatch(/keep the stack/i);
+    expect(text).toContain(HERO_SHOP_LINE);
+    expect(text).toContain(HERO_RESULT);
+    expect(text).toContain(HERO_PROOF);
     expect(text).not.toMatch(/make-good/i);
     expect(text).not.toMatch(/RevFleet|revfleet/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
@@ -97,7 +99,9 @@ describe('HomePage', () => {
     expect(
       OUTCOME_OPTIONS.reduce(
         (next, option) => next.replaceAll(option.label, ''),
-        text.replaceAll('More than one — book an intro', '').replaceAll(HERO_SUBLINE, ''),
+        text
+          .replaceAll('More than one — book an intro', '')
+          .replaceAll(HERO_PROOF, ''),
       ),
     ).not.toContain('\u2014');
   });
