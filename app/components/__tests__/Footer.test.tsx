@@ -11,6 +11,7 @@ function renderFooter() {
   const router = new Router();
   router.registerRoutes([
     { path: '/', component: () => null },
+    { path: '/proof-gap', component: () => null },
     { path: '/privacy', component: () => null },
     { path: '/cookies', component: () => null },
     { path: '/terms', component: () => null },
@@ -28,6 +29,8 @@ describe('Footer (agency)', () => {
     const { container } = renderFooter();
     const docs = screen.getByRole('link', { name: 'Documentation' });
     expect(docs).toHaveAttribute('href', DOCS_URL);
+    const checklist = screen.getByRole('link', { name: 'Proof-gap checklist' });
+    expect(checklist).toHaveAttribute('href', '/proof-gap');
     expect(screen.queryByRole('link', { name: /docs\.revealui\.com/i })).not.toBeInTheDocument();
     const emails = screen.getAllByRole('link', { name: CONTACT_EMAIL });
     expect(emails).toHaveLength(1);

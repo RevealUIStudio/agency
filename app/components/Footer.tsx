@@ -1,7 +1,9 @@
 import { Link } from '@revealui/router';
+import { PROOF_GAP_OFFER_NAME, PROOF_GAP_PATH } from '@/content/proof-gap';
 import { CONTACT_EMAIL, DOCS_URL, STUDIO_LEGAL_NAME } from '@/lib/site';
 
 const footerLinks = [
+  { href: PROOF_GAP_PATH, label: PROOF_GAP_OFFER_NAME },
   { href: '/privacy', label: 'Privacy' },
   { href: '/cookies', label: 'Cookies' },
   { href: '/terms', label: 'Terms' },
