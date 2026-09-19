@@ -119,7 +119,10 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/routes/ContactPage.tsx'),
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/routes/ProofGapPage.tsx'),
       path.join(repoRoot, 'app/content/guardrail.ts'),
+      path.join(repoRoot, 'app/content/proof-gap.ts'),
+      path.join(repoRoot, 'app/components/agency/ProofGapForm.tsx'),
       path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
       path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
       path.join(repoRoot, 'app/components/agency/WhoStudioIsFor.tsx'),
@@ -340,6 +343,8 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/components/agency/Hero.tsx'),
       path.join(repoRoot, 'app/routes/AboutPage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/routes/ProofGapPage.tsx'),
+      path.join(repoRoot, 'app/content/proof-gap.ts'),
       path.join(repoRoot, 'app/lib/engagements.ts'),
       path.join(repoRoot, 'app/lib/quote.ts'),
       path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
@@ -534,6 +539,7 @@ describe('public copy gates', () => {
   it('lists the process page in the public sitemap', () => {
     const sitemap = readFileSync(path.join(repoRoot, 'public/sitemap.xml'), 'utf8');
     expect(sitemap).toContain('https://revealuistudio.com/process');
+    expect(sitemap).toContain('https://revealuistudio.com/proof-gap');
   });
 
   it('does not sell Contents or Videos as a live Studio CMS', () => {
@@ -549,7 +555,9 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/routes/AboutPage.tsx'),
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/routes/ProofGapPage.tsx'),
       path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
+      path.join(repoRoot, 'app/content/proof-gap.ts'),
     ];
     const banned = /live Contents|Contents CMS|Videos CMS|unlimited admin collections/i;
     const hits: string[] = [];
@@ -608,5 +616,45 @@ describe('public copy gates', () => {
       expect(hop.destination).toBe('/#calculator');
       expect(hop.permanent).toBe(true);
     }
+  });
+
+  it('wires the proof-gap checklist as a soft lead-magnet gate', () => {
+    const app = readFileSync(path.join(repoRoot, 'app/App.tsx'), 'utf8');
+    const page = readFileSync(path.join(repoRoot, 'app/routes/ProofGapPage.tsx'), 'utf8');
+    const copy = readFileSync(path.join(repoRoot, 'app/content/proof-gap.ts'), 'utf8');
+    const footer = readFileSync(path.join(repoRoot, 'app/components/Footer.tsx'), 'utf8');
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    const pdf = readFileSync(path.join(repoRoot, 'public/proof-gap-checklist.pdf'));
+    const vercel = JSON.parse(readFileSync(path.join(repoRoot, 'vercel.json'), 'utf8')) as {
+      rewrites: { source: string; destination: string }[];
+    };
+
+    expect(app).toContain('PROOF_GAP_PATH');
+    expect(app).toContain('PROOF_GAP_DOCUMENT_TITLE');
+    expect(app).toContain('ProofGapPage');
+    expect(copy).toContain("PROOF_GAP_H1 = 'Can you prove what your agents did last week?'");
+    expect(copy).toContain("PROOF_GAP_DOCUMENT_TITLE = 'Proof-gap checklist | RevealUI Studio'");
+    expect(copy).toContain("PROOF_GAP_CTA = 'Get the free checklist'");
+    expect(copy).toContain('PROOF is a receipted action');
+    expect(copy).toContain('Consultation $300 · Pilot $1,500 · Launch $7,500');
+    expect(copy).toContain('Not “faster than Zap.”');
+    expect(copy).not.toMatch(/Request a quote/);
+    expect(copy).not.toMatch(/revolutionize|empower|seamless/i);
+    expect(copy).not.toMatch(/RevMind/);
+    expect(copy).not.toMatch(/Architecture-as-Consultation/);
+    expect(copy).not.toMatch(/PROOF_GAP_H1 = '.*faster than Zap/i);
+    expect(page).toContain('PROOF_GAP_H1');
+    expect(page).toContain('ProofGapForm');
+    expect(footer).toContain('PROOF_GAP_PATH');
+    expect(footer).toContain('PROOF_GAP_OFFER_NAME');
+    expect(hero).not.toContain('Can you prove what your agents did last week?');
+    expect(pdf.subarray(0, 5).equals(Buffer.from('%PDF-'))).toBe(true);
+    expect(
+      vercel.rewrites.some(
+        (rule) =>
+          rule.source === '/proof-gap-checklist.pdf' &&
+          rule.destination === '/proof-gap-checklist.pdf',
+      ),
+    ).toBe(true);
   });
 });
