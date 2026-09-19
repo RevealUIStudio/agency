@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { inflateSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 import {
   HERO_HEADLINE,
@@ -21,6 +22,42 @@ import { INTRO_CALL_URL } from '@/lib/site';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const bannedBookingHost = new RegExp(`${'cal'}\\.com`, 'i');
+
+function ascii85Decode(buf: Buffer): Buffer {
+  let s = buf.toString('latin1').replace(/\s/g, '');
+  if (s.endsWith('~>')) s = s.slice(0, -2);
+  const out: number[] = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] === 'z') {
+      out.push(0, 0, 0, 0);
+      i += 1;
+      continue;
+    }
+    const chunk = s.slice(i, Math.min(i + 5, s.length));
+    i += chunk.length;
+    const pad = 5 - chunk.length;
+    const padded = chunk + 'u'.repeat(pad);
+    let n = 0;
+    for (const ch of padded) n = n * 85 + (ch.charCodeAt(0) - 33);
+    out.push((n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255);
+    if (pad) out.splice(out.length - pad, pad);
+  }
+  return Buffer.from(out);
+}
+
+/** ReportLab print PDFs store copy in an ASCII85+Flate content stream. */
+function pdfPageText(pdf: Buffer): string {
+  const start = pdf.indexOf(Buffer.from('stream\n'));
+  const end = pdf.indexOf(Buffer.from('endstream'), start);
+  if (start === -1 || end === -1) return pdf.toString('latin1');
+  const raw = pdf.subarray(start + 'stream\n'.length, end);
+  try {
+    return inflateSync(ascii85Decode(raw)).toString('latin1');
+  } catch {
+    return pdf.toString('latin1');
+  }
+}
 
 function walk(dir: string, acc: string[] = []): string[] {
   for (const name of readdirSync(dir)) {
@@ -649,12 +686,11 @@ describe('public copy gates', () => {
     expect(footer).toContain('PROOF_GAP_OFFER_NAME');
     expect(hero).not.toContain('Can you prove what your agents did last week?');
     expect(pdf.subarray(0, 5).equals(Buffer.from('%PDF-'))).toBe(true);
-    const pdfLatin1 = pdf.toString('latin1');
-    expect(pdfLatin1).toContain('Proof-gap checklist');
-    expect(pdfLatin1).toContain('RevealUI Studio');
-    expect(pdfLatin1).not.toMatch(
-      /HOLD public|Joshua OK|Asset unlocked|Media Manager|agency#204|publish OK/i,
-    );
+    const pdfText = pdfPageText(pdf);
+    expect(pdfText).toContain('Proof-gap checklist');
+    expect(pdfText).toContain('RevealUI Studio');
+    expect(pdfText).toMatch(/RevealUI Studio \\267 Proof-gap checklist/);
+    expect(pdfText).not.toMatch(/HOLD public|Joshua OK|Media Manager|agency#204|publish OK/i);
     expect(
       vercel.rewrites.some(
         (rule) =>

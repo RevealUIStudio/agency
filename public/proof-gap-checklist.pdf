@@ -2,7 +2,7 @@
 %“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
 <<
-/F1 2 0 R /F2 3 0 R /F3 4 0 R /F4 5 0 R
+/F1 2 0 R /F2 3 0 R /F3 4 0 R
 >>
 endobj
 2 0 obj
@@ -17,17 +17,12 @@ endobj
 endobj
 4 0 obj
 <<
-/BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+/BaseFont /Symbol /Name /F3 /Subtype /Type1 /Type /Font
 >>
 endobj
 5 0 obj
 <<
-/BaseFont /Symbol /Name /F4 /Subtype /Type1 /Type /Font
->>
-endobj
-6 0 obj
-<<
-/Contents 10 0 R /MediaBox [ 0 0 612 792 ] /Parent 9 0 R /Resources <<
+/Contents 9 0 R /MediaBox [ 0 0 612 792 ] /Parent 8 0 R /Resources <<
 /Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
 >> /Rotate 0 /Trans <<
 
@@ -35,160 +30,51 @@ endobj
   /Type /Page
 >>
 endobj
+6 0 obj
+<<
+/PageMode /UseNone /Pages 8 0 R /Type /Catalog
+>>
+endobj
 7 0 obj
 <<
-/PageMode /UseNone /Pages 9 0 R /Type /Catalog
+/Author (\(anonymous\)) /CreationDate (D:20260919010355+00'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20260919010355+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (\(unspecified\)) /Title (\(anonymous\)) /Trapped /False
 >>
 endobj
 8 0 obj
 <<
-/Author (RevealUI Studio) /CreationDate (D:20000101000000+00'00') /Creator (anonymous) /Keywords () /ModDate (D:20000101000000+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
-  /Subject (Proof-gap checklist) /Title (Proof-gap checklist) /Trapped /False
+/Count 1 /Kids [ 5 0 R ] /Type /Pages
 >>
 endobj
 9 0 obj
 <<
-/Count 1 /Kids [ 6 0 R ] /Type /Pages
->>
-endobj
-10 0 obj
-<<
-/Length 5509
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 2245
 >>
 stream
-1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
-.039216 .172549 .352941 rg
-n 0 761.76 612 30.24 re f*
-1 1 1 rg
-BT /F2 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 772.56 Tm (RevealUI Studio) Tj T* ET
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 485.073 772.56 Tm (Proof-gap checklist) Tj T* ET
-.066667 .094118 .152941 rg
-BT /F2 18 Tf 21.6 TL ET
-BT 1 0 0 1 50.4 740.16 Tm (Proof-gap checklist) Tj T* ET
-.294118 .333333 .388235 rg
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 724.16 Tm (Technical founders & small agencies \267 ~10-minute self-audit: can your stack show what agents did?) Tj T* ET
-.066667 .094118 .152941 rg
-BT /F3 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 712.16 Tm (PROOF = receipted action \227 durable record an agent acted on your system \(identity \267 time \267 target\).) Tj T* ET
-.819608 .835294 .858824 RG
-.6 w
-n 50.4 696.16 m 561.6 696.16 l S
-.066667 .094118 .152941 rg
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 680.16 Tm (How: Mark Y / P / N. Score = No + Partial. Fix the one gap that would embarrass you this week.) Tj T* ET
-.039216 .172549 .352941 rg
-BT /F2 10 Tf 12 TL ET
-BT 1 0 0 1 50.4 661.16 Tm (1\) Ownership & domain) Tj T* ET
-.066667 .094118 .152941 rg
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 648.16 Tm (1.1 Agents on your domain/infra \(exportable\) \267 1.2 Named key holders \(Stripe/DNS/GitHub/DB\) \267 1.3 Exit without losing) Tj T* ET
-BT 1 0 0 1 50.4 637.16 Tm (workflow+receipts \267 1.4 AI not locked to one chat UI) Tj T* ET
-.603922 .203922 .070588 rg
-BT /F3 8.5 Tf 10.2 TL ET
-BT 1 0 0 1 50.4 626.16 Tm (Red flag: Agency Cursor did it; nothing on client accounts.) Tj T* ET
-.039216 .172549 .352941 rg
-BT /F2 10 Tf 12 TL ET
-BT 1 0 0 1 50.4 607.16 Tm (2\) Tools / critical path) Tj T* ET
-.066667 .094118 .152941 rg
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 594.16 Tm (2.1 Booking\267invoices\267agents share truth \267 2.2 You know what owns the critical path \267 2.3 Failures surface to humans \267 2.4 Not) Tj T* ET
-BT 1 0 0 1 50.4 583.16 Tm (one undocumented Zap from mystery booking) Tj T* ET
-.603922 .203922 .070588 rg
-BT /F3 8.5 Tf 10.2 TL ET
-BT 1 0 0 1 50.4 572.16 Tm (Red flag: Zap owns revenue; agents are a demo.) Tj T* ET
-.039216 .172549 .352941 rg
-BT /F2 10 Tf 12 TL ET
-BT 1 0 0 1 50.4 553.16 Tm (3\) Receipted actions \(PROOF\)) Tj T* ET
-.066667 .094118 .152941 rg
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 540.16 Tm (3.1 Durable write on act \(not only chat\) \267 3.2 Non-engineer, one link \267 3.3 Identity+time+target \267 3.4 Show client without IDE) Tj T* ET
-BT 1 0 0 1 50.4 529.16 Tm (share \267 3.5 Failures/refuses visible) Tj T* ET
-.603922 .203922 .070588 rg
-BT /F3 8.5 Tf 10.2 TL ET
-BT 1 0 0 1 50.4 518.16 Tm (Red flag: \223Agent said it worked.\224) Tj T* ET
-.039216 .172549 .352941 rg
-BT /F2 10 Tf 12 TL ET
-BT 1 0 0 1 50.4 499.16 Tm (4\) Human gates) Tj T* ET
-.066667 .094118 .152941 rg
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 486.16 Tm (4.1 Named gate for money/sends/deletes \267 4.2 No auto-outbound from prompt \267 4.3 Secrets not pasted into chat as path \267 4.4) Tj T* ET
-BT 1 0 0 1 50.4 475.16 Tm (Same plan rules for agents & humans) Tj T* ET
-.603922 .203922 .070588 rg
-BT /F3 8.5 Tf 10.2 TL ET
-BT 1 0 0 1 50.4 464.16 Tm (Red flag: Autodialer / HubSpot spray.) Tj T* ET
-.039216 .172549 .352941 rg
-BT /F2 10 Tf 12 TL ET
-BT 1 0 0 1 50.4 445.16 Tm (5\) Stakeholder updates) Tj T* ET
-.066667 .094118 .152941 rg
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 432.16 Tm (5.1 Cite receipts/links \267 5.2 Disclose without inventing \267 5.3 Free vs paid gates clear \267 5.4 Architecture matches runtime) Tj T* ET
-.603922 .203922 .070588 rg
-BT /F3 8.5 Tf 10.2 TL ET
-BT 1 0 0 1 50.4 421.16 Tm (Red flag: Pretty decks; no trail.) Tj T* ET
-.039216 .172549 .352941 rg
-BT /F2 10 Tf 12 TL ET
-BT 1 0 0 1 50.4 402.16 Tm (6\) Catalog honesty \(if you sell AI\)) Tj T* ET
-.066667 .094118 .152941 rg
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 389.16 Tm (6.1 Prices match checkout \267 6.2 Coming-soon ) Tj /F4 9 Tf 10.8 TL (\271) Tj /F1 9 Tf 10.8 TL ( live \267 6.3 No SOC2 theater \267 6.4 Not chatbot SaaS if buyers keep keys) Tj T* ET
-.819608 .835294 .858824 RG
-n 50.4 372.16 m 561.6 372.16 l S
-.066667 .094118 .152941 rg
-BT /F2 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 356.16 Tm (Score:) Tj T* ET
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 80.91 356.16 Tm (____ / 24 No+Partial \267 0\2263 tight \267 4\2268 pick one \2473/\2471 \267 9+ don\222t scale outreach yet) Tj T* ET
-BT /F2 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 342.16 Tm (One gap this week:) Tj T* ET
-BT /F1 9 Tf 10.8 TL ET
-.819608 .835294 .858824 RG
-n 134.928 341.16 m 561.6 341.16 l S
-.066667 .094118 .152941 rg
-BT /F2 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 324.16 Tm (Soft next steps \(pick one\):) Tj T* ET
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 312.16 Tm (1. DIY \267 2. Consultation $300 diagnose \267 3. Pilot \(slice + receipts\) \267 4. Free on revealui.com \227 Book 30-min intro guest-first Meet) Tj T* ET
-BT 1 0 0 1 50.4 300.16 Tm (\(no Google account to join\).) Tj T* ET
-BT /F2 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 284.16 Tm (Refuse:) Tj T* ET
-BT /F1 9 Tf 10.8 TL ET
-BT 1 0 0 1 85.905 284.16 Tm (Not faster-than-Zap \267 not cheaper \267 not SOC2 \267 not rented chatbot \267 not Architecture-as-Consultation.) Tj T* ET
-BT /F3 9 Tf 10.8 TL ET
-BT 1 0 0 1 50.4 270.16 Tm (Known for: agentic business runtime on your own domain \227 tools report in, agents leave PROOF, catalog matches checkout.) Tj T* ET
-.039216 .172549 .352941 rg
-n 0 0 612 27.36 re f*
-1 1 1 rg
-BT /F1 8.5 Tf 10.2 TL ET
-BT 1 0 0 1 231.2978 11.52 Tm (\251 RevealUI Studio \267 Proof-gap checklist) Tj T* ET
- 
-endstream
+GatU4gN)%.&q/)-oY]1C1QF*#l/J\EWPjfEhV!b!OlmllWnN%R8Ap;e\,^22Im4/\.=2\+gf!4=C_76*kWXFk1]eTU-h-S=61jT:7b7YE+l0=NLkd_@s,5ak^\ZigTU?\DLETC0)2?Q@cc?$qhRp^,K>VI!?@eA.XPm6L\TQ3cZr65+L6\!84Pf/:f[k6F-f+g`p@pRq^>:4S&*NULIp5*YbKks#>LhCgFoSVD[=uooH(%<eZCKLGOt3[ErCEenGtr1nALb2-;D9.+6<9D9iV@f8Wg0e)PVPgW<G=4SV->^Cg<hN_epl'c>)Cc_a/trWVleK&HREpt(>eUbD0Z]B%f19oHVOM_bu65eb?)V[/!Qi@(f"dFC%dX02l\]hA8RL!K:/_sHZ(GgL4(BQ[>Ee$bf2"Ks+rs\QN(ql$O]`[fK>SM43ci$:b'CEK9>+PS.*F/!<D)6h\sBa<AIY?(;jpal(?+/'r0kn$E'NR?!T*jpRGe5GF`:XSTpI:@*l5o1@<dPm`CHmh6K=`KB'9KC3MtY1VKX21nm)0IN6c;U#nVY7s0:$ZkY,6d^Aj:2WKTQ-^RNXTl[-3Hpt\m?s5?r*#:4N%.-%3p7WXiC6QCQM8Js?00-3/ehd%`ARM`i9t*3@bf`D2jBJU8$/&endf$-1K&A(c?[4:A#5#@Lco)R&/Or.1[DN[X;CZNh#/N-W^&WM/A-ILmja5-LmYPCu[]ir"I!#%$1&=o&&(SS]lJ9p5,'s8X^u<.BWj7j>,NK(.f@tGNG3;TfRWa!NDf81H"4Neu=LZEXd%R!/\2iuE"H7@@;r($%XNK5Y_E0.$dq,?bZ4&9R_Z&m1bFJCt=dk8;9i=fb2*I<uk!95aP$(Qp4,j^.jEm_D"72ph=ARj$ZWW><8Pd>HJP?F&]MiPQ+1QP%q5?^(NVgKLH]p0pT[f=PlB$bQnh[Re/)/4>G1-/Er0u+$m"hg4a=GN?<i+D!jY$70<A8.@3AD0%H9@j(WO+.Z2'Vc:AG99.iddT:Oh9K!6Z$k)?fL.Y;<'4sa4"F?=n/-=1?b7FBZ1A0#F&oY"dD1cd:lqjTR?U97_6P2os:i.,id"gE/=R]X/6<o&8XkRDL_")I/rlPcfgZH,0)B0%_1:"agll\A"3q;D9!m4=i$fKma&!`ppjs^K9FlG`jB^]UIi^rEc/&:2m@+q,mT6c1ga==Rfd+@Kb:Q_\4bh,o\E&h7#=#,P@:%f4=0RK&-Hpup9SH<7,hoVX?$fK&V:NGa&!uIP<V):8E(H/>`48F;DSM&l6>4Gne.fbOS:!;jiWN_4QkA3N`>B(5ch8+J3Z:XD<_e)9"^FtSJBP(Vj\jT*3)VC*6a*>D>8.fbVOijQ7oI,PrT>TWuRTh,FUannUQ:]EI&T:#N&m%E4Qd;$J1qj'[K4)1RM(HI1K8p;:5W#0L!mc">Eq[[cMXSVlF##+)hL;*o5I7%gfIZkuaVo!@*rr:%/gtHmMGn_8$S\N.U)q*u2;RK5.)?VahP4;.I`ks#JQq$j[32B%SE;aET2%75kC%7aVEk*'[R_T:N(Og\BV+R!'#*:Ue=M#h2>*:JYf%H.\gWUKO4q]1eY9[[54D>\tV?,WDrBGp_*KqkBq1TtL5Z5r>"%VUd+#opp80ToMCod^kP:0MSeFV*]O>)&S&GiN3r&7pdpU%&ZBIp<=AO'9Be3/onn8\@i<Aci>J94&AQT`sWFQ]3oG@E5=oLG?T15H0N7a&)a3SglZkZEb]1TS]_38(GG8C(dDeEC=C3O%$QLKfOQT(\L00_"o<+<-^S7(NCN>!W$fg8+mL@cKjYVY/<o&7C<kc:4n#pSLn_USGFdggct>6'<.1bkY<GUjg8ub3:\D/">E\mlr*js9Zr$)-h@(7I:F!JZ867aB>6PDA92jr<q>6$kU@B'`#2;[=G)]+f4-;$@Pt[4NU%8@Z6<'C*51'mNg5*-oXaH"]2&g!nm;Edj0he5#nB2%DkE?Pc`AI_dLV":AeQ/aIhITW:=pAc9NMYMmYJhR]Wmh4QCt^0_l2O^L/mn>a@5o?Q&7IQc$Ucp443cB`n"d.@lj0q-QaKa7H=/NU#Hf<@_3(=43%J2cEXt9"*Br`!NG6N!nGIP4)_a'mNh&B69u;qO$'Xj8+TI0c:--XA;2Zc`Jj.T3F*":[LH>YuZbBM>Z!i'mWk#`F!+t)pZ3pgTh!P!$2j?3hW\)b<WTZEYgi^XO7e=of^?3&F$-P"/kf#'br``TQobZ]^[l4~>endstream
 endobj
 xref
-0 11
+0 10
 0000000000 65535 f 
 0000000061 00000 n 
-0000000122 00000 n 
-0000000229 00000 n 
-0000000341 00000 n 
-0000000456 00000 n 
-0000000533 00000 n 
-0000000727 00000 n 
-0000000795 00000 n 
-0000001081 00000 n 
-0000001140 00000 n 
+0000000112 00000 n 
+0000000219 00000 n 
+0000000331 00000 n 
+0000000408 00000 n 
+0000000601 00000 n 
+0000000669 00000 n 
+0000000949 00000 n 
+0000001008 00000 n 
 trailer
 <<
 /ID 
-[<f4ae8eccc706fc9e2fc446e6b17fd83d><f4ae8eccc706fc9e2fc446e6b17fd83d>]
+[<96275ec16a8458465095b612e39d20d1><96275ec16a8458465095b612e39d20d1>]
 % ReportLab generated PDF document -- digest (opensource)
 
-/Info 8 0 R
-/Root 7 0 R
-/Size 11
+/Info 7 0 R
+/Root 6 0 R
+/Size 10
 >>
 startxref
-6701
+3344
 %%EOF
