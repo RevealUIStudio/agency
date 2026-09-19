@@ -649,6 +649,12 @@ describe('public copy gates', () => {
     expect(footer).toContain('PROOF_GAP_OFFER_NAME');
     expect(hero).not.toContain('Can you prove what your agents did last week?');
     expect(pdf.subarray(0, 5).equals(Buffer.from('%PDF-'))).toBe(true);
+    const pdfLatin1 = pdf.toString('latin1');
+    expect(pdfLatin1).toContain('Proof-gap checklist');
+    expect(pdfLatin1).toContain('RevealUI Studio');
+    expect(pdfLatin1).not.toMatch(
+      /HOLD public|Joshua OK|Asset unlocked|Media Manager|agency#204|publish OK/i,
+    );
     expect(
       vercel.rewrites.some(
         (rule) =>
