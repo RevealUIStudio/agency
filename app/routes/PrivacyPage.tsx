@@ -1,7 +1,7 @@
 import { CONTACT_EMAIL } from '@/lib/site';
 
 export function PrivacyPage() {
-  const lastUpdated = 'September 14, 2026';
+  const lastUpdated = 'September 19, 2026';
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -40,7 +40,8 @@ export function PrivacyPage() {
           <h3 className="mt-6 text-lg font-semibold text-foreground">Contact form submissions</h3>
           <p>
             When you submit our contact form, we collect the information you provide: your name,
-            email address, an optional company name, an inquiry topic, and your message. This is the
+            email address, an optional company name, an inquiry topic, and your message. Checklist
+            requests on /proof-gap collect your name and email and use the same inbox. This is the
             only first-party personal information we collect through the Site.
           </p>
 

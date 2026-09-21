@@ -3,6 +3,11 @@ import { Link, Routes, useRouter } from '@revealui/router';
 import { useRef } from 'react';
 import { HOME_DOCUMENT_TITLE, HOME_META_DESCRIPTION } from './components/agency/Hero';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import {
+  PROOF_GAP_DOCUMENT_TITLE,
+  PROOF_GAP_META_DESCRIPTION,
+  PROOF_GAP_PATH,
+} from './content/proof-gap';
 import { publishedCases } from './data/cases';
 import { publishedPress } from './data/press';
 import { RootLayout } from './layouts/RootLayout';
@@ -17,6 +22,7 @@ import { PressItemPage } from './routes/PressItemPage';
 import { PressPage } from './routes/PressPage';
 import { PrivacyPage } from './routes/PrivacyPage';
 import { ProcessPage } from './routes/ProcessPage';
+import { ProofGapPage } from './routes/ProofGapPage';
 import { RedirectToCalculator } from './routes/RedirectToCalculator';
 import { ServicesPage } from './routes/ServicesPage';
 import { TermsPage } from './routes/TermsPage';
@@ -99,6 +105,14 @@ export function App() {
           title: 'Contact | RevealUI Studio',
           description:
             'Book a 30-minute intro or email founder@revealui.com. No account. No payment to book the intro.',
+        },
+      },
+      {
+        path: PROOF_GAP_PATH,
+        component: ProofGapPage,
+        meta: {
+          title: PROOF_GAP_DOCUMENT_TITLE,
+          description: PROOF_GAP_META_DESCRIPTION,
         },
       },
       {
