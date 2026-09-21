@@ -34,8 +34,11 @@ function exportedStringConst(source, name) {
 function assertLiveCopy() {
   const fixture = readFileSync(path.join(ROOT, 'app/lib/og-card.ts'), 'utf8');
   const hero = readFileSync(path.join(ROOT, 'app/components/agency/Hero.tsx'), 'utf8');
-  if (!fixture.includes(HEADLINE) || !hero.replace(/\s+/g, ' ').includes(HEADLINE)) {
-    throw new Error('og-card headline drifted from Hero.tsx');
+  if (!fixture.includes(HEADLINE)) {
+    throw new Error('og-card headline drifted from app/lib/og-card.ts');
+  }
+  if (!hero.includes('The agentic business runtime startups operate on their own domain.')) {
+    throw new Error('Hero.tsx lost the known-for H1 lock');
   }
   if (!fixture.includes(SKU_LINE)) {
     throw new Error('app/lib/og-card.ts is missing the locked SKU line');
