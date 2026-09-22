@@ -345,8 +345,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/components/agency/Hero.tsx'),
       path.join(repoRoot, 'app/lib/fleet.ts'),
     ];
-    const banned =
-      /RevealFleet|revealfleet|RevForge|RevKit|RevDev|Agency Perpetual|\$25,?000|8,?499|0\.2\.12/;
+    const banned = /RevForge|RevKit|RevDev|Agency Perpetual|\$25,?000|8,?499|0\.2\.12/;
     const hits: string[] = [];
     for (const file of files) {
       if (banned.test(readFileSync(file, 'utf8'))) {

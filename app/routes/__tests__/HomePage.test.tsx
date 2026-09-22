@@ -93,7 +93,7 @@ describe('HomePage', () => {
     expect(text).toContain(HERO_RESULT);
     expect(text).toContain(HERO_PROOF);
     expect(text).not.toMatch(/make-good/i);
-    expect(text).not.toMatch(/RevealFleet|revealfleet/);
+    expect(text).toMatch(/RevealFleet/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
     expect(text).toContain('More than one — book an intro');
     expect(

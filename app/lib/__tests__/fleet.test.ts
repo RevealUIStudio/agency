@@ -16,7 +16,6 @@ describe('RevealFleet facts', () => {
 
   it('does not sell parked or internal fleet members', () => {
     const blob = `${FLEET_NAME} ${LEAD_PRODUCT} ${Object.values(PRODUCT_CATALOG).join(' ')} ${REVVAULT_ROLE}`;
-    expect(blob).not.toMatch(/RevealFleet|revealfleet/);
     expect(blob).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
     expect(blob).not.toMatch(/\$25,?000|8,?499/);
   });
