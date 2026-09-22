@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { inflateSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 import {
   HERO_HEADLINE,
@@ -21,6 +22,42 @@ import { INTRO_CALL_URL } from '@/lib/site';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const bannedBookingHost = new RegExp(`${'cal'}\\.com`, 'i');
+
+function ascii85Decode(buf: Buffer): Buffer {
+  let s = buf.toString('latin1').replace(/\s/g, '');
+  if (s.endsWith('~>')) s = s.slice(0, -2);
+  const out: number[] = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] === 'z') {
+      out.push(0, 0, 0, 0);
+      i += 1;
+      continue;
+    }
+    const chunk = s.slice(i, Math.min(i + 5, s.length));
+    i += chunk.length;
+    const pad = 5 - chunk.length;
+    const padded = chunk + 'u'.repeat(pad);
+    let n = 0;
+    for (const ch of padded) n = n * 85 + (ch.charCodeAt(0) - 33);
+    out.push((n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255);
+    if (pad) out.splice(out.length - pad, pad);
+  }
+  return Buffer.from(out);
+}
+
+/** ReportLab print PDFs store copy in an ASCII85+Flate content stream. */
+function pdfPageText(pdf: Buffer): string {
+  const start = pdf.indexOf(Buffer.from('stream\n'));
+  const end = pdf.indexOf(Buffer.from('endstream'), start);
+  if (start === -1 || end === -1) return pdf.toString('latin1');
+  const raw = pdf.subarray(start + 'stream\n'.length, end);
+  try {
+    return inflateSync(ascii85Decode(raw)).toString('latin1');
+  } catch {
+    return pdf.toString('latin1');
+  }
+}
 
 function walk(dir: string, acc: string[] = []): string[] {
   for (const name of readdirSync(dir)) {
@@ -119,7 +156,10 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/routes/ContactPage.tsx'),
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/routes/ProofGapPage.tsx'),
       path.join(repoRoot, 'app/content/guardrail.ts'),
+      path.join(repoRoot, 'app/content/proof-gap.ts'),
+      path.join(repoRoot, 'app/components/agency/ProofGapForm.tsx'),
       path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
       path.join(repoRoot, 'app/components/agency/RevealFleet.tsx'),
       path.join(repoRoot, 'app/components/agency/WhoStudioIsFor.tsx'),
@@ -245,12 +285,16 @@ describe('public copy gates', () => {
     const bannedRaster =
       /written plan|local studio|one-person software studio|\bSpec\b|cal\.com|RevDev|RevForge|RevKit|Fleet Stamp/i;
 
-    expect(OG_CARD_HEADLINE).toBe(HERO_SHOP_LINE);
+    expect(OG_CARD_HEADLINE).toBe(
+      'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
+    );
+    expect(OG_CARD_HEADLINE).not.toBe(HERO_HEADLINE);
+    expect(OG_CARD_HEADLINE).not.toBe(HERO_SHOP_LINE);
     expect(OG_CARD_SKU_LINE).toBe('Consultation $300. Pilot $1,500. Launch $7,500.');
     expect(OG_CARD_SKU_LINE).toBe(OG_CARD_SKU_FROM_OFFERS);
     expect(OG_CARD_BOOKING_LINE).toBe('Book a 30-minute intro on Google Calendar.');
     expect(OG_CARD_URL).toBe('revealuistudio.com');
-    expect(hero.replace(/\s+/g, ' ')).toContain(OG_CARD_HEADLINE);
+    expect(hero).toContain(HERO_HEADLINE);
     expect(fixture).toContain(OG_CARD_HEADLINE);
     expect(fixture).toContain(OG_CARD_SKU_LINE);
     expect(fixture).toContain(OG_CARD_BOOKING_LINE);
@@ -302,7 +346,7 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/lib/fleet.ts'),
     ];
     const banned =
-      /RevFleet|revfleet|RevForge|RevKit|RevDev|Agency Perpetual|\$25,?000|8,?499|0\.2\.12/;
+      /RevealFleet|revealfleet|RevForge|RevKit|RevDev|Agency Perpetual|\$25,?000|8,?499|0\.2\.12/;
     const hits: string[] = [];
     for (const file of files) {
       if (banned.test(readFileSync(file, 'utf8'))) {
@@ -340,6 +384,8 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/components/agency/Hero.tsx'),
       path.join(repoRoot, 'app/routes/AboutPage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/routes/ProofGapPage.tsx'),
+      path.join(repoRoot, 'app/content/proof-gap.ts'),
       path.join(repoRoot, 'app/lib/engagements.ts'),
       path.join(repoRoot, 'app/lib/quote.ts'),
       path.join(repoRoot, 'app/components/agency/ServiceTeasers.tsx'),
@@ -376,13 +422,17 @@ describe('public copy gates', () => {
     expect(hero).toContain('agents leave receipts; catalog matches checkout');
     expect(hero).toContain('Powerful + safe');
     expect(hero).toContain(
-      'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?',
+      'Tired of Zap owning the critical path, agents that act without PROOF, and client updates with nothing receipted?',
     );
-    expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville|Jobber|QBO/i);
-    expect(hero).not.toMatch(/Meet the Fleet/i);
+    expect(hero).toContain(
+      'You already live in Cursor. I put booking, invoices, and agents with PROOF on your domain. You run it, or I ship it with you.',
+    );
+    expect(hero).toContain('HERO_MENU');
     expect(hero).toContain('WORKING_SESSION.name');
     expect(hero).toContain('WRITTEN_PLAN.name');
     expect(hero).toContain('LAUNCH_PACKAGE.name');
+    expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville|Jobber|QBO/i);
+    expect(hero).not.toMatch(/Meet the Fleet/i);
     expect(about).toContain('the agentic business runtime');
     expect(about).toMatch(/paid studio work:/);
     expect(about).toContain('{WORKING_SESSION.name}');
@@ -398,9 +448,12 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain('"price": "1500"');
     expect(jsonLd).toContain('"price": "7500"');
     expect(jsonLd).not.toContain('"price": "3500"');
-    expect(quote).toContain("label: 'Consultation'");
-    expect(quote).toContain("label: 'Pilot'");
-    expect(quote).toContain("label: 'Launch'");
+    expect(quote).toContain("DEFAULT_OUTCOME: Outcome = 'plan'");
+    expect(quote).toContain("label: 'Consultation — diagnose the path / proof gap ($300)'");
+    expect(quote).toContain("label: 'Pilot — one site, one agent I run, one receipted action'");
+    expect(quote).toContain("label: 'Launch — money path live on my accounts'");
+    expect(quote).toContain('PROOF means a receipted action');
+    expect(quote).toContain('not outcome validation or proof of work');
     expect(quote).not.toMatch(/free website/i);
   });
 
@@ -495,10 +548,15 @@ describe('public copy gates', () => {
     expect(HOME_META_DESCRIPTION).toContain('Consultation $300. Pilot $1,500. Launch $7,500.');
     expect(HOME_META_DESCRIPTION).toContain('agents leave receipts; catalog matches checkout');
     expect(HOME_META_DESCRIPTION).toContain('Powerful + safe');
+    expect(HOME_META_DESCRIPTION).not.toContain(HERO_SHOP_LINE);
+    expect(HOME_DOCUMENT_TITLE).not.toContain('Tired of');
     expect(app).not.toContain('The agentic runtime startups operate on their own domain');
     expect(home).toContain('WhoStudioIsFor');
     expect(home).toContain('TrustRoadmap');
     expect(who).toContain("STUDIO_FOR_TITLE = 'Who Studio is for'");
+    expect(who).toContain(
+      'Small agencies: stop disclosing work your agents can’t receipt. Pilot and Launch leave PROOF on the client’s domain.',
+    );
     expect(who).toMatch(/For: Technical founders and small agencies/i);
     expect(who).toMatch(/Not for: Hosted chatbot bolt-ons/);
     expect(who).toMatch(/The deal: You bring the domain/);
@@ -527,6 +585,7 @@ describe('public copy gates', () => {
   it('lists the process page in the public sitemap', () => {
     const sitemap = readFileSync(path.join(repoRoot, 'public/sitemap.xml'), 'utf8');
     expect(sitemap).toContain('https://revealuistudio.com/process');
+    expect(sitemap).toContain('https://revealuistudio.com/proof-gap');
   });
 
   it('does not sell Contents or Videos as a live Studio CMS', () => {
@@ -542,7 +601,9 @@ describe('public copy gates', () => {
       path.join(repoRoot, 'app/routes/AboutPage.tsx'),
       path.join(repoRoot, 'app/routes/HomePage.tsx'),
       path.join(repoRoot, 'app/routes/ProcessPage.tsx'),
+      path.join(repoRoot, 'app/routes/ProofGapPage.tsx'),
       path.join(repoRoot, 'app/routes/ServicesPage.tsx'),
+      path.join(repoRoot, 'app/content/proof-gap.ts'),
     ];
     const banned = /live Contents|Contents CMS|Videos CMS|unlimited admin collections/i;
     const hits: string[] = [];
@@ -577,12 +638,14 @@ describe('public copy gates', () => {
     expect(offers).not.toMatch(/name: 'Knowledge Graph'/);
     expect(offers).toContain('Knowledge Graph is part of the runtime (Electric+CRDT)');
     expect(offers).toContain('not a fourth Studio offer');
-    expect(quote).toContain("label: 'Consultation'");
-    expect(quote).toContain("label: 'Pilot'");
-    expect(quote).toContain("label: 'Launch'");
+    expect(quote).toContain("label: 'Consultation — diagnose the path / proof gap ($300)'");
+    expect(quote).toContain("label: 'Pilot — one site, one agent I run, one receipted action'");
+    expect(quote).toContain("label: 'Launch — money path live on my accounts'");
     expect(quote).not.toMatch(/Knowledge Graph/);
+    expect(quote).not.toMatch(/RevMind/);
     expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
     expect(hero).not.toMatch(/Knowledge Graph/);
+    expect(hero).not.toMatch(/RevMind/);
     expect(offers).not.toMatch(/Knowledge Graph \$\d/);
     expect(jsonLd).not.toMatch(/Knowledge Graph \$\d/);
   });
@@ -599,5 +662,50 @@ describe('public copy gates', () => {
       expect(hop.destination).toBe('/#calculator');
       expect(hop.permanent).toBe(true);
     }
+  });
+
+  it('wires the proof-gap checklist as a soft lead-magnet gate', () => {
+    const app = readFileSync(path.join(repoRoot, 'app/App.tsx'), 'utf8');
+    const page = readFileSync(path.join(repoRoot, 'app/routes/ProofGapPage.tsx'), 'utf8');
+    const copy = readFileSync(path.join(repoRoot, 'app/content/proof-gap.ts'), 'utf8');
+    const footer = readFileSync(path.join(repoRoot, 'app/components/Footer.tsx'), 'utf8');
+    const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
+    const pdf = readFileSync(path.join(repoRoot, 'public/proof-gap-checklist.pdf'));
+    const vercel = JSON.parse(readFileSync(path.join(repoRoot, 'vercel.json'), 'utf8')) as {
+      rewrites: { source: string; destination: string }[];
+    };
+
+    expect(app).toContain('PROOF_GAP_PATH');
+    expect(app).toContain('PROOF_GAP_DOCUMENT_TITLE');
+    expect(app).toContain('ProofGapPage');
+    expect(copy).toContain("PROOF_GAP_H1 = 'Can you prove what your agents did last week?'");
+    expect(copy).toContain("PROOF_GAP_DOCUMENT_TITLE = 'Proof-gap checklist | RevealUI Studio'");
+    expect(copy).toContain("PROOF_GAP_CTA = 'Get the free checklist'");
+    expect(copy).toContain('PROOF is a receipted action');
+    expect(copy).toContain('Consultation $300 · Pilot $1,500 · Launch $7,500');
+    expect(copy).toContain('Not “faster than Zap.”');
+    expect(copy).not.toMatch(/Request a quote/);
+    expect(copy).not.toMatch(/revolutionize|empower|seamless/i);
+    expect(copy).not.toMatch(/RevMind/);
+    expect(copy).not.toMatch(/Architecture-as-Consultation/);
+    expect(copy).not.toMatch(/PROOF_GAP_H1 = '.*faster than Zap/i);
+    expect(page).toContain('PROOF_GAP_H1');
+    expect(page).toContain('ProofGapForm');
+    expect(footer).toContain('PROOF_GAP_PATH');
+    expect(footer).toContain('PROOF_GAP_OFFER_NAME');
+    expect(hero).not.toContain('Can you prove what your agents did last week?');
+    expect(pdf.subarray(0, 5).equals(Buffer.from('%PDF-'))).toBe(true);
+    const pdfText = pdfPageText(pdf);
+    expect(pdfText).toContain('Proof-gap checklist');
+    expect(pdfText).toContain('RevealUI Studio');
+    expect(pdfText).toMatch(/RevealUI Studio \\267 Proof-gap checklist/);
+    expect(pdfText).not.toMatch(/HOLD public|Joshua OK|Media Manager|agency#204|publish OK/i);
+    expect(
+      vercel.rewrites.some(
+        (rule) =>
+          rule.source === '/proof-gap-checklist.pdf' &&
+          rule.destination === '/proof-gap-checklist.pdf',
+      ),
+    ).toBe(true);
   });
 });

@@ -37,11 +37,11 @@ describe('RevealFleet', () => {
     expect(text).not.toMatch(/RevVault/);
   });
 
-  it('does not sell parked SKUs or use the RevFleet nickname', () => {
+  it('does not sell parked SKUs or use the RevealFleet nickname', () => {
     const { container } = render(<RevealFleet />);
     const text = container.textContent ?? '';
     expect(text).not.toContain('\u2014');
-    expect(text).not.toMatch(/RevFleet|revfleet/);
+    expect(text).not.toMatch(/RevealFleet|revealfleet/);
     expect(text).not.toMatch(/written plan/i);
     expect(text).not.toMatch(/\bSpec\b/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);

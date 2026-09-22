@@ -3,8 +3,9 @@
  *
  * Studio quotes only. Product licenses live on revealui.com.
  * This site defaults to Studio ("Studio implements with me") instead of
- * self-host ("I self-host (product site)"). Self-host hops to the product
- * site. No fleet math. No product SKUs.
+ * self-host ("I self-host (product site)"), and defaults the outcome to
+ * Pilot. Self-host hops to the product site. No fleet math. No product SKUs.
+ * Public word PROOF means a receipted action, not outcome validation.
  */
 
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
@@ -15,7 +16,7 @@ export type Outcome = 'hour' | 'plan' | 'launch';
 export type Places = 'one' | 'many';
 
 export const DEFAULT_HOSTER: Hoster = 'studio';
-export const DEFAULT_OUTCOME: Outcome = 'launch';
+export const DEFAULT_OUTCOME: Outcome = 'plan';
 export const DEFAULT_PLACES: Places = 'one';
 
 export const HOSTER_OPTIONS = [
@@ -24,9 +25,9 @@ export const HOSTER_OPTIONS = [
 ] as const satisfies readonly { value: Hoster; label: string }[];
 
 export const OUTCOME_OPTIONS = [
-  { value: 'hour', label: 'Consultation' },
-  { value: 'plan', label: 'Pilot' },
-  { value: 'launch', label: 'Launch' },
+  { value: 'hour', label: 'Consultation — diagnose the path / proof gap ($300)' },
+  { value: 'plan', label: 'Pilot — one site, one agent I run, one receipted action' },
+  { value: 'launch', label: 'Launch — money path live on my accounts' },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
@@ -34,10 +35,19 @@ export const PLACES_OPTIONS = [
   { value: 'many', label: 'More than one — book an intro' },
 ] as const satisfies readonly { value: Places; label: string }[];
 
-export const QUOTE_CALCULATOR_HEADING = 'Who runs it. What you need. One price.' as const;
+export const QUOTE_CALCULATOR_HEADING = 'Who runs it. What has to work. One price.' as const;
 
 export const QUOTE_CALCULATOR_LEAD =
-  'Studio quotes only: Consultation $300, Pilot $1,500, Launch $7,500. For startups and small agencies already running agents. Licenses live on revealui.com.' as const;
+  'Studio quotes only: Consultation $300, Pilot $1,500, Launch $7,500. Solutions for critical-path ownership, agents without PROOF, and a live money path. PROOF means a receipted action, not outcome validation or proof of work. Licenses live on revealui.com.' as const;
+
+export const CONSULTATION_QUOTE_DETAIL =
+  'One focused pass on the critical path, proof gaps, or a stuck live flow. Notes + next step. Invoice $300 before we start. No leftover site. No holdback.' as const;
+
+export const PILOT_QUOTE_DETAIL =
+  'One site on your domain. One agent you run. One receipted action (PROOF). You keep it. Invoice $1,500 before we start. Credits 100% to Launch if we start Launch within 30 days.' as const;
+
+export const LAUNCH_QUOTE_DETAIL =
+  'One live money path on your accounts. Architecture inside this offer. Half now, half on delivery. You own the result.' as const;
 
 export const QUOTE_OWNERSHIP = [
   'You own the accounts and the data.',
@@ -88,21 +98,21 @@ function studioLines(outcome: Outcome): readonly QuoteLine[] {
       id: WORKING_SESSION.id,
       title: WORKING_SESSION.name,
       price: WORKING_SESSION.price,
-      detail: 'Invoice before we start. No leftover site. No holdback.',
+      detail: CONSULTATION_QUOTE_DETAIL,
       highlighted: outcome === 'hour',
     },
     {
       id: WRITTEN_PLAN.id,
       title: WRITTEN_PLAN.name,
       price: WRITTEN_PLAN.price,
-      detail: WRITTEN_PLAN.payment,
+      detail: PILOT_QUOTE_DETAIL,
       highlighted: outcome === 'plan',
     },
     {
       id: LAUNCH_PACKAGE.id,
       title: LAUNCH_PACKAGE.name,
       price: LAUNCH_PACKAGE.price,
-      detail: LAUNCH_PACKAGE.payment,
+      detail: LAUNCH_QUOTE_DETAIL,
       highlighted: outcome === 'launch',
     },
   ];

@@ -4,8 +4,12 @@ import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
 import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
 import {
+  CONSULTATION_QUOTE_DETAIL,
   HOSTER_OPTIONS,
   INTRO_HEADING,
+  LAUNCH_QUOTE_DETAIL,
+  OUTCOME_OPTIONS,
+  PILOT_QUOTE_DETAIL,
   PLACES_OPTIONS,
   QUOTE_CALCULATOR_HEADING,
   QUOTE_CALCULATOR_LEAD,
@@ -23,22 +27,24 @@ describe('QuoteCalculator', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: HOSTER_OPTIONS[1].label })).toBeChecked();
     expect(screen.getByRole('radio', { name: HOSTER_OPTIONS[0].label })).not.toBeChecked();
-    expect(screen.getByRole('radio', { name: 'Launch' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: OUTCOME_OPTIONS[1].label })).toBeChecked();
+    expect(screen.getByRole('radio', { name: OUTCOME_OPTIONS[2].label })).not.toBeChecked();
     expect(screen.getByRole('radio', { name: PLACES_OPTIONS[0].label })).toBeChecked();
-    expect(screen.getByRole('radio', { name: 'Consultation' })).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: 'Pilot' })).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: 'Launch' })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: OUTCOME_OPTIONS[1].label })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: OUTCOME_OPTIONS[2].label })).toBeInTheDocument();
 
     expect(screen.getByText(QUOTE_CALCULATOR_LEAD)).toBeInTheDocument();
+    expect(QUOTE_CALCULATOR_LEAD).toMatch(/PROOF means a receipted action/);
+    expect(QUOTE_CALCULATOR_LEAD).toMatch(/not outcome validation or proof of work/);
     expect(screen.queryByText(/Same tool as the product site/)).not.toBeInTheDocument();
     expect(screen.getByText(WORKING_SESSION.price)).toBeInTheDocument();
     expect(screen.getByText(WRITTEN_PLAN.price)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_PACKAGE.price)).toBeInTheDocument();
-    expect(screen.getByText(LAUNCH_PACKAGE.payment)).toBeInTheDocument();
-    expect(
-      screen.getByText('Invoice before we start. No leftover site. No holdback.'),
-    ).toBeInTheDocument();
-    expect(screen.getByText(WRITTEN_PLAN.payment)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_QUOTE_DETAIL)).toBeInTheDocument();
+    expect(screen.getByText(PILOT_QUOTE_DETAIL)).toBeInTheDocument();
+    expect(screen.getByText(LAUNCH_QUOTE_DETAIL)).toBeInTheDocument();
+    expect(screen.queryByText(WRITTEN_PLAN.payment)).not.toBeInTheDocument();
     expect(screen.queryByText(/four tests/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/first half back/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/keep the stack/i)).not.toBeInTheDocument();
@@ -80,7 +86,7 @@ describe('QuoteCalculator', () => {
       PRODUCT_SITE_URL,
     );
     expect(screen.queryByText(LAUNCH_PACKAGE.price)).not.toBeInTheDocument();
-    expect(screen.queryByText(LAUNCH_PACKAGE.payment)).not.toBeInTheDocument();
+    expect(screen.queryByText(LAUNCH_QUOTE_DETAIL)).not.toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/\$49/);
     expect(container.textContent ?? '').not.toMatch(/\$99/);
     expect(container.textContent ?? '').not.toMatch(/\$299/);
