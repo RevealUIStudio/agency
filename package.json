@@ -1,6 +1,6 @@
 {
   "name": "@revealui-studio/agency",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "RevealUI Studio agency site — services, case studies, hire-us. Hosted at revealuistudio.com.",
   "private": true,
   "type": "module",
