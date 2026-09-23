@@ -39,7 +39,6 @@ export function App() {
   if (!registered.current && router.getRoutes().length === 0) {
     if (shareSlug) {
       router.registerRoutes(shareRouteTable(shareSlug));
-      registered.current = true;
     } else
       router.registerRoutes([
         {
