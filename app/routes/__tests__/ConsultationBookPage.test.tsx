@@ -1,7 +1,13 @@
 import '@testing-library/jest-dom/vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ConsultationBookPage, ConsultationBookSuccessPage } from '@/routes/ConsultationBookPage';
+import {
+  ConsultationBookCancelPage,
+  ConsultationBookPage,
+  ConsultationBookSuccessPage,
+} from '@/routes/ConsultationBookPage';
 
 const previousFetch = globalThis.fetch;
 
@@ -75,5 +81,40 @@ describe('ConsultationBookPage', () => {
     expect(
       screen.getByText('Payment received — confirmation email with Meet link shortly'),
     ).toBeInTheDocument();
+  });
+
+  it('keeps the pay control and fields full width for a narrow viewport', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ timezone: 'America/New_York', hours: 1, slots: [] }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+      ),
+    );
+    render(<ConsultationBookPage />);
+    const pay = await screen.findByRole('button', { name: 'Continue to payment' });
+    expect(pay.className).toContain('w-full');
+    expect(pay.className).toContain('min-h-12');
+    const name = screen.getByLabelText('Name');
+    expect(name.className).toContain('w-full');
+    expect(name.className).toContain('text-base');
+    expect(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' })).not.toBeChecked();
+  });
+
+  it('keeps a device-width viewport on the studio document', () => {
+    const html = readFileSync(resolve(process.cwd(), 'index.html'), 'utf8');
+    expect(html).toContain('name="viewport"');
+    expect(html).toContain('width=device-width');
+  });
+});
+
+describe('ConsultationBookCancelPage', () => {
+  it('offers a full-width return to the book page', () => {
+    render(<ConsultationBookCancelPage />);
+    const again = screen.getByRole('link', { name: 'Pick another time' });
+    expect(again).toHaveAttribute('href', '/consultation/book');
+    expect(again.className).toContain('w-full');
+    expect(again.className).toContain('min-h-12');
   });
 });
