@@ -96,4 +96,35 @@ describe('QuoteCalculator', () => {
       INTRO_CALL_URL,
     );
   });
+
+  it('multiplies Consultation by the hours dropdown and does not name a separate SKU', () => {
+    const { container } = render(<QuoteCalculator />);
+    const hours = screen.getByLabelText('Consultation hours');
+    expect(hours).toHaveValue('1');
+    fireEvent.change(hours, { target: { value: '4' } });
+    expect(screen.getByText('$1,200')).toBeInTheDocument();
+    expect(container.textContent ?? '').not.toMatch(/\bHour\b/);
+    expect(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' })).not.toBeChecked();
+    expect(container.textContent ?? '').not.toMatch(/waive/i);
+  });
+
+  it('hides waive from guests and shows list plus credit for an owner', () => {
+    const guest = render(<QuoteCalculator />);
+    fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' }));
+    expect(screen.queryByRole('checkbox', { name: 'Waive Stage B' })).not.toBeInTheDocument();
+    expect(guest.container.textContent ?? '').not.toMatch(/waive/i);
+    expect(screen.getByText('$297')).toBeInTheDocument();
+    guest.unmount();
+
+    render(<QuoteCalculator viewerRole="owner" />);
+    fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' }));
+    const waive = screen.getByRole('checkbox', { name: 'Waive Stage B' });
+    expect(waive).not.toBeChecked();
+    fireEvent.click(waive);
+    expect(screen.getByText('Stage B credit')).toBeInTheDocument();
+    expect(screen.getByText('Stage B due')).toBeInTheDocument();
+    expect(screen.getByText('$0')).toBeInTheDocument();
+  });
 });

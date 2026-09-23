@@ -1,7 +1,11 @@
 import { LinkButton } from '@revealui/presentation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { STAGE_B_PRICE } from '@/lib/engagements';
 import {
   buildQuote,
+  CONSULTATION_HOUR_OPTIONS,
+  consultationHourLabel,
+  DEFAULT_CONSULTATION_HOURS,
   DEFAULT_HOSTER,
   DEFAULT_OUTCOME,
   DEFAULT_PLACES,
@@ -15,6 +19,7 @@ import {
   QUOTE_CALCULATOR_LEAD,
   QUOTE_INTRO_LINE,
   QUOTE_OWNERSHIP,
+  type ViewerRole,
 } from '@/lib/quote';
 import { INTRO_CALL_URL } from '@/lib/site';
 
@@ -61,11 +66,44 @@ function ChoiceGroup<T extends string>({
   );
 }
 
-export function QuoteCalculator() {
+export function QuoteCalculator({ viewerRole = 'guest' }: { viewerRole?: ViewerRole }) {
   const [hoster, setHoster] = useState<Hoster>(DEFAULT_HOSTER);
   const [outcome, setOutcome] = useState<Outcome>(DEFAULT_OUTCOME);
   const [places, setPlaces] = useState<Places>(DEFAULT_PLACES);
-  const quote = buildQuote({ hoster, outcome, places });
+  const [consultationHours, setConsultationHours] = useState<number>(DEFAULT_CONSULTATION_HOURS);
+  const [stageB, setStageB] = useState(false);
+  const [stageBWaive, setStageBWaive] = useState(false);
+  const [role, setRole] = useState<ViewerRole>(viewerRole);
+
+  useEffect(() => {
+    setRole(viewerRole);
+  }, [viewerRole]);
+
+  useEffect(() => {
+    if (viewerRole === 'owner') return undefined;
+    let cancelled = false;
+    fetch('/api/session', { credentials: 'same-origin' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((body: unknown) => {
+        if (cancelled || !body || typeof body !== 'object') return;
+        if ('role' in body && body.role === 'owner') setRole('owner');
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [viewerRole]);
+
+  const quote = buildQuote({
+    hoster,
+    outcome,
+    places,
+    consultationHours,
+    stageB,
+    stageBWaive: role === 'owner' && stageBWaive,
+    viewerRole: role,
+  });
+  const showWaive = role === 'owner' && stageB && outcome === 'consultation';
 
   return (
     <section id="calculator" className="scroll-mt-20 bg-muted py-24 sm:py-32">
@@ -101,6 +139,51 @@ export function QuoteCalculator() {
               options={PLACES_OPTIONS}
               onChange={setPlaces}
             />
+            <div>
+              <label
+                htmlFor="consultation-hours"
+                className="text-base font-semibold text-foreground"
+              >
+                Consultation hours
+              </label>
+              <select
+                id="consultation-hours"
+                value={consultationHours}
+                onChange={(event) => setConsultationHours(Number(event.target.value))}
+                className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
+              >
+                {CONSULTATION_HOUR_OPTIONS.map((count) => (
+                  <option key={count} value={count}>
+                    {consultationHourLabel(count)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+              <input
+                type="checkbox"
+                checked={stageB}
+                onChange={(event) => {
+                  setStageB(event.target.checked);
+                  if (!event.target.checked) setStageBWaive(false);
+                }}
+                className="mt-1 size-4 accent-primary"
+              />
+              <span className="text-sm font-medium text-foreground">
+                Add Stage B ({STAGE_B_PRICE})
+              </span>
+            </label>
+            {showWaive ? (
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                <input
+                  type="checkbox"
+                  checked={stageBWaive}
+                  onChange={(event) => setStageBWaive(event.target.checked)}
+                  className="mt-1 size-4 accent-primary"
+                />
+                <span className="text-sm font-medium text-foreground">Waive Stage B</span>
+              </label>
+            ) : null}
           </div>
 
           <aside

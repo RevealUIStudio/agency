@@ -1,8 +1,0 @@
-EXAMPLE
-RevealUI Studio · Omega · Stage A
-Circuit-R chrome. Client slug: omega.
-Host: omega.revealuistudio.com
-Route: /pack
-This file is a placeholder. It is not a finished client pack.
-Stage B is $297, or included with Proof Sprint and Launch.
-Wildcard DNS is attached by the owner.
