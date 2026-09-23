@@ -63,7 +63,7 @@ export const CONSULTATION = {
     'Path A is the default. Path B if you ask for it. You leave with a denser living pack and a Stage A share URL on your name at revealuistudio.com. Tax is $0. Remote, or in person.',
   includes: ['Path A by default', 'Path B if you ask', 'Denser living pack', 'Stage A share URL'],
   notIncluded: ['A free Proof Sprint', 'An unpaid build', 'An Architecture dump', 'Chatbot SaaS'],
-  payment: 'Invoice $300 before we start. Tax $0. No holdback.',
+  payment: 'Pay $300 per hour when you book the slot. Tax $0. No holdback.',
 } as const satisfies PublicOffer;
 
 export const PROOF_SPRINT = {

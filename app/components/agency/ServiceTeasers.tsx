@@ -1,6 +1,6 @@
 import { IconCheck, LinkButton } from '@revealui/presentation';
 import { PUBLIC_OFFERS } from '@/lib/engagements';
-import { INTRO_CALL_URL } from '@/lib/site';
+import { CONSULTATION_BOOK_PATH, INTRO_CALL_URL } from '@/lib/site';
 
 export function ServiceTeasers() {
   return (
@@ -12,7 +12,8 @@ export function ServiceTeasers() {
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
             That is the public menu for startups, and for technical founders and small agencies who
-            already run agents. Invoice after we book. There is no checkout button on this site.
+            already run agents. Consultation is paid when you book the slot. Proof Sprint and Launch
+            are invoiced after we agree.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -49,15 +50,21 @@ export function ServiceTeasers() {
                 </p>
               </div>
               <div className="mt-8 border-t border-border pt-6">
-                <LinkButton
-                  href={INTRO_CALL_URL}
-                  external
-                  appearance="outline"
-                  variant="neutral"
-                  className="w-full justify-center"
-                >
-                  Book a 30-minute intro
-                </LinkButton>
+                {offer.id === 'consultation' ? (
+                  <LinkButton href={CONSULTATION_BOOK_PATH} className="w-full justify-center">
+                    Book a Consultation
+                  </LinkButton>
+                ) : (
+                  <LinkButton
+                    href={INTRO_CALL_URL}
+                    external
+                    appearance="outline"
+                    variant="neutral"
+                    className="w-full justify-center"
+                  >
+                    Book a 30-minute intro
+                  </LinkButton>
+                )}
               </div>
             </article>
           ))}

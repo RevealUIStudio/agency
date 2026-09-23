@@ -1,0 +1,43 @@
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import path from 'node:path';
+import { describe, expect, it } from 'vitest';
+
+const repoRoot = path.resolve(import.meta.dirname, '../../..');
+
+function walkTsx(dir: string, acc: string[] = []): string[] {
+  for (const name of readdirSync(dir)) {
+    if (name === '__tests__' || name === 'node_modules') continue;
+    const full = path.join(dir, name);
+    if (statSync(full).isDirectory()) {
+      walkTsx(full, acc);
+      continue;
+    }
+    if (name.endsWith('.tsx')) acc.push(full);
+  }
+  return acc;
+}
+
+describe('consultation public claims', () => {
+  it('has no waive or free-fee copy on public screens', () => {
+    const files = [
+      ...walkTsx(path.join(repoRoot, 'app/components')),
+      ...walkTsx(path.join(repoRoot, 'app/routes')),
+    ];
+    const banned = [/\bwaiv/i, /free consultation/i, /stage b is free/i, /free stage b/i];
+    const hits: string[] = [];
+    for (const file of files) {
+      const text = readFileSync(file, 'utf8');
+      if (banned.some((pattern) => pattern.test(text))) hits.push(path.relative(repoRoot, file));
+    }
+    expect(hits).toEqual([]);
+  });
+
+  it('does not send the book page at the 30-minute intro URL', () => {
+    const source = readFileSync(path.join(repoRoot, 'app/routes/ConsultationBookPage.tsx'), 'utf8');
+    expect(source).not.toContain('INTRO_CALL_URL');
+    expect(source).not.toContain('calendar.google.com');
+    expect(source).not.toContain('price_');
+    expect(source).toContain('Add Stage B ($297)');
+    expect(source).toContain('Payment received — confirmation email with Meet link shortly');
+  });
+});

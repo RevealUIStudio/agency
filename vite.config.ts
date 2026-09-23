@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
+import { handleConsultationRequest } from './server/consultation-http';
 import { handleShareRequest } from './server/share-http';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -11,13 +12,15 @@ function shareServer(): Plugin {
   const attach: Plugin['configureServer'] = (server) => {
     server.middlewares.use((req, res, next) => {
       const url = req.url ?? '';
-      const handled =
+      const share =
         url.startsWith('/share/') ||
         url.startsWith('/api/share/') ||
         url.startsWith('/api/invoice/stage-b') ||
         url === '/api/session' ||
         url.startsWith('/api/session?');
-      if (!handled) {
+      const consultation =
+        url.startsWith('/api/consultation/') || url.startsWith('/api/stripe/webhook');
+      if (!share && !consultation) {
         next();
         return;
       }
@@ -42,13 +45,21 @@ function shareServer(): Plugin {
             headers,
             body: req.method === 'POST' ? body : undefined,
           });
-          const response = await handleShareRequest(request);
+          const response = consultation
+            ? await handleConsultationRequest(request)
+            : await handleShareRequest(request);
           res.statusCode = response.status;
           response.headers.forEach((value, key) => {
             res.setHeader(key, value);
           });
           res.end(Buffer.from(await response.arrayBuffer()));
         } catch {
+          if (consultation) {
+            res.statusCode = 500;
+            res.setHeader('content-type', 'application/json; charset=utf-8');
+            res.end(JSON.stringify({ error: 'server' }));
+            return;
+          }
           res.statusCode = 500;
           res.end('denied');
         }

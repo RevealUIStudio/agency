@@ -15,6 +15,11 @@ import { clientSlugFromHost } from './lib/share-host';
 import { AboutPage } from './routes/AboutPage';
 import { CaseStudyPage } from './routes/CaseStudyPage';
 import { CasesPage } from './routes/CasesPage';
+import {
+  ConsultationBookCancelPage,
+  ConsultationBookPage,
+  ConsultationBookSuccessPage,
+} from './routes/ConsultationBookPage';
 import { ContactPage } from './routes/ContactPage';
 import { CookiesPage } from './routes/CookiesPage';
 import { HomePage } from './routes/HomePage';
@@ -55,7 +60,7 @@ export function App() {
           meta: {
             title: 'Offers | RevealUI Studio',
             description:
-              'Consultation $300. Proof Sprint $3,997. Launch $14,500. Invoice after we book. Book a 30-minute intro first.',
+              'Consultation $300 per hour when you book the slot. Proof Sprint $3,997. Launch $14,500. Proof Sprint and Launch are invoiced after we agree.',
           },
         },
         {
@@ -103,7 +108,34 @@ export function App() {
           meta: {
             title: 'About | RevealUI Studio',
             description:
-              'RevealUI Studio is for startups, and for technical founders and small agencies who already run agents. Joshua Vaughn runs it. Consultation, Proof Sprint, and Launch. Remote first. Invoice after we agree.',
+              'RevealUI Studio is for startups, and for technical founders and small agencies who already run agents. Joshua Vaughn runs it. Consultation, Proof Sprint, and Launch. Remote first. Consultation is paid when you book the slot.',
+          },
+        },
+        {
+          path: '/consultation/book',
+          component: ConsultationBookPage,
+          meta: {
+            title: 'Book a Consultation | RevealUI Studio',
+            description:
+              'Pick a weekday 60-minute slot in Eastern Time and pay $300 per hour. Stage B is an optional $297 add-on.',
+          },
+        },
+        {
+          path: '/consultation/book/success',
+          component: ConsultationBookSuccessPage,
+          meta: {
+            title: 'Consultation payment received | RevealUI Studio',
+            description: 'Payment received. A confirmation email with the Meet link follows.',
+            robots: 'noindex,nofollow',
+          },
+        },
+        {
+          path: '/consultation/book/cancel',
+          component: ConsultationBookCancelPage,
+          meta: {
+            title: 'Consultation checkout canceled | RevealUI Studio',
+            description: 'Checkout canceled. The hold expires on its own.',
+            robots: 'noindex,nofollow',
           },
         },
         {
@@ -112,7 +144,7 @@ export function App() {
           meta: {
             title: 'Contact | RevealUI Studio',
             description:
-              'Book a 30-minute intro or email founder@revealui.com. No account. No payment to book the intro.',
+              'Book a Consultation or a 30-minute intro, or email founder@revealui.com. No payment to book the intro.',
           },
         },
         {

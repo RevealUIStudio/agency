@@ -1,7 +1,7 @@
 import { LinkButton } from '@revealui/presentation';
 import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
 import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
-import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
+import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
 export function ProcessPage() {
   return (
@@ -13,9 +13,10 @@ export function ProcessPage() {
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
             Three paid offers for startups, and for technical founders and small agencies who
-            already run agents. Every one starts with a 30-minute intro on Google Calendar. No
-            account. No payment to book. Meet or sit down. If I am not the right fit, I will say so
-            on the call. If we agree, I invoice. There is no checkout on this site.
+            already run agents. A 30-minute intro on Google Calendar stays available. No account. No
+            payment to book the intro. Meet or sit down. If I am not the right fit, I will say so on
+            the call. Consultation is paid when you book the slot. Proof Sprint and Launch are
+            invoiced after we agree.
           </p>
           <p className="mt-4 text-base text-muted-foreground">
             This page is how each offer actually runs: what you send, what you get back, roughly how
@@ -69,8 +70,16 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">How long</h3>
                 <p className="mt-2 text-muted-foreground">
-                  A single session. Remote, or in person in {STUDIO_CITY}. I invoice{' '}
-                  {CONSULTATION.price} before we start. No holdback.
+                  A single session. Remote, or in person in {STUDIO_CITY}. Pay {CONSULTATION.price}{' '}
+                  per hour when you book the slot. No holdback.
+                </p>
+                <p className="mt-4">
+                  <a
+                    href={CONSULTATION_BOOK_PATH}
+                    className="font-semibold text-foreground hover:underline"
+                  >
+                    Book a Consultation
+                  </a>
                 </p>
               </div>
               <div>

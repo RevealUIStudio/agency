@@ -16,7 +16,7 @@ import {
   QUOTE_OWNERSHIP,
   SELF_HOST_HANDOFF,
 } from '@/lib/quote';
-import { INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
+import { CONSULTATION_BOOK_PATH, INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 
 describe('QuoteCalculator', () => {
   it('defaults to Studio implements with me and prints the three Studio quotes', () => {
@@ -64,6 +64,10 @@ describe('QuoteCalculator', () => {
     const intro = screen.getByRole('link', { name: 'Book a 30-minute intro' });
     expect(intro).toHaveAttribute('href', INTRO_CALL_URL);
     expect(intro).toHaveAttribute('href', expect.stringContaining('calendar.google.com'));
+    expect(screen.getByRole('link', { name: 'Book a Consultation' })).toHaveAttribute(
+      'href',
+      CONSULTATION_BOOK_PATH,
+    );
   });
 
   it('stops quoting when they pick more than one site', () => {
@@ -75,6 +79,7 @@ describe('QuoteCalculator', () => {
       'href',
       INTRO_CALL_URL,
     );
+    expect(screen.queryByRole('link', { name: 'Book a Consultation' })).not.toBeInTheDocument();
   });
 
   it('sends self-host visitors to the product site instead of quoting product SKUs', () => {
@@ -95,6 +100,7 @@ describe('QuoteCalculator', () => {
       'href',
       INTRO_CALL_URL,
     );
+    expect(screen.queryByRole('link', { name: 'Book a Consultation' })).not.toBeInTheDocument();
   });
 
   it('multiplies Consultation by the hours dropdown and does not name a separate SKU', () => {
@@ -108,23 +114,14 @@ describe('QuoteCalculator', () => {
     expect(container.textContent ?? '').not.toMatch(/waive/i);
   });
 
-  it('hides waive from guests and shows list plus credit for an owner', () => {
-    const guest = render(<QuoteCalculator />);
+  it('keeps Stage B as a paid add-on with no public credit control', () => {
+    const view = render(<QuoteCalculator />);
     fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
     fireEvent.click(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' }));
-    expect(screen.queryByRole('checkbox', { name: 'Waive Stage B' })).not.toBeInTheDocument();
-    expect(guest.container.textContent ?? '').not.toMatch(/waive/i);
+    expect(screen.queryByRole('checkbox', { name: /waive/i })).not.toBeInTheDocument();
+    expect(view.container.textContent ?? '').not.toMatch(/waive/i);
     expect(screen.getByText('$297')).toBeInTheDocument();
-    guest.unmount();
-
-    render(<QuoteCalculator viewerRole="owner" />);
-    fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' }));
-    const waive = screen.getByRole('checkbox', { name: 'Waive Stage B' });
-    expect(waive).not.toBeChecked();
-    fireEvent.click(waive);
-    expect(screen.getByText('Stage B credit')).toBeInTheDocument();
-    expect(screen.getByText('Stage B due')).toBeInTheDocument();
-    expect(screen.getByText('$0')).toBeInTheDocument();
+    expect(screen.queryByText('Stage B credit')).not.toBeInTheDocument();
+    expect(screen.queryByText('$0')).not.toBeInTheDocument();
   });
 });
