@@ -152,6 +152,25 @@ is_ignored() {
   return 1
 }
 
+
+# Skip a hit only when the file is gitignored AND untracked. A tracked
+# file is public even if a later gitignore rule would match it. When git
+# is missing or this directory is not a work tree, scan everything.
+git_filter_ready=0
+if command -v git >/dev/null 2>&1 && git -C "$REPO_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  git_filter_ready=1
+fi
+
+skip_untracked_ignored() {
+  local path="$1"
+  [[ "$git_filter_ready" -eq 1 ]] || return 1
+  git -C "$REPO_ROOT" check-ignore -q -- "$path" || return 1
+  if git -C "$REPO_ROOT" ls-files --error-unmatch -- "$path" >/dev/null 2>&1; then
+    return 1
+  fi
+  return 0
+}
+
 violations=0
 json_entries=()
 
@@ -170,6 +189,9 @@ for entry in "${PATTERNS[@]}"; do
 
     rel_path="${file#$REPO_ROOT/}"
     rel_path="${rel_path#./}"
+    if skip_untracked_ignored "$rel_path"; then
+      continue
+    fi
     if is_ignored "$rel_path" "$tag"; then
       continue
     fi
