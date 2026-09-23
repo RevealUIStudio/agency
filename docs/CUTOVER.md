@@ -20,11 +20,24 @@ Set these on the Preview project. Do not commit them.
 - `GOOGLE_OAUTH_CLIENT_ID`
 - `GOOGLE_OAUTH_CLIENT_SECRET`
 - `GOOGLE_OAUTH_REFRESH_TOKEN` — preferred. Meet creation on a consumer calendar needs this
-- `GOOGLE_CLIENT_EMAIL` and `GOOGLE_PRIVATE_KEY` — service-account fallback when the refresh token is unset. Meet creation often fails on a consumer calendar with this fallback. The value is PKCS#8 material; escaped newlines are accepted
+- `GOOGLE_CLIENT_EMAIL` and `GOOGLE_PRIVATE_KEY` — service-account fallback when the refresh token is unset. The value is PKCS#8 material; escaped newlines are accepted
+- `GOOGLE_IMPERSONATE_SUBJECT` — optional Workspace user for domain-wide delegation. Studio sets `founder@revealui.com`. The service-account JWT includes `sub` only when this is non-empty. It is never copied from `GOOGLE_CALENDAR_ID`. The OAuth trio still wins when all three OAuth vars are set
 - `RESEND_API_KEY` and `RESEND_FROM` — optional. When both are set, the webhook sends the confirmation email. When either is missing, the calendar event still lands. Template: `docs/consultation-confirm-email.md`
 
 Webhook event: `checkout.session.completed`.
 Endpoint: `POST /api/stripe/webhook`.
+
+## Domain-wide delegation
+
+One-time Workspace Admin step. After it propagates, an external calendar share is not required.
+
+1. Admin → Security → Access and data control → API controls → Domain-wide delegation.
+2. Add or edit the client for the service account OAuth 2 Client ID in GCP. The account is `revealui-email@gen-lang-client-0097496289.iam.gserviceaccount.com`.
+3. Scope: `https://www.googleapis.com/auth/calendar`
+4. Save. Wait a few minutes.
+5. Set `GOOGLE_IMPERSONATE_SUBJECT=founder@revealui.com` on the agency Preview and Production targets, then redeploy Preview.
+
+`unauthorized_client` means that client id or scope is not authorized in Admin. Do not invent an OAuth client to get past it.
 
 ## Owner gates
 
