@@ -1,6 +1,6 @@
 import { Link } from '@revealui/router';
 import { ServiceTeasers } from '@/components/agency/ServiceTeasers';
-import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
+import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
 export function ServicesPage() {
   return (
@@ -10,14 +10,22 @@ export function ServicesPage() {
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Offers</h1>
           <p className="mt-6 text-lg text-muted-foreground">
             Three paid offers for startups, and for technical founders and small agencies who
-            already run agents. You run it, or I ship it with you. Use the homepage calculator, or
-            book a 30-minute intro first. I invoice after we agree. There is no public checkout.{' '}
+            already run agents. You run it, or I ship it with you. Use the homepage calculator, book
+            a Consultation, or book a 30-minute intro first. Consultation is paid when you book the
+            slot. Proof Sprint and Launch are invoiced after we agree.{' '}
             <Link to="/process" className="font-semibold text-foreground hover:underline">
               How each offer runs
             </Link>
             .
           </p>
           <p className="mt-4 text-base text-muted-foreground">
+            <a
+              href={CONSULTATION_BOOK_PATH}
+              className="font-semibold text-foreground hover:underline"
+            >
+              Book a Consultation
+            </a>
+            {' · '}
             <a
               href={INTRO_CALL_URL}
               target="_blank"

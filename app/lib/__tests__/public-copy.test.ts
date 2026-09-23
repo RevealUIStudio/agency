@@ -587,6 +587,7 @@ describe('public copy gates', () => {
     const sitemap = readFileSync(path.join(repoRoot, 'public/sitemap.xml'), 'utf8');
     expect(sitemap).toContain('https://revealuistudio.com/process');
     expect(sitemap).toContain('https://revealuistudio.com/proof-gap');
+    expect(sitemap).toContain('https://revealuistudio.com/consultation/book');
   });
 
   it('does not sell Contents or Videos as a live Studio CMS', () => {

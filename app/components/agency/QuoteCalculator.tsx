@@ -1,5 +1,5 @@
 import { LinkButton } from '@revealui/presentation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { STAGE_B_PRICE } from '@/lib/engagements';
 import {
   buildQuote,
@@ -19,9 +19,8 @@ import {
   QUOTE_CALCULATOR_LEAD,
   QUOTE_INTRO_LINE,
   QUOTE_OWNERSHIP,
-  type ViewerRole,
 } from '@/lib/quote';
-import { INTRO_CALL_URL } from '@/lib/site';
+import { CONSULTATION_BOOK_PATH, INTRO_CALL_URL } from '@/lib/site';
 
 function ChoiceGroup<T extends string>({
   legend,
@@ -66,33 +65,12 @@ function ChoiceGroup<T extends string>({
   );
 }
 
-export function QuoteCalculator({ viewerRole = 'guest' }: { viewerRole?: ViewerRole }) {
+export function QuoteCalculator() {
   const [hoster, setHoster] = useState<Hoster>(DEFAULT_HOSTER);
   const [outcome, setOutcome] = useState<Outcome>(DEFAULT_OUTCOME);
   const [places, setPlaces] = useState<Places>(DEFAULT_PLACES);
   const [consultationHours, setConsultationHours] = useState<number>(DEFAULT_CONSULTATION_HOURS);
   const [stageB, setStageB] = useState(false);
-  const [stageBWaive, setStageBWaive] = useState(false);
-  const [role, setRole] = useState<ViewerRole>(viewerRole);
-
-  useEffect(() => {
-    setRole(viewerRole);
-  }, [viewerRole]);
-
-  useEffect(() => {
-    if (viewerRole === 'owner') return undefined;
-    let cancelled = false;
-    fetch('/api/session', { credentials: 'same-origin' })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((body: unknown) => {
-        if (cancelled || !body || typeof body !== 'object') return;
-        if ('role' in body && body.role === 'owner') setRole('owner');
-      })
-      .catch(() => undefined);
-    return () => {
-      cancelled = true;
-    };
-  }, [viewerRole]);
 
   const quote = buildQuote({
     hoster,
@@ -100,10 +78,7 @@ export function QuoteCalculator({ viewerRole = 'guest' }: { viewerRole?: ViewerR
     places,
     consultationHours,
     stageB,
-    stageBWaive: role === 'owner' && stageBWaive,
-    viewerRole: role,
   });
-  const showWaive = role === 'owner' && stageB && outcome === 'consultation';
 
   return (
     <section id="calculator" className="scroll-mt-20 bg-muted py-24 sm:py-32">
@@ -163,27 +138,13 @@ export function QuoteCalculator({ viewerRole = 'guest' }: { viewerRole?: ViewerR
               <input
                 type="checkbox"
                 checked={stageB}
-                onChange={(event) => {
-                  setStageB(event.target.checked);
-                  if (!event.target.checked) setStageBWaive(false);
-                }}
+                onChange={(event) => setStageB(event.target.checked)}
                 className="mt-1 size-4 accent-primary"
               />
               <span className="text-sm font-medium text-foreground">
                 Add Stage B ({STAGE_B_PRICE})
               </span>
             </label>
-            {showWaive ? (
-              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                <input
-                  type="checkbox"
-                  checked={stageBWaive}
-                  onChange={(event) => setStageBWaive(event.target.checked)}
-                  className="mt-1 size-4 accent-primary"
-                />
-                <span className="text-sm font-medium text-foreground">Waive Stage B</span>
-              </label>
-            ) : null}
           </div>
 
           <aside
@@ -237,11 +198,16 @@ export function QuoteCalculator({ viewerRole = 'guest' }: { viewerRole?: ViewerR
                   Start free
                 </LinkButton>
               ) : null}
+              {quote.stopQuoting ? null : (
+                <LinkButton href={CONSULTATION_BOOK_PATH} className="w-full justify-center">
+                  Book a Consultation
+                </LinkButton>
+              )}
               <LinkButton
                 href={INTRO_CALL_URL}
                 external
-                appearance={quote.productHandoffUrl ? 'outline' : undefined}
-                variant={quote.productHandoffUrl ? 'neutral' : undefined}
+                appearance={quote.productHandoffUrl || !quote.stopQuoting ? 'outline' : undefined}
+                variant={quote.productHandoffUrl || !quote.stopQuoting ? 'neutral' : undefined}
                 className="w-full justify-center"
               >
                 Book a 30-minute intro
