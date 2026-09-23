@@ -3,21 +3,38 @@ import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
+import { handleAvailability, handleBook, handleStripeWebhook } from './server/consultation-http';
 import { handleShareRequest } from './server/share-http';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+function requestPath(url: string): string {
+  return url.split('?')[0] ?? '';
+}
+
+function isSharePath(path: string): boolean {
+  return (
+    path.startsWith('/share/') ||
+    path.startsWith('/api/share/') ||
+    path.startsWith('/api/invoice/stage-b') ||
+    path === '/api/session'
+  );
+}
+
+function isConsultationPath(path: string): boolean {
+  return (
+    path === '/api/consultation/availability' ||
+    path === '/api/consultation/book' ||
+    path === '/api/stripe/webhook'
+  );
+}
 
 function shareServer(): Plugin {
   const attach: Plugin['configureServer'] = (server) => {
     server.middlewares.use((req, res, next) => {
       const url = req.url ?? '';
-      const handled =
-        url.startsWith('/share/') ||
-        url.startsWith('/api/share/') ||
-        url.startsWith('/api/invoice/stage-b') ||
-        url === '/api/session' ||
-        url.startsWith('/api/session?');
-      if (!handled) {
+      const path = requestPath(url);
+      if (!isSharePath(path) && !isConsultationPath(path)) {
         next();
         return;
       }
@@ -27,8 +44,12 @@ function shareServer(): Plugin {
           const host = typeof hostHeader === 'string' ? hostHeader : 'localhost';
           const headers = new Headers();
           headers.set('host', host);
+          const proto = req.headers['x-forwarded-proto'];
+          if (typeof proto === 'string') headers.set('x-forwarded-proto', proto);
           const authorization = req.headers.authorization;
           if (typeof authorization === 'string') headers.set('authorization', authorization);
+          const signature = req.headers['stripe-signature'];
+          if (typeof signature === 'string') headers.set('stripe-signature', signature);
           let body: string | undefined;
           if (req.method === 'POST') {
             const chunks: Buffer[] = [];
@@ -42,7 +63,13 @@ function shareServer(): Plugin {
             headers,
             body: req.method === 'POST' ? body : undefined,
           });
-          const response = await handleShareRequest(request);
+          const response = isConsultationPath(path)
+            ? path === '/api/consultation/availability'
+              ? await handleAvailability(request)
+              : path === '/api/consultation/book'
+                ? await handleBook(request)
+                : await handleStripeWebhook(request)
+            : await handleShareRequest(request);
           res.statusCode = response.status;
           response.headers.forEach((value, key) => {
             res.setHeader(key, value);

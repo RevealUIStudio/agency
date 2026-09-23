@@ -15,6 +15,15 @@ import { clientSlugFromHost } from './lib/share-host';
 import { AboutPage } from './routes/AboutPage';
 import { CaseStudyPage } from './routes/CaseStudyPage';
 import { CasesPage } from './routes/CasesPage';
+import {
+  CONSULTATION_BOOK_CANCEL_META,
+  ConsultationBookCancelPage,
+} from './routes/ConsultationBookCancelPage';
+import { CONSULTATION_BOOK_META, ConsultationBookPage } from './routes/ConsultationBookPage';
+import {
+  CONSULTATION_BOOK_SUCCESS_META,
+  ConsultationBookSuccessPage,
+} from './routes/ConsultationBookSuccessPage';
 import { ContactPage } from './routes/ContactPage';
 import { CookiesPage } from './routes/CookiesPage';
 import { HomePage } from './routes/HomePage';
@@ -104,6 +113,32 @@ export function App() {
             title: 'About | RevealUI Studio',
             description:
               'RevealUI Studio is for startups, and for technical founders and small agencies who already run agents. Joshua Vaughn runs it. Consultation, Proof Sprint, and Launch. Remote first. Invoice after we agree.',
+          },
+        },
+        {
+          path: '/consultation/book',
+          component: ConsultationBookPage,
+          meta: {
+            title: CONSULTATION_BOOK_META.title,
+            description: CONSULTATION_BOOK_META.description,
+          },
+        },
+        {
+          path: '/consultation/book/success',
+          component: ConsultationBookSuccessPage,
+          meta: {
+            title: CONSULTATION_BOOK_SUCCESS_META.title,
+            description: CONSULTATION_BOOK_SUCCESS_META.description,
+            robots: CONSULTATION_BOOK_SUCCESS_META.robots,
+          },
+        },
+        {
+          path: '/consultation/book/cancel',
+          component: ConsultationBookCancelPage,
+          meta: {
+            title: CONSULTATION_BOOK_CANCEL_META.title,
+            description: CONSULTATION_BOOK_CANCEL_META.description,
+            robots: CONSULTATION_BOOK_CANCEL_META.robots,
           },
         },
         {
