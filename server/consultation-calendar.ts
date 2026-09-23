@@ -51,6 +51,8 @@ export interface ConsultationEnv {
   readonly oauthRefreshToken?: string;
   readonly googleClientEmail?: string;
   readonly googleCredential?: string;
+  /** Workspace user for domain-wide delegation. Never copied from calendarId. */
+  readonly googleImpersonateSubject?: string;
   readonly resendApiKey?: string;
   readonly resendFrom?: string;
 }
@@ -79,6 +81,7 @@ export function consultationEnvFromProcess(
     oauthRefreshToken: readEnv(env, 'GOOGLE_OAUTH_REFRESH_TOKEN'),
     googleClientEmail: readEnv(env, 'GOOGLE_CLIENT_EMAIL'),
     googleCredential: credential?.includes('\\n') ? credential.replaceAll('\\n', '\n') : credential,
+    googleImpersonateSubject: readEnv(env, 'GOOGLE_IMPERSONATE_SUBJECT'),
     resendApiKey: readEnv(env, 'RESEND_API_KEY'),
     resendFrom: readEnv(env, 'RESEND_FROM'),
   };
@@ -190,20 +193,23 @@ function credentialBytes(material: string): ArrayBuffer {
 
 let tokenCache: { key: string; token: string; expiresAt: number } | null = null;
 
-async function serviceAssertion(email: string, material: string): Promise<string> {
+async function serviceAssertion(
+  email: string,
+  material: string,
+  subject?: string,
+): Promise<string> {
   const now = Math.floor(Date.now() / 1000);
+  const claims: Record<string, string | number> = {
+    iss: email,
+    scope: CALENDAR_SCOPE,
+    aud: TOKEN_URL,
+    iat: now,
+    exp: now + 3600,
+  };
+  const impersonate = subject?.trim();
+  if (impersonate) claims.sub = impersonate;
   const header = base64Url(new TextEncoder().encode(JSON.stringify({ alg: 'RS256', typ: 'JWT' })));
-  const payload = base64Url(
-    new TextEncoder().encode(
-      JSON.stringify({
-        iss: email,
-        scope: CALENDAR_SCOPE,
-        aud: TOKEN_URL,
-        iat: now,
-        exp: now + 3600,
-      }),
-    ),
-  );
+  const payload = base64Url(new TextEncoder().encode(JSON.stringify(claims)));
   const unsigned = `${header}.${payload}`;
   const key = await crypto.subtle.importKey(
     'pkcs8',
@@ -222,7 +228,10 @@ async function serviceAssertion(email: string, material: string): Promise<string
 
 async function accessToken(env: ConsultationEnv, fetchImpl: typeof fetch): Promise<string> {
   const refresh = Boolean(env.oauthClientId && env.oauthClientSecret && env.oauthRefreshToken);
-  const cacheKey = refresh ? `refresh:${env.oauthClientId}` : `service:${env.googleClientEmail}`;
+  const subject = env.googleImpersonateSubject ?? '';
+  const cacheKey = refresh
+    ? `refresh:${env.oauthClientId}`
+    : `service:${env.googleClientEmail}:${subject}`;
   if (tokenCache && tokenCache.key === cacheKey && tokenCache.expiresAt > Date.now() + 60_000) {
     return tokenCache.token;
   }
@@ -234,7 +243,14 @@ async function accessToken(env: ConsultationEnv, fetchImpl: typeof fetch): Promi
     body.set('refresh_token', env.oauthRefreshToken ?? '');
   } else if (env.googleClientEmail && env.googleCredential) {
     body.set('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
-    body.set('assertion', await serviceAssertion(env.googleClientEmail, env.googleCredential));
+    body.set(
+      'assertion',
+      await serviceAssertion(
+        env.googleClientEmail,
+        env.googleCredential,
+        env.googleImpersonateSubject,
+      ),
+    );
   } else {
     throw new Error('google-auth');
   }
