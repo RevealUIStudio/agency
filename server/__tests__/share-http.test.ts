@@ -1,9 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { CONSULTATION_UNIT_CENTS } from '@/lib/consultation-hours';
 import { STAGE_B_PRICE } from '@/lib/engagements';
+import { clearSharePacks, createSharePack, type SharePack } from '@/lib/share-stage-b';
 import { assertInvoiceIntegrity, STAGE_B_CENTS, type StageBInvoice } from '@/lib/stage-b-invoice';
 import { createAuditLog } from '../audit-log';
 import { handleShareRequest } from '../share-http';
@@ -27,18 +28,29 @@ function request(
 
 async function call(
   url: string,
-  init?: { method?: string; token?: string; body?: unknown; host?: string },
+  init?: {
+    method?: string;
+    token?: string;
+    body?: unknown;
+    host?: string;
+    packs?: readonly SharePack[];
+  },
 ) {
   const audit = createAuditLog(() => '2026-09-23T00:00:00.000Z');
   const response = await handleShareRequest(request(url, init), {
     audit,
     env: { ownerSession: OWNER },
+    packs: init?.packs,
   });
   const raw = await response.text();
   return { response, raw, audit };
 }
 
 describe('share server', () => {
+  beforeEach(() => {
+    clearSharePacks();
+  });
+
   it('serves the omega seed only on the omega host', async () => {
     const allowed = await call('https://omega.revealuistudio.com/share/omega/pack.txt', {
       host: 'omega.revealuistudio.com',
@@ -71,6 +83,31 @@ describe('share server', () => {
     });
     expect(apex.response.status).toBe(403);
     expect(apex.raw).not.toContain('pack');
+  });
+
+  it('serves the same omega pack on a verified custom domain and refuses an unverified one', async () => {
+    const live = createSharePack('omega', {
+      customDomain: 'share.example.com',
+      customDomainStatus: 'live',
+    });
+    const allowed = await call('https://share.example.com/share/omega/pack.txt', {
+      host: 'share.example.com',
+      packs: [live],
+    });
+    expect(allowed.response.status).toBe(200);
+    expect(allowed.raw).toContain('Client slug: omega');
+    expect(allowed.audit.entries()[0]).toMatchObject({ tenant: 'omega', decision: 'allow' });
+
+    const pending = createSharePack('omega', {
+      customDomain: 'share.example.com',
+      customDomainStatus: 'pending_dns',
+    });
+    const denied = await call('https://share.example.com/share/omega/pack.txt', {
+      host: 'share.example.com',
+      packs: [pending],
+    });
+    expect(denied.response.status).toBe(403);
+    expect(denied.raw).not.toContain('Client slug: omega');
   });
 
   it('does not publish tenant seeds as static public files', () => {

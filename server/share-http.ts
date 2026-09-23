@@ -1,5 +1,6 @@
 import { consultationDueCents } from '../app/lib/consultation-hours';
 import { clientSlugFromHost } from '../app/lib/share-host';
+import { listSharePacks, resolveShareViewer, type SharePack } from '../app/lib/share-stage-b';
 import {
   buildStageBInvoice,
   InvoiceRejected,
@@ -15,6 +16,7 @@ export interface ShareDeps {
   readonly audit?: AuditLog;
   readonly env?: SessionEnv;
   readonly now?: () => string;
+  readonly packs?: readonly SharePack[];
 }
 
 interface InvoiceBody {
@@ -46,9 +48,9 @@ function text(status: number, body: string, audit: AuditEvent, contentType: stri
   });
 }
 
-function tenantFromHost(request: Request): string {
+function tenantFromHost(request: Request, packs: readonly SharePack[]): string {
   const host = request.headers.get('host') ?? '';
-  return clientSlugFromHost(host) ?? '-';
+  return resolveShareViewer(host, packs)?.slug ?? '-';
 }
 
 function isSeedFile(file: string): boolean {
@@ -93,7 +95,8 @@ export async function handleShareRequest(request: Request, deps?: ShareDeps): Pr
   const { audit, env } = depsOf(deps);
   const session = verifySession(request, env);
   const url = new URL(request.url);
-  const tenant = tenantFromHost(request);
+  const packs = deps?.packs ?? listSharePacks();
+  const tenant = tenantFromHost(request, packs);
 
   if (url.pathname === '/api/session' && request.method === 'GET') {
     const event = audit.append({

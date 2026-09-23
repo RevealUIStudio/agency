@@ -2,6 +2,7 @@ import { Link } from '@revealui/router';
 import type { ReactNode } from 'react';
 import { RouteHead } from '@/components/RouteHead';
 import { isShareSeed, SHARE_PATHS } from '@/lib/share-host';
+import { type ChromeLevel, shareChrome } from '@/lib/share-stage-b';
 
 const CIRCUIT_R_NAV_SRC = '/revealui-mark.svg';
 const CIRCUIT_R_NAV_PX = 48;
@@ -14,25 +15,19 @@ const SHARE_NAV = [
   { href: '/demo', label: 'Demo' },
 ] as const;
 
-function titleCaseSlug(slug: string): string {
-  return slug
-    .split('-')
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}
-
 export function ShareFrame({
   slug,
   title,
   children,
+  chromeLevel = 'studio',
 }: {
   slug: string;
   title: string;
   children: ReactNode;
+  chromeLevel?: ChromeLevel;
 }) {
   const seeded = isShareSeed(slug);
-  const label = titleCaseSlug(slug);
+  const chrome = shareChrome(slug, chromeLevel);
   return (
     <div className="relative min-h-screen bg-background text-foreground">
       <RouteHead />
@@ -45,30 +40,32 @@ export function ShareFrame({
           EXAMPLE
         </span>
       </div>
-      <header className="relative z-20 border-b border-border">
+      <header className="relative z-20 border-b border-border" data-chrome-level={chrome.level}>
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-6 py-4">
-          <span
-            data-circuit-r-chrome
-            className="relative block shrink-0 overflow-hidden"
-            style={{
-              width: CIRCUIT_R_NAV_PX,
-              height: CIRCUIT_R_NAV_PX,
-              ['--circuit-r-chrome-px' as string]: `${CIRCUIT_R_NAV_PX}px`,
-            }}
-          >
-            <img
-              src={CIRCUIT_R_NAV_SRC}
-              alt=""
-              width={CIRCUIT_R_NAV_PX}
-              height={CIRCUIT_R_NAV_PX}
-              className="block size-full max-w-none"
-            />
-          </span>
+          {chrome.showStudioMark ? (
+            <span
+              data-circuit-r-chrome
+              className="relative block shrink-0 overflow-hidden"
+              style={{
+                width: CIRCUIT_R_NAV_PX,
+                height: CIRCUIT_R_NAV_PX,
+                ['--circuit-r-chrome-px' as string]: `${CIRCUIT_R_NAV_PX}px`,
+              }}
+            >
+              <img
+                src={CIRCUIT_R_NAV_SRC}
+                alt=""
+                width={CIRCUIT_R_NAV_PX}
+                height={CIRCUIT_R_NAV_PX}
+                className="block size-full max-w-none"
+              />
+            </span>
+          ) : null}
           <div>
-            <p className="text-sm font-semibold text-foreground">RevealUI Studio</p>
-            <p className="text-sm text-muted-foreground">
-              {label} · Stage A · {slug}.revealuistudio.com
-            </p>
+            {chrome.showStudioName ? (
+              <p className="text-sm font-semibold text-foreground">RevealUI Studio</p>
+            ) : null}
+            <p className="text-sm text-muted-foreground">{chrome.subtitle}</p>
           </div>
         </div>
         <nav className="mx-auto flex max-w-6xl flex-wrap gap-4 px-6 pb-4 text-sm font-medium text-muted-foreground">
