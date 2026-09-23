@@ -4,11 +4,11 @@
  * Studio quotes only. Product licenses live on revealui.com.
  * This site defaults to Studio ("Studio implements with me") instead of
  * self-host ("I self-host (product site)"), and defaults the outcome to
- * Pilot. Self-host hops to the product site. No fleet math. No product SKUs.
+ * Proof Sprint. Self-host hops to the product site. No fleet math. No product SKUs.
  * Public word PROOF means a receipted action, not outcome validation.
  */
 
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
 export type Hoster = 'self-host' | 'studio';
@@ -26,7 +26,7 @@ export const HOSTER_OPTIONS = [
 
 export const OUTCOME_OPTIONS = [
   { value: 'hour', label: 'Consultation — diagnose the path / proof gap ($300)' },
-  { value: 'plan', label: 'Pilot — one site, one agent I run, one receipted action' },
+  { value: 'plan', label: 'Proof Sprint — one site, one receipted action I operate' },
   { value: 'launch', label: 'Launch — money path live on my accounts' },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
@@ -38,13 +38,13 @@ export const PLACES_OPTIONS = [
 export const QUOTE_CALCULATOR_HEADING = 'Who runs it. What has to work. One price.' as const;
 
 export const QUOTE_CALCULATOR_LEAD =
-  'Studio quotes only: Consultation $300, Pilot $1,500, Launch $7,500. Solutions for critical-path ownership, agents without PROOF, and a live money path. PROOF means a receipted action, not outcome validation or proof of work. Licenses live on revealui.com.' as const;
+  'Studio quotes only: Consultation $300, Proof Sprint $3,997, Launch $14,500. Solutions for critical-path ownership, agents without PROOF, and a live money path. PROOF means a receipted action, not outcome validation or proof of work. Licenses live on revealui.com.' as const;
 
 export const CONSULTATION_QUOTE_DETAIL =
   'One focused pass on the critical path, proof gaps, or a stuck live flow. Notes + next step. Invoice $300 before we start. No leftover site. No holdback.' as const;
 
-export const PILOT_QUOTE_DETAIL =
-  'One site on your domain. One agent you run. One receipted action (PROOF). You keep it. Invoice $1,500 before we start. Credits 100% to Launch if we start Launch within 30 days.' as const;
+export const PROOF_QUOTE_DETAIL =
+  'One site. One receipted action you operate. Stage B is included. You keep it. Invoice $3,997 before we start. Credits 100% to Launch if you start Launch within 45 days.' as const;
 
 export const LAUNCH_QUOTE_DETAIL =
   'One live money path on your accounts. Architecture inside this offer. Half now, half on delivery. You own the result.' as const;
@@ -95,23 +95,23 @@ export interface QuoteAnswers {
 function studioLines(outcome: Outcome): readonly QuoteLine[] {
   return [
     {
-      id: WORKING_SESSION.id,
-      title: WORKING_SESSION.name,
-      price: WORKING_SESSION.price,
+      id: CONSULTATION.id,
+      title: CONSULTATION.name,
+      price: CONSULTATION.price,
       detail: CONSULTATION_QUOTE_DETAIL,
       highlighted: outcome === 'hour',
     },
     {
-      id: WRITTEN_PLAN.id,
-      title: WRITTEN_PLAN.name,
-      price: WRITTEN_PLAN.price,
-      detail: PILOT_QUOTE_DETAIL,
+      id: PROOF_SPRINT.id,
+      title: PROOF_SPRINT.name,
+      price: PROOF_SPRINT.price,
+      detail: PROOF_QUOTE_DETAIL,
       highlighted: outcome === 'plan',
     },
     {
-      id: LAUNCH_PACKAGE.id,
-      title: LAUNCH_PACKAGE.name,
-      price: LAUNCH_PACKAGE.price,
+      id: LAUNCH.id,
+      title: LAUNCH.name,
+      price: LAUNCH.price,
       detail: LAUNCH_QUOTE_DETAIL,
       highlighted: outcome === 'launch',
     },

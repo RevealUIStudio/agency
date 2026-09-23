@@ -1,6 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
 import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
 export function ProcessPage() {
@@ -43,14 +43,14 @@ export function ProcessPage() {
 
       <section className="bg-muted py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-6 space-y-16">
-          <article id={WORKING_SESSION.id}>
+          <article id={CONSULTATION.id}>
             <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-              {WORKING_SESSION.tagline}
+              {CONSULTATION.tagline}
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              {WORKING_SESSION.name}. {WORKING_SESSION.price}.
+              {CONSULTATION.name}. {CONSULTATION.price}.
             </h2>
-            <p className="mt-4 text-base text-muted-foreground">{WORKING_SESSION.description}</p>
+            <p className="mt-4 text-base text-muted-foreground">{CONSULTATION.description}</p>
             <div className="mt-8 space-y-6 text-base leading-7 text-foreground">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
@@ -63,34 +63,34 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  Notes and a next step. Not a leftover site. Not a rebuild. Not ongoing support.
+                  Notes and a next step. No leftover site. Not a rebuild. Not ongoing support.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">How long</h3>
                 <p className="mt-2 text-muted-foreground">
                   A single session. Remote, or in person in {STUDIO_CITY}. I invoice{' '}
-                  {WORKING_SESSION.price} before we start. No holdback.
+                  {CONSULTATION.price} before we start. No holdback.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  The session ends. If you want {WRITTEN_PLAN.name} or {LAUNCH_PACKAGE.name}, that
-                  is a separate offer and a new invoice.
+                  The session ends. If you want {PROOF_SPRINT.name} or {LAUNCH.name}, that is a
+                  separate offer and a new invoice.
                 </p>
               </div>
             </div>
           </article>
 
-          <article id={WRITTEN_PLAN.id}>
+          <article id={PROOF_SPRINT.id}>
             <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-              {WRITTEN_PLAN.tagline}
+              {PROOF_SPRINT.tagline}
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              {WRITTEN_PLAN.name}. {WRITTEN_PLAN.price}.
+              {PROOF_SPRINT.name}. {PROOF_SPRINT.price}.
             </h2>
-            <p className="mt-4 text-base text-muted-foreground">{WRITTEN_PLAN.description}</p>
+            <p className="mt-4 text-base text-muted-foreground">{PROOF_SPRINT.description}</p>
             <div className="mt-8 space-y-6 text-base leading-7 text-foreground">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
@@ -101,9 +101,8 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  One site on your domain. One agent you run. You keep it. Click-to-call plus book
-                  or quote. One receipted action. Your Vercel, your model key. Not hosted chatbot
-                  SaaS. Product licenses live on revealui.com.
+                  One site. One receipted action you operate. Stage B is included. Your Vercel, your
+                  model key. Not hosted chatbot SaaS. Product licenses live on revealui.com.
                 </p>
               </div>
               <div>
@@ -116,20 +115,20 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  {WRITTEN_PLAN.payment} {LAUNCH_PACKAGE.name} is a separate offer.
+                  {PROOF_SPRINT.payment} {LAUNCH.name} is a separate offer.
                 </p>
               </div>
             </div>
           </article>
 
-          <article id={LAUNCH_PACKAGE.id}>
+          <article id={LAUNCH.id}>
             <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-              {LAUNCH_PACKAGE.tagline}
+              {LAUNCH.tagline}
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              {LAUNCH_PACKAGE.name}. {LAUNCH_PACKAGE.price}.
+              {LAUNCH.name}. {LAUNCH.price}.
             </h2>
-            <p className="mt-4 text-base text-muted-foreground">{LAUNCH_PACKAGE.description}</p>
+            <p className="mt-4 text-base text-muted-foreground">{LAUNCH.description}</p>
             <div className="mt-8 space-y-6 text-base leading-7 text-foreground">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
@@ -157,7 +156,7 @@ export function ProcessPage() {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
-                <p className="mt-2 text-muted-foreground">{LAUNCH_PACKAGE.payment}</p>
+                <p className="mt-2 text-muted-foreground">{LAUNCH.payment}</p>
               </div>
             </div>
           </article>

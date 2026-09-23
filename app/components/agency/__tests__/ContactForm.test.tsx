@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ContactForm } from '@/components/agency/ContactForm';
 import { submitContact } from '@/lib/api';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { LAUNCH, CONSULTATION, PROOF_SPRINT } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 vi.mock('@/lib/api', () => ({
@@ -40,13 +40,13 @@ describe('ContactForm', () => {
     expect(screen.getByLabelText(/Message/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
     expect(
-      screen.getByRole('option', { name: `${WORKING_SESSION.name} (${WORKING_SESSION.price})` }),
+      screen.getByRole('option', { name: `${CONSULTATION.name} (${CONSULTATION.price})` }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('option', { name: `${WRITTEN_PLAN.name} (${WRITTEN_PLAN.price})` }),
+      screen.getByRole('option', { name: `${PROOF_SPRINT.name} (${PROOF_SPRINT.price})` }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('option', { name: `${LAUNCH_PACKAGE.name} (${LAUNCH_PACKAGE.price})` }),
+      screen.getByRole('option', { name: `${LAUNCH.name} (${LAUNCH.price})` }),
     ).toBeInTheDocument();
     expect(screen.queryByRole('option', { name: /Fleet Stamp/ })).not.toBeInTheDocument();
   });

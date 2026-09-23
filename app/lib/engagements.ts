@@ -1,18 +1,17 @@
 /**
  * Public studio offers for revealuistudio.com.
  *
- * Stranger-facing SKUs are locked: Consultation, Pilot, Launch.
- * Launch still imports its price from `@revealui/contracts/pricing` so that
- * number cannot drift from the shared menu. Consultation and Pilot are
- * studio-only. Architecture work (schema, primitives, review) happens
- * inside Launch, not as a named SKU.
+ * Stranger-facing SKUs are locked (2026-09-22): Consultation, Proof Sprint, Launch.
+ * Proof Sprint is $3,997. Launch is $14,500. The previous middle offer and the
+ * previous Launch list are retired. Architecture stays inside Launch.
+ *
+ * Launch price is a local override until @revealui/contracts publishes $14,500.
+ * Care is an optional export and is not on the homepage trio.
  *
  * Fleet Stamp, Custom Build, and AI Integration stay in this file as
  * internal records (case-study shapes, future private use). They must not
  * be imported by homepage, nav, or pricing surfaces.
  */
-
-import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 
 /**
  * Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1
@@ -26,7 +25,7 @@ export const RUNTIME_METRICS = {
   fsl: 5,
 } as const;
 
-export type PublicOfferId = 'working-session' | 'written-plan' | 'launch-package';
+export type PublicOfferId = 'consultation' | 'proof-sprint' | 'launch-package';
 
 export interface PublicOffer {
   readonly id: PublicOfferId;
@@ -40,72 +39,81 @@ export interface PublicOffer {
   readonly payment: string;
 }
 
-export const WORKING_SESSION_PRICE = '$300' as const;
-export const WRITTEN_PLAN_PRICE = '$1,500' as const;
-export const PUBLIC_LAUNCH_PACKAGE_PRICE = LAUNCH_PACKAGE_PRICE;
+export const CONSULTATION_PRICE = '$300' as const;
+export const PROOF_SPRINT_PRICE = '$3,997' as const;
 
-export const WORKING_SESSION = {
-  id: 'working-session',
+/**
+ * TODO(offer-lock): import LAUNCH_PACKAGE_PRICE from `@revealui/contracts/pricing`
+ * once that package publishes Launch $14,500 (studio offer lock 2026-09-22).
+ * The installed contracts build still exports the retired $7,500 list.
+ */
+export const LAUNCH_PRICE = '$14,500' as const;
+
+/** Stage B share host. Included with Proof Sprint and Launch. Not a homepage SKU. */
+export const STAGE_B_PRICE = '$297' as const;
+
+export const CARE_PRICE = '$1,997/mo' as const;
+
+export const CONSULTATION = {
+  id: 'consultation',
   name: 'Consultation',
-  price: WORKING_SESSION_PRICE,
-  tagline: 'Notes and a next step',
+  price: CONSULTATION_PRICE,
+  tagline: 'Path A by default. A denser living pack.',
   description:
-    'One focused session on your system. That can be product, runtime, receipts, a stuck live flow, or launch prep. Remote, or in person. You leave with notes and a next step. No leftover site.',
-  includes: [
-    'Notes and a next step',
-    'Remote, or in person',
-    'Product, runtime, receipts, a stuck live flow, or launch prep',
-    'No leftover site',
-  ],
-  notIncluded: ['A leftover site', 'A full rebuild', 'Ongoing support'],
-  payment: 'Invoice $300 before we start. No holdback.',
+    'Path A is the default. Path B if you ask for it. You leave with a denser living pack and a Stage A share URL on your name at revealuistudio.com. Tax is $0. Remote, or in person.',
+  includes: ['Path A by default', 'Path B if you ask', 'Denser living pack', 'Stage A share URL'],
+  notIncluded: ['A free Proof Sprint', 'An unpaid build', 'An Architecture dump', 'Chatbot SaaS'],
+  payment: 'Invoice $300 before we start. Tax $0. No holdback.',
 } as const satisfies PublicOffer;
 
-export const WRITTEN_PLAN = {
-  id: 'written-plan',
-  name: 'Pilot',
-  price: WRITTEN_PLAN_PRICE,
-  tagline: 'One site on your domain, one agent you run, you keep it',
+export const PROOF_SPRINT = {
+  id: 'proof-sprint',
+  name: 'Proof Sprint',
+  price: PROOF_SPRINT_PRICE,
+  tagline: 'One site. One receipted action you operate.',
   description:
-    'One site on your domain. One agent you run. You keep it. Click-to-call plus book or quote. One receipted action. Your Vercel, your model key.',
+    'One site. One receipted action you operate. Stage B is included. Credits 100% to Launch if you start Launch within 45 days.',
   includes: [
-    'One site on your domain',
-    'One agent you run (your Vercel, your model key)',
-    'You keep it',
-    'Click-to-call plus book or quote',
-    'One receipted action',
+    'One site',
+    'One receipted action you operate',
+    'Stage B included',
+    '100% credit toward Launch within 45 days',
   ],
-  notIncluded: ['Hosted chatbot SaaS', 'A multi-site rollout', 'Product licenses'],
+  notIncluded: ['A second site', 'Hosted chatbot SaaS', 'Product licenses'],
   payment:
-    'Invoice $1,500 before we start. You keep the site if you walk. Credits 100% to Launch if we start Launch within 30 days.',
+    'Invoice $3,997 before we start. You keep the site if you walk. Credits 100% to Launch if you start Launch within 45 days.',
 } as const satisfies PublicOffer;
 
-export const LAUNCH_PACKAGE = {
+export const LAUNCH = {
   id: 'launch-package',
   name: 'Launch',
-  price: PUBLIC_LAUNCH_PACKAGE_PRICE,
-  tagline: 'One live flow on your accounts',
+  price: LAUNCH_PRICE,
+  tagline: 'Architecture inside. Runbook. 30-day stabilization.',
   description:
-    'One live flow on your accounts. Architecture work (schema, primitives, review) happens inside this offer, not as a named SKU. Knowledge Graph is part of the runtime (Electric+CRDT), not a fourth Studio offer. We scope it on the call and take it live. You own the result.',
+    'One live flow on your accounts. Architecture work (schema, primitives, review) happens inside this offer, not as a named SKU. You get a runbook and 30 days of async stabilization. Knowledge Graph is part of the runtime (Electric+CRDT), not a fourth Studio offer. We scope it on the call and take it live. You own the result.',
   includes: [
     'One live flow on your accounts',
-    'Architecture work (schema, primitives, review) inside this offer',
-    'Scope locked on the intro call',
-    'Live handoff; you own what we ship',
+    'Architecture work inside this offer',
+    'Runbook',
+    '30-day async stabilization',
   ],
-  notIncluded: ['A multi-month platform', 'An “AI” headline', 'Unlimited revisions'],
+  notIncluded: ['Care, which is optional', 'A multi-month platform', 'An “AI” headline'],
   payment: 'Half now, half on delivery.',
 } as const satisfies PublicOffer;
 
-/** The only three offers strangers should see. */
-export const PUBLIC_OFFERS = [WORKING_SESSION, WRITTEN_PLAN, LAUNCH_PACKAGE] as const;
+/** The only three offers strangers should see on the homepage. */
+export const PUBLIC_OFFERS = [CONSULTATION, PROOF_SPRINT, LAUNCH] as const;
 
-/** @deprecated Use WRITTEN_PLAN. Public name is Pilot. */
-export const ARCHITECTURE_REVIEW = {
-  id: 'written-plan',
-  name: WRITTEN_PLAN.name,
-  price: WRITTEN_PLAN.price,
-  startsFrom: false,
+/**
+ * Optional monthly care. Export is allowed. Do not add this to PUBLIC_OFFERS
+ * or the stranger homepage trio.
+ */
+export const CARE = {
+  id: 'care',
+  name: 'Care',
+  price: CARE_PRICE,
+  optional: true,
+  note: 'Optional monthly care. You can export and leave. Not required.',
 } as const;
 
 /**

@@ -9,7 +9,7 @@
  * retired identity copy.
  */
 
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 
 /**
  * Raster shop-line on public/og-card.png. Document title / OG title stay the
@@ -21,12 +21,12 @@ export const OG_CARD_HEADLINE =
 
 /**
  * Locked public SKU line (same sentence as index.html / App.tsx meta).
- * Must stay equal to WORKING_SESSION + WRITTEN_PLAN + LAUNCH_PACKAGE names/prices.
+ * Must stay equal to CONSULTATION + PROOF_SPRINT + LAUNCH names/prices.
  */
-export const OG_CARD_SKU_LINE = 'Consultation $300. Pilot $1,500. Launch $7,500.';
+export const OG_CARD_SKU_LINE = 'Consultation $300. Proof Sprint $3,997. Launch $14,500.';
 
 /** Catalog composition the SKU line must stay equal to. */
-export const OG_CARD_SKU_FROM_OFFERS = `${WORKING_SESSION.name} ${WORKING_SESSION.price}. ${WRITTEN_PLAN.name} ${WRITTEN_PLAN.price}. ${LAUNCH_PACKAGE.name} ${LAUNCH_PACKAGE.price}.`;
+export const OG_CARD_SKU_FROM_OFFERS = `${CONSULTATION.name} ${CONSULTATION.price}. ${PROOF_SPRINT.name} ${PROOF_SPRINT.price}. ${LAUNCH.name} ${LAUNCH.price}.`;
 
 export const OG_CARD_BOOKING_LINE = 'Book a 30-minute intro on Google Calendar.';
 

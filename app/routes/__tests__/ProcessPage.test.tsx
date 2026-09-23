@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
-import { LAUNCH_PACKAGE, PUBLIC_OFFERS, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { LAUNCH, PUBLIC_OFFERS, CONSULTATION, PROOF_SPRINT } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 import { ProcessPage } from '@/routes/ProcessPage';
 
@@ -12,16 +12,16 @@ describe('ProcessPage', () => {
     const text = container.textContent ?? '';
 
     expect(screen.getByRole('heading', { level: 1, name: 'How we work' })).toBeInTheDocument();
-    expect(text).toContain(WORKING_SESSION.name);
-    expect(text).toContain(WRITTEN_PLAN.name);
-    expect(text).toContain(LAUNCH_PACKAGE.name);
-    expect(text).toContain(WORKING_SESSION.price);
-    expect(text).toContain(WRITTEN_PLAN.price);
-    expect(text).toContain(LAUNCH_PACKAGE.price);
+    expect(text).toContain(CONSULTATION.name);
+    expect(text).toContain(PROOF_SPRINT.name);
+    expect(text).toContain(LAUNCH.name);
+    expect(text).toContain(CONSULTATION.price);
+    expect(text).toContain(PROOF_SPRINT.price);
+    expect(text).toContain(LAUNCH.price);
 
-    expect(document.getElementById(WORKING_SESSION.id)).not.toBeNull();
-    expect(document.getElementById(WRITTEN_PLAN.id)).not.toBeNull();
-    expect(document.getElementById(LAUNCH_PACKAGE.id)).not.toBeNull();
+    expect(document.getElementById(CONSULTATION.id)).not.toBeNull();
+    expect(document.getElementById(PROOF_SPRINT.id)).not.toBeNull();
+    expect(document.getElementById(LAUNCH.id)).not.toBeNull();
 
     expect(screen.getAllByRole('heading', { name: 'What you send' })).toHaveLength(3);
     expect(screen.getAllByRole('heading', { name: 'What you get' })).toHaveLength(3);
@@ -30,11 +30,11 @@ describe('ProcessPage', () => {
 
     expect(text).toContain('Notes and a next step');
     expect(text).toContain('No leftover site');
-    expect(text).toContain('One site on your domain');
+    expect(text).toContain('One receipted action you operate');
     expect(text).toContain('Credits 100% to Launch');
     expect(text).toContain('Architecture work');
-    expect(text).toContain(WRITTEN_PLAN.payment);
-    expect(text).toContain(LAUNCH_PACKAGE.payment);
+    expect(text).toContain(PROOF_SPRINT.payment);
+    expect(text).toContain(LAUNCH.payment);
   });
 
   it('keeps the Google Calendar intro as the CTA', () => {
@@ -79,7 +79,7 @@ describe('ProcessPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'How we work' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: GUARDRAIL_HEADING })).toBeInTheDocument();
     expect(text).toContain(GUARDRAIL_BODY);
-    expect(text).toContain('Included in how we scope Pilot and Launch');
+    expect(text).toContain('Included in how we scope Proof Sprint and Launch');
     expect(text).toContain('Not a separate SKU');
     expect(document.getElementById('guardrail-agent')).not.toBeNull();
 

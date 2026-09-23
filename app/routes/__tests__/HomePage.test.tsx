@@ -69,8 +69,8 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/8,?499/);
     expect(text).not.toMatch(/Agency Kit/i);
     expect(text).toContain('Consultation $300');
-    expect(text).toContain('Pilot $1,500');
-    expect(text).toContain('Launch $7,500');
+    expect(text).toContain('Proof Sprint $3,997');
+    expect(text).toContain('Launch $14,500');
     expect(text).not.toMatch(/\bHour\b/);
     expect(text).not.toMatch(/Starter Kit/i);
     expect(text).not.toMatch(/waitlist/i);
