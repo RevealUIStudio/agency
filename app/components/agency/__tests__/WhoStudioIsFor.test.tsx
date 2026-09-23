@@ -15,7 +15,7 @@ describe('WhoStudioIsFor', () => {
     expect(document.getElementById('who')).not.toBeNull();
     expect(screen.getByText(STUDIO_FOR_AGENCY)).toBeInTheDocument();
     expect(STUDIO_FOR_AGENCY).toBe(
-      'Small agencies: stop disclosing work your agents can’t receipt. Pilot and Launch leave PROOF on the client’s domain.',
+      'Small agencies: stop disclosing work your agents can’t receipt. Proof Sprint and Launch leave PROOF on the client’s domain.',
     );
     for (const beat of STUDIO_FOR_BEATS) {
       expect(screen.getByText(beat)).toBeInTheDocument();
