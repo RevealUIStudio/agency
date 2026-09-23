@@ -105,4 +105,68 @@ describe('buildQuote', () => {
     expect(quote.heading).toBe(INTRO_HEADING);
     expect(quote.body).toBe(INTRO_BODY);
   });
+
+  it('prices Consultation at $300 times the selected count', () => {
+    const quote = buildQuote({
+      hoster: 'studio',
+      outcome: 'consultation',
+      places: 'one',
+      consultationHours: 2,
+    });
+    const consultation = quote.lines.find((line) => line.id === 'consultation');
+    expect(consultation?.price).toBe('$600');
+    expect(consultation?.title).toBe('Consultation');
+    expect(consultation?.detail).toContain('Invoice $600 before we start');
+    expect(JSON.stringify(quote)).not.toMatch(/\bHour\b/);
+    expect(quote.lines.map((line) => line.title)).not.toContain('Stage B');
+  });
+
+  it('keeps Stage B off unless asked, and ignores a guest waive', () => {
+    const off = buildQuote({
+      hoster: 'studio',
+      outcome: 'consultation',
+      places: 'one',
+      stageBWaive: true,
+      viewerRole: 'guest',
+    });
+    expect(off.lines.some((line) => line.id.startsWith('stage-b'))).toBe(false);
+
+    const on = buildQuote({
+      hoster: 'studio',
+      outcome: 'consultation',
+      places: 'one',
+      stageB: true,
+      stageBWaive: true,
+      viewerRole: 'guest',
+    });
+    expect(on.lines.find((line) => line.id === 'stage-b-list')?.price).toBe('$297');
+    expect(on.lines.some((line) => line.id === 'stage-b-credit')).toBe(false);
+  });
+
+  it('shows an owner waive as the list price plus a credit', () => {
+    const quote = buildQuote({
+      hoster: 'studio',
+      outcome: 'consultation',
+      places: 'one',
+      stageB: true,
+      stageBWaive: true,
+      viewerRole: 'owner',
+    });
+    expect(quote.lines.find((line) => line.id === 'stage-b-list')?.price).toBe('$297');
+    expect(quote.lines.find((line) => line.id === 'stage-b-credit')?.price).toBe('$297');
+    expect(quote.lines.find((line) => line.id === 'stage-b-due')?.price).toBe('$0');
+  });
+
+  it('does not add a second Stage B charge when the offer already includes it', () => {
+    const quote = buildQuote({
+      hoster: 'studio',
+      outcome: 'plan',
+      places: 'one',
+      stageB: true,
+      stageBWaive: true,
+      viewerRole: 'owner',
+    });
+    expect(quote.lines.find((line) => line.id === 'stage-b')?.price).toBe('Included');
+    expect(quote.lines.some((line) => line.id === 'stage-b-credit')).toBe(false);
+  });
 });

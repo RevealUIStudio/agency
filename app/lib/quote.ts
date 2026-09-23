@@ -8,12 +8,24 @@
  * Public word PROOF means a receipted action, not outcome validation.
  */
 
+import {
+  CONSULTATION_HOUR_OPTIONS,
+  consultationDueCents,
+  consultationHourCount,
+  consultationHourLabel,
+  DEFAULT_CONSULTATION_HOURS,
+} from '@/lib/consultation-hours';
 import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { formatUsdFromCents } from '@/lib/money';
 import { PRODUCT_SITE_URL } from '@/lib/site';
+import { buildStageBInvoice, type ViewerRole } from '@/lib/stage-b-invoice';
 
 export type Hoster = 'self-host' | 'studio';
-export type Outcome = 'hour' | 'plan' | 'launch';
+export type Outcome = 'consultation' | 'plan' | 'launch';
 export type Places = 'one' | 'many';
+
+export type { ViewerRole };
+export { CONSULTATION_HOUR_OPTIONS, consultationHourLabel, DEFAULT_CONSULTATION_HOURS };
 
 export const DEFAULT_HOSTER: Hoster = 'studio';
 export const DEFAULT_OUTCOME: Outcome = 'plan';
@@ -25,7 +37,7 @@ export const HOSTER_OPTIONS = [
 ] as const satisfies readonly { value: Hoster; label: string }[];
 
 export const OUTCOME_OPTIONS = [
-  { value: 'hour', label: 'Consultation — diagnose the path / proof gap ($300)' },
+  { value: 'consultation', label: 'Consultation — diagnose the path / proof gap ($300)' },
   { value: 'plan', label: 'Proof Sprint — one site, one receipted action I operate' },
   { value: 'launch', label: 'Launch — money path live on my accounts' },
 ] as const satisfies readonly { value: Outcome; label: string }[];
@@ -90,31 +102,99 @@ export interface QuoteAnswers {
   readonly hoster: Hoster;
   readonly outcome: Outcome;
   readonly places: Places;
+  /** Count of Consultation units at $300. Default 1. */
+  readonly consultationHours?: number;
+  /** Optional Stage B add-on. Default off. Included offers do not add a second charge. */
+  readonly stageB?: boolean;
+  readonly stageBWaive?: boolean;
+  readonly viewerRole?: ViewerRole;
 }
 
-function studioLines(outcome: Outcome): readonly QuoteLine[] {
+export function consultationQuoteDetail(hours: number): string {
+  const count = consultationHourCount(hours);
+  if (count === 1) return CONSULTATION_QUOTE_DETAIL;
+  const price = formatUsdFromCents(consultationDueCents(count));
+  return CONSULTATION_QUOTE_DETAIL.replace(
+    'Invoice $300 before we start',
+    `Invoice ${price} before we start`,
+  );
+}
+
+function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
+  if (answers.stageB !== true) return [];
+  const included = answers.outcome === 'plan' || answers.outcome === 'launch';
+  if (included) {
+    return [
+      {
+        id: 'stage-b',
+        title: 'Stage B',
+        price: 'Included',
+        detail: 'Included with this offer.',
+        highlighted: false,
+      },
+    ];
+  }
+  const role = answers.viewerRole === 'owner' ? 'owner' : 'guest';
+  const invoice = buildStageBInvoice({
+    attached: true,
+    waive: role === 'owner' && answers.stageBWaive === true,
+    role,
+  });
+  const lines: QuoteLine[] = [
+    {
+      id: 'stage-b-list',
+      title: 'Stage B',
+      price: formatUsdFromCents(invoice.listCents),
+      detail: 'List price. Optional add-on.',
+      highlighted: true,
+    },
+  ];
+  if (invoice.creditCents > 0) {
+    lines.push(
+      {
+        id: 'stage-b-credit',
+        title: 'Stage B credit',
+        price: formatUsdFromCents(invoice.creditCents),
+        detail: 'Owner credit against the list price.',
+        highlighted: false,
+      },
+      {
+        id: 'stage-b-due',
+        title: 'Stage B due',
+        price: formatUsdFromCents(invoice.dueCents),
+        detail: 'List price minus the credit.',
+        highlighted: false,
+      },
+    );
+  }
+  return lines;
+}
+
+function studioLines(answers: QuoteAnswers): readonly QuoteLine[] {
+  const hours = consultationHourCount(answers.consultationHours ?? DEFAULT_CONSULTATION_HOURS);
   return [
     {
       id: CONSULTATION.id,
       title: CONSULTATION.name,
-      price: CONSULTATION.price,
-      detail: CONSULTATION_QUOTE_DETAIL,
-      highlighted: outcome === 'hour',
+      price: formatUsdFromCents(consultationDueCents(hours)),
+      detail: consultationQuoteDetail(hours),
+      highlighted: answers.outcome === 'consultation',
     },
     {
       id: PROOF_SPRINT.id,
       title: PROOF_SPRINT.name,
       price: PROOF_SPRINT.price,
       detail: PROOF_QUOTE_DETAIL,
-      highlighted: outcome === 'plan',
+      highlighted: answers.outcome === 'plan',
     },
     {
       id: LAUNCH.id,
       title: LAUNCH.name,
       price: LAUNCH.price,
       detail: LAUNCH_QUOTE_DETAIL,
-      highlighted: outcome === 'launch',
+      highlighted: answers.outcome === 'launch',
     },
+    ...stageBLines(answers),
   ];
 }
 
@@ -144,7 +224,7 @@ export function buildQuote(answers: QuoteAnswers): Quote {
     kind: 'studio',
     heading: 'Studio',
     body: STUDIO_QUOTE_BODY,
-    lines: studioLines(answers.outcome),
+    lines: studioLines(answers),
     stopQuoting: false,
   };
 }
