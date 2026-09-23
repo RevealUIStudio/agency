@@ -11,7 +11,7 @@ import {
 import { publishedCases } from './data/cases';
 import { publishedPress } from './data/press';
 import { RootLayout } from './layouts/RootLayout';
-import { clientSlugFromHost } from './lib/share-host';
+import { listSharePacks, resolveShareViewer } from './lib/share-stage-b';
 import { AboutPage } from './routes/AboutPage';
 import { CaseStudyPage } from './routes/CaseStudyPage';
 import { CasesPage } from './routes/CasesPage';
@@ -39,7 +39,9 @@ export function App() {
   const registered = useRef(false);
 
   const shareSlug =
-    typeof window === 'undefined' ? null : clientSlugFromHost(window.location.hostname);
+    typeof window === 'undefined'
+      ? null
+      : (resolveShareViewer(window.location.hostname, listSharePacks())?.slug ?? null);
 
   if (!registered.current && router.getRoutes().length === 0) {
     if (shareSlug) {
