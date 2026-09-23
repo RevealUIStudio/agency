@@ -22,6 +22,14 @@ function assignCheckout(url: string) {
   window.location.assign(url);
 }
 
+const pageClass = 'min-w-0 max-w-full bg-background py-8 sm:py-24';
+const frameClass = 'mx-auto min-w-0 max-w-3xl px-4 sm:px-6';
+const headingClass = 'break-words text-3xl font-bold tracking-tight text-foreground sm:text-5xl';
+const fieldClass =
+  'w-full min-w-0 max-w-full rounded-xl border border-border bg-card px-4 py-3 text-base font-medium text-foreground';
+const payClass =
+  'inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground';
+
 export function ConsultationBookPage({
   onCheckout = assignCheckout,
 }: {
@@ -134,12 +142,10 @@ export function ConsultationBookPage({
   }
 
   return (
-    <section className="bg-background py-16 sm:py-24">
-      <div className="mx-auto max-w-3xl px-6">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Book a Consultation
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground">
+    <section className={pageClass}>
+      <div className={frameClass}>
+        <h1 className={headingClass}>Book a Consultation</h1>
+        <p className="mt-6 break-words text-lg text-muted-foreground">
           Weekday slots, 60 minutes, Eastern Time. Pay $300 per hour when you book the slot. The
           30-minute intro stays separate.
         </p>
@@ -156,7 +162,7 @@ export function ConsultationBookPage({
               id="consultation-book-hours"
               value={hours}
               onChange={(event) => setHours(Number(event.target.value))}
-              className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
+              className={`mt-4 ${fieldClass}`}
             >
               {CONSULTATION_HOUR_OPTIONS.map((count) => (
                 <option key={count} value={count}>
@@ -189,7 +195,7 @@ export function ConsultationBookPage({
                 {slots.map((slot) => (
                   <label
                     key={slot.start}
-                    className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+                    className="flex min-w-0 cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5"
                   >
                     <input
                       type="radio"
@@ -197,9 +203,11 @@ export function ConsultationBookPage({
                       value={slot.start}
                       checked={selected === slot.start}
                       onChange={() => setSelected(slot.start)}
-                      className="mt-1 size-4 accent-primary"
+                      className="mt-1 size-5 shrink-0 accent-primary"
                     />
-                    <span className="text-sm font-medium text-foreground">{slot.label}</span>
+                    <span className="min-w-0 break-words text-base font-medium text-foreground">
+                      {slot.label}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -215,7 +223,7 @@ export function ConsultationBookPage({
                 onChange={(event) => setName(event.target.value)}
                 autoComplete="name"
                 required
-                className="mt-2 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium"
+                className={`mt-2 ${fieldClass}`}
               />
             </label>
             <label className="text-sm font-semibold text-foreground" htmlFor="consultation-email">
@@ -227,7 +235,7 @@ export function ConsultationBookPage({
                 onChange={(event) => setEmail(event.target.value)}
                 autoComplete="email"
                 required
-                className="mt-2 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium"
+                className={`mt-2 ${fieldClass}`}
               />
             </label>
             <label className="text-sm font-semibold text-foreground" htmlFor="consultation-company">
@@ -237,30 +245,34 @@ export function ConsultationBookPage({
                 value={company}
                 onChange={(event) => setCompany(event.target.value)}
                 autoComplete="organization"
-                className="mt-2 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium"
+                className={`mt-2 ${fieldClass}`}
               />
             </label>
           </div>
 
-          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+          <label className="flex min-w-0 cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
             <input
               type="checkbox"
               checked={stageB}
               onChange={(event) => setStageB(event.target.checked)}
-              className="mt-1 size-4 accent-primary"
+              className="mt-1 size-5 shrink-0 accent-primary"
             />
-            <span className="text-sm font-medium text-foreground">Add Stage B ($297)</span>
+            <span className="min-w-0 break-words text-base font-medium text-foreground">
+              Add Stage B ($297)
+            </span>
           </label>
 
-          <p className="text-sm text-foreground">Due today {formatUsdFromCents(due)}.</p>
-          {submitError ? <p className="text-sm text-foreground">{submitError}</p> : null}
-          <button
-            type="submit"
-            disabled={!ready || submitting}
-            className="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-          >
-            Continue to payment
-          </button>
+          <div className="sticky bottom-0 z-30 -mx-4 border-t border-border bg-background/95 px-4 pt-3 backdrop-blur sm:-mx-6 sm:px-6 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+            <p className="text-base text-foreground">Due today {formatUsdFromCents(due)}.</p>
+            {submitError ? <p className="mt-2 text-sm text-foreground">{submitError}</p> : null}
+            <button
+              type="submit"
+              disabled={!ready || submitting}
+              className={`${payClass} mt-3 disabled:opacity-50`}
+            >
+              Continue to payment
+            </button>
+          </div>
         </form>
       </div>
     </section>
@@ -269,12 +281,10 @@ export function ConsultationBookPage({
 
 export function ConsultationBookSuccessPage() {
   return (
-    <section className="bg-background py-16 sm:py-24">
-      <div className="mx-auto max-w-3xl px-6">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Consultation booked
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground">
+    <section className={pageClass}>
+      <div className={frameClass}>
+        <h1 className={headingClass}>Consultation booked</h1>
+        <p className="mt-6 break-words text-lg text-muted-foreground">
           Payment received — confirmation email with Meet link shortly
         </p>
       </div>
@@ -284,19 +294,14 @@ export function ConsultationBookSuccessPage() {
 
 export function ConsultationBookCancelPage() {
   return (
-    <section className="bg-background py-16 sm:py-24">
-      <div className="mx-auto max-w-3xl px-6">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Checkout canceled
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground">
+    <section className={pageClass}>
+      <div className={frameClass}>
+        <h1 className={headingClass}>Checkout canceled</h1>
+        <p className="mt-6 break-words text-lg text-muted-foreground">
           Checkout canceled. The hold expires on its own. You can pick another time.
         </p>
         <p className="mt-6">
-          <a
-            href={CONSULTATION_BOOK_PATH}
-            className="font-semibold text-foreground hover:underline"
-          >
+          <a href={CONSULTATION_BOOK_PATH} className={payClass}>
             Pick another time
           </a>
         </p>

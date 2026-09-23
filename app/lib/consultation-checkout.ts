@@ -13,6 +13,36 @@ export const DEFAULT_CONSULTATION_PRICE_ID = 'price_1TxpQTJz64n6uEibitNE5eJP' as
 /** Live Stage B price. $297 once. Override with STRIPE_STAGE_B_PRICE_ID. */
 export const DEFAULT_STAGE_B_PRICE_ID = 'price_1UIjpPJz64n6uEibxJOYKJ3t' as const;
 
+/**
+ * Collect a billing address only when the payment method or tax needs one.
+ * automatic_tax stays off; this does not turn tax on.
+ */
+export const CHECKOUT_BILLING_ADDRESS_COLLECTION = 'auto' as const;
+
+/** Groups Consultation Checkout Sessions. Stripe allows letters, digits, `_`, `-`, `.`. */
+export const INTEGRATION_IDENTIFIER_PREFIX = 'consultation_book_' as const;
+
+/** Suffix length in the `consultation_book_XXXXXXXX` identifier. Letters only. */
+export const INTEGRATION_IDENTIFIER_SUFFIX_LENGTH = 8;
+
+const INTEGRATION_SUFFIX_ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+
+export function consultationIntegrationIdentifier(
+  suffix = randomIntegrationSuffix(INTEGRATION_IDENTIFIER_SUFFIX_LENGTH),
+): string {
+  return `${INTEGRATION_IDENTIFIER_PREFIX}${suffix}`;
+}
+
+function randomIntegrationSuffix(length: number): string {
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  let suffix = '';
+  for (const byte of bytes) {
+    suffix += INTEGRATION_SUFFIX_ALPHABET[byte % INTEGRATION_SUFFIX_ALPHABET.length] ?? 'a';
+  }
+  return suffix;
+}
+
 export interface CheckoutLine {
   readonly price: string;
   readonly quantity: number;
@@ -52,13 +82,23 @@ export function encodeCheckoutForm(input: {
   readonly buyerName: string;
   readonly successUrl: string;
   readonly cancelUrl: string;
+  readonly integrationIdentifier?: string;
 }): string {
   const params = new URLSearchParams();
   params.set('mode', 'payment');
   params.set('client_reference_id', input.bookingId);
   params.set('success_url', input.successUrl);
   params.set('cancel_url', input.cancelUrl);
-  params.set('customer_email', input.buyerEmail);
+  if (input.buyerEmail) params.set('customer_email', input.buyerEmail);
+  // Omit payment_method_types so Dashboard dynamic methods (Link, Apple Pay,
+  // Google Pay) can surface. A card-only list hides them.
+  // Omit ui_mode (hosted Checkout stays the default) and automatic_tax.
+  params.set('phone_number_collection[enabled]', 'true');
+  params.set('billing_address_collection', CHECKOUT_BILLING_ADDRESS_COLLECTION);
+  params.set(
+    'integration_identifier',
+    input.integrationIdentifier ?? consultationIntegrationIdentifier(),
+  );
   input.lines.forEach((line, index) => {
     params.set(`line_items[${index}][price]`, line.price);
     params.set(`line_items[${index}][quantity]`, String(line.quantity));
