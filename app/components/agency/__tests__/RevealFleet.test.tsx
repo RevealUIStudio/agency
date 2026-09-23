@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RevealFleet } from '@/components/agency/RevealFleet';
-import { LAUNCH, CONSULTATION, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import { FLEET_NAME } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 

@@ -2,15 +2,15 @@ import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
-import { LAUNCH, CONSULTATION, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import {
   CONSULTATION_QUOTE_DETAIL,
   HOSTER_OPTIONS,
   INTRO_HEADING,
   LAUNCH_QUOTE_DETAIL,
   OUTCOME_OPTIONS,
-  PROOF_QUOTE_DETAIL,
   PLACES_OPTIONS,
+  PROOF_QUOTE_DETAIL,
   QUOTE_CALCULATOR_HEADING,
   QUOTE_CALCULATOR_LEAD,
   QUOTE_OWNERSHIP,

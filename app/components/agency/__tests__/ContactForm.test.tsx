@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ContactForm } from '@/components/agency/ContactForm';
 import { submitContact } from '@/lib/api';
-import { LAUNCH, CONSULTATION, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 vi.mock('@/lib/api', () => ({
