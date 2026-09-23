@@ -2,15 +2,15 @@ import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import {
   CONSULTATION_QUOTE_DETAIL,
   HOSTER_OPTIONS,
   INTRO_HEADING,
   LAUNCH_QUOTE_DETAIL,
   OUTCOME_OPTIONS,
-  PILOT_QUOTE_DETAIL,
   PLACES_OPTIONS,
+  PROOF_QUOTE_DETAIL,
   QUOTE_CALCULATOR_HEADING,
   QUOTE_CALCULATOR_LEAD,
   QUOTE_OWNERSHIP,
@@ -38,13 +38,13 @@ describe('QuoteCalculator', () => {
     expect(QUOTE_CALCULATOR_LEAD).toMatch(/PROOF means a receipted action/);
     expect(QUOTE_CALCULATOR_LEAD).toMatch(/not outcome validation or proof of work/);
     expect(screen.queryByText(/Same tool as the product site/)).not.toBeInTheDocument();
-    expect(screen.getByText(WORKING_SESSION.price)).toBeInTheDocument();
-    expect(screen.getByText(WRITTEN_PLAN.price)).toBeInTheDocument();
-    expect(screen.getByText(LAUNCH_PACKAGE.price)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION.price)).toBeInTheDocument();
+    expect(screen.getByText(PROOF_SPRINT.price)).toBeInTheDocument();
+    expect(screen.getByText(LAUNCH.price)).toBeInTheDocument();
     expect(screen.getByText(CONSULTATION_QUOTE_DETAIL)).toBeInTheDocument();
-    expect(screen.getByText(PILOT_QUOTE_DETAIL)).toBeInTheDocument();
+    expect(screen.getByText(PROOF_QUOTE_DETAIL)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_QUOTE_DETAIL)).toBeInTheDocument();
-    expect(screen.queryByText(WRITTEN_PLAN.payment)).not.toBeInTheDocument();
+    expect(screen.queryByText(PROOF_SPRINT.payment)).not.toBeInTheDocument();
     expect(screen.queryByText(/four tests/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/first half back/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/keep the stack/i)).not.toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('QuoteCalculator', () => {
     render(<QuoteCalculator />);
     fireEvent.click(screen.getByRole('radio', { name: /More than one/ }));
     expect(screen.getByText(INTRO_HEADING)).toBeInTheDocument();
-    expect(screen.queryByText(LAUNCH_PACKAGE.price)).not.toBeInTheDocument();
+    expect(screen.queryByText(LAUNCH.price)).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Book a 30-minute intro' })).toHaveAttribute(
       'href',
       INTRO_CALL_URL,
@@ -85,7 +85,7 @@ describe('QuoteCalculator', () => {
       'href',
       PRODUCT_SITE_URL,
     );
-    expect(screen.queryByText(LAUNCH_PACKAGE.price)).not.toBeInTheDocument();
+    expect(screen.queryByText(LAUNCH.price)).not.toBeInTheDocument();
     expect(screen.queryByText(LAUNCH_QUOTE_DETAIL)).not.toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/\$49/);
     expect(container.textContent ?? '').not.toMatch(/\$99/);
@@ -95,5 +95,36 @@ describe('QuoteCalculator', () => {
       'href',
       INTRO_CALL_URL,
     );
+  });
+
+  it('multiplies Consultation by the hours dropdown and does not name a separate SKU', () => {
+    const { container } = render(<QuoteCalculator />);
+    const hours = screen.getByLabelText('Consultation hours');
+    expect(hours).toHaveValue('1');
+    fireEvent.change(hours, { target: { value: '4' } });
+    expect(screen.getByText('$1,200')).toBeInTheDocument();
+    expect(container.textContent ?? '').not.toMatch(/\bHour\b/);
+    expect(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' })).not.toBeChecked();
+    expect(container.textContent ?? '').not.toMatch(/waive/i);
+  });
+
+  it('hides waive from guests and shows list plus credit for an owner', () => {
+    const guest = render(<QuoteCalculator />);
+    fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' }));
+    expect(screen.queryByRole('checkbox', { name: 'Waive Stage B' })).not.toBeInTheDocument();
+    expect(guest.container.textContent ?? '').not.toMatch(/waive/i);
+    expect(screen.getByText('$297')).toBeInTheDocument();
+    guest.unmount();
+
+    render(<QuoteCalculator viewerRole="owner" />);
+    fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' }));
+    const waive = screen.getByRole('checkbox', { name: 'Waive Stage B' });
+    expect(waive).not.toBeChecked();
+    fireEvent.click(waive);
+    expect(screen.getByText('Stage B credit')).toBeInTheDocument();
+    expect(screen.getByText('Stage B due')).toBeInTheDocument();
+    expect(screen.getByText('$0')).toBeInTheDocument();
   });
 });

@@ -1,7 +1,7 @@
 /**
  * Proof-gap checklist lead magnet. Soft ask — not a quote form.
  * H1 and gate copy locked 2026-09-18 (Joshua OK publish).
- * PROOF = receipted action. Studio ladder stays Consultation / Pilot / Launch.
+ * PROOF = receipted action. Studio ladder stays Consultation / Proof Sprint / Launch.
  */
 
 export const PROOF_GAP_PATH = '/proof-gap' as const;
@@ -52,7 +52,7 @@ export const PROOF_GAP_THANKS_INTRO =
 
 export const PROOF_GAP_DOWNLOAD_LABEL = 'Download the PDF' as const;
 
-export const PROOF_GAP_LADDER = 'Consultation $300 · Pilot $1,500 · Launch $7,500' as const;
+export const PROOF_GAP_LADDER = 'Consultation $300 · Proof Sprint $3,997 · Launch $14,500' as const;
 
 export const PROOF_GAP_REQUEST_TOPIC = 'general' as const;
 
@@ -222,7 +222,7 @@ export const PROOF_GAP_ONE_GAP_PROMPT = 'The one gap I’d fix this week:' as co
 export const PROOF_GAP_NEXT_STEPS = [
   'DIY: Fix that one gap on your stack. Re-run §3 until you can show one receipted action.',
   'Diagnose with us: Consultation — $300. Path + proof-gap map; artifact pack within one business day. Lightweight stack sketch — not Architecture sold as Consultation.',
-  'Operate a slice: Pilot — $1,500. One site on your domain, one agent you run, one receipted action.',
+  'Operate a slice: Proof Sprint — $3,997. One site. One receipted action you operate. Stage B is included.',
 ] as const;
 
 export const PROOF_GAP_REFUSALS = [

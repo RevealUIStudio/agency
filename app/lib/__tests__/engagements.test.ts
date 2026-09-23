@@ -1,33 +1,37 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CONSULTATION,
   CUSTOM_BUILD,
   FLEET_STAMP,
-  LAUNCH_PACKAGE,
+  LAUNCH,
+  PROOF_SPRINT,
   PUBLIC_OFFERS,
   RUNTIME_METRICS,
-  WORKING_SESSION,
-  WRITTEN_PLAN,
 } from '@/lib/engagements';
 
 describe('public studio offers', () => {
   it('exposes only the three locked stranger-facing SKUs', () => {
     expect(PUBLIC_OFFERS.map((offer) => offer.id)).toEqual([
-      'working-session',
-      'written-plan',
+      'consultation',
+      'proof-sprint',
       'launch-package',
     ]);
-    expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual(['Consultation', 'Pilot', 'Launch']);
-    expect(WORKING_SESSION.name).toBe('Consultation');
-    expect(WORKING_SESSION.price).toBe('$300');
-    expect(WRITTEN_PLAN.name).toBe('Pilot');
-    expect(WRITTEN_PLAN.price).toBe('$1,500');
-    expect(LAUNCH_PACKAGE.name).toBe('Launch');
-    expect(LAUNCH_PACKAGE.price).toBe('$7,500');
+    expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual([
+      'Consultation',
+      'Proof Sprint',
+      'Launch',
+    ]);
+    expect(CONSULTATION.name).toBe('Consultation');
+    expect(CONSULTATION.price).toBe('$300');
+    expect(PROOF_SPRINT.name).toBe('Proof Sprint');
+    expect(PROOF_SPRINT.price).toBe('$3,997');
+    expect(LAUNCH.name).toBe('Launch');
+    expect(LAUNCH.price).toBe('$14,500');
   });
 
-  it('keeps Launch aligned with @revealui/contracts/pricing and Pilot studio-only', () => {
-    expect(WRITTEN_PLAN.price).toBe('$1,500');
-    expect(LAUNCH_PACKAGE.price).toBe('$7,500');
+  it('keeps Launch at the locked list price until contracts publish the same number', () => {
+    expect(PROOF_SPRINT.price).toBe('$3,997');
+    expect(LAUNCH.price).toBe('$14,500');
   });
 
   it('does not list internal product lanes on the public menu', () => {
@@ -46,35 +50,35 @@ describe('public studio offers', () => {
     expect(names).not.toContain('Guardrail agent');
     expect(names).not.toContain('Guardrail agent (template)');
     expect(names).not.toContain('Knowledge Graph');
-    expect(WRITTEN_PLAN.tagline).toBe('One site on your domain, one agent you run, you keep it');
-    expect(WRITTEN_PLAN.description).toMatch(/your domain/i);
-    expect(WRITTEN_PLAN.description).toMatch(/one agent you run/i);
-    expect(WRITTEN_PLAN.description).toMatch(/you keep it/i);
-    expect(WRITTEN_PLAN.description).not.toMatch(/written plan/i);
-    expect(WRITTEN_PLAN.description).not.toMatch(/\bdemo\b/i);
-    expect(WRITTEN_PLAN.description).not.toMatch(/\bSpec\b/);
-    expect(LAUNCH_PACKAGE.description).toMatch(/inside this offer/i);
-    expect(LAUNCH_PACKAGE.description).toMatch(/Knowledge Graph is part of the runtime/);
-    expect(LAUNCH_PACKAGE.description).toMatch(/Electric\+CRDT/);
-    expect(LAUNCH_PACKAGE.description).toMatch(/not a fourth Studio offer/);
-    expect(LAUNCH_PACKAGE.description).not.toMatch(/\$\d/);
+    expect(PROOF_SPRINT.tagline).toBe('One site. One receipted action you operate.');
+    expect(PROOF_SPRINT.description).toMatch(/one receipted action you operate/i);
+    expect(PROOF_SPRINT.description).toMatch(/Stage B is included/i);
+    expect(PROOF_SPRINT.description).toMatch(/45 days/i);
+    expect(PROOF_SPRINT.description).not.toMatch(/written plan/i);
+    expect(PROOF_SPRINT.description).not.toMatch(/\bdemo\b/i);
+    expect(PROOF_SPRINT.description).not.toMatch(/\bSpec\b/);
+    expect(LAUNCH.description).toMatch(/inside this offer/i);
+    expect(LAUNCH.description).toMatch(/Knowledge Graph is part of the runtime/);
+    expect(LAUNCH.description).toMatch(/Electric\+CRDT/);
+    expect(LAUNCH.description).toMatch(/not a fourth Studio offer/);
+    expect(LAUNCH.description).not.toMatch(/\$\d/);
   });
 
   it('keeps honest payment terms and does not sell live-or-holdback', () => {
-    expect(LAUNCH_PACKAGE.payment).toBe('Half now, half on delivery.');
-    expect(LAUNCH_PACKAGE.payment).not.toMatch(/four tests/i);
-    expect(LAUNCH_PACKAGE.payment).not.toMatch(/signup-to-paid/i);
-    expect(LAUNCH_PACKAGE.payment).not.toMatch(/first half back/i);
-    expect(LAUNCH_PACKAGE.payment).not.toMatch(/keep the stack/i);
-    expect(LAUNCH_PACKAGE.payment).not.toMatch(/make-good/i);
-    expect(WORKING_SESSION.payment).toContain('No holdback');
-    expect(WORKING_SESSION.payment).toContain('Invoice $300 before we start');
-    expect(WORKING_SESSION.payment).not.toContain('first half back');
-    expect(WRITTEN_PLAN.payment).toContain('Credits 100% to Launch');
-    expect(WRITTEN_PLAN.payment).toContain('30 days');
-    expect(WRITTEN_PLAN.payment).toContain('You keep the site if you walk');
-    expect(WRITTEN_PLAN.payment).not.toContain('first half back');
-    expect(WRITTEN_PLAN.payment).not.toContain('holdback');
+    expect(LAUNCH.payment).toBe('Half now, half on delivery.');
+    expect(LAUNCH.payment).not.toMatch(/four tests/i);
+    expect(LAUNCH.payment).not.toMatch(/signup-to-paid/i);
+    expect(LAUNCH.payment).not.toMatch(/first half back/i);
+    expect(LAUNCH.payment).not.toMatch(/keep the stack/i);
+    expect(LAUNCH.payment).not.toMatch(/make-good/i);
+    expect(CONSULTATION.payment).toContain('No holdback');
+    expect(CONSULTATION.payment).toContain('Invoice $300 before we start');
+    expect(CONSULTATION.payment).not.toContain('first half back');
+    expect(PROOF_SPRINT.payment).toContain('Credits 100% to Launch');
+    expect(PROOF_SPRINT.payment).toContain('45 days');
+    expect(PROOF_SPRINT.payment).toContain('You keep the site if you walk');
+    expect(PROOF_SPRINT.payment).not.toContain('first half back');
+    expect(PROOF_SPRINT.payment).not.toContain('holdback');
   });
 
   it('pins monorepo metrics to MARKETING_METRICS §1 (2026-08-19)', () => {

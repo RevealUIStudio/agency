@@ -10,13 +10,13 @@ import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { z } from 'zod';
 import { submitContact } from '@/lib/api';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
-  { value: WORKING_SESSION.id, label: `${WORKING_SESSION.name} (${WORKING_SESSION.price})` },
-  { value: WRITTEN_PLAN.id, label: `${WRITTEN_PLAN.name} (${WRITTEN_PLAN.price})` },
-  { value: LAUNCH_PACKAGE.id, label: `${LAUNCH_PACKAGE.name} (${LAUNCH_PACKAGE.price})` },
+  { value: CONSULTATION.id, label: `${CONSULTATION.name} (${CONSULTATION.price})` },
+  { value: PROOF_SPRINT.id, label: `${PROOF_SPRINT.name} (${PROOF_SPRINT.price})` },
+  { value: LAUNCH.id, label: `${LAUNCH.name} (${LAUNCH.price})` },
   { value: 'general', label: 'General inquiry' },
 ] as const;
 

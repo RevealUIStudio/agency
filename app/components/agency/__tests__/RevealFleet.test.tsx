@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RevealFleet } from '@/components/agency/RevealFleet';
-import { LAUNCH_PACKAGE, WORKING_SESSION, WRITTEN_PLAN } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import { FLEET_NAME } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
@@ -22,11 +22,11 @@ describe('RevealFleet', () => {
   it('keeps studio offers on this page and does not dump the product catalog', () => {
     const { container } = render(<RevealFleet />);
     const text = container.textContent ?? '';
-    expect(text).toContain(WORKING_SESSION.name);
-    expect(text).toContain(WORKING_SESSION.price);
-    expect(text).toContain(WRITTEN_PLAN.name);
-    expect(text).toContain(WRITTEN_PLAN.price);
-    expect(text).toContain(LAUNCH_PACKAGE.price);
+    expect(text).toContain(CONSULTATION.name);
+    expect(text).toContain(CONSULTATION.price);
+    expect(text).toContain(PROOF_SPRINT.name);
+    expect(text).toContain(PROOF_SPRINT.price);
+    expect(text).toContain(LAUNCH.price);
     expect(text).toMatch(/You run it, or I ship it with you/);
     expect(text).toMatch(/startups/i);
     expect(text).toMatch(/technical founders and small agencies/i);
@@ -41,7 +41,7 @@ describe('RevealFleet', () => {
     const { container } = render(<RevealFleet />);
     const text = container.textContent ?? '';
     expect(text).not.toContain('\u2014');
-    expect(text).not.toMatch(/RevealFleet|revealfleet/);
+    expect(text).toMatch(/RevealFleet/);
     expect(text).not.toMatch(/written plan/i);
     expect(text).not.toMatch(/\bSpec\b/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
