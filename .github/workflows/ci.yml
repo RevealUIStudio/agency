@@ -10,7 +10,8 @@ name: CI
 #
 # Runs on PRs into test and main, plus push to test (the integration branch
 # where feature work lands first). Production deploys still run via Vercel on
-# push to main.
+# push to main. A pull request into main fails while a changeset markdown file
+# is still unconsumed. Feature pull requests into test may carry those files.
 
 on:
   pull_request:
@@ -47,6 +48,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Changesets consumed before main
+        run: node scripts/changeset-promote.mjs
       - name: Lint (Biome, hard fail)
         run: pnpm lint
       - name: Typecheck

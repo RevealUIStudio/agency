@@ -1,6 +1,6 @@
 {
   "name": "@revealui-studio/agency",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "RevealUI Studio agency site — services, case studies, hire-us. Hosted at revealuistudio.com.",
   "private": true,
   "type": "module",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.3",
+    "@changesets/cli": "^2.31.1",
     "@tailwindcss/vite": "^4.3.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -42,6 +43,9 @@
   },
   "scripts": {
     "build": "vite build",
+    "changeset": "changeset",
+    "changeset:status": "changeset status --since=origin/main",
+    "changeset:version": "changeset version",
     "clean": "rm -rf dist",
     "dev": "vite dev --port 3001",
     "lint": "biome check .",
