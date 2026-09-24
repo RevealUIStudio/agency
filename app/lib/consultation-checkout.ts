@@ -80,6 +80,7 @@ export function encodeCheckoutForm(input: {
   readonly stageB: boolean;
   readonly buyerEmail: string;
   readonly buyerName: string;
+  readonly company?: string | null;
   readonly successUrl: string;
   readonly cancelUrl: string;
   readonly integrationIdentifier?: string;
@@ -112,6 +113,8 @@ export function encodeCheckoutForm(input: {
     buyer_email: input.buyerEmail,
     buyer_name: input.buyerName.slice(0, 200),
   };
+  const company = input.company?.trim();
+  if (company) metadata.company = company.slice(0, 160);
   for (const [key, value] of Object.entries(metadata)) {
     params.set(`metadata[${key}]`, value);
   }

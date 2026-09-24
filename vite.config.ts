@@ -74,6 +74,10 @@ function shareServer(): Plugin {
 }
 
 export default defineConfig({
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
+    'process.env.LOG_LEVEL': 'undefined',
+  },
   plugins: [tailwindcss(), react(), shareServer()],
   resolve: {
     alias: {

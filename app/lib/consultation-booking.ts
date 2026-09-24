@@ -5,6 +5,7 @@
  * only. A `waive` field in the body is ignored.
  */
 
+import { confirmationSubject, confirmationText } from './consultation-buyer';
 import { CONSULTATION_HOUR_MAX, CONSULTATION_HOUR_MIN } from './consultation-hours';
 import { HOLD_TTL_MS } from './consultation-slots';
 
@@ -159,27 +160,9 @@ export function deskScheduleTransition(booking: Booking): {
 }
 
 export function buildConfirmationEmail(booking: Booking): ConfirmationEmail {
-  const when = `${booking.start} – ${booking.end} (America/New_York on the calendar invite)`;
-  const stage = booking.stage_b
-    ? 'Stage B was added to this payment.'
-    : 'Stage B was not added to this payment.';
-  const meet = booking.meet_link ?? 'The Meet link is on the calendar invite.';
-  const lines = [
-    'Payment received for your RevealUI Studio Consultation.',
-    '',
-    `When: ${when}`,
-    `Meet: ${meet}`,
-  ];
-  if (booking.company) lines.push(`Company: ${booking.company}`);
-  lines.push(
-    stage,
-    '',
-    'Prep: send the system you want to look at and the question you want answered. A link is usually enough.',
-    'Questions: founder@revealui.com',
-  );
   return {
     to: booking.email,
-    subject: `RevealUI Studio Consultation — ${booking.name}`,
-    text: lines.join('\n'),
+    subject: confirmationSubject(booking.start, booking.end),
+    text: confirmationText(booking),
   };
 }

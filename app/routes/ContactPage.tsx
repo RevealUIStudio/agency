@@ -1,5 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
 import { ContactForm } from '@/components/agency/ContactForm';
+import { CONSULTATION_BOOK_INTRO, STAGE_B_ADDON } from '@/lib/consultation-buyer';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
 export function ContactPage() {
@@ -17,8 +18,7 @@ export function ContactPage() {
           <div className="rounded-2xl border border-border bg-muted p-6">
             <h2 className="text-lg font-semibold text-foreground">Consultation</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Weekday slots, 60 minutes, Eastern Time. Pay $300 per hour when you book the slot.
-              Stage B is an optional $297 add-on.
+              {CONSULTATION_BOOK_INTRO} {STAGE_B_ADDON}
             </p>
             <LinkButton href={CONSULTATION_BOOK_PATH} className="mt-4">
               Book a Consultation

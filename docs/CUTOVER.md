@@ -2,7 +2,7 @@
 
 Buyer path on Preview and test:
 
-1. `/consultation/book` lists weekday 60-minute slots, 09:00–17:00 America/New_York.
+1. `/consultation/book` lists weekday slots, 09:00–17:00 America/New_York, in 1-hour steps. A booking is 1 to 8 contiguous hours and must end by 17:00.
 2. Save creates a 20-minute hold and a Stripe Checkout Session.
 3. `checkout.session.completed` writes a founder-calendar event with Google Meet.
 4. The public Google Appointments URL (`INTRO_CALL_URL` in `app/lib/site.ts`) stays the free 30-minute intro only. It is not the Consultation booking path.

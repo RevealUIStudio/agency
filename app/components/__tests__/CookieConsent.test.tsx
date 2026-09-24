@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CookieConsent } from '@/components/CookieConsent';
+import { COOKIE_BANNER_HEIGHT_VAR, CookieConsent } from '@/components/CookieConsent';
 import { COOKIE_NAME } from '@/lib/cookie-consent';
 import { UMAMI_SCRIPT_FLAG } from '@/lib/umami';
 
@@ -29,6 +29,7 @@ afterEach(() => {
   }
   vi.unstubAllEnvs();
   initSentry.mockReset();
+  document.documentElement.style.removeProperty(COOKIE_BANNER_HEIGHT_VAR);
   cleanup();
 });
 
@@ -59,5 +60,14 @@ describe('CookieConsent analytics gate', () => {
       expect(umamiScripts()).toHaveLength(1);
     });
     expect(initSentry).toHaveBeenCalledTimes(1);
+  });
+
+  it('publishes the banner height for the pay dock and clears it after a choice', () => {
+    render(<CookieConsent />);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(document.documentElement.style.getPropertyValue(COOKIE_BANNER_HEIGHT_VAR)).not.toBe('');
+    fireEvent.click(screen.getByRole('button', { name: 'Reject all' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(document.documentElement.style.getPropertyValue(COOKIE_BANNER_HEIGHT_VAR)).toBe('');
   });
 });
