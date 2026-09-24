@@ -12,12 +12,13 @@ function shareServer(): Plugin {
   const attach: Plugin['configureServer'] = (server) => {
     server.middlewares.use((req, res, next) => {
       const url = req.url ?? '';
+      const pathOnly = url.split('?')[0] ?? '';
       const share =
-        url.startsWith('/share/') ||
-        url.startsWith('/api/share/') ||
-        url.startsWith('/api/invoice/stage-b') ||
-        url === '/api/session' ||
-        url.startsWith('/api/session?');
+        pathOnly.startsWith('/share/') ||
+        pathOnly.startsWith('/api/share/') ||
+        pathOnly === '/api/share' ||
+        pathOnly.startsWith('/api/invoice/stage-b') ||
+        pathOnly === '/api/session';
       const consultation =
         url.startsWith('/api/consultation/') || url.startsWith('/api/stripe/webhook');
       if (!share && !consultation) {
