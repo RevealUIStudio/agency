@@ -55,8 +55,6 @@ export interface ConsultationEnv {
   readonly googleCredential?: string;
   /** Workspace user for domain-wide delegation. Never copied from calendarId. */
   readonly googleImpersonateSubject?: string;
-  readonly resendApiKey?: string;
-  readonly resendFrom?: string;
   /** Bearer token for POST /api/consultation/network-link. STUDIO_OWNER_SESSION. */
   readonly ownerSession?: string;
   /** HMAC secret for signed network book links. CONSULTATION_NETWORK_WAIVE_SECRET. */
@@ -90,8 +88,6 @@ export function consultationEnvFromProcess(
     googleClientEmail: readEnv(env, 'GOOGLE_CLIENT_EMAIL'),
     googleCredential: credential?.includes('\\n') ? credential.replaceAll('\\n', '\n') : credential,
     googleImpersonateSubject: readEnv(env, 'GOOGLE_IMPERSONATE_SUBJECT'),
-    resendApiKey: readEnv(env, 'RESEND_API_KEY'),
-    resendFrom: readEnv(env, 'RESEND_FROM'),
     ownerSession: readEnv(env, 'STUDIO_OWNER_SESSION'),
     networkWaiveSecret: readEnv(env, 'CONSULTATION_NETWORK_WAIVE_SECRET'),
     stageBNetworkCouponId: readEnv(env, 'STRIPE_STAGE_B_NETWORK_COUPON_ID'),
