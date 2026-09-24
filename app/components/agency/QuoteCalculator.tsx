@@ -1,6 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
 import { useState } from 'react';
-import { STAGE_B_PRICE } from '@/lib/engagements';
+import { STAGE_B_CHECKBOX } from '@/lib/consultation-buyer';
 import {
   buildQuote,
   CONSULTATION_HOUR_OPTIONS,
@@ -141,9 +141,7 @@ export function QuoteCalculator() {
                 onChange={(event) => setStageB(event.target.checked)}
                 className="mt-1 size-4 accent-primary"
               />
-              <span className="text-sm font-medium text-foreground">
-                Add Stage B ({STAGE_B_PRICE})
-              </span>
+              <span className="text-sm font-medium text-foreground">{STAGE_B_CHECKBOX}</span>
             </label>
           </div>
 

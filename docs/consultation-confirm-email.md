@@ -12,7 +12,7 @@ Payment received for your RevealUI Studio Consultation.
 When: {Eastern Time range}
 Meet: {meet link, or "The Meet link is on the calendar invite."}
 Company: {company, when present}
-Stage B ($297) is on this payment.
+The domain pack ($297) is on this payment.
 OR
 This payment is the consultation only.
 
@@ -20,4 +20,4 @@ Prep: send the system you want to look at and the question you want answered. A 
 Questions: founder@revealui.com
 ```
 
-Do not describe Stage B as free, included, waived, or credited. The add-on is either on the Checkout Session or absent. Do not put internal desk notes in the email or the calendar invite.
+Do not describe the domain pack as free, included, waived, or credited. The add-on is either on the Checkout Session or absent. Do not put internal desk notes in the email or the calendar invite. The Stripe SKU stays stage-b.

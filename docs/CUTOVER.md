@@ -14,7 +14,7 @@ Set these on the Preview project. Do not commit them.
 - `STRIPE_SECRET_KEY` — create the Checkout Session
 - `STRIPE_WEBHOOK_SECRET` — verify `POST /api/stripe/webhook`
 - `STRIPE_CONSULTATION_PRICE_ID` — optional. Default is the live Consultation price, $300 per hour, quantity = hours
-- `STRIPE_STAGE_B_PRICE_ID` — optional. Default is the live Stage B price, $297, only when the buyer checks the add-on
+- `STRIPE_STAGE_B_PRICE_ID` — optional. Default is the live domain pack price, $297, only when the buyer checks the add-on. The buyer name is Domain pack. The SKU id stays stage-b.
 - `PUBLIC_SITE_URL` — absolute origin for Checkout success and cancel URLs
 - `GOOGLE_CALENDAR_ID` — founder calendar id
 - `GOOGLE_OAUTH_CLIENT_ID`

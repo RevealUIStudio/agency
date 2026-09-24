@@ -110,18 +110,18 @@ describe('QuoteCalculator', () => {
     fireEvent.change(hours, { target: { value: '4' } });
     expect(screen.getByText('$1,200')).toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/\bHour\b/);
-    expect(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' })).not.toBeChecked();
     expect(container.textContent ?? '').not.toMatch(/waive/i);
   });
 
   it('keeps Stage B as a paid add-on with no public credit control', () => {
     const view = render(<QuoteCalculator />);
     fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' }));
     expect(screen.queryByRole('checkbox', { name: /waive/i })).not.toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toMatch(/waive/i);
     expect(screen.getByText('$297')).toBeInTheDocument();
-    expect(screen.queryByText('Stage B credit')).not.toBeInTheDocument();
+    expect(screen.queryByText('Domain pack credit')).not.toBeInTheDocument();
     expect(screen.queryByText('$0')).not.toBeInTheDocument();
   });
 });

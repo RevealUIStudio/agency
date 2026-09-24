@@ -29,7 +29,17 @@ export const RESERVED_SHARE_LABELS = [
 
 export const SHARE_SEED_SLUG = 'omega' as const;
 
-export const SHARE_PATHS = ['/', '/walkthrough', '/pack', '/onboarding', '/demo'] as const;
+export const SHARE_PATHS = [
+  '/',
+  '/dns',
+  '/path',
+  '/proof-gap',
+  '/stack',
+  '/onboarding',
+  '/walkthrough',
+  '/pack',
+  '/demo',
+] as const;
 
 export type SharePath = (typeof SHARE_PATHS)[number];
 
