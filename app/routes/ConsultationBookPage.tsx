@@ -195,7 +195,7 @@ export function ConsultationBookPage({
         <p className="mt-6 break-words text-lg text-muted-foreground">{CONSULTATION_BOOK_INTRO}</p>
 
         <form
-          className="mt-10 space-y-8 pb-[calc(var(--consultation-paybar-height,12rem)+1rem)]"
+          className="mt-4 space-y-5 pb-[calc(var(--consultation-paybar-height,12rem)+1rem)] sm:mt-10 sm:space-y-8"
           onSubmit={onSubmit}
         >
           <div>
@@ -329,7 +329,7 @@ export function ConsultationBookPage({
 
           <div
             ref={payBarRef}
-            className="fixed inset-x-0 z-30 border-t border-border bg-background px-4 pt-3 bottom-[var(--cookie-banner-height,0px)] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6"
+            className="fixed inset-x-0 z-30 border-t border-border bg-background px-4 pt-2 bottom-[var(--cookie-banner-height,0px)] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 sm:pt-3"
           >
             <div className="mx-auto w-full min-w-0 max-w-3xl">
               {selectedSlot ? (
@@ -351,7 +351,7 @@ export function ConsultationBookPage({
               <button
                 type="submit"
                 disabled={!ready || submitting}
-                className={`${payClass} mt-3 disabled:opacity-50`}
+                className={`${payClass} mt-2 disabled:opacity-50 sm:mt-3`}
               >
                 {submitting ? 'Starting checkout' : 'Continue to payment'}
               </button>
