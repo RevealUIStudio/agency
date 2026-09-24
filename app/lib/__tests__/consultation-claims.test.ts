@@ -1,7 +1,15 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { CONSULTATION_SUCCESS, STAGE_B_CHECKBOX } from '@/lib/consultation-buyer';
+import {
+  CONSULTATION_BOOK_INTRO,
+  CONSULTATION_SUCCESS,
+  consultationStageLine,
+  STAGE_B_ADDON,
+  STAGE_B_CHECKBOX,
+  STAGE_B_DETAIL,
+  STAGE_B_ON_ORDER,
+} from '@/lib/consultation-buyer';
 
 const repoRoot = path.resolve(import.meta.dirname, '../../..');
 
@@ -45,5 +53,21 @@ describe('consultation public claims', () => {
       'Payment received. The Meet link is in your confirmation email and on the calendar invite.',
     );
     expect(CONSULTATION_SUCCESS).not.toContain('—');
+  });
+
+  it('keeps buyer strings free of a network fee leak', () => {
+    const leak = /\bwaiv(e|ed)\b|\bfree Stage B\b|\bsometimes free\b/i;
+    const lines = [
+      CONSULTATION_BOOK_INTRO,
+      STAGE_B_ADDON,
+      STAGE_B_CHECKBOX,
+      STAGE_B_DETAIL,
+      STAGE_B_ON_ORDER,
+      consultationStageLine(true),
+      consultationStageLine(false),
+      CONSULTATION_SUCCESS,
+    ];
+    for (const line of lines) expect(line).not.toMatch(leak);
+    expect(STAGE_B_ON_ORDER).toBe('Domain pack is on this order.');
   });
 });

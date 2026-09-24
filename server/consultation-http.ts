@@ -5,13 +5,24 @@
 
 import {
   type Booking,
+  bookInputFromNetwork,
   buildConfirmationEmail,
   type ConfirmationEmail,
   createHold,
   parseBookBody,
+  stageBFeeOf,
 } from '../app/lib/consultation-booking';
-import { consultationCheckoutLines } from '../app/lib/consultation-checkout';
+import { CheckoutDiscountError, consultationCheckoutLines } from '../app/lib/consultation-checkout';
 import { consultationDueCents } from '../app/lib/consultation-hours';
+import {
+  mintNetworkToken,
+  NetworkWaiveUnconfigured,
+  networkBookPath,
+  networkEmailHint,
+  networkEmailMatches,
+  parseNetworkLinkBody,
+  verifyNetworkToken,
+} from '../app/lib/consultation-network-waive';
 import {
   CONSULTATION_TZ,
   generateConsultationSlots,
@@ -25,6 +36,7 @@ import {
   SlotTakenError,
 } from './consultation-calendar';
 import { type StripePort, stripeFromEnv, verifyStripeSignature } from './consultation-stripe';
+import { verifySession } from './session';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -133,7 +145,14 @@ function restoreBooking(metadata: Record<string, unknown>, sessionId: string): B
       typeof metadata.company === 'string' && metadata.company.trim().length > 0
         ? metadata.company.trim()
         : null,
-    stage_b: metadata.stage_b === 'true',
+    stage_b:
+      stageBFeeOf(metadata.stage_b_fee, metadata.stage_b === 'true') === 'waived_network' ||
+      metadata.stage_b === 'true',
+    stage_b_fee: stageBFeeOf(metadata.stage_b_fee, metadata.stage_b === 'true'),
+    network_jti:
+      typeof metadata.network_jti === 'string' && metadata.network_jti.length > 0
+        ? metadata.network_jti
+        : null,
     status: 'slot_held',
     expires_at: new Date(0).toISOString(),
     event_id: null,
@@ -193,8 +212,24 @@ async function book(
   } catch {
     raw = null;
   }
-  const input = parseBookBody(raw);
-  if (!input) return json(400, { error: 'invalid-body' });
+  const parsed = parseBookBody(raw);
+  if (!parsed) return json(400, { error: 'invalid-body' });
+
+  let claims = null;
+  if (parsed.networkToken) {
+    if (!env.networkWaiveSecret) return json(503, { error: 'network-waive-unconfigured' });
+    claims = await verifyNetworkToken({
+      secret: env.networkWaiveSecret,
+      token: parsed.networkToken,
+      now,
+    });
+    if (!claims) return json(400, { error: 'network-token' });
+    if (!networkEmailMatches(claims, parsed.email)) return json(400, { error: 'network-email' });
+  }
+  const input = bookInputFromNetwork(parsed, claims);
+  if (input.stageBFee === 'waived_network' && !env.stageBNetworkCouponId?.trim()) {
+    return json(503, { error: 'network-coupon-unconfigured' });
+  }
 
   const windowFrom = new Date(Date.parse(input.start) - DAY_MS);
   const windowTo = new Date(Date.parse(input.end) + DAY_MS);
@@ -236,11 +271,67 @@ async function book(
       lines,
       successUrl: `${origin}/consultation/book/success?booking=${encodeURIComponent(bookingId)}`,
       cancelUrl: `${origin}/consultation/book/cancel`,
+      stageBNetworkCouponId: env.stageBNetworkCouponId,
     });
     return json(200, { booking_id: bookingId, checkout_url: session.url });
-  } catch {
+  } catch (error) {
     await calendar.release(bookingId).catch(() => undefined);
+    if (error instanceof CheckoutDiscountError) {
+      return json(503, { error: 'network-coupon-unconfigured' });
+    }
     return json(502, { error: 'checkout' });
+  }
+}
+
+async function readJsonBody(request: Request): Promise<unknown> {
+  const text = await request.text();
+  if (text.trim() === '') return {};
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return null;
+  }
+}
+
+async function networkStatus(request: Request, env: ConsultationEnv, now: Date): Promise<Response> {
+  const token = new URL(request.url).searchParams.get('nw')?.trim() ?? '';
+  if (!token || !env.networkWaiveSecret) return json(200, { ok: false });
+  const claims = await verifyNetworkToken({ secret: env.networkWaiveSecret, token, now });
+  if (!claims) return json(200, { ok: false });
+  return json(200, {
+    ok: true,
+    expires_at: new Date(claims.exp * 1000).toISOString(),
+    ...(claims.email ? { email_hint: networkEmailHint(claims.email) } : {}),
+  });
+}
+
+async function networkLink(request: Request, env: ConsultationEnv, now: Date): Promise<Response> {
+  const session = verifySession(request, { ownerSession: env.ownerSession });
+  if (session.role !== 'owner') return json(403, { error: 'owner-session' });
+  if (!env.networkWaiveSecret) return json(503, { error: 'network-waive-unconfigured' });
+
+  const raw = await readJsonBody(request);
+  if (raw === null) return json(400, { error: 'invalid-body' });
+  const link = parseNetworkLinkBody(raw);
+  if (!link) return json(400, { error: 'invalid-body' });
+
+  try {
+    const minted = await mintNetworkToken({
+      secret: env.networkWaiveSecret,
+      now,
+      ttlSeconds: link.ttlSeconds,
+      email: link.email,
+    });
+    const origin = siteOrigin(request, env);
+    return json(200, {
+      url: `${origin}${networkBookPath(minted.token, link.hours)}`,
+      expires_at: new Date(minted.claims.exp * 1000).toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof NetworkWaiveUnconfigured) {
+      return json(503, { error: 'network-waive-unconfigured' });
+    }
+    return json(500, { error: 'network-link' });
   }
 }
 
@@ -327,18 +418,22 @@ export async function handleConsultationRequest(
   const known =
     path === '/api/consultation/availability' ||
     path === '/api/consultation/book' ||
+    path === '/api/consultation/network-link' ||
+    path === '/api/consultation/network-status' ||
     path === '/api/stripe/webhook';
   if (!known) return json(404, { error: 'not-found' });
-  if (path === '/api/consultation/availability' && request.method !== 'GET') {
-    return json(405, { error: 'method' });
-  }
-  if (path !== '/api/consultation/availability' && request.method !== 'POST') {
-    return json(405, { error: 'method' });
-  }
+  const getOnly =
+    path === '/api/consultation/availability' || path === '/api/consultation/network-status';
+  if (getOnly && request.method !== 'GET') return json(405, { error: 'method' });
+  if (!getOnly && request.method !== 'POST') return json(405, { error: 'method' });
 
   const env = deps.env ?? consultationEnvFromProcess();
   const fetchImpl = deps.fetchImpl ?? fetch;
   const now = (deps.now ?? (() => new Date()))();
+
+  if (path === '/api/consultation/network-status') return networkStatus(request, env, now);
+  if (path === '/api/consultation/network-link') return networkLink(request, env, now);
+
   const calendar = deps.calendar ?? calendarFromEnv(env, fetchImpl);
   if (!calendar) return json(503, { error: 'calendar-unconfigured' });
 

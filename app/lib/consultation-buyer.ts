@@ -6,9 +6,11 @@
  * The Stripe SKU stays stage-b.
  */
 
+import { consultationDueCents, consultationHourCount } from './consultation-hours';
 import { formatConsultationRange } from './consultation-slots';
 import { STAGE_B_PRICE } from './engagements';
 import { CONTACT_EMAIL } from './site';
+import { STAGE_B_CENTS } from './stage-b-invoice';
 
 export const CONSULTATION_BOOK_INTRO =
   'Weekday slots in Eastern Time, 9:00 AM to 5:00 PM. $300 per hour. The 30-minute intro stays a separate booking.';
@@ -16,6 +18,9 @@ export const CONSULTATION_BOOK_INTRO =
 export const STAGE_B_ADDON = `The domain pack is an optional ${STAGE_B_PRICE} add-on.`;
 
 export const STAGE_B_CHECKBOX = `Add the domain pack (${STAGE_B_PRICE})`;
+
+/** Network book link. The pack is on the order. Do not say the fee was removed. */
+export const STAGE_B_ON_ORDER = 'Domain pack is on this order.';
 
 export const STAGE_B_DETAIL =
   'Optional. Your share opens on a domain you already own, with the path note, proof-gap map, stack sketch, onboarding page, and a short walkthrough. We attach the DNS.';
@@ -78,6 +83,17 @@ export function readConsultationReceipt(bookingId: string): ConsultationReceipt 
 export function consultationEmptySlots(hours: number): string {
   const unit = hours === 1 ? 'hour' : 'hours';
   return `No open slots for ${hours} ${unit} in the next 3 weeks.`;
+}
+
+/** Due today. A network order keeps the pack on the Session and charges Consultation only. */
+export function consultationBookDueCents(
+  hours: number,
+  stageB: boolean,
+  packOnOrder: boolean,
+): number {
+  const consultation = consultationDueCents(consultationHourCount(hours));
+  if (packOnOrder) return consultation;
+  return consultation + (stageB ? STAGE_B_CENTS : 0);
 }
 
 export function consultationStageLine(stageB: boolean): string {
