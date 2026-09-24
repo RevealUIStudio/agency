@@ -59,7 +59,7 @@ describe('buildQuote', () => {
     expect(plan?.detail).toBe(PROOF_QUOTE_DETAIL);
     expect(plan?.detail).toMatch(/^One site\./);
     expect(plan?.detail).toContain('One receipted action you operate');
-    expect(plan?.detail).toContain('Stage B is included');
+    expect(plan?.detail).toContain('The domain pack is included');
     expect(plan?.detail).toContain('Invoice $3,997 before we start');
     expect(plan?.detail).toContain('Credits 100% to Launch');
     expect(plan?.detail).toContain('45 days');
@@ -118,7 +118,7 @@ describe('buildQuote', () => {
     expect(consultation?.title).toBe('Consultation');
     expect(consultation?.detail).toContain('Pay $600 when you book the hours');
     expect(JSON.stringify(quote)).not.toMatch(/\bHour\b/);
-    expect(quote.lines.map((line) => line.title)).not.toContain('Stage B');
+    expect(quote.lines.map((line) => line.title)).not.toContain('Domain pack');
   });
 
   it('keeps Stage B off unless asked, and ignores a guest waive', () => {

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { ShareFrame } from '@/components/share/ShareFrame';
+import { STAGE_B_ADDON, STAGE_B_DETAIL } from '@/lib/consultation-buyer';
+import { type DomainPackPageId, domainPackLines } from '@/lib/domain-pack';
 import { STAGE_B_PRICE } from '@/lib/engagements';
 
 function Frame({ slug, title, children }: { slug: string; title: string; children: ReactNode }) {
@@ -10,28 +12,35 @@ function Frame({ slug, title, children }: { slug: string; title: string; childre
   );
 }
 
+function Lines({ lines }: { lines: readonly string[] }) {
+  return lines.map((line) => <p key={line}>{line}</p>);
+}
+
 export function shareHome(slug: string) {
   return function ShareHome() {
     return (
       <Frame slug={slug} title={`${slug} share`}>
         <p>
           Stage A shell for {slug}.revealuistudio.com. Circuit-R, RevealUI Studio, and this client
-          name are the chrome. The page is an example until a real pack is attached.
+          name are the chrome.
         </p>
         <p>
-          Stage B is {STAGE_B_PRICE} on its own, or included with Proof Sprint and Launch. Wildcard
-          DNS is attached by the owner, not by this page.
+          {STAGE_B_ADDON} {STAGE_B_DETAIL}
+        </p>
+        <p>
+          The domain pack is {STAGE_B_PRICE} on its own, or included with Proof Sprint and Launch.
+          The studio attaches the DNS.
         </p>
       </Frame>
     );
   };
 }
 
-export function shareWalkthrough(slug: string) {
-  return function ShareWalkthrough() {
+function domainPackPage(slug: string, id: DomainPackPageId, title: string) {
+  return function DomainPackPage() {
     return (
-      <Frame slug={slug} title="Walkthrough">
-        <p>Walkthrough placeholder. Replace this with the living walk for {slug}.</p>
+      <Frame slug={slug} title={title}>
+        <Lines lines={domainPackLines(id, slug)} />
       </Frame>
     );
   };
@@ -41,17 +50,7 @@ export function sharePack(slug: string) {
   return function SharePack() {
     return (
       <Frame slug={slug} title="Pack">
-        <p>Denser living pack placeholder for {slug}. Consultation leaves this pack behind.</p>
-      </Frame>
-    );
-  };
-}
-
-export function shareOnboarding(slug: string) {
-  return function ShareOnboarding() {
-    return (
-      <Frame slug={slug} title="Onboarding">
-        <p>Onboarding placeholder for {slug}.</p>
+        <p>Denser living pack for {slug}. The consultation leaves this pack on the studio host.</p>
       </Frame>
     );
   };
@@ -61,7 +60,7 @@ export function shareDemo(slug: string) {
   return function ShareDemo() {
     return (
       <Frame slug={slug} title="Demo">
-        <p>Demo placeholder for {slug}. Example only.</p>
+        <p>Demo slot for {slug}. Example only. The domain pack does not sell a demo.</p>
       </Frame>
     );
   };
@@ -71,7 +70,10 @@ export function shareNotFound(slug: string) {
   return function ShareNotFound() {
     return (
       <Frame slug={slug} title="Not on this share">
-        <p>This share host has Home, Walkthrough, Pack, Onboarding, and Demo.</p>
+        <p>
+          This share host has Home, DNS card, Path note, Proof-gap map, Stack sketch, Onboarding,
+          Walkthrough, Pack, and Demo.
+        </p>
       </Frame>
     );
   };
@@ -89,16 +91,52 @@ export function shareRouteTable(slug: string) {
       component: shareHome(slug),
       meta: {
         title: `${slug} share | RevealUI Studio`,
-        description: `EXAMPLE Stage A share shell for ${host}.`,
+        description: `Stage A share shell for ${host}.`,
+        ...SHARE_META,
+      },
+    },
+    {
+      path: '/dns',
+      component: domainPackPage(slug, 'dns', 'DNS card'),
+      meta: {
+        title: `DNS card | ${slug}`,
+        description: `DNS card for the domain pack on ${host}.`,
+        ...SHARE_META,
+      },
+    },
+    {
+      path: '/path',
+      component: domainPackPage(slug, 'path', 'Path note'),
+      meta: {
+        title: `Path note | ${slug}`,
+        description: `Path note for the domain pack on ${host}.`,
+        ...SHARE_META,
+      },
+    },
+    {
+      path: '/proof-gap',
+      component: domainPackPage(slug, 'proof-gap', 'Proof-gap map'),
+      meta: {
+        title: `Proof-gap map | ${slug}`,
+        description: `Proof-gap map for the domain pack on ${host}.`,
+        ...SHARE_META,
+      },
+    },
+    {
+      path: '/stack',
+      component: domainPackPage(slug, 'stack', 'Stack sketch'),
+      meta: {
+        title: `Stack sketch | ${slug}`,
+        description: `Stack sketch for the domain pack on ${host}.`,
         ...SHARE_META,
       },
     },
     {
       path: '/walkthrough',
-      component: shareWalkthrough(slug),
+      component: domainPackPage(slug, 'walkthrough', 'Walkthrough'),
       meta: {
         title: `Walkthrough | ${slug}`,
-        description: `EXAMPLE walkthrough placeholder for ${host}.`,
+        description: `Walkthrough for the domain pack on ${host}.`,
         ...SHARE_META,
       },
     },
@@ -107,16 +145,16 @@ export function shareRouteTable(slug: string) {
       component: sharePack(slug),
       meta: {
         title: `Pack | ${slug}`,
-        description: `EXAMPLE pack placeholder for ${host}.`,
+        description: `Living pack for ${host}.`,
         ...SHARE_META,
       },
     },
     {
       path: '/onboarding',
-      component: shareOnboarding(slug),
+      component: domainPackPage(slug, 'onboarding', 'Onboarding'),
       meta: {
         title: `Onboarding | ${slug}`,
-        description: `EXAMPLE onboarding placeholder for ${host}.`,
+        description: `Onboarding for the domain pack on ${host}.`,
         ...SHARE_META,
       },
     },
@@ -125,7 +163,7 @@ export function shareRouteTable(slug: string) {
       component: shareDemo(slug),
       meta: {
         title: `Demo | ${slug}`,
-        description: `EXAMPLE demo placeholder for ${host}.`,
+        description: `Example demo slot for ${host}.`,
         ...SHARE_META,
       },
     },

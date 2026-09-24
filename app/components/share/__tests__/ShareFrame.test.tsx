@@ -41,6 +41,10 @@ describe('omega share shell', () => {
   });
 
   it.each([
+    '/dns',
+    '/path',
+    '/proof-gap',
+    '/stack',
     '/walkthrough',
     '/pack',
     '/onboarding',

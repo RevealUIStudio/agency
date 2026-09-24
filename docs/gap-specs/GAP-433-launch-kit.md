@@ -56,7 +56,7 @@ Do not put these prices in the opening post. The opening post stays on the produ
 ### Stranger-sell refuse (these posts)
 
 - **Care is $1,997/mo, optional, and off the stranger homepage.** Do not name Care. Do not quote $1,997. Do not link a Care checkout. Do not offer it as a follow-on in the thread.
-- Do not mention Stage B, a $297 custom-domain add-on, or any fee waiver.
+- Do not mention the domain pack, Stage B, a $297 custom-domain add-on, or any fee waiver.
 - Do not write Pilot, $1,500, or $7,500.
 - Do not mention CapCut or Cal.com. Studio intro booking, if you must point at it, is the Google Calendar intro already on revealuistudio.com.
 - Do not claim SOC 2 certified, SOC 2 ready, SOC 2 compliant, SOC 2 audited, or ISO 27001 certified. Honest line if asked: not certified. A vendor’s report covers the vendor, not RevealUI and not RevealUI Studio.
@@ -194,7 +194,7 @@ SSO is an operator preview, not a feature I have walked a customer through. Whit
 ## Pre-post check
 
 - [ ] Both pastes still say Max **$99**, not $299.
-- [ ] Neither paste names Care, Pilot, $1,500, $7,500, Stage B, or a waiver.
+- [ ] Neither paste names Care, Pilot, $1,500, $7,500, the domain pack, Stage B, or a waiver.
 - [ ] Neither paste says SOC 2 certified, ready, compliant, or audited.
 - [ ] Neither paste names a customer, a logo, or a traction number.
 - [ ] Neither paste mentions CapCut or Cal.com.

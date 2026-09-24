@@ -9,7 +9,7 @@ Book → pay order stays: slot hold → Checkout Session → existing webhook �
 - No new Stripe webhook. `POST /api/stripe/webhook` and `checkout.session.completed` stay as they are.
 - No promote to production unless Joshua says so.
 - Kayla HOLD SEND is unchanged. Network waive stays on the hosted-invoice / server credit path.
-- No public “waived” or “free domain” copy. Online bookers see optional Stage B, default off.
+- No public “waived” or “free domain” copy. Online bookers see the optional domain pack, default off.
 - No Stripe price, DNS, or catalog work. Price IDs stay `STRIPE_CONSULTATION_PRICE_ID` and `STRIPE_STAGE_B_PRICE_ID` (defaults already in `app/lib/consultation-checkout.ts`).
 - `automatic_tax` stays off.
 - Do not switch Checkout to embedded or custom. `ui_mode` is omitted so hosted Checkout remains the default.
@@ -28,7 +28,7 @@ Owner/Bot promote when Joshua says. Until then, Preview is the smoke target.
 
 ## Bot smoke (~390px)
 
-1. Open `/consultation/book` at about 390px width. The studio chrome should not scroll sideways. The pay button is full width. Fields are full width. Stage B starts unchecked. Copy does not say waived or free domain.
+1. Open `/consultation/book` at about 390px width. The studio chrome should not scroll sideways. The pay button is full width. Fields are full width. The domain pack starts unchecked. Copy does not say waived or free domain.
 2. Hold a slot and land on the Checkout URL. Screenshot the studio page and the Checkout landing. Do not restyle Checkout.
 3. Expire that Checkout Session. No live charge.
 4. Hit cancel and confirm `/consultation/book/cancel` returns to the book page from a full-width control.

@@ -222,7 +222,7 @@ export const PROOF_GAP_ONE_GAP_PROMPT = 'The one gap I’d fix this week:' as co
 export const PROOF_GAP_NEXT_STEPS = [
   'DIY: Fix that one gap on your stack. Re-run §3 until you can show one receipted action.',
   'Diagnose with us: Consultation — $300. Path + proof-gap map; artifact pack within one business day. Lightweight stack sketch — not Architecture sold as Consultation.',
-  'Operate a slice: Proof Sprint — $3,997. One site. One receipted action you operate. Stage B is included.',
+  'Operate a slice: Proof Sprint — $3,997. One site. One receipted action you operate. The domain pack is included.',
 ] as const;
 
 export const PROOF_GAP_REFUSALS = [

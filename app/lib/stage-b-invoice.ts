@@ -1,6 +1,7 @@
+import { DOMAIN_PACK_CREDIT_LABEL, DOMAIN_PACK_LIST_LABEL } from './domain-pack';
 import { formatUsdFromCents } from './money';
 
-/** Stage B list price is $297. A waive is a credit against that list, not a rewritten price. */
+/** Domain pack list price is $297. A waive is a credit against that list, not a rewritten price. */
 export const STAGE_B_CENTS = 29_700 as const;
 
 export type ViewerRole = 'guest' | 'owner';
@@ -87,13 +88,13 @@ export function buildStageBInvoice(input: {
 
   const waived = input.waive && input.role === 'owner';
   const lines: InvoiceLine[] = [
-    { kind: 'list', sku: 'stage-b', label: 'Stage B', amountCents: STAGE_B_CENTS },
+    { kind: 'list', sku: 'stage-b', label: DOMAIN_PACK_LIST_LABEL, amountCents: STAGE_B_CENTS },
   ];
   if (waived) {
     lines.push({
       kind: 'credit',
       sku: 'stage-b',
-      label: 'Stage B credit',
+      label: DOMAIN_PACK_CREDIT_LABEL,
       amountCents: STAGE_B_CENTS,
     });
   }

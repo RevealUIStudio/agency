@@ -58,7 +58,7 @@ describe('ConsultationBookPage', () => {
     const view = render(<ConsultationBookPage onCheckout={onCheckout} />);
     expect(view.container.textContent ?? '').not.toMatch(/waive/i);
     expect(view.container.textContent ?? '').not.toContain('calendar.google.com');
-    const stageB = await screen.findByRole('checkbox', { name: 'Add Stage B ($297)' });
+    const stageB = await screen.findByRole('checkbox', { name: 'Add the domain pack ($297)' });
     expect(stageB).not.toBeChecked();
     fireEvent.click(await screen.findByRole('radio', { name: /9:00 AM/ }));
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Ada Buyer' } });
@@ -123,7 +123,7 @@ describe('ConsultationBookPage', () => {
     const name = screen.getByLabelText('Name');
     expect(name.className).toContain('w-full');
     expect(name.className).toContain('text-base');
-    expect(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' })).not.toBeChecked();
     expect(
       await screen.findByText('No open slots for 1 hour in the next 3 weeks.'),
     ).toBeInTheDocument();
