@@ -11,6 +11,7 @@ import {
   type Booking,
   deskScheduleTransition,
 } from '../app/lib/consultation-booking';
+import { calendarInviteDescription } from '../app/lib/consultation-buyer';
 import type { TimeInterval } from '../app/lib/consultation-slots';
 
 const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar';
@@ -306,26 +307,15 @@ function eventBody(booking: Booking, mode: 'hold' | 'paid'): Record<string, unkn
   const body: Record<string, unknown> = {
     summary:
       mode === 'hold'
-        ? 'Hold — RevealUI Studio Consultation'
-        : `RevealUI Studio Consultation — ${booking.name}`,
+        ? 'Hold, RevealUI Studio Consultation'
+        : `RevealUI Studio Consultation, ${booking.name}`,
     start: { dateTime: booking.start, timeZone: 'America/New_York' },
     end: { dateTime: booking.end, timeZone: 'America/New_York' },
     transparency: 'opaque',
     extendedProperties: { private: propsOf(booking) },
   };
   if (mode === 'hold') return body;
-  const description = [
-    booking.company ? `Company: ${booking.company}` : '',
-    `Session length: ${booking.hours}`,
-    booking.stage_b
-      ? 'Stage B was added to this payment.'
-      : 'Stage B was not added to this payment.',
-    'Prep: send the system you want to look at and the question you want answered. A link is usually enough.',
-    'Desk: no sheet writer in this repo. This event is the schedule record.',
-  ]
-    .filter((line) => line.length > 0)
-    .join('\n');
-  body.description = description;
+  body.description = calendarInviteDescription(booking);
   body.attendees = [{ email: booking.email }];
   body.conferenceData = {
     createRequest: {

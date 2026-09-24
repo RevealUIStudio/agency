@@ -120,7 +120,8 @@ function overlaps(startMs: number, endMs: number, interval: TimeInterval): boole
   return startMs < otherEnd && otherStart < endMs;
 }
 
-function slotLabel(start: Date, end: Date): string {
+/** Buyer-facing Eastern Time range. Same string the book page shows on each slot. */
+export function formatConsultationRange(start: Date, end: Date): string {
   const date = new Intl.DateTimeFormat('en-US', {
     timeZone: CONSULTATION_TZ,
     weekday: 'short',
@@ -176,7 +177,7 @@ export function generateConsultationSlots(input: {
       slots.push({
         start: start.toISOString(),
         end: end.toISOString(),
-        label: slotLabel(start, end),
+        label: formatConsultationRange(start, end),
       });
     }
   }

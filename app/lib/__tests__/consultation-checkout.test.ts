@@ -66,6 +66,7 @@ describe('encodeCheckoutForm', () => {
     expect(params.get('metadata[stage_b]')).toBe('false');
     expect(params.get('metadata[buyer_email]')).toBe('ada@example.com');
     expect(params.get('metadata[buyer_name]')).toBe('Ada Buyer');
+    expect(params.get('metadata[company]')).toBeNull();
     expect(params.get('customer_email')).toBe('ada@example.com');
     expect(params.get('phone_number_collection[enabled]')).toBe('true');
     expect(params.get('billing_address_collection')).toBe(CHECKOUT_BILLING_ADDRESS_COLLECTION);
@@ -166,6 +167,7 @@ describe('encodeCheckoutForm', () => {
         stageB: true,
         buyerEmail: 'ada@example.com',
         buyerName: 'Ada Buyer',
+        company: 'Example Co',
         successUrl: 'https://revealuistudio.com/consultation/book/success?booking=book_2',
         cancelUrl: 'https://revealuistudio.com/consultation/book/cancel',
       }),
@@ -173,5 +175,6 @@ describe('encodeCheckoutForm', () => {
     expect(params.get('line_items[1][price]')).toBe(DEFAULT_STAGE_B_PRICE_ID);
     expect(params.get('line_items[1][quantity]')).toBe('1');
     expect(params.get('metadata[stage_b]')).toBe('true');
+    expect(params.get('metadata[company]')).toBe('Example Co');
   });
 });
