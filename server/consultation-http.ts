@@ -1,18 +1,19 @@
 /**
  * Consultation availability, slot hold, and Stripe webhook.
- * Calendar creation is the schedule record. Confirmation email is best-effort.
+ * Book and the paid webhook call the action registry. The calendar event
+ * is the schedule record. Confirmation stays a draft.
  */
 
 import {
-  type Booking,
+  type ActionError,
+  runConsultationBook,
+  runPaidConsultation,
+} from '../app/lib/consultation-actions';
+import {
   bookInputFromNetwork,
-  buildConfirmationEmail,
   type ConfirmationEmail,
-  createHold,
   parseBookBody,
-  stageBFeeOf,
 } from '../app/lib/consultation-booking';
-import { CheckoutDiscountError, consultationCheckoutLines } from '../app/lib/consultation-checkout';
 import { consultationDueCents } from '../app/lib/consultation-hours';
 import {
   mintNetworkToken,
@@ -33,7 +34,6 @@ import {
   type ConsultationEnv,
   calendarFromEnv,
   consultationEnvFromProcess,
-  SlotTakenError,
 } from './consultation-calendar';
 import { type StripePort, stripeFromEnv, verifyStripeSignature } from './consultation-stripe';
 import { verifySession } from './session';
@@ -92,73 +92,13 @@ function siteOrigin(request: Request, env: ConsultationEnv): string {
   return new URL(request.url).origin;
 }
 
-async function deliverConfirmation(
-  env: ConsultationEnv,
-  email: ConfirmationEmail,
-  fetchImpl: typeof fetch,
-  sink: ConsultationDeps['onConfirmation'],
-): Promise<void> {
-  sink?.(email);
-  if (!env.resendApiKey || !env.resendFrom) return;
-  try {
-    await fetchImpl('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${env.resendApiKey}`,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: env.resendFrom,
-        to: email.to,
-        subject: email.subject,
-        text: email.text,
-      }),
-    });
-  } catch {
-    // The calendar event already exists. Email failure must not fail the webhook.
+function bookHttp(error: ActionError): { status: number; error: string } {
+  if (error === 'slot-taken') return { status: 409, error: 'slot-taken' };
+  if (error === 'network-coupon-unconfigured') {
+    return { status: 503, error: 'network-coupon-unconfigured' };
   }
-}
-
-function restoreBooking(metadata: Record<string, unknown>, sessionId: string): Booking | null {
-  const bookingId = metadata.booking_id;
-  const start = metadata.start;
-  const end = metadata.end;
-  const name = metadata.buyer_name;
-  const email = metadata.buyer_email;
-  const hours = Number(metadata.hours);
-  if (typeof bookingId !== 'string' || typeof start !== 'string' || typeof end !== 'string') {
-    return null;
-  }
-  if (typeof name !== 'string' || typeof email !== 'string' || !Number.isInteger(hours))
-    return null;
-  const startMs = Date.parse(start);
-  const endMs = Date.parse(end);
-  if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) return null;
-  return {
-    booking_id: bookingId,
-    start: new Date(startMs).toISOString(),
-    end: new Date(endMs).toISOString(),
-    hours,
-    name,
-    email,
-    company:
-      typeof metadata.company === 'string' && metadata.company.trim().length > 0
-        ? metadata.company.trim()
-        : null,
-    stage_b:
-      stageBFeeOf(metadata.stage_b_fee, metadata.stage_b === 'true') === 'waived_network' ||
-      metadata.stage_b === 'true',
-    stage_b_fee: stageBFeeOf(metadata.stage_b_fee, metadata.stage_b === 'true'),
-    network_jti:
-      typeof metadata.network_jti === 'string' && metadata.network_jti.length > 0
-        ? metadata.network_jti
-        : null,
-    status: 'slot_held',
-    expires_at: new Date(0).toISOString(),
-    event_id: null,
-    meet_link: null,
-    stripe_session_id: sessionId || null,
-  };
+  if (error === 'calendar') return { status: 502, error: 'calendar' };
+  return { status: 502, error: 'checkout' };
 }
 
 async function availability(
@@ -227,60 +167,21 @@ async function book(
     if (!networkEmailMatches(claims, parsed.email)) return json(400, { error: 'network-email' });
   }
   const input = bookInputFromNetwork(parsed, claims);
-  if (input.stageBFee === 'waived_network' && !env.stageBNetworkCouponId?.trim()) {
-    return json(503, { error: 'network-coupon-unconfigured' });
-  }
-
-  const windowFrom = new Date(Date.parse(input.start) - DAY_MS);
-  const windowTo = new Date(Date.parse(input.end) + DAY_MS);
-  try {
-    await calendar.expireHolds(now);
-    const busy = await calendar.busy(windowFrom, windowTo, now);
-    const slots = generateConsultationSlots({
-      from: windowFrom,
-      to: windowTo,
-      now,
-      hours: input.hours,
-      busy,
-    });
-    const open = slots.some((slot) => slot.start === input.start && slot.end === input.end);
-    if (!open) return json(409, { error: 'slot-taken' });
-  } catch {
-    return json(502, { error: 'calendar' });
-  }
-
-  const hold = createHold(input, now, bookingId);
-  try {
-    await calendar.putHold(hold, now);
-  } catch (error) {
-    if (error instanceof SlotTakenError) return json(409, { error: 'slot-taken' });
-    await calendar.release(bookingId).catch(() => undefined);
-    return json(502, { error: 'calendar' });
-  }
-
   const origin = siteOrigin(request, env);
-  const lines = consultationCheckoutLines({
-    hours: input.hours,
-    stageB: input.stageB,
+  const booked = await runConsultationBook(input, bookingId, {
+    now,
+    calendar,
+    stripe,
+    origin,
     consultationPriceId: env.consultationPriceId,
     stageBPriceId: env.stageBPriceId,
+    stageBNetworkCouponId: env.stageBNetworkCouponId,
   });
-  try {
-    const session = await stripe.createCheckout({
-      booking: hold,
-      lines,
-      successUrl: `${origin}/consultation/book/success?booking=${encodeURIComponent(bookingId)}`,
-      cancelUrl: `${origin}/consultation/book/cancel`,
-      stageBNetworkCouponId: env.stageBNetworkCouponId,
-    });
-    return json(200, { booking_id: bookingId, checkout_url: session.url });
-  } catch (error) {
-    await calendar.release(bookingId).catch(() => undefined);
-    if (error instanceof CheckoutDiscountError) {
-      return json(503, { error: 'network-coupon-unconfigured' });
-    }
-    return json(502, { error: 'checkout' });
+  if (!booked.ok) {
+    const mapped = bookHttp(booked.error);
+    return json(mapped.status, { error: mapped.error });
   }
+  return json(200, { booking_id: bookingId, checkout_url: booked.value.checkoutUrl });
 }
 
 async function readJsonBody(request: Request): Promise<unknown> {
@@ -339,7 +240,6 @@ async function webhook(
   request: Request,
   env: ConsultationEnv,
   calendar: CalendarPort,
-  fetchImpl: typeof fetch,
   now: Date,
   sink: ConsultationDeps['onConfirmation'],
 ): Promise<Response> {
@@ -384,29 +284,36 @@ async function webhook(
   if (!bookingId || !metadata) return json(200, { received: true, status: 'ignored' });
 
   const sessionId = 'id' in session && typeof session.id === 'string' ? session.id : '';
-  let booking: Booking | null;
+  let booking: Awaited<ReturnType<CalendarPort['get']>>;
   try {
     booking = await calendar.get(bookingId);
   } catch {
     return json(500, { error: 'calendar' });
   }
-  if (booking?.status === 'paid_scheduled') {
-    return json(200, { received: true, status: 'paid_scheduled' });
-  }
-  if (!booking) {
-    booking = restoreBooking(metadata as Record<string, unknown>, sessionId);
-    if (!booking) return json(500, { error: 'booking-missing' });
-  }
 
-  try {
-    const scheduled = await calendar.schedulePaid(booking, sessionId);
-    if (scheduled.action === 'scheduled') {
-      await deliverConfirmation(env, buildConfirmationEmail(scheduled.booking), fetchImpl, sink);
-    }
-    return json(200, { received: true, status: 'paid_scheduled' });
-  } catch {
+  const paid = await runPaidConsultation(
+    {
+      paymentStatus: 'paid',
+      sessionId,
+      metadata: metadata as Record<string, unknown>,
+      booking,
+    },
+    {
+      now,
+      calendar,
+      origin: siteOrigin(request, env),
+      consultationPriceId: env.consultationPriceId,
+      stageBPriceId: env.stageBPriceId,
+      stageBNetworkCouponId: env.stageBNetworkCouponId,
+      onConfirmation: sink,
+    },
+  );
+  if (!paid.ok) {
+    if (paid.error === 'booking-missing') return json(500, { error: 'booking-missing' });
+    if (paid.error === 'payment-required') return json(200, { received: true, status: 'ignored' });
     return json(500, { error: 'calendar' });
   }
+  return json(200, { received: true, status: 'paid_scheduled' });
 }
 
 export async function handleConsultationRequest(
@@ -441,7 +348,7 @@ export async function handleConsultationRequest(
     return availability(request, calendar, now);
   }
   if (path === '/api/stripe/webhook') {
-    return webhook(request, env, calendar, fetchImpl, now, deps.onConfirmation);
+    return webhook(request, env, calendar, now, deps.onConfirmation);
   }
 
   const stripe = deps.stripe ?? stripeFromEnv(env.stripeSecretKey, fetchImpl);

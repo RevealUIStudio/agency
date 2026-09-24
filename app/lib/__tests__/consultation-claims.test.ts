@@ -49,9 +49,7 @@ describe('consultation public claims', () => {
     expect(source).toContain('STAGE_B_CHECKBOX');
     expect(source).toContain('CONSULTATION_SUCCESS');
     expect(STAGE_B_CHECKBOX).toBe('Add the domain pack ($297)');
-    expect(CONSULTATION_SUCCESS).toBe(
-      'Payment received. The Meet link is in your confirmation email and on the calendar invite.',
-    );
+    expect(CONSULTATION_SUCCESS).toBe('Payment received. The Meet link is on the calendar invite.');
     expect(CONSULTATION_SUCCESS).not.toContain('—');
   });
 

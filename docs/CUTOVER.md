@@ -3,8 +3,8 @@
 Buyer path on Preview and test:
 
 1. `/consultation/book` lists weekday slots, 09:00–17:00 America/New_York, in 1-hour steps. A booking is 1 to 8 contiguous hours and must end by 17:00.
-2. Save creates a 20-minute hold and a Stripe Checkout Session.
-3. `checkout.session.completed` writes a founder-calendar event with Google Meet.
+2. `save_slot` creates a 20-minute hold. `create_checkout_session` opens Stripe Checkout only while that hold is live.
+3. `checkout.session.completed` runs `write_calendar_meet_on_pay`, then `send_confirm_email` as a draft. The buyer invite is the Calendar event with Google Meet.
 4. The public Google Appointments URL (`INTRO_CALL_URL` in `app/lib/site.ts`) stays the free 30-minute intro only. It is not the Consultation booking path.
 
 ## Env
@@ -22,13 +22,19 @@ Set these on the Preview project. Do not commit them.
 - `GOOGLE_OAUTH_REFRESH_TOKEN` — preferred. Meet creation on a consumer calendar needs this
 - `GOOGLE_CLIENT_EMAIL` and `GOOGLE_PRIVATE_KEY` — service-account fallback when the refresh token is unset. The value is PKCS#8 material; escaped newlines are accepted
 - `GOOGLE_IMPERSONATE_SUBJECT` — optional Workspace user for domain-wide delegation. Studio sets `founder@revealui.com`. The service-account JWT includes `sub` only when this is non-empty. It is never copied from `GOOGLE_CALENDAR_ID`. The OAuth trio still wins when all three OAuth vars are set
-- `RESEND_API_KEY` and `RESEND_FROM` — optional. When both are set, the webhook sends the confirmation email. When either is missing, the calendar event still lands. Template: `docs/consultation-confirm-email.md`
+- Confirmation after pay is a draft (`send_confirm_email`, gate `draft_only`). The buyer invite is the Calendar event with Google Meet. This repo does not send that draft. Template: `docs/consultation-confirm-email.md`. Action table: `docs/consultation-actions.md`
 - `STUDIO_OWNER_SESSION` — bearer token for `POST /api/consultation/network-link`. The same owner session the share routes use. A missing or wrong token is a guest and cannot mint a link
 - `CONSULTATION_NETWORK_WAIVE_SECRET` — HMAC secret for signed `?nw=` book links. Preview and Production. Do not print it
 - `STRIPE_STAGE_B_NETWORK_COUPON_ID` — coupon id applied only when a verified network token sets `stage_b_fee=waived_network`. If this is unset, that path returns 503 and does not create a Checkout Session
 
 Webhook event: `checkout.session.completed`.
-Endpoint: `POST /api/stripe/webhook`.
+Endpoint: `POST /api/stripe/webhook`. No second webhook.
+
+## Action registry
+
+`app/lib/consultation-actions.ts` is the shared contract for `save_slot`, `create_checkout_session`, `write_calendar_meet_on_pay`, and `send_confirm_email`. See `docs/consultation-actions.md`.
+
+Checkout without a live `slot_held` booking fails closed. Stage B on the public book page is an optional paid add-on. Network credit stays a signed book link and `STRIPE_STAGE_B_NETWORK_COUPON_ID`. No new secrets. This change does not promote `test` to `main`. Merge with a merge commit.
 
 ## Domain-wide delegation
 

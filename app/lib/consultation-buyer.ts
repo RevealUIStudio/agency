@@ -1,9 +1,9 @@
 /**
- * Buyer-facing Consultation copy. The book page, the confirmation email,
+ * Buyer-facing Consultation copy. The book page, the confirmation draft,
  * and the calendar invite share these sentences.
  *
  * Do not describe the domain pack as free, included, waived, or credited.
- * The Stripe SKU stays stage-b.
+ * The Stripe SKU stays stage-b. The buyer invite is the calendar event.
  */
 
 import { consultationDueCents, consultationHourCount } from './consultation-hours';
@@ -27,11 +27,9 @@ export const STAGE_B_DETAIL =
 
 export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 20 minutes.';
 
-export const CONSULTATION_AFTER_PAY =
-  'After payment, the Meet link is in the confirmation email and on the calendar invite.';
+export const CONSULTATION_AFTER_PAY = 'After payment, the Meet link is on the calendar invite.';
 
-export const CONSULTATION_SUCCESS =
-  'Payment received. The Meet link is in your confirmation email and on the calendar invite.';
+export const CONSULTATION_SUCCESS = 'Payment received. The Meet link is on the calendar invite.';
 
 export const CONSULTATION_PREP_BODY =
   'Send the system you want to look at and the question you want answered. A link is usually enough.';
