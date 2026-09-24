@@ -49,7 +49,7 @@ describe('Hero', () => {
     expect(screen.getByText(HERO_MENU)).toBeInTheDocument();
     expect(HERO_MENU).toBe('Consultation $300 · Proof Sprint $3,997 · Launch $14,500.');
     expect(screen.getByText(HERO_PROOF)).toBeInTheDocument();
-    expect(HERO_PROOF).toBe("If an agent did it, there's PROOF — a receipted action you can show.");
+    expect(HERO_PROOF).toBe("If an agent did it, there's PROOF: a receipted action you can show.");
     const headline = screen.getByRole('heading', { level: 1, name: HERO_HEADLINE });
     const section = headline.closest('section');
     expect(section).not.toBeNull();
@@ -87,15 +87,15 @@ describe('Hero', () => {
     );
   });
 
-  it('keeps the known-for em dash out of the H1 and in PROOF only on the hero', () => {
+  it('keeps em dashes out of the hero', () => {
     const { container } = render(<Hero />);
-    expect(HERO_SUBLINE).toContain('\u2014');
-    expect(HERO_PROOF).toContain('\u2014');
+    expect(HERO_SUBLINE).not.toContain('\u2014');
+    expect(HERO_PROOF).not.toContain('\u2014');
     expect(HERO_HEADLINE).not.toContain('\u2014');
     expect(HERO_SHOP_LINE).not.toContain('\u2014');
     expect(HERO_RESULT).not.toContain('\u2014');
     expect(HERO_MENU).not.toContain('\u2014');
-    expect((container.textContent ?? '').replaceAll(HERO_PROOF, '')).not.toContain('\u2014');
+    expect(container.textContent ?? '').not.toContain('\u2014');
   });
 
   it('shows one honest process receipt under the CTAs', () => {

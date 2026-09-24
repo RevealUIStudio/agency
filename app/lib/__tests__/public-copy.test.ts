@@ -407,7 +407,7 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain(HOME_DOCUMENT_TITLE);
     expect(jsonLd).toContain(HOME_META_DESCRIPTION);
     expect(jsonLd).toContain(
-      'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation, Proof Sprint, or Launch. Remote first. Book a 30-minute intro.',
+      'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents: existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation, Proof Sprint, or Launch. Remote first. Book a 30-minute intro.',
     );
     expect(jsonLd).not.toContain('The agentic runtime startups operate on their own domain');
     expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
@@ -448,9 +448,9 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain('"price": "14500"');
     expect(jsonLd).not.toContain('"price": "3500"');
     expect(quote).toContain("DEFAULT_OUTCOME: Outcome = 'plan'");
-    expect(quote).toContain("label: 'Consultation — diagnose the path / proof gap ($300)'");
-    expect(quote).toContain("label: 'Proof Sprint — one site, one receipted action I operate'");
-    expect(quote).toContain("label: 'Launch — money path live on my accounts'");
+    expect(quote).toContain("label: 'Consultation: diagnose the path / proof gap ($300)'");
+    expect(quote).toContain("label: 'Proof Sprint: one site, one receipted action I operate'");
+    expect(quote).toContain("label: 'Launch: money path live on my accounts'");
     expect(quote).toContain('PROOF means a receipted action');
     expect(quote).toContain('not outcome validation or proof of work');
     expect(quote).not.toMatch(/free website/i);
@@ -640,9 +640,9 @@ describe('public copy gates', () => {
     expect(offers).not.toMatch(/name: 'Knowledge Graph'/);
     expect(offers).toContain('Knowledge Graph is part of the runtime (Electric+CRDT)');
     expect(offers).toContain('not a fourth Studio offer');
-    expect(quote).toContain("label: 'Consultation — diagnose the path / proof gap ($300)'");
-    expect(quote).toContain("label: 'Proof Sprint — one site, one receipted action I operate'");
-    expect(quote).toContain("label: 'Launch — money path live on my accounts'");
+    expect(quote).toContain("label: 'Consultation: diagnose the path / proof gap ($300)'");
+    expect(quote).toContain("label: 'Proof Sprint: one site, one receipted action I operate'");
+    expect(quote).toContain("label: 'Launch: money path live on my accounts'");
     expect(quote).not.toMatch(/Knowledge Graph/);
     expect(quote).not.toMatch(/RevMind/);
     expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
@@ -664,6 +664,21 @@ describe('public copy gates', () => {
       expect(hop.destination).toBe('/#calculator');
       expect(hop.permanent).toBe(true);
     }
+  });
+
+  it('does not ship an em dash in buyer-facing studio copy', () => {
+    const files = [
+      'index.html',
+      'app/components/agency/Hero.tsx',
+      'app/content/proof-gap.ts',
+      'app/content/receipt.ts',
+      'app/lib/quote.ts',
+    ];
+    const emDash = /\u2014|&mdash;|&#8212;|&#x2014;/i;
+    const hits = files.filter((file) =>
+      emDash.test(readFileSync(path.join(repoRoot, file), 'utf8')),
+    );
+    expect(hits).toEqual([]);
   });
 
   it('wires the proof-gap checklist as a soft lead-magnet gate', () => {
@@ -702,6 +717,8 @@ describe('public copy gates', () => {
     expect(pdfText).toContain('RevealUI Studio');
     expect(pdfText).toMatch(/RevealUI Studio \\267 Proof-gap checklist/);
     expect(pdfText).not.toMatch(/HOLD public|Joshua OK|Media Manager|agency#204|publish OK/i);
+    expect(pdfText).not.toContain('\\227');
+    expect(pdfText).not.toContain('\u2014');
     expect(
       vercel.rewrites.some(
         (rule) =>
