@@ -52,7 +52,7 @@ describe('buildQuote', () => {
     const launch = quote.lines.find((line) => line.id === 'launch-package');
     expect(hour?.detail).toBe(CONSULTATION_QUOTE_DETAIL);
     expect(hour?.detail).toContain('proof gaps');
-    expect(hour?.detail).toContain('Invoice $300 before we start');
+    expect(hour?.detail).toContain('Pay $300 when you book the hour');
     expect(hour?.detail).toContain('No holdback');
     expect(hour?.detail).toContain('No leftover site');
     expect(plan?.highlighted).toBe(true);
@@ -116,7 +116,7 @@ describe('buildQuote', () => {
     const consultation = quote.lines.find((line) => line.id === 'consultation');
     expect(consultation?.price).toBe('$600');
     expect(consultation?.title).toBe('Consultation');
-    expect(consultation?.detail).toContain('Invoice $600 before we start');
+    expect(consultation?.detail).toContain('Pay $600 when you book the hours');
     expect(JSON.stringify(quote)).not.toMatch(/\bHour\b/);
     expect(quote.lines.map((line) => line.title)).not.toContain('Stage B');
   });

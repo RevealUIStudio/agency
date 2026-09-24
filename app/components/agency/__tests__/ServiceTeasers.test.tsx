@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { ServiceTeasers } from '@/components/agency/ServiceTeasers';
 import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
-import { INTRO_CALL_URL } from '@/lib/site';
+import { CONSULTATION_BOOK_PATH, INTRO_CALL_URL } from '@/lib/site';
 
 describe('ServiceTeasers', () => {
   it('renders only the three locked studio offers', () => {
@@ -26,13 +26,17 @@ describe('ServiceTeasers', () => {
     expect(container.textContent ?? '').not.toMatch(/keep the stack/i);
   });
 
-  it('anchors each offer and points CTAs at the intro calendar', () => {
+  it('anchors each offer and sends Consultation to checkout, not the intro', () => {
     render(<ServiceTeasers />);
     expect(document.getElementById('consultation')).not.toBeNull();
     expect(document.getElementById('proof-sprint')).not.toBeNull();
     expect(document.getElementById('launch-package')).not.toBeNull();
+    expect(screen.getByRole('link', { name: 'Book a Consultation' })).toHaveAttribute(
+      'href',
+      CONSULTATION_BOOK_PATH,
+    );
     const ctas = screen.getAllByRole('link', { name: 'Book a 30-minute intro' });
-    expect(ctas.length).toBe(3);
+    expect(ctas.length).toBe(2);
     for (const cta of ctas) {
       expect(cta).toHaveAttribute('href', INTRO_CALL_URL);
     }

@@ -72,7 +72,7 @@ describe('public studio offers', () => {
     expect(LAUNCH.payment).not.toMatch(/keep the stack/i);
     expect(LAUNCH.payment).not.toMatch(/make-good/i);
     expect(CONSULTATION.payment).toContain('No holdback');
-    expect(CONSULTATION.payment).toContain('Invoice $300 before we start');
+    expect(CONSULTATION.payment).toContain('Pay $300 per hour when you book the slot');
     expect(CONSULTATION.payment).not.toContain('first half back');
     expect(PROOF_SPRINT.payment).toContain('Credits 100% to Launch');
     expect(PROOF_SPRINT.payment).toContain('45 days');

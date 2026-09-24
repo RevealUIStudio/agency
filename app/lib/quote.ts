@@ -53,7 +53,7 @@ export const QUOTE_CALCULATOR_LEAD =
   'Studio quotes only: Consultation $300, Proof Sprint $3,997, Launch $14,500. Solutions for critical-path ownership, agents without PROOF, and a live money path. PROOF means a receipted action, not outcome validation or proof of work. Licenses live on revealui.com.' as const;
 
 export const CONSULTATION_QUOTE_DETAIL =
-  'One focused pass on the critical path, proof gaps, or a stuck live flow. Notes + next step. Invoice $300 before we start. No leftover site. No holdback.' as const;
+  'One focused pass on the critical path, proof gaps, or a stuck live flow. Notes + next step. Pay $300 when you book the hour. No leftover site. No holdback.' as const;
 
 export const PROOF_QUOTE_DETAIL =
   'One site. One receipted action you operate. Stage B is included. You keep it. Invoice $3,997 before we start. Credits 100% to Launch if you start Launch within 45 days.' as const;
@@ -77,7 +77,7 @@ export const INTRO_BODY =
   'Multi-site is not a calculator quote. We scope it on a 30-minute intro.' as const;
 
 export const STUDIO_QUOTE_BODY =
-  'You run it, or we implement with you. Invoice after we agree. No checkout on this site.' as const;
+  'You run it, or we implement with you. Consultation is paid when you book the hour. Proof Sprint and Launch are invoiced after we agree.' as const;
 
 export type QuoteKind = 'studio' | 'self-host' | 'intro';
 
@@ -115,8 +115,8 @@ export function consultationQuoteDetail(hours: number): string {
   if (count === 1) return CONSULTATION_QUOTE_DETAIL;
   const price = formatUsdFromCents(consultationDueCents(count));
   return CONSULTATION_QUOTE_DETAIL.replace(
-    'Invoice $300 before we start',
-    `Invoice ${price} before we start`,
+    'Pay $300 when you book the hour',
+    `Pay ${price} when you book the hours`,
   );
 }
 

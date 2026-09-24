@@ -28,7 +28,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen w-full min-w-0 max-w-full flex-col">
       <RouteHead />
       <a
         href="#main-content"
@@ -37,7 +37,12 @@ export function RootLayout({ children }: { children: ReactNode }) {
         Skip to content
       </a>
       <NavBar />
-      <main id="main-content" ref={mainRef} tabIndex={-1} className="flex-1 outline-none">
+      <main
+        id="main-content"
+        ref={mainRef}
+        tabIndex={-1}
+        className="w-full min-w-0 max-w-full flex-1 outline-none"
+      >
         {children}
       </main>
       <Footer />
