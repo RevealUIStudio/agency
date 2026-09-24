@@ -1,5 +1,5 @@
 /**
- * Proof-gap checklist lead magnet. Soft ask — not a quote form.
+ * Proof-gap checklist lead magnet. Soft ask, not a quote form.
  * H1 and gate copy locked 2026-09-18 (Joshua OK publish).
  * PROOF = receipted action. Studio ladder stays Consultation / Proof Sprint / Launch.
  */
@@ -20,7 +20,7 @@ export const PROOF_GAP_OFFER_NAME = 'Proof-gap checklist' as const;
 export const PROOF_GAP_SUB =
   'Free checklist. Score ownership, critical path, receipts (PROOF), and human gates in about ten minutes. No quote form required.' as const;
 
-/** Known-for identity. Subline only — never this page's H1. */
+/** Known-for identity. Subline only. Never this page's H1. */
 export const PROOF_GAP_KNOWN_FOR =
   'We are known for the agentic business runtime technical founders and small agencies operate on their own domain. Existing tools report in. You keep the stack.' as const;
 
@@ -30,10 +30,10 @@ export const PROOF_GAP_PROOF_LINE =
 export const PROOF_GAP_CTA = 'Get the free checklist' as const;
 
 export const PROOF_GAP_BULLETS = [
-  'Ownership & domain — whose keys, whose infra',
-  'Critical path — who owns booking / invoices / agents',
-  'Receipted actions (PROOF) — show what ran',
-  'Human gates — money, sends, deletes',
+  'Ownership & domain: whose keys, whose infra',
+  'Critical path: who owns booking / invoices / agents',
+  'Receipted actions (PROOF): show what ran',
+  'Human gates: money, sends, deletes',
   'Client updates you can back with links',
 ] as const;
 
@@ -42,10 +42,10 @@ export const PROOF_GAP_THANKS_TITLE = 'Your proof-gap checklist' as const;
 export const PROOF_GAP_THANKS_LEAD = "Here's your proof-gap checklist." as const;
 
 export const PROOF_GAP_THANKS_BODY =
-  "Walk the sections. Count No + Partial. Pick one gap you'd be embarrassed to leave open in a client update this week — then fix that path until you can show a receipted action (PROOF)." as const;
+  "Walk the sections. Count No + Partial. Pick one gap you'd be embarrassed to leave open in a client update this week, then fix that path until you can show a receipted action (PROOF)." as const;
 
 export const PROOF_GAP_THANKS_CONSULT =
-  'If you want a diagnose with us: Consultation is $300 — path + proof-gap map, pack within one business day.' as const;
+  'If you want a diagnose with us: Consultation is $300: path + proof-gap map, pack within one business day.' as const;
 
 export const PROOF_GAP_THANKS_INTRO =
   "Optional 30-minute intro: you don't need a Google account. Open the Meet link → Join as guest." as const;
@@ -62,7 +62,7 @@ export const PROOF_GAP_REQUEST_MESSAGE =
 export const PROOF_GAP_HOW_TO = [
   'Walk each section. Mark Yes / Partial / No.',
   'Count No + Partial. That is your proof-gap score (higher = more risk).',
-  "Don't chase a perfect score — pick the one gap that would embarrass you in a client update this week.",
+  "Don't chase a perfect score. Pick the one gap that would embarrass you in a client update this week.",
 ] as const;
 
 export interface ProofGapCheck {
@@ -112,7 +112,7 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
       },
       {
         id: '2.3',
-        text: 'Failures surface somewhere humans look — not only in a vendor dashboard',
+        text: 'Failures surface somewhere humans look, not only in a vendor dashboard',
       },
       {
         id: '2.4',
@@ -126,7 +126,7 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
     checks: [
       {
         id: '3.1',
-        text: 'When an agent acts, something durable is written (log / receipt / audit row) — not only chat',
+        text: 'When an agent acts, something durable is written (log / receipt / audit row), not only chat',
       },
       {
         id: '3.2',
@@ -221,8 +221,8 @@ export const PROOF_GAP_ONE_GAP_PROMPT = 'The one gap I’d fix this week:' as co
 
 export const PROOF_GAP_NEXT_STEPS = [
   'DIY: Fix that one gap on your stack. Re-run §3 until you can show one receipted action.',
-  'Diagnose with us: Consultation — $300. Path + proof-gap map; artifact pack within one business day. Lightweight stack sketch — not Architecture sold as Consultation.',
-  'Operate a slice: Proof Sprint — $3,997. One site. One receipted action you operate. The domain pack is included.',
+  'Diagnose with us: Consultation $300. Path + proof-gap map; artifact pack within one business day. Lightweight stack sketch (not Architecture sold as Consultation).',
+  'Operate a slice: Proof Sprint $3,997. One site. One receipted action you operate. The domain pack is included.',
 ] as const;
 
 export const PROOF_GAP_REFUSALS = [

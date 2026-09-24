@@ -42,14 +42,14 @@ export const HOSTER_OPTIONS = [
 ] as const satisfies readonly { value: Hoster; label: string }[];
 
 export const OUTCOME_OPTIONS = [
-  { value: 'consultation', label: 'Consultation — diagnose the path / proof gap ($300)' },
-  { value: 'plan', label: 'Proof Sprint — one site, one receipted action I operate' },
-  { value: 'launch', label: 'Launch — money path live on my accounts' },
+  { value: 'consultation', label: 'Consultation: diagnose the path / proof gap ($300)' },
+  { value: 'plan', label: 'Proof Sprint: one site, one receipted action I operate' },
+  { value: 'launch', label: 'Launch: money path live on my accounts' },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
   { value: 'one', label: 'One business, one site' },
-  { value: 'many', label: 'More than one — book an intro' },
+  { value: 'many', label: 'More than one: book an intro' },
 ] as const satisfies readonly { value: Places; label: string }[];
 
 export const QUOTE_CALCULATOR_HEADING = 'Who runs it. What has to work. One price.' as const;
@@ -76,7 +76,7 @@ export const QUOTE_INTRO_LINE =
 
 export const SELF_HOST_HANDOFF = 'Self-host licenses are on revealui.com.' as const;
 
-export const INTRO_HEADING = 'More than one site — book an intro' as const;
+export const INTRO_HEADING = 'More than one site: book an intro' as const;
 
 export const INTRO_BODY =
   'Multi-site is not a calculator quote. We scope it on a 30-minute intro.' as const;

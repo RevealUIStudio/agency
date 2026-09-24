@@ -21,11 +21,11 @@ export const HOME_DOCUMENT_TITLE =
  * Pain is not the document title. Proof stays out of the H1.
  */
 export const HOME_META_DESCRIPTION =
-  'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation $300. Proof Sprint $3,997. Launch $14,500. Book a 30-minute intro on Google Calendar.' as const;
+  'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents: existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation $300. Proof Sprint $3,997. Launch $14,500. Book a 30-minute intro on Google Calendar.' as const;
 
 /** Meta-only known-for proof line. Visible hero breath is pain → result → menu → PROOF. */
 export const HERO_SUBLINE =
-  'Technical founders and small agencies who already run agents — existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout.' as const;
+  'Technical founders and small agencies who already run agents: existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout.' as const;
 
 /** Pain. Promoted above prices. Not the H1. */
 export const HERO_SHOP_LINE =
