@@ -198,7 +198,13 @@ describe('consultation http', () => {
     expect(schedules()).toBe(1);
     expect(desk()).toBe('no-desk-writer');
     expect(emails).toHaveLength(1);
+    expect(emails[0]?.subject).toBe(
+      'RevealUI Studio Consultation, Wed, Jan 7 · 9:00 AM–10:00 AM ET',
+    );
     expect(emails[0]?.text).toContain('Payment received');
+    expect(emails[0]?.text).toContain('When: Wed, Jan 7 · 9:00 AM–10:00 AM ET');
+    expect(emails[0]?.text).toContain('Company: Example Co');
+    expect(emails[0]?.text).not.toContain('sheet writer');
     expect(emails[0]?.text).toContain(paid?.meet_link);
 
     const second = await handleConsultationRequest(

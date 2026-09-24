@@ -1,21 +1,23 @@
 # Consultation confirmation email
 
-TODO for a later sender: deliver this after the calendar event exists. The webhook already sends it when `RESEND_API_KEY` and `RESEND_FROM` are both set. A send failure must not roll back the calendar event.
+Sent after the calendar event exists, when `RESEND_API_KEY` and `RESEND_FROM` are both set. A send failure must not roll back the calendar event. The same sentences are in `app/lib/consultation-buyer.ts`, which the webhook and the calendar invite use.
 
-Subject: `RevealUI Studio Consultation — {name}`
+Subject: `RevealUI Studio Consultation, {Eastern Time range}`
+
+Example range: `Wed, Jan 7 · 9:00 AM–10:00 AM ET`
 
 ```
 Payment received for your RevealUI Studio Consultation.
 
-When: {start} – {end} (America/New_York on the calendar invite)
+When: {Eastern Time range}
 Meet: {meet link, or "The Meet link is on the calendar invite."}
 Company: {company, when present}
-Stage B was added to this payment.
+Stage B ($297) is on this payment.
 OR
-Stage B was not added to this payment.
+This payment is the consultation only.
 
 Prep: send the system you want to look at and the question you want answered. A link is usually enough.
 Questions: founder@revealui.com
 ```
 
-Do not describe Stage B as free, included, or credited on this email. The add-on is either on the Checkout Session or absent.
+Do not describe Stage B as free, included, waived, or credited. The add-on is either on the Checkout Session or absent. Do not put internal desk notes in the email or the calendar invite.

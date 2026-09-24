@@ -11,6 +11,12 @@ import {
 import { publishedCases } from './data/cases';
 import { publishedPress } from './data/press';
 import { RootLayout } from './layouts/RootLayout';
+import {
+  CONSULTATION_BOOK_INTRO,
+  CONSULTATION_CANCEL,
+  CONSULTATION_SUCCESS,
+  STAGE_B_ADDON,
+} from './lib/consultation-buyer';
 import { listSharePacks, resolveShareViewer } from './lib/share-stage-b';
 import { AboutPage } from './routes/AboutPage';
 import { CaseStudyPage } from './routes/CaseStudyPage';
@@ -118,8 +124,7 @@ export function App() {
           component: ConsultationBookPage,
           meta: {
             title: 'Book a Consultation | RevealUI Studio',
-            description:
-              'Pick a weekday 60-minute slot in Eastern Time and pay $300 per hour. Stage B is an optional $297 add-on.',
+            description: `${CONSULTATION_BOOK_INTRO} ${STAGE_B_ADDON}`,
           },
         },
         {
@@ -127,7 +132,7 @@ export function App() {
           component: ConsultationBookSuccessPage,
           meta: {
             title: 'Consultation payment received | RevealUI Studio',
-            description: 'Payment received. A confirmation email with the Meet link follows.',
+            description: CONSULTATION_SUCCESS,
             robots: 'noindex,nofollow',
           },
         },
@@ -136,7 +141,7 @@ export function App() {
           component: ConsultationBookCancelPage,
           meta: {
             title: 'Consultation checkout canceled | RevealUI Studio',
-            description: 'Checkout canceled. The hold expires on its own.',
+            description: CONSULTATION_CANCEL,
             robots: 'noindex,nofollow',
           },
         },

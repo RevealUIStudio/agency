@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { CONSULTATION_SUCCESS, rememberConsultationReceipt } from '@/lib/consultation-buyer';
 import {
   ConsultationBookCancelPage,
   ConsultationBookPage,
@@ -74,13 +75,34 @@ describe('ConsultationBookPage', () => {
       email: 'ada@example.com',
       stage_b: false,
     });
+    expect(sessionStorage.getItem('consultation-receipt')).toBeNull();
   });
 
   it('shows the payment confirmation line', () => {
     render(<ConsultationBookSuccessPage />);
-    expect(
-      screen.getByText('Payment received — confirmation email with Meet link shortly'),
-    ).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_SUCCESS)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'founder@revealui.com' })).toHaveAttribute(
+      'href',
+      'mailto:founder@revealui.com',
+    );
+  });
+
+  it('shows the slot remembered for this booking and hides a different one', () => {
+    window.history.pushState({}, '', '/consultation/book/success?booking=book_ux');
+    rememberConsultationReceipt('book_ux', {
+      label: 'Wed, Jan 7 · 9:00 AM–10:00 AM ET',
+      stageB: false,
+    });
+    const matched = render(<ConsultationBookSuccessPage />);
+    expect(screen.getByText('Wed, Jan 7 · 9:00 AM–10:00 AM ET')).toBeInTheDocument();
+    expect(screen.getByText('This payment is the consultation only.')).toBeInTheDocument();
+    matched.unmount();
+
+    window.history.pushState({}, '', '/consultation/book/success?booking=other');
+    render(<ConsultationBookSuccessPage />);
+    expect(screen.queryByText('Wed, Jan 7 · 9:00 AM–10:00 AM ET')).not.toBeInTheDocument();
+    window.history.pushState({}, '', '/');
+    sessionStorage.removeItem('consultation-receipt');
   });
 
   it('keeps the pay control and fields full width for a narrow viewport', async () => {
@@ -96,10 +118,19 @@ describe('ConsultationBookPage', () => {
     const pay = await screen.findByRole('button', { name: 'Continue to payment' });
     expect(pay.className).toContain('w-full');
     expect(pay.className).toContain('min-h-12');
+    expect(pay.closest('.fixed')?.className).toContain('bottom-[var(--cookie-banner-height,0px)]');
+    expect(screen.getByLabelText('Company (optional)')).toBeInTheDocument();
     const name = screen.getByLabelText('Name');
     expect(name.className).toContain('w-full');
     expect(name.className).toContain('text-base');
     expect(screen.getByRole('checkbox', { name: 'Add Stage B ($297)' })).not.toBeChecked();
+    expect(
+      await screen.findByText('No open slots for 1 hour in the next 3 weeks.'),
+    ).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Consultation length'), { target: { value: '2' } });
+    expect(
+      await screen.findByText('No open slots for 2 hours in the next 3 weeks.'),
+    ).toBeInTheDocument();
   });
 
   it('keeps a device-width viewport on the studio document', () => {

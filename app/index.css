@@ -46,6 +46,12 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem;
+  scroll-padding-bottom: calc(
+    var(--cookie-banner-height, 0px) +
+    var(--consultation-paybar-height, 0px) +
+    1rem
+  );
 }
 
 body {
@@ -54,6 +60,7 @@ body {
   font-family: var(--font-geist-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding-bottom: var(--cookie-banner-height, 0px);
 }
 
 ::selection {

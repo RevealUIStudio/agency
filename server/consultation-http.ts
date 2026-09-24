@@ -129,7 +129,10 @@ function restoreBooking(metadata: Record<string, unknown>, sessionId: string): B
     hours,
     name,
     email,
-    company: null,
+    company:
+      typeof metadata.company === 'string' && metadata.company.trim().length > 0
+        ? metadata.company.trim()
+        : null,
     stage_b: metadata.stage_b === 'true',
     status: 'slot_held',
     expires_at: new Date(0).toISOString(),

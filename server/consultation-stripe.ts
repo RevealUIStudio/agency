@@ -121,6 +121,7 @@ export function stripeFromEnv(
         stageB: input.booking.stage_b,
         buyerEmail: input.booking.email,
         buyerName: input.booking.name,
+        company: input.booking.company,
         successUrl: input.successUrl,
         cancelUrl: input.cancelUrl,
       });
