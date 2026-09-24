@@ -147,6 +147,72 @@ describe('share server', () => {
     expect(queryOwner.audit.entries()[0]?.actor).toBe('guest');
   });
 
+  it('reads a seed from the rewrite landing and ignores a query that fights the path', async () => {
+    const owner = await call('https://revealuistudio.com/api/share?slug=omega&file=home.txt', {
+      host: 'revealuistudio.com',
+      token: OWNER,
+    });
+    expect(owner.response.status).toBe(200);
+    expect(owner.raw).toContain('Client slug: omega');
+    expect(owner.raw).toContain('Route: /');
+    expect(owner.audit.entries()[0]).toMatchObject({ actor: 'owner', decision: 'allow' });
+
+    const guest = await call(
+      'https://omega.revealuistudio.com/api/share/%5Bslug%5D/%5Bfile%5D?slug=omega&file=pack.txt',
+      { host: 'omega.revealuistudio.com' },
+    );
+    expect(guest.response.status).toBe(200);
+    expect(guest.raw).toContain('Denser living pack');
+    expect(guest.response.headers.get('content-type')).toBe('text/plain; charset=utf-8');
+
+    const crossed = await call(
+      'https://acme.revealuistudio.com/api/share?slug=omega&file=pack.txt',
+      {
+        host: 'acme.revealuistudio.com',
+      },
+    );
+    expect(crossed.response.status).toBe(403);
+    expect(crossed.raw).toBe('denied');
+    expect(crossed.raw).not.toContain('Client slug');
+
+    const pathWins = await call(
+      'https://omega.revealuistudio.com/share/omega/pack.txt?slug=acme&file=home.txt',
+      { host: 'omega.revealuistudio.com' },
+    );
+    expect(pathWins.response.status).toBe(200);
+    expect(pathWins.raw).toContain('Denser living pack');
+    expect(pathWins.raw).not.toContain('Stage A shell');
+
+    const traversal = await call(
+      'https://omega.revealuistudio.com/api/share?slug=omega&file=..%2Fhome.txt',
+      { host: 'omega.revealuistudio.com' },
+    );
+    expect(traversal.response.status).toBe(404);
+    expect(traversal.raw).not.toContain('Client slug');
+  });
+
+  it('sends share URLs to the share function ahead of the SPA fallback', () => {
+    const vercel = JSON.parse(readFileSync(path.join(repoRoot, 'vercel.json'), 'utf8')) as {
+      rewrites: { source: string; destination: string }[];
+    };
+    const apiShare = vercel.rewrites.findIndex((rule) => rule.source === '/api/share/:slug/:file');
+    const publicShare = vercel.rewrites.findIndex((rule) => rule.source === '/share/:slug/:file');
+    const catchAll = vercel.rewrites.findIndex((rule) => rule.source === '/(.*)');
+    expect(vercel.rewrites[apiShare]).toEqual({
+      source: '/api/share/:slug/:file',
+      destination: '/api/share?slug=:slug&file=:file',
+    });
+    expect(vercel.rewrites[publicShare]).toEqual({
+      source: '/share/:slug/:file',
+      destination: '/api/share?slug=:slug&file=:file',
+    });
+    expect(apiShare).toBeGreaterThanOrEqual(0);
+    expect(publicShare).toBeGreaterThan(apiShare);
+    expect(catchAll).toBeGreaterThan(publicShare);
+    expect(existsSync(path.join(repoRoot, 'api/share.ts'))).toBe(true);
+    expect(existsSync(path.join(repoRoot, 'api/share/[slug]/[file].ts'))).toBe(false);
+  });
+
   it('lets the owner session read a tenant seed and records the actor', async () => {
     const owner = await call('https://revealuistudio.com/api/share/omega/home.txt', {
       host: 'revealuistudio.com',
