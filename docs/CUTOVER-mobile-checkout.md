@@ -8,7 +8,7 @@ Book → pay order stays: slot hold → Checkout Session → existing webhook �
 
 - No new Stripe webhook. `POST /api/stripe/webhook` and `checkout.session.completed` stay as they are.
 - No promote to production unless Joshua says so.
-- Kayla HOLD SEND is unchanged. Network waive stays on the hosted-invoice / server credit path.
+- Buyer send stays off until a signed book link is smoked on production. Network deals use that link and the Stage B coupon at Checkout. See the network waive section in `docs/CUTOVER.md`. The hosted invoice remains a separate owner path.
 - No public “waived” or “free domain” copy. Online bookers see the optional domain pack, default off.
 - No Stripe price, DNS, or catalog work. Price IDs stay `STRIPE_CONSULTATION_PRICE_ID` and `STRIPE_STAGE_B_PRICE_ID` (defaults already in `app/lib/consultation-checkout.ts`).
 - `automatic_tax` stays off.

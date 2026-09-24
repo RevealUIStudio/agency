@@ -8,23 +8,24 @@ import {
   CONSULTATION_PREP_BODY,
   CONSULTATION_READY_HINT,
   CONSULTATION_SUCCESS,
+  consultationBookDueCents,
   consultationEmptySlots,
   consultationStageLine,
   readConsultationReceipt,
   rememberConsultationReceipt,
   STAGE_B_CHECKBOX,
   STAGE_B_DETAIL,
+  STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
 import {
+  CONSULTATION_HOUR_MAX,
+  CONSULTATION_HOUR_MIN,
   CONSULTATION_HOUR_OPTIONS,
-  consultationDueCents,
-  consultationHourCount,
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
 import { formatUsdFromCents } from '@/lib/money';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL } from '@/lib/site';
-import { STAGE_B_CENTS } from '@/lib/stage-b-invoice';
 
 interface Slot {
   readonly start: string;
@@ -36,6 +37,16 @@ type LoadStatus = 'loading' | 'ready' | 'empty' | 'unconfigured' | 'error';
 
 function assignCheckout(url: string) {
   window.location.assign(url);
+}
+
+function hoursFromLocation(): number {
+  if (typeof window === 'undefined') return DEFAULT_CONSULTATION_HOURS;
+  const raw = new URLSearchParams(window.location.search).get('hours');
+  const count = Number(raw);
+  if (Number.isInteger(count) && count >= CONSULTATION_HOUR_MIN && count <= CONSULTATION_HOUR_MAX) {
+    return count;
+  }
+  return DEFAULT_CONSULTATION_HOURS;
 }
 
 const pageClass = 'min-w-0 max-w-full bg-background py-8 sm:py-24';
@@ -52,7 +63,7 @@ export function ConsultationBookPage({
 }: {
   onCheckout?: (url: string) => void;
 }) {
-  const [hours, setHours] = useState<number>(DEFAULT_CONSULTATION_HOURS);
+  const [hours, setHours] = useState<number>(hoursFromLocation);
   const [slots, setSlots] = useState<readonly Slot[]>([]);
   const [status, setStatus] = useState<LoadStatus>('loading');
   const [selected, setSelected] = useState('');
@@ -60,6 +71,13 @@ export function ConsultationBookPage({
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
   const [stageB, setStageB] = useState(false);
+  const [packOnOrder, setPackOnOrder] = useState(false);
+  const [networkToken, setNetworkToken] = useState('');
+  const [networkReady, setNetworkReady] = useState(false);
+  const [networkPending, setNetworkPending] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return Boolean(new URLSearchParams(window.location.search).get('nw')?.trim());
+  });
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [loadAttempt, setLoadAttempt] = useState(0);
@@ -83,6 +101,36 @@ export function ConsultationBookPage({
       observer.disconnect();
       document.documentElement.style.removeProperty(PAYBAR_HEIGHT_VAR);
     };
+  }, []);
+
+  useEffect(() => {
+    const nw = new URLSearchParams(window.location.search).get('nw')?.trim() ?? '';
+    if (!nw) {
+      setNetworkPending(false);
+      setNetworkReady(true);
+      return;
+    }
+    const controller = new AbortController();
+    fetch(`/api/consultation/network-status?nw=${encodeURIComponent(nw)}`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const body: unknown = await response.json();
+        if (!body || typeof body !== 'object' || !('ok' in body) || body.ok !== true) return;
+        setPackOnOrder(true);
+        setStageB(true);
+        setNetworkToken(nw);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+      })
+      .finally(() => {
+        if (controller.signal.aborted) return;
+        setNetworkPending(false);
+        setNetworkReady(true);
+      });
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
@@ -126,8 +174,9 @@ export function ConsultationBookPage({
     return () => controller.abort();
   }, [hours, loadAttempt]);
 
-  const due = consultationDueCents(consultationHourCount(hours)) + (stageB ? STAGE_B_CENTS : 0);
-  const ready = selected !== '' && name.trim().length > 0 && email.trim().length > 0;
+  const due = consultationBookDueCents(hours, stageB, packOnOrder);
+  const ready =
+    networkReady && selected !== '' && name.trim().length > 0 && email.trim().length > 0;
   const selectedSlot = slots.find((slot) => slot.start === selected);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -148,9 +197,23 @@ export function ConsultationBookPage({
           name: name.trim(),
           email: email.trim(),
           company: company.trim() || undefined,
-          stage_b: stageB,
+          stage_b: packOnOrder || stageB,
+          ...(networkToken ? { network_token: networkToken } : {}),
         }),
       });
+      if (response.status === 400) {
+        const failure: unknown = await response.json().catch(() => null);
+        const code =
+          failure && typeof failure === 'object' && 'error' in failure ? failure.error : '';
+        if (code === 'network-email') {
+          setSubmitError('Use the email this link was issued for.');
+          return;
+        }
+        if (code === 'network-token') {
+          setSubmitError('This link is no longer valid.');
+          return;
+        }
+      }
       if (response.status === 409) {
         setSubmitError('That slot was just taken. Pick another.');
         return;
@@ -304,23 +367,31 @@ export function ConsultationBookPage({
             </label>
           </div>
 
-          <div>
-            <label className="flex min-w-0 cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-              <input
-                type="checkbox"
-                checked={stageB}
-                onChange={(event) => setStageB(event.target.checked)}
-                aria-describedby="consultation-stage-b"
-                className="mt-1 size-5 shrink-0 accent-primary"
-              />
-              <span className="min-w-0 break-words text-base font-medium text-foreground">
-                {STAGE_B_CHECKBOX}
-              </span>
-            </label>
-            <p id="consultation-stage-b" className="mt-2 text-sm text-muted-foreground">
-              {STAGE_B_DETAIL}
+          {networkPending ? (
+            <p className="text-sm text-muted-foreground">Checking this order.</p>
+          ) : packOnOrder ? (
+            <p className="rounded-xl border border-border px-4 py-3 text-base font-medium text-foreground">
+              {STAGE_B_ON_ORDER}
             </p>
-          </div>
+          ) : (
+            <div>
+              <label className="flex min-w-0 cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                <input
+                  type="checkbox"
+                  checked={stageB}
+                  onChange={(event) => setStageB(event.target.checked)}
+                  aria-describedby="consultation-stage-b"
+                  className="mt-1 size-5 shrink-0 accent-primary"
+                />
+                <span className="min-w-0 break-words text-base font-medium text-foreground">
+                  {STAGE_B_CHECKBOX}
+                </span>
+              </label>
+              <p id="consultation-stage-b" className="mt-2 text-sm text-muted-foreground">
+                {STAGE_B_DETAIL}
+              </p>
+            </div>
+          )}
 
           <div>
             <p className="text-sm text-muted-foreground">{CONSULTATION_HOLD_NOTE}</p>

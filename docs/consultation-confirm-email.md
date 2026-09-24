@@ -20,4 +20,4 @@ Prep: send the system you want to look at and the question you want answered. A 
 Questions: founder@revealui.com
 ```
 
-Do not describe the domain pack as free, included, waived, or credited. The add-on is either on the Checkout Session or absent. Do not put internal desk notes in the email or the calendar invite. The Stripe SKU stays stage-b.
+Do not describe the domain pack as free, included, waived, or credited. The add-on is either on the Checkout Session or absent. A network order still uses these sentences: the pack line stays "The domain pack ($297) is on this payment." Do not add a line that the fee was removed. Do not put internal desk notes in the email or the calendar invite. The Stripe SKU stays stage-b.

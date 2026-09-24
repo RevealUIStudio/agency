@@ -1,6 +1,6 @@
 {
   "name": "@revealui-studio/agency",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "RevealUI Studio agency site — services, case studies, hire-us. Hosted at revealuistudio.com.",
   "private": true,
   "type": "module",
@@ -46,6 +46,7 @@
     "changeset": "changeset",
     "changeset:status": "changeset status --since=origin/main",
     "changeset:version": "changeset version",
+    "consultation:mint-network-link": "node --experimental-strip-types scripts/consultation-mint-network-link.ts",
     "clean": "rm -rf dist",
     "dev": "vite dev --port 3001",
     "lint": "biome check .",
