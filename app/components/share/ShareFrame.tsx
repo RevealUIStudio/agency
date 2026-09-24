@@ -1,19 +1,12 @@
 import { Link } from '@revealui/router';
 import type { ReactNode } from 'react';
 import { RouteHead } from '@/components/RouteHead';
+import { SHARE_NAV } from '@/lib/domain-pack';
 import { isShareSeed, SHARE_PATHS } from '@/lib/share-host';
 import { type ChromeLevel, shareChrome } from '@/lib/share-stage-b';
 
 const CIRCUIT_R_NAV_SRC = '/revealui-mark.svg';
 const CIRCUIT_R_NAV_PX = 48;
-
-const SHARE_NAV = [
-  { href: '/', label: 'Home' },
-  { href: '/walkthrough', label: 'Walkthrough' },
-  { href: '/pack', label: 'Pack' },
-  { href: '/onboarding', label: 'Onboarding' },
-  { href: '/demo', label: 'Demo' },
-] as const;
 
 export function ShareFrame({
   slug,

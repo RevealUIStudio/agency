@@ -52,7 +52,7 @@ describe('public studio offers', () => {
     expect(names).not.toContain('Knowledge Graph');
     expect(PROOF_SPRINT.tagline).toBe('One site. One receipted action you operate.');
     expect(PROOF_SPRINT.description).toMatch(/one receipted action you operate/i);
-    expect(PROOF_SPRINT.description).toMatch(/Stage B is included/i);
+    expect(PROOF_SPRINT.description).toMatch(/The domain pack is included/i);
     expect(PROOF_SPRINT.description).toMatch(/45 days/i);
     expect(PROOF_SPRINT.description).not.toMatch(/written plan/i);
     expect(PROOF_SPRINT.description).not.toMatch(/\bdemo\b/i);

@@ -15,6 +15,11 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
+import {
+  DOMAIN_PACK_CREDIT_LABEL,
+  DOMAIN_PACK_DUE_LABEL,
+  DOMAIN_PACK_LIST_LABEL,
+} from '@/lib/domain-pack';
 import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { PRODUCT_SITE_URL } from '@/lib/site';
@@ -56,7 +61,7 @@ export const CONSULTATION_QUOTE_DETAIL =
   'One focused pass on the critical path, proof gaps, or a stuck live flow. Notes + next step. Pay $300 when you book the hour. No leftover site. No holdback.' as const;
 
 export const PROOF_QUOTE_DETAIL =
-  'One site. One receipted action you operate. Stage B is included. You keep it. Invoice $3,997 before we start. Credits 100% to Launch if you start Launch within 45 days.' as const;
+  'One site. One receipted action you operate. The domain pack is included. You keep it. Invoice $3,997 before we start. Credits 100% to Launch if you start Launch within 45 days.' as const;
 
 export const LAUNCH_QUOTE_DETAIL =
   'One live money path on your accounts. Architecture inside this offer. Half now, half on delivery. You own the result.' as const;
@@ -127,7 +132,7 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
     return [
       {
         id: 'stage-b',
-        title: 'Stage B',
+        title: DOMAIN_PACK_LIST_LABEL,
         price: 'Included',
         detail: 'Included with this offer.',
         highlighted: false,
@@ -143,9 +148,9 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
   const lines: QuoteLine[] = [
     {
       id: 'stage-b-list',
-      title: 'Stage B',
+      title: DOMAIN_PACK_LIST_LABEL,
       price: formatUsdFromCents(invoice.listCents),
-      detail: 'List price. Optional add-on.',
+      detail: 'List price. Optional domain pack.',
       highlighted: true,
     },
   ];
@@ -153,14 +158,14 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
     lines.push(
       {
         id: 'stage-b-credit',
-        title: 'Stage B credit',
+        title: DOMAIN_PACK_CREDIT_LABEL,
         price: formatUsdFromCents(invoice.creditCents),
         detail: 'Owner credit against the list price.',
         highlighted: false,
       },
       {
         id: 'stage-b-due',
-        title: 'Stage B due',
+        title: DOMAIN_PACK_DUE_LABEL,
         price: formatUsdFromCents(invoice.dueCents),
         detail: 'List price minus the credit.',
         highlighted: false,

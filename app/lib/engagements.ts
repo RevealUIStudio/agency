@@ -49,7 +49,7 @@ export const PROOF_SPRINT_PRICE = '$3,997' as const;
  */
 export const LAUNCH_PRICE = '$14,500' as const;
 
-/** Stage B share host. Included with Proof Sprint and Launch. Not a homepage SKU. */
+/** Domain pack. $297. Included with Proof Sprint and Launch. Not a homepage SKU. SKU id stays stage-b. */
 export const STAGE_B_PRICE = '$297' as const;
 
 export const CARE_PRICE = '$1,997/mo' as const;
@@ -72,11 +72,11 @@ export const PROOF_SPRINT = {
   price: PROOF_SPRINT_PRICE,
   tagline: 'One site. One receipted action you operate.',
   description:
-    'One site. One receipted action you operate. Stage B is included. Credits 100% to Launch if you start Launch within 45 days.',
+    'One site. One receipted action you operate. The domain pack is included. Credits 100% to Launch if you start Launch within 45 days.',
   includes: [
     'One site',
     'One receipted action you operate',
-    'Stage B included',
+    'Domain pack included',
     '100% credit toward Launch within 45 days',
   ],
   notIncluded: ['A second site', 'Hosted chatbot SaaS', 'Product licenses'],
@@ -90,10 +90,11 @@ export const LAUNCH = {
   price: LAUNCH_PRICE,
   tagline: 'Architecture inside. Runbook. 30-day stabilization.',
   description:
-    'One live flow on your accounts. Architecture work (schema, primitives, review) happens inside this offer, not as a named SKU. You get a runbook and 30 days of async stabilization. Knowledge Graph is part of the runtime (Electric+CRDT), not a fourth Studio offer. We scope it on the call and take it live. You own the result.',
+    'One live flow on your accounts. Architecture work (schema, primitives, review) happens inside this offer, not as a named SKU. The domain pack is included. You get a runbook and 30 days of async stabilization. Knowledge Graph is part of the runtime (Electric+CRDT), not a fourth Studio offer. We scope it on the call and take it live. You own the result.',
   includes: [
     'One live flow on your accounts',
     'Architecture work inside this offer',
+    'Domain pack included',
     'Runbook',
     '30-day async stabilization',
   ],

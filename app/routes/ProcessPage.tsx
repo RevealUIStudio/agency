@@ -110,8 +110,9 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  One site. One receipted action you operate. Stage B is included. Your Vercel, your
-                  model key. Not hosted chatbot SaaS. Product licenses live on revealui.com.
+                  One site. One receipted action you operate. The domain pack is included. Your
+                  Vercel, your model key. Not hosted chatbot SaaS. Product licenses live on
+                  revealui.com.
                 </p>
               </div>
               <div>
@@ -150,9 +151,10 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  A live handoff on your accounts. You own what we ship. You own the accounts and
-                  the data. If we disappear, you still have the company. Not a multi-month platform.
-                  Not an “AI” headline. Not unlimited revisions.
+                  A live handoff on your accounts. The domain pack is included. You own what we
+                  ship. You own the accounts and the data. If we disappear, you still have the
+                  company. Not a multi-month platform. Not an “AI” headline. Not unlimited
+                  revisions.
                 </p>
               </div>
               <div>

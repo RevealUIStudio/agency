@@ -58,6 +58,17 @@ describe('share server', () => {
     expect(allowed.response.status).toBe(200);
     expect(allowed.raw).toContain('Client slug: omega');
     expect(allowed.raw).toContain('Route: /pack');
+    const dns = await call('https://omega.revealuistudio.com/share/omega/dns.txt', {
+      host: 'omega.revealuistudio.com',
+    });
+    expect(dns.response.status).toBe(200);
+    expect(dns.raw).toContain('Route: /dns');
+    expect(dns.raw).toContain('CNAME target: cname.vercel-dns.com');
+    expect(dns.raw).toContain('The studio attaches the DNS.');
+    const pathNote = await call('https://omega.revealuistudio.com/share/omega/path.txt', {
+      host: 'omega.revealuistudio.com',
+    });
+    expect(pathNote.raw).toContain('Path A is the default');
     expect(allowed.response.headers.get('cache-control')).toBe('private, no-store');
     expect(allowed.audit.entries()[0]).toMatchObject({
       action: 'share.read',
@@ -229,7 +240,7 @@ describe('share server', () => {
     const tampered: StageBInvoice = {
       sku: 'stage-b',
       lines: [
-        { kind: 'credit', sku: 'stage-b', label: 'Stage B credit', amountCents: STAGE_B_CENTS },
+        { kind: 'credit', sku: 'stage-b', label: 'Domain pack credit', amountCents: STAGE_B_CENTS },
       ],
       listCents: 0,
       creditCents: STAGE_B_CENTS,

@@ -2,7 +2,8 @@
  * Buyer-facing Consultation copy. The book page, the confirmation email,
  * and the calendar invite share these sentences.
  *
- * Do not describe Stage B as free, included, waived, or credited.
+ * Do not describe the domain pack as free, included, waived, or credited.
+ * The Stripe SKU stays stage-b.
  */
 
 import { formatConsultationRange } from './consultation-slots';
@@ -12,11 +13,12 @@ import { CONTACT_EMAIL } from './site';
 export const CONSULTATION_BOOK_INTRO =
   'Weekday slots in Eastern Time, 9:00 AM to 5:00 PM. $300 per hour. The 30-minute intro stays a separate booking.';
 
-export const STAGE_B_ADDON = `Stage B is an optional ${STAGE_B_PRICE} add-on.`;
+export const STAGE_B_ADDON = `The domain pack is an optional ${STAGE_B_PRICE} add-on.`;
 
-export const STAGE_B_CHECKBOX = `Add Stage B (${STAGE_B_PRICE})`;
+export const STAGE_B_CHECKBOX = `Add the domain pack (${STAGE_B_PRICE})`;
 
-export const STAGE_B_DETAIL = 'Optional add-on. Own host on top of the Stage A share URL.';
+export const STAGE_B_DETAIL =
+  'Optional. Your share opens on a domain you already own, with the path note, proof-gap map, stack sketch, onboarding page, and a short walkthrough. We attach the DNS.';
 
 export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 20 minutes.';
 
@@ -79,7 +81,7 @@ export function consultationEmptySlots(hours: number): string {
 }
 
 export function consultationStageLine(stageB: boolean): string {
-  if (stageB) return `Stage B (${STAGE_B_PRICE}) is on this payment.`;
+  if (stageB) return `The domain pack (${STAGE_B_PRICE}) is on this payment.`;
   return 'This payment is the consultation only.';
 }
 
