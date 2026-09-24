@@ -4,6 +4,7 @@ import {
   STAGE_B_ADDON,
   STAGE_B_CHECKBOX,
   STAGE_B_DETAIL,
+  STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
 import {
   DOMAIN_PACK_CREDIT_LABEL,
@@ -17,7 +18,13 @@ import { SHARE_PATHS } from '@/lib/share-host';
 import { CUSTOM_DOMAIN_CNAME_TARGET } from '@/lib/share-stage-b';
 import { buildStageBInvoice } from '@/lib/stage-b-invoice';
 
-const BUYER_COPY = [STAGE_B_ADDON, STAGE_B_CHECKBOX, STAGE_B_DETAIL, consultationStageLine(true)];
+const BUYER_COPY = [
+  STAGE_B_ADDON,
+  STAGE_B_CHECKBOX,
+  STAGE_B_DETAIL,
+  STAGE_B_ON_ORDER,
+  consultationStageLine(true),
+];
 
 describe('domain pack offer', () => {
   it('names the add-on Domain pack and keeps the public book copy free of a credit', () => {

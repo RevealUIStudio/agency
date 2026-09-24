@@ -10,6 +10,7 @@ import {
   applyPaidSchedule,
   type Booking,
   deskScheduleTransition,
+  stageBFeeOf,
 } from '../app/lib/consultation-booking';
 import { calendarInviteDescription } from '../app/lib/consultation-buyer';
 import type { TimeInterval } from '../app/lib/consultation-slots';
@@ -56,6 +57,12 @@ export interface ConsultationEnv {
   readonly googleImpersonateSubject?: string;
   readonly resendApiKey?: string;
   readonly resendFrom?: string;
+  /** Bearer token for POST /api/consultation/network-link. STUDIO_OWNER_SESSION. */
+  readonly ownerSession?: string;
+  /** HMAC secret for signed network book links. CONSULTATION_NETWORK_WAIVE_SECRET. */
+  readonly networkWaiveSecret?: string;
+  /** Stripe coupon id applied only when stage_b_fee is waived_network. */
+  readonly stageBNetworkCouponId?: string;
 }
 
 function readEnv(env: Record<string, string | undefined>, name: string): string | undefined {
@@ -85,6 +92,9 @@ export function consultationEnvFromProcess(
     googleImpersonateSubject: readEnv(env, 'GOOGLE_IMPERSONATE_SUBJECT'),
     resendApiKey: readEnv(env, 'RESEND_API_KEY'),
     resendFrom: readEnv(env, 'RESEND_FROM'),
+    ownerSession: readEnv(env, 'STUDIO_OWNER_SESSION'),
+    networkWaiveSecret: readEnv(env, 'CONSULTATION_NETWORK_WAIVE_SECRET'),
+    stageBNetworkCouponId: readEnv(env, 'STRIPE_STAGE_B_NETWORK_COUPON_ID'),
   };
 }
 
@@ -298,6 +308,8 @@ function propsOf(booking: Booking): Record<string, string> {
     buyer_email: booking.email,
     company: booking.company ?? '',
     stage_b: booking.stage_b ? 'true' : 'false',
+    stage_b_fee: booking.stage_b_fee,
+    network_jti: booking.network_jti ?? '',
     meet_link: booking.meet_link ?? '',
     stripe_session_id: booking.stripe_session_id ?? '',
   };
@@ -358,7 +370,14 @@ function bookingFromEvent(event: Record<string, unknown>): Booking | null {
     name: typeof props.buyer_name === 'string' ? props.buyer_name : '',
     email: typeof props.buyer_email === 'string' ? props.buyer_email : '',
     company: typeof props.company === 'string' && props.company.length > 0 ? props.company : null,
-    stage_b: props.stage_b === 'true',
+    stage_b:
+      stageBFeeOf(props.stage_b_fee, props.stage_b === 'true') === 'waived_network' ||
+      props.stage_b === 'true',
+    stage_b_fee: stageBFeeOf(props.stage_b_fee, props.stage_b === 'true'),
+    network_jti:
+      typeof props.network_jti === 'string' && props.network_jti.length > 0
+        ? props.network_jti
+        : null,
     status: props.status,
     expires_at: typeof props.expires_at === 'string' ? props.expires_at : new Date(0).toISOString(),
     event_id: eventId,

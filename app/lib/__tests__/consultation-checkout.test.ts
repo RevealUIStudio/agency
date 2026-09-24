@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   CHECKOUT_BILLING_ADDRESS_COLLECTION,
+  CheckoutDiscountError,
   consultationCheckoutLines,
   consultationIntegrationIdentifier,
   DEFAULT_CONSULTATION_PRICE_ID,
@@ -8,6 +9,7 @@ import {
   encodeCheckoutForm,
   INTEGRATION_IDENTIFIER_PREFIX,
   INTEGRATION_IDENTIFIER_SUFFIX_LENGTH,
+  STAGE_B_PRODUCT_ID,
 } from '@/lib/consultation-checkout';
 
 describe('consultationCheckoutLines', () => {
@@ -64,6 +66,7 @@ describe('encodeCheckoutForm', () => {
     expect(params.get('metadata[end]')).toBe('2026-01-07T16:00:00.000Z');
     expect(params.get('metadata[hours]')).toBe('2');
     expect(params.get('metadata[stage_b]')).toBe('false');
+    expect(params.get('metadata[stage_b_fee]')).toBe('none');
     expect(params.get('metadata[buyer_email]')).toBe('ada@example.com');
     expect(params.get('metadata[buyer_name]')).toBe('Ada Buyer');
     expect(params.get('metadata[company]')).toBeNull();
@@ -73,6 +76,7 @@ describe('encodeCheckoutForm', () => {
     expect(params.get('ui_mode')).toBeNull();
     expect(params.get('automatic_tax[enabled]')).toBeNull();
     expect(params.get('allow_promotion_codes')).toBeNull();
+    expect([...params.keys()].some((key) => key.startsWith('discounts'))).toBe(false);
   });
 
   it('omits payment_method_types and keeps booking_id on the Session', () => {
@@ -175,6 +179,80 @@ describe('encodeCheckoutForm', () => {
     expect(params.get('line_items[1][price]')).toBe(DEFAULT_STAGE_B_PRICE_ID);
     expect(params.get('line_items[1][quantity]')).toBe('1');
     expect(params.get('metadata[stage_b]')).toBe('true');
+    expect(params.get('metadata[stage_b_fee]')).toBe('paid_addon');
     expect(params.get('metadata[company]')).toBe('Example Co');
+    expect([...params.keys()].some((key) => key.startsWith('discounts'))).toBe(false);
+    expect(STAGE_B_PRODUCT_ID).toBe('prod_VJMYYocgLrQ7Wd');
+  });
+
+  it('adds the Stage B coupon only when the fee mode is waived_network', () => {
+    const lines = consultationCheckoutLines({ hours: 2, stageB: true });
+    const params = new URLSearchParams(
+      encodeCheckoutForm({
+        lines,
+        bookingId: 'book_net',
+        start: '2026-01-07T14:00:00.000Z',
+        end: '2026-01-07T16:00:00.000Z',
+        hours: 2,
+        stageB: true,
+        stageBFee: 'waived_network',
+        stageBNetworkCouponId: 'stage_b_network_credit',
+        networkJti: 'jti-net',
+        buyerEmail: 'ada@example.com',
+        buyerName: 'Ada Buyer',
+        successUrl: 'https://revealuistudio.com/consultation/book/success?booking=book_net',
+        cancelUrl: 'https://revealuistudio.com/consultation/book/cancel',
+      }),
+    );
+    expect(params.get('line_items[0][price]')).toBe(DEFAULT_CONSULTATION_PRICE_ID);
+    expect(params.get('line_items[0][quantity]')).toBe('2');
+    expect(params.get('line_items[1][price]')).toBe(DEFAULT_STAGE_B_PRICE_ID);
+    expect(params.get('line_items[1][quantity]')).toBe('1');
+    expect(params.get('discounts[0][coupon]')).toBe('stage_b_network_credit');
+    expect(params.get('metadata[stage_b]')).toBe('true');
+    expect(params.get('metadata[stage_b_fee]')).toBe('waived_network');
+    expect(params.get('metadata[network_jti]')).toBe('jti-net');
+  });
+
+  it('refuses a network fee when the coupon id is missing', () => {
+    const lines = consultationCheckoutLines({ hours: 1, stageB: true });
+    expect(() =>
+      encodeCheckoutForm({
+        lines,
+        bookingId: 'book_missing',
+        start: '2026-01-07T14:00:00.000Z',
+        end: '2026-01-07T15:00:00.000Z',
+        hours: 1,
+        stageB: true,
+        stageBFee: 'waived_network',
+        buyerEmail: 'ada@example.com',
+        buyerName: 'Ada Buyer',
+        successUrl: 'https://revealuistudio.com/consultation/book/success?booking=book_missing',
+        cancelUrl: 'https://revealuistudio.com/consultation/book/cancel',
+      }),
+    ).toThrow(CheckoutDiscountError);
+  });
+
+  it('does not apply a coupon id on the stranger Stage B line', () => {
+    const lines = consultationCheckoutLines({ hours: 1, stageB: true });
+    const params = new URLSearchParams(
+      encodeCheckoutForm({
+        lines,
+        bookingId: 'book_stranger',
+        start: '2026-01-07T14:00:00.000Z',
+        end: '2026-01-07T15:00:00.000Z',
+        hours: 1,
+        stageB: true,
+        stageBFee: 'paid_addon',
+        stageBNetworkCouponId: 'stage_b_network_credit',
+        buyerEmail: 'ada@example.com',
+        buyerName: 'Ada Buyer',
+        successUrl: 'https://revealuistudio.com/consultation/book/success?booking=book_stranger',
+        cancelUrl: 'https://revealuistudio.com/consultation/book/cancel',
+      }),
+    );
+    expect(params.get('line_items[1][price]')).toBe(DEFAULT_STAGE_B_PRICE_ID);
+    expect(params.get('metadata[stage_b_fee]')).toBe('paid_addon');
+    expect([...params.keys()].some((key) => key.startsWith('discounts'))).toBe(false);
   });
 });

@@ -14,6 +14,7 @@ export interface StripePort {
     readonly lines: readonly CheckoutLine[];
     readonly successUrl: string;
     readonly cancelUrl: string;
+    readonly stageBNetworkCouponId?: string;
   }): Promise<{ readonly id: string; readonly url: string }>;
 }
 
@@ -119,6 +120,9 @@ export function stripeFromEnv(
         end: input.booking.end,
         hours: input.booking.hours,
         stageB: input.booking.stage_b,
+        stageBFee: input.booking.stage_b_fee,
+        stageBNetworkCouponId: input.stageBNetworkCouponId,
+        networkJti: input.booking.network_jti,
         buyerEmail: input.booking.email,
         buyerName: input.booking.name,
         company: input.booking.company,

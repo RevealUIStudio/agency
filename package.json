@@ -46,6 +46,7 @@
     "changeset": "changeset",
     "changeset:status": "changeset status --since=origin/main",
     "changeset:version": "changeset version",
+    "consultation:mint-network-link": "node --experimental-strip-types scripts/consultation-mint-network-link.ts",
     "clean": "rm -rf dist",
     "dev": "vite dev --port 3001",
     "lint": "biome check .",

@@ -1,15 +1,19 @@
 /**
  * Consultation booking record, request parsing, and the paid transition.
  *
- * A second paid delivery is a no-op. Stage B on this path is the list price
- * only. A `waive` field in the body is ignored.
+ * A second paid delivery is a no-op. Stage B fee mode comes from a verified
+ * network token on the server. Body fields `waive` and `stage_b_fee` are ignored.
  */
 
 import { confirmationSubject, confirmationText } from './consultation-buyer';
 import { CONSULTATION_HOUR_MAX, CONSULTATION_HOUR_MIN } from './consultation-hours';
+import type { NetworkWaiveClaims } from './consultation-network-waive';
 import { HOLD_TTL_MS } from './consultation-slots';
 
 export type BookingStatus = 'slot_held' | 'paid_scheduled';
+
+/** none: pack off. paid_addon: list price. waived_network: pack on, coupon at Checkout. */
+export type StageBFee = 'none' | 'paid_addon' | 'waived_network';
 
 export interface Booking {
   readonly booking_id: string;
@@ -20,6 +24,8 @@ export interface Booking {
   readonly email: string;
   readonly company: string | null;
   readonly stage_b: boolean;
+  readonly stage_b_fee: StageBFee;
+  readonly network_jti: string | null;
   readonly status: BookingStatus;
   readonly expires_at: string;
   readonly event_id: string | null;
@@ -35,6 +41,19 @@ export interface BookInput {
   readonly email: string;
   readonly company: string | null;
   readonly stageB: boolean;
+  readonly stageBFee: StageBFee;
+  readonly networkJti: string | null;
+}
+
+export interface ParsedBook {
+  readonly start: string;
+  readonly end: string;
+  readonly hours: number;
+  readonly name: string;
+  readonly email: string;
+  readonly company: string | null;
+  readonly stageB: boolean;
+  readonly networkToken: string | null;
 }
 
 export interface ConfirmationEmail {
@@ -57,7 +76,12 @@ function isoInstant(value: unknown): string | null {
   return new Date(parsed).toISOString();
 }
 
-export function parseBookBody(raw: unknown): BookInput | null {
+export function stageBFeeOf(value: unknown, stageB: boolean): StageBFee {
+  if (value === 'none' || value === 'paid_addon' || value === 'waived_network') return value;
+  return stageB ? 'paid_addon' : 'none';
+}
+
+export function parseBookBody(raw: unknown): ParsedBook | null {
   const body = asRecord(raw);
   if (!body) return null;
   const start = isoInstant(body.start);
@@ -87,6 +111,14 @@ export function parseBookBody(raw: unknown): BookInput | null {
 
   if (body.stage_b !== undefined && typeof body.stage_b !== 'boolean') return null;
 
+  let networkToken: string | null = null;
+  if (body.network_token !== undefined && body.network_token !== null) {
+    if (typeof body.network_token !== 'string') return null;
+    const trimmed = body.network_token.trim();
+    if (trimmed.length > 4096) return null;
+    networkToken = trimmed.length > 0 ? trimmed : null;
+  }
+
   return {
     start,
     end,
@@ -95,6 +127,41 @@ export function parseBookBody(raw: unknown): BookInput | null {
     email,
     company,
     stageB: body.stage_b === true,
+    networkToken,
+  };
+}
+
+/**
+ * Fee mode is the verified token, or the checkbox. `waive` and `stage_b_fee`
+ * in the body never reach this function.
+ */
+export function bookInputFromNetwork(
+  parsed: ParsedBook,
+  claims: NetworkWaiveClaims | null,
+): BookInput {
+  if (!claims) {
+    return {
+      start: parsed.start,
+      end: parsed.end,
+      hours: parsed.hours,
+      name: parsed.name,
+      email: parsed.email,
+      company: parsed.company,
+      stageB: parsed.stageB,
+      stageBFee: parsed.stageB ? 'paid_addon' : 'none',
+      networkJti: null,
+    };
+  }
+  return {
+    start: parsed.start,
+    end: parsed.end,
+    hours: parsed.hours,
+    name: parsed.name,
+    email: parsed.email,
+    company: parsed.company,
+    stageB: true,
+    stageBFee: 'waived_network',
+    networkJti: claims.jti,
   };
 }
 
@@ -107,7 +174,9 @@ export function createHold(input: BookInput, now: Date, bookingId: string): Book
     name: input.name,
     email: input.email,
     company: input.company,
-    stage_b: input.stageB,
+    stage_b: input.stageBFee === 'waived_network' ? true : input.stageB,
+    stage_b_fee: input.stageBFee,
+    network_jti: input.networkJti,
     status: 'slot_held',
     expires_at: new Date(now.getTime() + HOLD_TTL_MS).toISOString(),
     event_id: null,

@@ -4,13 +4,14 @@ import {
   DEFAULT_CONSULTATION_PRICE_ID,
   DEFAULT_STAGE_B_PRICE_ID,
 } from '../../app/lib/consultation-checkout';
+import { mintNetworkToken } from '../../app/lib/consultation-network-waive';
 import {
   type CalendarPort,
   type ConsultationEnv,
   createMemoryCalendar,
 } from '../consultation-calendar';
 import { type ConsultationDeps, handleConsultationRequest } from '../consultation-http';
-import { type StripePort, stripeSignatureHeader } from '../consultation-stripe';
+import { type StripePort, stripeFromEnv, stripeSignatureHeader } from '../consultation-stripe';
 
 const SECRET = 'whsec_test_consultation';
 const NOW = new Date('2026-01-06T15:00:00.000Z');
@@ -30,12 +31,19 @@ function buyer(extra: Record<string, unknown> = {}) {
   };
 }
 
-function harness(seed: readonly Booking[] = []) {
+function harness(
+  seed: readonly Booking[] = [],
+  envExtra: Partial<ConsultationEnv> = {},
+  stripeOverride?: StripePort,
+) {
   const calendar = createMemoryCalendar(seed);
   const checkouts: Array<{
     lines: readonly { price: string; quantity: number }[];
     successUrl: string;
     cancelUrl: string;
+    stageBFee: string;
+    networkJti: string | null;
+    couponId?: string;
   }> = [];
   const emails: ConfirmationEmail[] = [];
   let schedules = 0;
@@ -54,12 +62,15 @@ function harness(seed: readonly Booking[] = []) {
       return result;
     },
   };
-  const stripe: StripePort = {
+  const stripe: StripePort = stripeOverride ?? {
     async createCheckout(input) {
       checkouts.push({
         lines: input.lines,
         successUrl: input.successUrl,
         cancelUrl: input.cancelUrl,
+        stageBFee: input.booking.stage_b_fee,
+        networkJti: input.booking.network_jti,
+        couponId: input.stageBNetworkCouponId,
       });
       return { id: 'cs_test_1', url: 'https://checkout.stripe.com/c/pay/cs_test_1' };
     },
@@ -69,6 +80,7 @@ function harness(seed: readonly Booking[] = []) {
     stripeWebhookSecret: SECRET,
     publicSiteUrl: 'https://revealuistudio.com',
     calendarId: 'founder',
+    ...envExtra,
   };
   const deps: ConsultationDeps = {
     now: () => NOW,
@@ -88,6 +100,12 @@ function harness(seed: readonly Booking[] = []) {
     schedules: () => schedules,
     desk: () => desk,
   };
+}
+
+function stripePort(fetchImpl: typeof fetch): StripePort {
+  const port = stripeFromEnv('sk_test_consultation', fetchImpl);
+  if (!port) throw new Error('stripe');
+  return port;
 }
 
 function request(path: string, body?: unknown, headers?: HeadersInit): Request {
@@ -111,6 +129,8 @@ describe('consultation http', () => {
       email: 'busy@example.com',
       company: null,
       stage_b: false,
+      stage_b_fee: 'none',
+      network_jti: null,
       status: 'paid_scheduled',
       expires_at: SLOT.start,
       event_id: 'evt_busy',
@@ -158,6 +178,179 @@ describe('consultation http', () => {
       { price: DEFAULT_CONSULTATION_PRICE_ID, quantity: 1 },
       { price: DEFAULT_STAGE_B_PRICE_ID, quantity: 1 },
     ]);
+    expect(checkouts[0]?.stageBFee).toBe('paid_addon');
+    expect(checkouts[0]?.networkJti).toBeNull();
+    expect(checkouts[0]?.couponId).toBeUndefined();
+  });
+
+  it('ignores a forged fee and still omits the coupon', async () => {
+    const forms: string[] = [];
+    const fetchImpl: typeof fetch = async (_url, init) => {
+      forms.push(String(init?.body ?? ''));
+      return new Response(
+        JSON.stringify({ id: 'cs_test_1', url: 'https://checkout.stripe.com/c/pay/cs_test_1' }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      );
+    };
+    const { deps } = harness(
+      [],
+      {
+        networkWaiveSecret: 'network-test-secret',
+        stageBNetworkCouponId: 'stage_b_network_credit',
+      },
+      stripePort(fetchImpl),
+    );
+    const response = await handleConsultationRequest(
+      request(
+        '/api/consultation/book',
+        buyer({
+          stage_b: false,
+          waive: true,
+          stage_b_fee: 'waived_network',
+        }),
+      ),
+      deps,
+    );
+    expect(response.status).toBe(200);
+    const params = new URLSearchParams(forms[0]);
+    expect(params.get('line_items[1][price]')).toBeNull();
+    expect(params.get('metadata[stage_b]')).toBe('false');
+    expect(params.get('metadata[stage_b_fee]')).toBe('none');
+    expect([...params.keys()].some((key) => key.startsWith('discounts'))).toBe(false);
+  });
+
+  it('puts Stage B on the Session and applies the coupon for a signed token', async () => {
+    const forms: string[] = [];
+    const fetchImpl: typeof fetch = async (_url, init) => {
+      forms.push(String(init?.body ?? ''));
+      return new Response(
+        JSON.stringify({ id: 'cs_net', url: 'https://checkout.stripe.com/c/pay/cs_net' }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      );
+    };
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({
+      secret,
+      now: NOW,
+      email: 'ada@example.com',
+      jti: 'jti-http',
+    });
+    const { deps, calendar } = harness(
+      [],
+      {
+        networkWaiveSecret: secret,
+        stageBNetworkCouponId: 'stage_b_network_credit',
+      },
+      stripePort(fetchImpl),
+    );
+    const response = await handleConsultationRequest(
+      request(
+        '/api/consultation/book',
+        buyer({ stage_b: false, waive: true, stage_b_fee: 'paid_addon', network_token: token }),
+      ),
+      deps,
+    );
+    expect(response.status).toBe(200);
+    const params = new URLSearchParams(forms[0]);
+    expect(params.get('line_items[0][price]')).toBe(DEFAULT_CONSULTATION_PRICE_ID);
+    expect(params.get('line_items[0][quantity]')).toBe('1');
+    expect(params.get('line_items[1][price]')).toBe(DEFAULT_STAGE_B_PRICE_ID);
+    expect(params.get('line_items[1][quantity]')).toBe('1');
+    expect(params.get('discounts[0][coupon]')).toBe('stage_b_network_credit');
+    expect(params.get('metadata[stage_b]')).toBe('true');
+    expect(params.get('metadata[stage_b_fee]')).toBe('waived_network');
+    expect(params.get('metadata[network_jti]')).toBe('jti-http');
+    const held = await calendar.get('book_1');
+    expect(held?.stage_b).toBe(true);
+    expect(held?.stage_b_fee).toBe('waived_network');
+    expect(held?.network_jti).toBe('jti-http');
+  });
+
+  it('fails closed when the coupon env is missing on a signed token', async () => {
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({ secret, now: NOW, jti: 'jti-missing' });
+    const { deps, calendar, checkouts } = harness([], { networkWaiveSecret: secret });
+    const response = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ error: 'network-coupon-unconfigured' });
+    expect(checkouts).toHaveLength(0);
+    expect(await calendar.get('book_1')).toBeNull();
+  });
+
+  it('rejects a tampered token and an email-bound token for another buyer', async () => {
+    const secret = 'network-test-secret';
+    const minted = await mintNetworkToken({
+      secret,
+      now: NOW,
+      email: 'kayla@example.com',
+      jti: 'jti-bound',
+    });
+    const tampered = `${minted.token.slice(0, -1)}${minted.token.endsWith('a') ? 'b' : 'a'}`;
+    const { deps, calendar, checkouts } = harness([], {
+      networkWaiveSecret: secret,
+      stageBNetworkCouponId: 'stage_b_network_credit',
+    });
+    const bad = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: tampered })),
+      deps,
+    );
+    expect(bad.status).toBe(400);
+    expect(await bad.json()).toEqual({ error: 'network-token' });
+    const mismatch = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: minted.token })),
+      deps,
+    );
+    expect(mismatch.status).toBe(400);
+    expect(await mismatch.json()).toEqual({ error: 'network-email' });
+    expect(checkouts).toHaveLength(0);
+    expect(await calendar.get('book_1')).toBeNull();
+  });
+
+  it('mints a book link for the owner session and reports token status', async () => {
+    const secret = 'network-test-secret';
+    const { deps } = harness([], {
+      ownerSession: 'owner-token',
+      networkWaiveSecret: secret,
+    });
+    const guest = await handleConsultationRequest(
+      request('/api/consultation/network-link', { role: 'owner', email: 'ada@example.com' }),
+      deps,
+    );
+    expect(guest.status).toBe(403);
+    const minted = await handleConsultationRequest(
+      request(
+        '/api/consultation/network-link',
+        { email: 'Ada@Example.com', hours: 2, ttl_hours: 72 },
+        { authorization: 'Bearer owner-token' },
+      ),
+      deps,
+    );
+    expect(minted.status).toBe(200);
+    const body = (await minted.json()) as { url: string; expires_at: string };
+    expect(body.expires_at).toBe('2026-01-09T15:00:00.000Z');
+    const url = new URL(body.url);
+    expect(url.pathname).toBe('/consultation/book');
+    expect(url.searchParams.get('hours')).toBe('2');
+    const token = url.searchParams.get('nw') ?? '';
+    expect(token.length).toBeGreaterThan(20);
+    const status = await handleConsultationRequest(
+      request(`/api/consultation/network-status?nw=${encodeURIComponent(token)}`),
+      deps,
+    );
+    expect(status.status).toBe(200);
+    expect(await status.json()).toEqual({
+      ok: true,
+      expires_at: '2026-01-09T15:00:00.000Z',
+      email_hint: 'a***@example.com',
+    });
+    const rejected = await handleConsultationRequest(
+      request(`/api/consultation/network-status?nw=${encodeURIComponent(`${token}x`)}`),
+      deps,
+    );
+    expect(await rejected.json()).toEqual({ ok: false });
   });
 
   it('schedules once, stores the Meet link, and ignores a second webhook', async () => {

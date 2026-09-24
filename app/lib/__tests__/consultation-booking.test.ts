@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   applyPaidSchedule,
+  bookInputFromNetwork,
   buildConfirmationEmail,
   createHold,
   deskScheduleTransition,
@@ -9,9 +10,11 @@ import {
 import {
   bookingIdFromCheckoutUrl,
   calendarInviteDescription,
+  consultationBookDueCents,
   readConsultationReceipt,
   rememberConsultationReceipt,
 } from '@/lib/consultation-buyer';
+import { mintNetworkToken } from '@/lib/consultation-network-waive';
 
 const start = '2026-01-07T14:00:00.000Z';
 const end = '2026-01-07T15:00:00.000Z';
@@ -57,6 +60,31 @@ describe('parseBookBody', () => {
       email: 'ada@example.com',
       company: null,
       stageB: false,
+      networkToken: null,
+    });
+    expect(parsed).not.toHaveProperty('stageBFee');
+  });
+
+  it('keeps a network token and ignores a forged fee field', () => {
+    const parsed = parseBookBody({
+      start,
+      end,
+      name: 'Ada Buyer',
+      email: 'ada@example.com',
+      stage_b: false,
+      stage_b_fee: 'waived_network',
+      waive: true,
+      network_token: '  signed-token  ',
+    });
+    expect(parsed).toMatchObject({
+      stageB: false,
+      networkToken: 'signed-token',
+    });
+    if (!parsed) throw new Error('parsed');
+    expect(bookInputFromNetwork(parsed, null)).toMatchObject({
+      stageB: false,
+      stageBFee: 'none',
+      networkJti: null,
     });
   });
 });
@@ -73,6 +101,8 @@ describe('applyPaidSchedule', () => {
         email: 'ada@example.com',
         company: null,
         stageB: false,
+        stageBFee: 'none',
+        networkJti: null,
       },
       now,
       'book_1',
@@ -110,6 +140,8 @@ describe('buildConfirmationEmail', () => {
       email: 'ada@example.com',
       company: 'Example Co',
       stage_b: false,
+      stage_b_fee: 'none',
+      network_jti: null,
       status: 'paid_scheduled',
       expires_at: start,
       event_id: 'evt_book_1',
@@ -137,5 +169,30 @@ describe('buildConfirmationEmail', () => {
     expect(invite).toContain('The domain pack ($297) is on this payment.');
     expect(invite).not.toMatch(/sheet writer/i);
     expect(invite).not.toMatch(/included|waiv|free/i);
+  });
+
+  it('charges Consultation only while a verified network token keeps the pack on the order', async () => {
+    expect(consultationBookDueCents(1, true, true)).toBe(30_000);
+    expect(consultationBookDueCents(2, true, true)).toBe(60_000);
+    expect(consultationBookDueCents(1, true, false)).toBe(59_700);
+    expect(consultationBookDueCents(1, false, false)).toBe(30_000);
+    const parsed = parseBookBody({
+      start,
+      end,
+      name: 'Ada Buyer',
+      email: 'ada@example.com',
+      stage_b: false,
+    });
+    const { claims } = await mintNetworkToken({
+      secret: 'network-test-secret',
+      now: new Date('2026-01-06T15:00:00.000Z'),
+      jti: 'jti-due',
+    });
+    if (!parsed) throw new Error('parsed');
+    expect(bookInputFromNetwork(parsed, claims)).toMatchObject({
+      stageB: true,
+      stageBFee: 'waived_network',
+      networkJti: 'jti-due',
+    });
   });
 });
