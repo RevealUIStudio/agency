@@ -16,12 +16,6 @@ export const DEFAULT_CONSULTATION_PRICE_ID = 'price_1TxpQTJz64n6uEibitNE5eJP' as
 export const DEFAULT_STAGE_B_PRICE_ID = 'price_1UIjpPJz64n6uEibxJOYKJ3t' as const;
 
 /**
- * Live Stage B product. The network coupon must apply only to this product.
- * Cutover sets that restriction. Checkout still charges the Price above.
- */
-export const STAGE_B_PRODUCT_ID = 'prod_VJMYYocgLrQ7Wd' as const;
-
-/**
  * Collect a billing address only when the payment method or tax needs one.
  * automatic_tax stays off; this does not turn tax on.
  */

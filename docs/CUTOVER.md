@@ -55,7 +55,7 @@ After the network-waive PR is on `test` and CI is green. This change does not cr
 | # | Step | Lane | Notes |
 |---|------|------|-------|
 | 1 | Confirm the PR on `test` is green | Bot | Agency network-waive PR |
-| 2 | Create the live Stripe Coupon | Bot (Stripe connector) | `id=stage_b_network_credit` (or paste the RESULT id) · `percent_off=100` · `duration=once` · `applies_to[products][]=prod_VJMYYocgLrQ7Wd` · name **Network credit** (Checkout-facing) · metadata `studio_offer_lock=2026-09-22`, `purpose=stage_b_network` |
+| 2 | Create the live Stripe Coupon | Bot (Stripe connector) | `id=stage_b_network_credit` (or paste the RESULT id) · `percent_off=100` · `duration=once` · `applies_to` the product that owns the live Stage B price (`price_1UIjpPJz64n6uEibxJOYKJ3t`, or `STRIPE_STAGE_B_PRICE_ID` when that env is set). Look the product up from that Price in the Stripe Dashboard or API. Do not paste a product id into this repo. Name **Network credit** (Checkout-facing) · metadata `studio_offer_lock=2026-09-22`, `purpose=stage_b_network` |
 | 3 | Set env on Preview and Production | Bot / RevVault | `STRIPE_STAGE_B_NETWORK_COUPON_ID=<id>` · `CONSULTATION_NETWORK_WAIVE_SECRET=<random 32+ bytes>` — never print the secret in chat |
 | 4 | Redeploy Preview (git-test) | Bot | Vercel revealui-agency |
 | 5 | Mint one test link | Owner or Bot with the secret | `POST /api/consultation/network-link` with the owner session, or `pnpm consultation:mint-network-link` |
@@ -66,7 +66,7 @@ After the network-waive PR is on `test` and CI is green. This change does not cr
 
 `pnpm consultation:mint-network-link` reads `CONSULTATION_NETWORK_WAIVE_SECRET` and `PUBLIC_SITE_URL`. Optional flags: `--email`, `--hours`, `--ttl-hours` (default 72, max 336). It prints `{ url, expires_at }` and does not print the secret.
 
-The coupon's product restriction is Stripe-side (`prod_VJMYYocgLrQ7Wd`, price `price_1UIjpPJz64n6uEibxJOYKJ3t`). Application code only reads `STRIPE_STAGE_B_NETWORK_COUPON_ID`.
+The coupon's product restriction is Stripe-side. Resolve the product from the live Stage B price (`price_1UIjpPJz64n6uEibxJOYKJ3t`, or `STRIPE_STAGE_B_PRICE_ID` when set), then set `applies_to` to that product. Application code only reads `STRIPE_STAGE_B_NETWORK_COUPON_ID` and sends the Stage B price id.
 
 ### Refuse
 

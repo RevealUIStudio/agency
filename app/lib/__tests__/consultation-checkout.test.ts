@@ -9,7 +9,6 @@ import {
   encodeCheckoutForm,
   INTEGRATION_IDENTIFIER_PREFIX,
   INTEGRATION_IDENTIFIER_SUFFIX_LENGTH,
-  STAGE_B_PRODUCT_ID,
 } from '@/lib/consultation-checkout';
 
 describe('consultationCheckoutLines', () => {
@@ -182,7 +181,6 @@ describe('encodeCheckoutForm', () => {
     expect(params.get('metadata[stage_b_fee]')).toBe('paid_addon');
     expect(params.get('metadata[company]')).toBe('Example Co');
     expect([...params.keys()].some((key) => key.startsWith('discounts'))).toBe(false);
-    expect(STAGE_B_PRODUCT_ID).toBe('prod_VJMYYocgLrQ7Wd');
   });
 
   it('adds the Stage B coupon only when the fee mode is waived_network', () => {
