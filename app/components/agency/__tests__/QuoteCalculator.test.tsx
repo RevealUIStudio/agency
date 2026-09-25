@@ -36,7 +36,9 @@ describe('QuoteCalculator', () => {
 
     expect(screen.getByText(QUOTE_CALCULATOR_LEAD)).toBeInTheDocument();
     expect(QUOTE_CALCULATOR_LEAD).toMatch(/PROOF means a receipted action/);
-    expect(QUOTE_CALCULATOR_LEAD).toMatch(/not outcome validation or proof of work/);
+    expect(QUOTE_CALCULATOR_LEAD).toMatch(/not outcome validation\./);
+    expect(QUOTE_CALCULATOR_LEAD).not.toMatch(/proof of work/i);
+    expect(screen.getByText(/Google Calendar \/ Google Meet/)).toBeInTheDocument();
     expect(screen.queryByText(/Same tool as the product site/)).not.toBeInTheDocument();
     expect(screen.getByText(CONSULTATION.price)).toBeInTheDocument();
     expect(screen.getByText(PROOF_SPRINT.price)).toBeInTheDocument();

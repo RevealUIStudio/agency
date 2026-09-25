@@ -55,7 +55,7 @@ export const PLACES_OPTIONS = [
 export const QUOTE_CALCULATOR_HEADING = 'Who runs it. What has to work. One price.' as const;
 
 export const QUOTE_CALCULATOR_LEAD =
-  'Studio quotes only: Consultation $300, Proof Sprint $3,997, Launch $14,500. Solutions for critical-path ownership, agents without PROOF, and a live money path. PROOF means a receipted action, not outcome validation or proof of work. Licenses live on revealui.com.' as const;
+  'Studio quotes only: Consultation $300, Proof Sprint $3,997, Launch $14,500. Solutions for critical-path ownership, agents without PROOF, and a live money path. PROOF means a receipted action, not outcome validation. Licenses live on revealui.com.' as const;
 
 export const CONSULTATION_QUOTE_DETAIL =
   'One focused pass on the critical path, proof gaps, or a stuck live flow. Notes + next step. Pay $300 when you book the hour. No leftover site. No holdback.' as const;
@@ -72,7 +72,7 @@ export const QUOTE_OWNERSHIP = [
 ] as const;
 
 export const QUOTE_INTRO_LINE =
-  'Want a human? Book a 30-minute intro (Google Calendar / Meet).' as const;
+  'Want a human? Book a 30-minute intro (Google Calendar / Google Meet).' as const;
 
 export const SELF_HOST_HANDOFF = 'Self-host licenses are on revealui.com.' as const;
 

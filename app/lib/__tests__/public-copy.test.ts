@@ -452,7 +452,10 @@ describe('public copy gates', () => {
     expect(quote).toContain("label: 'Proof Sprint: one site, one receipted action I operate'");
     expect(quote).toContain("label: 'Launch: money path live on my accounts'");
     expect(quote).toContain('PROOF means a receipted action');
-    expect(quote).toContain('not outcome validation or proof of work');
+    expect(quote).toContain('not outcome validation.');
+    expect(quote).not.toMatch(/proof of work/i);
+    expect(quote).toContain('Google Calendar / Google Meet');
+    expect(quote).not.toContain('Google Calendar / Meet)');
     expect(quote).not.toMatch(/free website/i);
   });
 
