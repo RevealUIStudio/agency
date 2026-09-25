@@ -1,5 +1,11 @@
 # @revealui-studio/agency
 
+## 0.3.2
+
+### Patch Changes
+
+- 8638ac5: Book a Consultation uses the RevealUI booking calendar and form primitives.
+
 ## 0.3.1
 
 ### Patch Changes
