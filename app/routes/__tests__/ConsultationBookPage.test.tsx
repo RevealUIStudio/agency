@@ -257,6 +257,44 @@ describe('ConsultationBookPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows the unconfigured calendar state when booking is not set up', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ error: 'calendar-unconfigured' }), {
+          status: 503,
+          headers: { 'content-type': 'application/json' },
+        }),
+      ),
+    );
+    render(<ConsultationBookPage />);
+    expect(
+      await screen.findByText('Booking is not available on this server yet.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('radio')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Continue to payment' })).toBeDisabled();
+  });
+
+  it('retries a failed slot load from the presentation button', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', () => {
+      calls += 1;
+      if (calls === 1) return Promise.resolve(new Response('no', { status: 500 }));
+      return Promise.resolve(
+        new Response(JSON.stringify({ timezone: 'America/New_York', hours: 1, slots: [] }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+      );
+    });
+    render(<ConsultationBookPage />);
+    expect(await screen.findByText('Could not load open slots.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    expect(
+      await screen.findByText('No open slots for 1 hour in the next 3 weeks.'),
+    ).toBeInTheDocument();
+    expect(calls).toBeGreaterThan(1);
+  });
+
   it('keeps a device-width viewport on the studio document', () => {
     const html = readFileSync(resolve(process.cwd(), 'index.html'), 'utf8');
     expect(html).toContain('name="viewport"');
