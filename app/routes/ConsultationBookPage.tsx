@@ -1,3 +1,17 @@
+import {
+  BookingCalendar,
+  type BookingCalendarStatus,
+  type BookingSlot,
+  Button,
+  Checkbox,
+  CheckboxField,
+  Description,
+  FormField,
+  Input,
+  Label,
+  LinkButton,
+  Select,
+} from '@revealui/presentation';
 import { type FormEvent, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   bookingIdFromCheckoutUrl,
@@ -5,12 +19,18 @@ import {
   CONSULTATION_BOOK_INTRO,
   CONSULTATION_CANCEL,
   CONSULTATION_HOLD_NOTE,
+  CONSULTATION_MEET_FALLBACK,
   CONSULTATION_PREP_BODY,
   CONSULTATION_READY_HINT,
   CONSULTATION_SUCCESS,
+  CONSULTATION_SUCCESS_LOADING,
+  CONSULTATION_SUCCESS_MISSING,
+  CONSULTATION_SUCCESS_PENDING,
+  type ConsultationBookingView,
   consultationBookDueCents,
   consultationEmptySlots,
   consultationStageLine,
+  parseConsultationBookingPayload,
   readConsultationReceipt,
   rememberConsultationReceipt,
   STAGE_B_CHECKBOX,
@@ -24,6 +44,7 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
+import { formatConsultationRange } from '@/lib/consultation-slots';
 import { formatUsdFromCents } from '@/lib/money';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL } from '@/lib/site';
 
@@ -33,7 +54,10 @@ interface Slot {
   readonly label: string;
 }
 
-type LoadStatus = 'loading' | 'ready' | 'empty' | 'unconfigured' | 'error';
+interface CalendarFocus {
+  readonly day: Date | null;
+  readonly month: Date;
+}
 
 function assignCheckout(url: string) {
   window.location.assign(url);
@@ -49,13 +73,44 @@ function hoursFromLocation(): number {
   return DEFAULT_CONSULTATION_HOURS;
 }
 
+function instantDate(start: string): Date | null {
+  const date = new Date(start);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function sameLocalDay(start: string, day: Date): boolean {
+  const date = instantDate(start);
+  if (!date) return false;
+  return (
+    date.getFullYear() === day.getFullYear() &&
+    date.getMonth() === day.getMonth() &&
+    date.getDate() === day.getDate()
+  );
+}
+
+function earliestSlotDate(slots: readonly Slot[]): Date | null {
+  let earliest: Date | null = null;
+  for (const slot of slots) {
+    const date = instantDate(slot.start);
+    if (!date) continue;
+    if (!earliest || date.getTime() < earliest.getTime()) earliest = date;
+  }
+  return earliest;
+}
+
+function dayWithSlots(slots: readonly Slot[], day: Date | null): Date | null {
+  if (slots.length === 0) return day;
+  if (day && slots.some((slot) => sameLocalDay(slot.start, day))) return day;
+  return earliestSlotDate(slots);
+}
+
+function slotStart(slot: BookingSlot): string {
+  return typeof slot.start === 'string' ? slot.start : slot.start.toISOString();
+}
+
 const pageClass = 'min-w-0 max-w-full bg-background py-8 sm:py-24';
 const frameClass = 'mx-auto min-w-0 max-w-3xl px-4 sm:px-6';
 const headingClass = 'break-words text-3xl font-bold tracking-tight text-foreground sm:text-5xl';
-const fieldClass =
-  'w-full min-w-0 max-w-full rounded-xl border border-border bg-card px-4 py-3 text-base font-medium text-foreground';
-const payClass =
-  'inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground';
 const PAYBAR_HEIGHT_VAR = '--consultation-paybar-height';
 
 export function ConsultationBookPage({
@@ -65,8 +120,9 @@ export function ConsultationBookPage({
 }) {
   const [hours, setHours] = useState<number>(hoursFromLocation);
   const [slots, setSlots] = useState<readonly Slot[]>([]);
-  const [status, setStatus] = useState<LoadStatus>('loading');
+  const [status, setStatus] = useState<BookingCalendarStatus>('loading');
   const [selected, setSelected] = useState('');
+  const [focus, setFocus] = useState<CalendarFocus>(() => ({ day: null, month: new Date() }));
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
@@ -166,6 +222,10 @@ export function ConsultationBookPage({
         }
         setSlots(next);
         setStatus(next.length === 0 ? 'empty' : 'ready');
+        setFocus((current) => {
+          const day = dayWithSlots(next, current.day);
+          return { day, month: day ?? current.month };
+        });
       })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === 'AbortError') return;
@@ -178,6 +238,12 @@ export function ConsultationBookPage({
   const ready =
     networkReady && selected !== '' && name.trim().length > 0 && email.trim().length > 0;
   const selectedSlot = slots.find((slot) => slot.start === selected);
+  const calendarSlots: BookingSlot[] = slots.map((slot) => ({
+    id: slot.start,
+    start: slot.start,
+    end: slot.end,
+    label: slot.label,
+  }));
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -261,110 +327,89 @@ export function ConsultationBookPage({
           className="mt-4 space-y-5 pb-[calc(var(--consultation-paybar-height,12rem)+1rem)] sm:mt-10 sm:space-y-8"
           onSubmit={onSubmit}
         >
-          <div>
-            <label
-              htmlFor="consultation-book-hours"
-              className="text-base font-semibold text-foreground"
-            >
-              Consultation length
-            </label>
-            <select
+          <FormField id="consultation-book-hours" label="Consultation length">
+            <Select
               id="consultation-book-hours"
               value={hours}
               onChange={(event) => setHours(Number(event.target.value))}
-              className={`mt-4 ${fieldClass}`}
             >
               {CONSULTATION_HOUR_OPTIONS.map((count) => (
                 <option key={count} value={count}>
                   {consultationHourLabel(count)}
                 </option>
               ))}
-            </select>
+            </Select>
+          </FormField>
+
+          <div className="space-y-4">
+            <BookingCalendar
+              aria-label="Consultation calendar"
+              disableDaysWithoutSlots
+              id="consultation-open-slots"
+              messages={{
+                loading: 'Loading open slots.',
+                emptyTitle: consultationEmptySlots(hours),
+                emptyDescription: '',
+                errorTitle: 'Could not load open slots.',
+                errorDescription: '',
+                unconfiguredTitle: 'Booking is not available on this server yet.',
+                unconfiguredDescription: '',
+                slotsLabel: 'Open slots',
+                noSlotsTitle: 'No open slots this day.',
+                noSlotsDescription: '',
+              }}
+              month={focus.month}
+              name="slot"
+              onChange={(slot) => setSelected(slot ? slotStart(slot) : '')}
+              onMonthChange={(month) => setFocus((current) => ({ ...current, month }))}
+              onSelectedDateChange={(date) => setFocus({ day: date, month: date })}
+              selectedDate={focus.day}
+              slots={calendarSlots}
+              status={status}
+              value={selected === '' ? null : selected}
+            />
+            {status === 'error' ? (
+              <Button
+                appearance="outline"
+                className="w-full min-h-12"
+                onClick={() => setLoadAttempt((attempt) => attempt + 1)}
+                size="lg"
+                type="button"
+                variant="neutral"
+              >
+                Try again
+              </Button>
+            ) : null}
           </div>
 
-          <fieldset>
-            <legend className="text-base font-semibold text-foreground">Open slots</legend>
-            {status === 'loading' ? (
-              <p className="mt-4 text-sm text-muted-foreground">Loading open slots.</p>
-            ) : null}
-            {status === 'unconfigured' ? (
-              <p className="mt-4 text-sm text-muted-foreground">
-                Booking is not available on this server yet.
-              </p>
-            ) : null}
-            {status === 'error' ? (
-              <div className="mt-4">
-                <p className="text-sm text-muted-foreground">Could not load open slots.</p>
-                <button
-                  type="button"
-                  className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-base font-semibold text-foreground"
-                  onClick={() => setLoadAttempt((attempt) => attempt + 1)}
-                >
-                  Try again
-                </button>
-              </div>
-            ) : null}
-            {status === 'empty' ? (
-              <p className="mt-4 text-sm text-muted-foreground">{consultationEmptySlots(hours)}</p>
-            ) : null}
-            {status === 'ready' ? (
-              <div className="mt-4 space-y-3">
-                {slots.map((slot) => (
-                  <label
-                    key={slot.start}
-                    className="flex min-w-0 cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5"
-                  >
-                    <input
-                      type="radio"
-                      name="slot"
-                      value={slot.start}
-                      checked={selected === slot.start}
-                      onChange={() => setSelected(slot.start)}
-                      className="mt-1 size-5 shrink-0 accent-primary"
-                    />
-                    <span className="min-w-0 break-words text-base font-medium text-foreground">
-                      {slot.label}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            ) : null}
-          </fieldset>
-
           <div className="grid grid-cols-1 gap-4">
-            <label className="text-sm font-semibold text-foreground" htmlFor="consultation-name">
-              Name
-              <input
+            <FormField id="consultation-name" label="Name">
+              <Input
                 id="consultation-name"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 autoComplete="name"
                 required
-                className={`mt-2 ${fieldClass}`}
               />
-            </label>
-            <label className="text-sm font-semibold text-foreground" htmlFor="consultation-email">
-              Email
-              <input
+            </FormField>
+            <FormField id="consultation-email" label="Email">
+              <Input
                 id="consultation-email"
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 autoComplete="email"
                 required
-                className={`mt-2 ${fieldClass}`}
               />
-            </label>
-            <label className="text-sm font-semibold text-foreground" htmlFor="consultation-company">
-              Company (optional)
-              <input
+            </FormField>
+            <FormField id="consultation-company" label="Company (optional)">
+              <Input
                 id="consultation-company"
                 value={company}
                 onChange={(event) => setCompany(event.target.value)}
                 autoComplete="organization"
-                className={`mt-2 ${fieldClass}`}
               />
-            </label>
+            </FormField>
           </div>
 
           {networkPending ? (
@@ -375,21 +420,18 @@ export function ConsultationBookPage({
             </p>
           ) : (
             <div>
-              <label className="flex min-w-0 cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                <input
-                  type="checkbox"
-                  checked={stageB}
-                  onChange={(event) => setStageB(event.target.checked)}
+              <CheckboxField className="rounded-xl border border-border px-4 py-3">
+                <Checkbox
                   aria-describedby="consultation-stage-b"
-                  className="mt-1 size-5 shrink-0 accent-primary"
+                  aria-labelledby="consultation-stage-b-label"
+                  checked={stageB}
+                  onChange={setStageB}
                 />
-                <span className="min-w-0 break-words text-base font-medium text-foreground">
-                  {STAGE_B_CHECKBOX}
-                </span>
-              </label>
-              <p id="consultation-stage-b" className="mt-2 text-sm text-muted-foreground">
+                <Label id="consultation-stage-b-label">{STAGE_B_CHECKBOX}</Label>
+              </CheckboxField>
+              <Description className="mt-2" id="consultation-stage-b">
                 {STAGE_B_DETAIL}
-              </p>
+              </Description>
             </div>
           )}
 
@@ -419,13 +461,15 @@ export function ConsultationBookPage({
                 <p className="mt-2 text-sm text-muted-foreground">{CONSULTATION_READY_HINT}</p>
               ) : null}
               {submitError ? <p className="mt-2 text-sm text-foreground">{submitError}</p> : null}
-              <button
-                type="submit"
+              <Button
+                className="mt-2 w-full min-h-12 sm:mt-3"
                 disabled={!ready || submitting}
-                className={`${payClass} mt-2 disabled:opacity-50 sm:mt-3`}
+                isLoading={submitting}
+                size="lg"
+                type="submit"
               >
                 {submitting ? 'Starting checkout' : 'Continue to payment'}
-              </button>
+              </Button>
             </div>
           </div>
         </form>
@@ -434,28 +478,82 @@ export function ConsultationBookPage({
   );
 }
 
+function bookingIdFromLocation(): string {
+  if (typeof window === 'undefined') return '';
+  return new URLSearchParams(window.location.search).get('booking')?.trim() ?? '';
+}
+
 export function ConsultationBookSuccessPage() {
-  const bookingId =
-    typeof window === 'undefined'
-      ? ''
-      : (new URLSearchParams(window.location.search).get('booking') ?? '');
+  const bookingId = bookingIdFromLocation();
   const receipt = readConsultationReceipt(bookingId);
+  const [view, setView] = useState<ConsultationBookingView | 'loading' | 'error'>(
+    bookingId ? 'loading' : { kind: 'missing' },
+  );
+
+  useEffect(() => {
+    if (!bookingId) return;
+    let cancelled = false;
+    const url = `/api/consultation/booking?booking=${encodeURIComponent(bookingId)}`;
+    fetch(url)
+      .then(async (response) => {
+        if (!response.ok) throw new Error('booking');
+        return response.json() as Promise<unknown>;
+      })
+      .then((body) => {
+        if (!cancelled) setView(parseConsultationBookingPayload(body));
+      })
+      .catch(() => {
+        if (!cancelled) setView('error');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [bookingId]);
+
+  const paid = typeof view === 'object' && view.kind === 'paid' ? view : null;
+  const whenLabel = paid
+    ? formatConsultationRange(new Date(paid.start), new Date(paid.end))
+    : (receipt?.label ?? null);
+  const stageB = paid ? paid.stageB : receipt ? receipt.stageB : null;
+  const meetUrl = paid?.meetLink ?? null;
+  const pending = typeof view === 'object' && view.kind === 'pending';
+  let meetCopy = CONSULTATION_MEET_FALLBACK;
+  if (view === 'loading') meetCopy = CONSULTATION_SUCCESS_LOADING;
+  else if (pending) meetCopy = CONSULTATION_SUCCESS_PENDING;
+  else if (!meetUrl && !whenLabel) meetCopy = CONSULTATION_SUCCESS_MISSING;
+
   return (
     <section className={pageClass}>
       <div className={frameClass}>
         <h1 className={headingClass}>Consultation booked</h1>
-        {receipt ? (
-          <>
-            <p className="mt-6 break-words text-base font-semibold text-foreground">
-              {receipt.label}
-            </p>
-            <p className="mt-2 break-words text-base text-muted-foreground">
-              {consultationStageLine(receipt.stageB)}
-            </p>
-          </>
-        ) : null}
         <p className="mt-6 break-words text-lg text-muted-foreground">{CONSULTATION_SUCCESS}</p>
-        <p className="mt-4 break-words text-base text-muted-foreground">{CONSULTATION_PREP_BODY}</p>
+        {whenLabel ? (
+          <div className="mt-6">
+            <p className="text-sm font-semibold text-foreground">When</p>
+            <p className="mt-1 break-words text-base font-semibold text-foreground">{whenLabel}</p>
+          </div>
+        ) : null}
+        {meetUrl ? (
+          <p className="mt-4 break-words text-base text-foreground">
+            Google Meet:{' '}
+            <a href={meetUrl} className="break-all font-semibold text-foreground hover:underline">
+              {meetUrl}
+            </a>
+          </p>
+        ) : (
+          <p className="mt-4 break-words text-base text-muted-foreground">{meetCopy}</p>
+        )}
+        {stageB !== null ? (
+          <p className="mt-4 break-words text-base text-muted-foreground">
+            {consultationStageLine(stageB)}
+          </p>
+        ) : null}
+        <div className="mt-4">
+          <p className="text-sm font-semibold text-foreground">Prep</p>
+          <p className="mt-1 break-words text-base text-muted-foreground">
+            {CONSULTATION_PREP_BODY}
+          </p>
+        </div>
         <p className="mt-4 break-words text-base text-muted-foreground">
           Questions:{' '}
           <a
@@ -477,9 +575,9 @@ export function ConsultationBookCancelPage() {
         <h1 className={headingClass}>Checkout canceled</h1>
         <p className="mt-6 break-words text-lg text-muted-foreground">{CONSULTATION_CANCEL}</p>
         <p className="mt-6">
-          <a href={CONSULTATION_BOOK_PATH} className={payClass}>
+          <LinkButton className="w-full min-h-12" href={CONSULTATION_BOOK_PATH} size="lg">
             Pick another time
-          </a>
+          </LinkButton>
         </p>
       </div>
     </section>

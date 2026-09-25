@@ -6,8 +6,9 @@
  *
  * Order is load-bearing: `save_slot` before `create_checkout_session`.
  * Stage B on the public path is an optional paid add-on. Network credit is
- * a signed book link plus a server coupon. This module does not send mail.
- * The buyer invite is the Calendar event with Google Meet.
+ * a signed book link plus a server coupon. Buyer confirmation does not send
+ * mail. The buyer invite is the Calendar event with Google Meet.
+ * `notify_owner_paid` emails founder@revealui.com only.
  */
 
 import {
@@ -24,6 +25,7 @@ import {
   type CheckoutLine,
   consultationCheckoutLines,
 } from './consultation-checkout';
+import { buildOwnerPaidNotice, type OwnerPaidNotice } from './consultation-owner';
 import { generateConsultationSlots, type TimeInterval } from './consultation-slots';
 
 export type HumanGate = 'none' | 'draft_only' | 'owner_send' | 'owner_secrets';
@@ -32,12 +34,14 @@ export type ConsultationActionId =
   | 'save_slot'
   | 'create_checkout_session'
   | 'write_calendar_meet_on_pay'
+  | 'notify_owner_paid'
   | 'send_confirm_email';
 
 export const CONSULTATION_ACTION_ORDER = [
   'save_slot',
   'create_checkout_session',
   'write_calendar_meet_on_pay',
+  'notify_owner_paid',
   'send_confirm_email',
 ] as const satisfies readonly ConsultationActionId[];
 
@@ -91,6 +95,8 @@ export interface ConsultationActionDeps {
   readonly stageBPriceId?: string;
   readonly stageBNetworkCouponId?: string;
   readonly onConfirmation?: (email: ConfirmationEmail) => void;
+  /** Founder notice. Production wires Gmail. Tests pass a fake sink. */
+  readonly onOwnerPaid?: (notice: OwnerPaidNotice) => void | Promise<void>;
 }
 
 export interface ConsultationAction<TInput, TValue> {
@@ -129,6 +135,8 @@ export interface PaidMeetInput {
   readonly sessionId: string;
   readonly metadata: Record<string, unknown>;
   readonly booking: Booking | null;
+  /** Stripe `amount_total` in cents, when the webhook has it. */
+  readonly amountTotal?: number | null;
 }
 
 export interface PaidMeetValue {
@@ -147,6 +155,16 @@ export interface ConfirmDraft {
   readonly channel: 'calendar_meet_invite';
 }
 
+export interface NotifyOwnerInput {
+  readonly booking: Booking;
+  readonly amountTotal: number | null;
+}
+
+export interface NotifyOwnerValue {
+  readonly notice: OwnerPaidNotice;
+  readonly invoked: boolean;
+}
+
 export interface BookedCheckout {
   readonly bookingId: string;
   readonly checkoutUrl: string;
@@ -159,6 +177,7 @@ export interface PaidConsultationValue {
   readonly booking: Booking;
   readonly desk: 'no-desk-writer';
   readonly confirm: ConfirmDraft | null;
+  readonly owner: NotifyOwnerValue | null;
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -386,6 +405,32 @@ const writeCalendarMeetOnPay: ConsultationAction<PaidMeetInput, PaidMeetValue> =
   },
 };
 
+const notifyOwnerPaid: ConsultationAction<NotifyOwnerInput, NotifyOwnerValue> = {
+  id: 'notify_owner_paid',
+  description:
+    'After a new Google Meet write, email founder@revealui.com with the paid facts. Does not mail the buyer.',
+  humanGate: 'none',
+  preconditions: ['The booking status is paid_scheduled.'],
+  sideEffects: ['onOwnerPaid to founder@revealui.com only', 'deskScheduleTransition stays a stub'],
+  idempotencyKey(input) {
+    return input.booking.booking_id;
+  },
+  async run(input, deps) {
+    if (input.booking.status !== 'paid_scheduled') return fail('not-scheduled');
+    const notice = buildOwnerPaidNotice(input.booking, input.amountTotal);
+    let invoked = false;
+    try {
+      if (deps.onOwnerPaid) {
+        invoked = true;
+        await deps.onOwnerPaid(notice);
+      }
+    } catch {
+      // The calendar event already exists. An owner-mail failure must not roll it back.
+    }
+    return { ok: true, value: { notice, invoked } };
+  },
+};
+
 const sendConfirmEmail: ConsultationAction<SendConfirmInput, ConfirmDraft> = {
   id: 'send_confirm_email',
   description:
@@ -419,6 +464,7 @@ export const consultationActions = {
   save_slot: saveSlot,
   create_checkout_session: createCheckoutSession,
   write_calendar_meet_on_pay: writeCalendarMeetOnPay,
+  notify_owner_paid: notifyOwnerPaid,
   send_confirm_email: sendConfirmEmail,
 } as const;
 
@@ -456,7 +502,7 @@ export async function runConsultationBook(
   };
 }
 
-/** Paid webhook path. Meet write first. Confirm is a draft and cannot fail the calendar write. */
+/** Paid webhook path. Meet write first. Owner mail and the buyer draft cannot fail that write. */
 export async function runPaidConsultation(
   input: PaidMeetInput,
   deps: ConsultationActionDeps,
@@ -472,9 +518,14 @@ export async function runPaidConsultation(
         booking: wrote.value.booking,
         desk: wrote.value.desk,
         confirm: null,
+        owner: null,
       },
     };
   }
+  const owner = await consultationActions.notify_owner_paid.run(
+    { booking: wrote.value.booking, amountTotal: input.amountTotal ?? null },
+    deps,
+  );
   const draft = await consultationActions.send_confirm_email.run(
     { booking: wrote.value.booking },
     deps,
@@ -487,6 +538,7 @@ export async function runPaidConsultation(
       booking: wrote.value.booking,
       desk: wrote.value.desk,
       confirm: draft.ok ? draft.value : null,
+      owner: owner.ok ? owner.value : null,
     },
   };
 }

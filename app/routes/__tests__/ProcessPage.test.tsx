@@ -45,6 +45,8 @@ describe('ProcessPage', () => {
       expect(intro).toHaveAttribute('href', INTRO_CALL_URL);
     }
     expect(screen.getAllByRole('link', { name: CONTACT_EMAIL }).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Google Calendar plus Google Meet/)).toBeInTheDocument();
+    expect(screen.getByText(/Google Meet or sit down/)).toBeInTheDocument();
   });
 
   it('does not invent proof, retired SKUs, or booking hosts', () => {

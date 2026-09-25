@@ -203,12 +203,13 @@ let tokenCache: { key: string; token: string; expiresAt: number } | null = null;
 async function serviceAssertion(
   email: string,
   material: string,
+  scope: string,
   subject?: string,
 ): Promise<string> {
   const now = Math.floor(Date.now() / 1000);
   const claims: Record<string, string | number> = {
     iss: email,
-    scope: CALENDAR_SCOPE,
+    scope,
     aud: TOKEN_URL,
     iat: now,
     exp: now + 3600,
@@ -233,12 +234,16 @@ async function serviceAssertion(
   return `${unsigned}.${base64Url(new Uint8Array(signature))}`;
 }
 
-async function accessToken(env: ConsultationEnv, fetchImpl: typeof fetch): Promise<string> {
+async function accessToken(
+  env: ConsultationEnv,
+  fetchImpl: typeof fetch,
+  scope: string,
+): Promise<string> {
   const refresh = Boolean(env.oauthClientId && env.oauthClientSecret && env.oauthRefreshToken);
   const subject = env.googleImpersonateSubject ?? '';
   const cacheKey = refresh
-    ? `refresh:${env.oauthClientId}`
-    : `service:${env.googleClientEmail}:${subject}`;
+    ? `refresh:${env.oauthClientId}:${scope}`
+    : `service:${env.googleClientEmail}:${subject}:${scope}`;
   if (tokenCache && tokenCache.key === cacheKey && tokenCache.expiresAt > Date.now() + 60_000) {
     return tokenCache.token;
   }
@@ -255,6 +260,7 @@ async function accessToken(env: ConsultationEnv, fetchImpl: typeof fetch): Promi
       await serviceAssertion(
         env.googleClientEmail,
         env.googleCredential,
+        scope,
         env.googleImpersonateSubject,
       ),
     );
@@ -273,6 +279,15 @@ async function accessToken(env: ConsultationEnv, fetchImpl: typeof fetch): Promi
   if (!token) throw new Error('google-auth');
   tokenCache = { key: cacheKey, token, expiresAt: Date.now() + expiresIn * 1000 };
   return token;
+}
+
+/** Google access token for a specific scope. Calendar calls keep the calendar scope. */
+export function googleAccessToken(
+  env: ConsultationEnv,
+  fetchImpl: typeof fetch,
+  scope: string,
+): Promise<string> {
+  return accessToken(env, fetchImpl, scope);
 }
 
 async function googleSend(
@@ -407,7 +422,7 @@ export function createGoogleCalendar(
   const collection = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`;
 
   async function listEvents(params: Record<string, string>): Promise<Record<string, unknown>[]> {
-    const token = await accessToken(env, fetchImpl);
+    const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
     const events: Record<string, unknown>[] = [];
     let pageToken = '';
     for (let page = 0; page < 10; page += 1) {
@@ -439,7 +454,7 @@ export function createGoogleCalendar(
 
   return {
     async expireHolds(now) {
-      const token = await accessToken(env, fetchImpl);
+      const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
       const events = await listEvents({
         privateExtendedProperty: 'status=slot_held',
         singleEvents: 'true',
@@ -455,7 +470,7 @@ export function createGoogleCalendar(
       }
     },
     async busy(from, to) {
-      const token = await accessToken(env, fetchImpl);
+      const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
       const payload = asRecord(
         await googleSend(
           'https://www.googleapis.com/calendar/v3/freeBusy',
@@ -485,7 +500,7 @@ export function createGoogleCalendar(
     },
     async putHold(booking, now) {
       if (Date.parse(booking.expires_at) <= now.getTime()) throw new SlotTakenError();
-      const token = await accessToken(env, fetchImpl);
+      const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
       const created = asRecord(
         await googleSend(
           `${collection}?sendUpdates=none`,
@@ -526,7 +541,7 @@ export function createGoogleCalendar(
       const event = await findByBooking(bookingId);
       const booking = event ? bookingFromEvent(event) : null;
       if (!booking || booking.status !== 'slot_held' || !booking.event_id) return;
-      const token = await accessToken(env, fetchImpl);
+      const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
       await googleSend(
         `${collection}/${encodeURIComponent(booking.event_id)}?sendUpdates=none`,
         token,
@@ -548,7 +563,7 @@ export function createGoogleCalendar(
           desk: 'no-desk-writer',
         };
       }
-      const token = await accessToken(env, fetchImpl);
+      const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
       const base = existing ?? booking;
       const draft: Booking = { ...base, stripe_session_id: stripeSessionId };
       const paidBody = eventBody({ ...draft, status: 'paid_scheduled' }, 'paid');

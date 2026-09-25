@@ -10,6 +10,11 @@ export const CONSULTATION_BOOK_PATH = '/consultation/book' as const;
 export const CONSULTATION_BOOK_SUCCESS_PATH = '/consultation/book/success' as const;
 export const CONSULTATION_BOOK_CANCEL_PATH = '/consultation/book/cancel' as const;
 
+/** Paid Consultation book, success, and cancel. Marketing intro chrome stays off these routes. */
+export function isConsultationBookPath(pathname: string): boolean {
+  return pathname === CONSULTATION_BOOK_PATH || pathname.startsWith(`${CONSULTATION_BOOK_PATH}/`);
+}
+
 /** Public 30-minute intro. No account. No payment on the calendar. Meet or sit down. */
 export const INTRO_CALL_URL =
   'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ21UZVcuYp7yO32rZmhyUvZFDJcvles81E9edGNFwSUP8SHEVzGvq0gKgNFo7q04YS5i-12ZE5P';

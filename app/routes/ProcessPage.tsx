@@ -14,9 +14,9 @@ export function ProcessPage() {
           <p className="mt-6 text-lg text-muted-foreground">
             Three paid offers for startups, and for technical founders and small agencies who
             already run agents. A 30-minute intro on Google Calendar stays available. No account. No
-            payment to book the intro. Meet or sit down. If I am not the right fit, I will say so on
-            the call. Consultation is paid when you book the slot. Proof Sprint and Launch are
-            invoiced after we agree.
+            payment to book the intro. Google Meet or sit down. If I am not the right fit, I will
+            say so on the call. Consultation is paid when you book the slot. Proof Sprint and Launch
+            are invoiced after we agree.
           </p>
           <p className="mt-4 text-base text-muted-foreground">
             This page is how each offer actually runs: what you send, what you get back, roughly how
@@ -185,8 +185,8 @@ export function ProcessPage() {
             Book a 30-minute intro
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Google Calendar plus Meet, or sit down. No account. No payment to book. If we are not
-            the right fit, I will say so on the call.
+            Google Calendar plus Google Meet, or sit down. No account. No payment to book. If we are
+            not the right fit, I will say so on the call.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>

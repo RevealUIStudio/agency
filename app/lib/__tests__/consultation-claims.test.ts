@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  CONSULTATION_AFTER_PAY,
   CONSULTATION_BOOK_INTRO,
   CONSULTATION_SUCCESS,
   consultationStageLine,
@@ -49,7 +50,12 @@ describe('consultation public claims', () => {
     expect(source).toContain('STAGE_B_CHECKBOX');
     expect(source).toContain('CONSULTATION_SUCCESS');
     expect(STAGE_B_CHECKBOX).toBe('Add the domain pack ($297)');
-    expect(CONSULTATION_SUCCESS).toBe('Payment received. The Meet link is on the calendar invite.');
+    expect(CONSULTATION_AFTER_PAY).toBe(
+      'After payment, the Google Meet link is on the calendar invite.',
+    );
+    expect(CONSULTATION_SUCCESS).toBe(
+      'Payment received. The Google Meet link is on the calendar invite.',
+    );
     expect(CONSULTATION_SUCCESS).not.toContain('—');
   });
 

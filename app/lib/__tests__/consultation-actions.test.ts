@@ -14,6 +14,7 @@ import {
   DEFAULT_CONSULTATION_PRICE_ID,
   DEFAULT_STAGE_B_PRICE_ID,
 } from '@/lib/consultation-checkout';
+import type { OwnerPaidNotice } from '@/lib/consultation-owner';
 import {
   consultationEnvFromProcess,
   createMemoryCalendar,
@@ -70,6 +71,7 @@ function harness(seed: readonly Booking[] = []) {
     stageBFee: string;
   }> = [];
   const drafts: string[] = [];
+  const owners: OwnerPaidNotice[] = [];
   let schedules = 0;
   const wrapped = {
     expireHolds: (now: Date) => calendar.expireHolds(now),
@@ -100,21 +102,26 @@ function harness(seed: readonly Booking[] = []) {
     onConfirmation: (email) => {
       drafts.push(email.text);
     },
+    onOwnerPaid: (notice) => {
+      owners.push(notice);
+    },
   };
-  return { calendar, checkouts, drafts, deps, schedules: () => schedules };
+  return { calendar, checkouts, drafts, owners, deps, schedules: () => schedules };
 }
 
 describe('consultation action registry', () => {
-  it('lists the four actions in hold-before-checkout order', () => {
+  it('lists the actions in hold-before-checkout order', () => {
     expect(CONSULTATION_ACTION_ORDER).toEqual([
       'save_slot',
       'create_checkout_session',
       'write_calendar_meet_on_pay',
+      'notify_owner_paid',
       'send_confirm_email',
     ]);
     expect(consultationActions.save_slot.humanGate).toBe('none');
     expect(consultationActions.create_checkout_session.humanGate).toBe('none');
     expect(consultationActions.write_calendar_meet_on_pay.humanGate).toBe('none');
+    expect(consultationActions.notify_owner_paid.humanGate).toBe('none');
     expect(consultationActions.send_confirm_email.humanGate).toBe('draft_only');
   });
 
@@ -265,8 +272,8 @@ describe('consultation action registry', () => {
     expect(await calendar.get('book_fail')).toBeNull();
   });
 
-  it('writes Meet once and returns already_scheduled on the second call', async () => {
-    const { deps, calendar, drafts, schedules } = harness();
+  it('writes Google Meet once, notifies the founder, and skips a replay', async () => {
+    const { deps, calendar, drafts, owners, schedules } = harness();
     const booked = await runConsultationBook(bookInput(), 'book_pay', deps);
     expect(booked.ok).toBe(true);
     const metadata = {
@@ -286,6 +293,7 @@ describe('consultation action registry', () => {
         sessionId: 'cs_test_1',
         metadata,
         booking: stored,
+        amountTotal: 30_000,
       },
       deps,
     );
@@ -297,7 +305,29 @@ describe('consultation action registry', () => {
     expect(first.value.confirm?.channel).toBe('calendar_meet_invite');
     expect(first.value.booking.meet_link).toContain('meet.google.com');
     expect(drafts).toHaveLength(1);
+    expect(drafts[0]).toContain('Google Meet:');
+    expect(drafts[0]).not.toMatch(/(^|\n)Meet:/);
+    expect(drafts[0]).not.toContain('The Meet link');
+    expect(drafts[0]).not.toContain('\u2014');
     expect(drafts[0]).not.toMatch(/waiv/i);
+    expect(first.value.confirm?.email.subject).toContain('RevealUI Studio');
+    expect(first.value.owner?.invoked).toBe(true);
+    expect(owners).toHaveLength(1);
+    const notice = owners[0];
+    expect(notice?.to).toBe('founder@revealui.com');
+    expect(notice?.to).not.toBe('ada@example.com');
+    expect(notice?.subject).toContain('RevealUI Studio');
+    expect(notice?.subject).not.toContain('\u2014');
+    expect(notice?.text).toContain('Buyer: Ada Buyer');
+    expect(notice?.text).toContain('Email: ada@example.com');
+    expect(notice?.text).toContain('When: Wed, Jan 7 · 9:00 AM–10:00 AM ET');
+    expect(notice?.text).toContain('Amount: $300');
+    expect(notice?.text).toContain('Google Meet: https://meet.google.com/lookup/book_pay');
+    expect(notice?.text).toContain('Booking: book_pay');
+    expect(notice?.text).toContain('Stage B: no');
+    expect(notice?.text).toContain('Network: no');
+    expect(notice?.text).not.toMatch(/(^|\n)Meet:/);
+    expect(notice?.text).not.toContain('\u2014');
 
     const second = await runPaidConsultation(
       {
@@ -312,8 +342,48 @@ describe('consultation action registry', () => {
     if (!second.ok) return;
     expect(second.value.action).toBe('already_scheduled');
     expect(second.value.confirm).toBeNull();
+    expect(second.value.owner).toBeNull();
     expect(schedules()).toBe(1);
     expect(drafts).toHaveLength(1);
+    expect(owners).toHaveLength(1);
+  });
+
+  it('keeps the calendar write when the founder sink throws', async () => {
+    const { deps, calendar } = harness();
+    const booked = await runConsultationBook(
+      bookInput({ stageB: true, stageBFee: 'waived_network', networkJti: 'jti-owner' }),
+      'book_net',
+      { ...deps, stageBNetworkCouponId: 'stage_b_network_credit' },
+    );
+    expect(booked.ok).toBe(true);
+    const paid = await runPaidConsultation(
+      {
+        paymentStatus: 'paid',
+        sessionId: 'cs_net',
+        metadata: { booking_id: 'book_net' },
+        booking: await calendar.get('book_net'),
+        amountTotal: null,
+      },
+      {
+        ...deps,
+        onOwnerPaid: () => {
+          throw new Error('gmail-down');
+        },
+      },
+    );
+    expect(paid.ok).toBe(true);
+    if (!paid.ok) return;
+    expect(paid.value.action).toBe('scheduled');
+    expect(paid.value.desk).toBe('no-desk-writer');
+    expect(paid.value.owner?.invoked).toBe(true);
+    expect(paid.value.owner?.notice.network).toBe(true);
+    expect(paid.value.owner?.notice.stageB).toBe(true);
+    expect(paid.value.owner?.notice.amountCents).toBe(30_000);
+    expect(paid.value.owner?.notice.text).toContain('Stage B: yes');
+    expect(paid.value.owner?.notice.text).toContain('Network: yes');
+    expect(paid.value.owner?.notice.text).toContain('Amount: $300');
+    expect(paid.value.owner?.notice.to).toBe('founder@revealui.com');
+    expect((await calendar.get('book_net'))?.status).toBe('paid_scheduled');
   });
 
   it('rejects pay-first and an unpaid session', async () => {
@@ -337,7 +407,7 @@ describe('consultation action registry', () => {
   });
 
   it('keeps confirm as a draft when the sink throws', async () => {
-    const { deps } = harness();
+    const { deps, owners } = harness();
     const paid = heldBooking({
       booking_id: 'book_draft',
       status: 'paid_scheduled',
@@ -359,6 +429,7 @@ describe('consultation action registry', () => {
     expect(result.value.delivery).toBe('draft');
     expect(result.value.channel).toBe('calendar_meet_invite');
     expect(result.value.email.to).toBe('ada@example.com');
+    expect(owners).toHaveLength(0);
   });
 
   it('does not read a mail provider key from the environment', () => {
@@ -378,8 +449,10 @@ describe('consultation action registry', () => {
     const root = path.resolve(import.meta.dirname, '../../..');
     const files = [
       'app/lib/consultation-actions.ts',
+      'app/lib/consultation-owner.ts',
       'server/consultation-http.ts',
       'server/consultation-calendar.ts',
+      'server/consultation-owner-mail.ts',
       'docs/consultation-confirm-email.md',
       'docs/consultation-actions.md',
       'docs/CUTOVER.md',

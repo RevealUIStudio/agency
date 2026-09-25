@@ -5,6 +5,7 @@ import {
   DEFAULT_STAGE_B_PRICE_ID,
 } from '../../app/lib/consultation-checkout';
 import { mintNetworkToken } from '../../app/lib/consultation-network-waive';
+import type { OwnerPaidNotice } from '../../app/lib/consultation-owner';
 import {
   type CalendarPort,
   type ConsultationEnv,
@@ -46,6 +47,7 @@ function harness(
     couponId?: string;
   }> = [];
   const emails: ConfirmationEmail[] = [];
+  const owners: OwnerPaidNotice[] = [];
   let schedules = 0;
   let desk: string | null = null;
   let nextId = 1;
@@ -91,11 +93,15 @@ function harness(
     onConfirmation: (email) => {
       emails.push(email);
     },
+    onOwnerPaid: (notice) => {
+      owners.push(notice);
+    },
   };
   return {
     calendar,
     checkouts,
     emails,
+    owners,
     deps,
     schedules: () => schedules,
     desk: () => desk,
@@ -353,8 +359,8 @@ describe('consultation http', () => {
     expect(await rejected.json()).toEqual({ ok: false });
   });
 
-  it('schedules once, stores the Meet link, and ignores a second webhook', async () => {
-    const { deps, calendar, emails, schedules, desk } = harness();
+  it('schedules once, stores the Google Meet link, and notifies the founder once', async () => {
+    const { deps, calendar, emails, owners, schedules, desk } = harness();
     const booked = await handleConsultationRequest(
       request('/api/consultation/book', buyer()),
       deps,
@@ -366,6 +372,7 @@ describe('consultation http', () => {
         object: {
           id: 'cs_test_1',
           payment_status: 'paid',
+          amount_total: 30_000,
           metadata: {
             booking_id: saved.booking_id,
             start: SLOT.start,
@@ -398,7 +405,38 @@ describe('consultation http', () => {
     expect(emails[0]?.text).toContain('When: Wed, Jan 7 · 9:00 AM–10:00 AM ET');
     expect(emails[0]?.text).toContain('Company: Example Co');
     expect(emails[0]?.text).not.toContain('sheet writer');
+    expect(emails[0]?.text).toContain('Google Meet:');
+    expect(emails[0]?.text).not.toContain('The Meet link');
+    expect(emails[0]?.subject).toContain('RevealUI Studio');
     expect(emails[0]?.text).toContain(paid?.meet_link);
+    expect(owners).toHaveLength(1);
+    expect(owners[0]?.to).toBe('founder@revealui.com');
+    expect(owners[0]?.text).toContain('Buyer: Ada Buyer');
+    expect(owners[0]?.text).toContain('Email: ada@example.com');
+    expect(owners[0]?.text).toContain('When: Wed, Jan 7 · 9:00 AM–10:00 AM ET');
+    expect(owners[0]?.text).toContain('Amount: $300');
+    expect(owners[0]?.text).toContain(`Google Meet: ${paid?.meet_link}`);
+    expect(owners[0]?.text).toContain(`Booking: ${saved.booking_id}`);
+    expect(owners[0]?.text).toContain('Stage B: no');
+    expect(owners[0]?.text).toContain('Network: no');
+    expect(owners[0]?.text).not.toContain('\u2014');
+
+    const view = await handleConsultationRequest(
+      request(`/api/consultation/booking?booking=${saved.booking_id}`),
+      deps,
+    );
+    expect(view.status).toBe(200);
+    const visible = await view.json();
+    expect(visible).toEqual({
+      ok: true,
+      start: SLOT.start,
+      end: SLOT.end,
+      meet_link: paid?.meet_link,
+      stage_b: false,
+    });
+    const hidden = JSON.stringify(visible);
+    expect(hidden).not.toContain('ada@example.com');
+    expect(hidden).not.toContain('Ada Buyer');
 
     const second = await handleConsultationRequest(
       request('/api/stripe/webhook', raw, { 'stripe-signature': header }),
@@ -408,6 +446,7 @@ describe('consultation http', () => {
     expect(schedules()).toBe(1);
     expect((await calendar.get(saved.booking_id))?.meet_link).toBe(paid?.meet_link);
     expect(emails).toHaveLength(1);
+    expect(owners).toHaveLength(1);
   });
 
   it('rejects a bad signature and ignores an unpaid session', async () => {
@@ -441,5 +480,73 @@ describe('consultation http', () => {
     expect(await ignored.json()).toEqual({ received: true, status: 'ignored' });
     expect((await calendar.get(saved.booking_id))?.status).toBe('slot_held');
     expect(schedules()).toBe(0);
+  });
+
+  it('sends the founder notice from the webhook when no sink is injected', async () => {
+    const calls: Array<{ url: string; body: string }> = [];
+    const fetchImpl: typeof fetch = async (input, init) => {
+      const url = String(input);
+      const body = typeof init?.body === 'string' ? init.body : String(init?.body ?? '');
+      calls.push({ url, body });
+      if (url === 'https://oauth2.googleapis.com/token') {
+        return new Response(JSON.stringify({ access_token: 'tok-owner', expires_in: 3600 }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        });
+      }
+      if (url.endsWith('/messages/send')) {
+        return new Response(JSON.stringify({ id: 'msg_owner' }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        });
+      }
+      return new Response('no', { status: 404 });
+    };
+    const { deps, calendar } = harness([], {
+      oauthClientId: 'owner-oauth',
+      oauthClientSecret: 'owner-secret',
+      oauthRefreshToken: 'owner-refresh',
+    });
+    const booked = await handleConsultationRequest(
+      request('/api/consultation/book', buyer()),
+      deps,
+    );
+    const saved = (await booked.json()) as { booking_id: string };
+    const raw = JSON.stringify({
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          id: 'cs_test_1',
+          payment_status: 'paid',
+          amount_total: 30_000,
+          metadata: { booking_id: saved.booking_id },
+        },
+      },
+    });
+    const header = await stripeSignatureHeader(SECRET, raw, Math.floor(NOW.getTime() / 1000));
+    const response = await handleConsultationRequest(
+      request('/api/stripe/webhook', raw, { 'stripe-signature': header }),
+      { ...deps, onOwnerPaid: undefined, onConfirmation: undefined, fetchImpl },
+    );
+    expect(response.status).toBe(200);
+    expect((await calendar.get(saved.booking_id))?.status).toBe('paid_scheduled');
+    const send = calls.find((call) => call.url.endsWith('/messages/send'));
+    expect(send?.url).toBe('https://gmail.googleapis.com/gmail/v1/users/me/messages/send');
+    const payload = JSON.parse(send?.body ?? '{}') as { raw?: string };
+    const padded = (payload.raw ?? '').replaceAll('-', '+').replaceAll('_', '/');
+    const message = Buffer.from(padded, 'base64').toString('utf8');
+    expect(message).toContain('To: founder@revealui.com');
+    expect(message).not.toContain('To: ada@example.com');
+    expect(message).toContain('Subject: RevealUI Studio Consultation paid');
+    expect(message).toContain('Buyer: Ada Buyer');
+    expect(message).toContain('Email: ada@example.com');
+    expect(message).toContain('When: Wed, Jan 7 · 9:00 AM–10:00 AM ET');
+    expect(message).toContain('Amount: $300');
+    expect(message).toContain('Google Meet: https://meet.google.com/lookup/book_1');
+    expect(message).toContain(`Booking: ${saved.booking_id}`);
+    expect(message).toContain('Stage B: no');
+    expect(message).toContain('Network: no');
+    expect(message).not.toContain('\u2014');
+    expect(calls.some((call) => call.url.includes('api.resend.com'))).toBe(false);
   });
 });

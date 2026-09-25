@@ -95,6 +95,10 @@ describe('HomePage', () => {
     expect(text).toMatch(/RevealFleet/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
     expect(text).toContain('More than one: book an intro');
+    expect(text).toContain('Google Calendar plus Google Meet');
+    expect(text).toContain('Google Calendar / Google Meet');
+    expect(text).toContain('PROOF means a receipted action');
+    expect(text).not.toMatch(/proof of work/i);
     expect(text).not.toContain('\u2014');
   });
 });
