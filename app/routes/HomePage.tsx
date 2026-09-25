@@ -29,8 +29,8 @@ export function HomePage() {
             Book a 30-minute intro
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Google Calendar plus Meet, or sit down. No account. No payment to book. If we are not
-            the right fit, I will say so on the call.
+            Google Calendar plus Google Meet, or sit down. No account. No payment to book. If we are
+            not the right fit, I will say so on the call.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>

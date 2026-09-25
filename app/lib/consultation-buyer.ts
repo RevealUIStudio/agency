@@ -27,9 +27,11 @@ export const STAGE_B_DETAIL =
 
 export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 20 minutes.';
 
-export const CONSULTATION_AFTER_PAY = 'After payment, the Meet link is on the calendar invite.';
+export const CONSULTATION_AFTER_PAY =
+  'After payment, the Google Meet link is on the calendar invite.';
 
-export const CONSULTATION_SUCCESS = 'Payment received. The Meet link is on the calendar invite.';
+export const CONSULTATION_SUCCESS =
+  'Payment received. The Google Meet link is on the calendar invite.';
 
 export const CONSULTATION_PREP_BODY =
   'Send the system you want to look at and the question you want answered. A link is usually enough.';
