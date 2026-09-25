@@ -3,7 +3,13 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CONSULTATION_SUCCESS, rememberConsultationReceipt } from '@/lib/consultation-buyer';
+import {
+  CONSULTATION_MEET_FALLBACK,
+  CONSULTATION_PREP_BODY,
+  CONSULTATION_SUCCESS,
+  CONSULTATION_SUCCESS_MISSING,
+  rememberConsultationReceipt,
+} from '@/lib/consultation-buyer';
 import {
   ConsultationBookCancelPage,
   ConsultationBookPage,
@@ -201,13 +207,25 @@ describe('ConsultationBookPage', () => {
   it('shows the payment confirmation line', () => {
     render(<ConsultationBookSuccessPage />);
     expect(screen.getByText(CONSULTATION_SUCCESS)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_PREP_BODY)).toBeInTheDocument();
+    expect(screen.getByText('Prep')).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_SUCCESS_MISSING)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'founder@revealui.com' })).toHaveAttribute(
       'href',
       'mailto:founder@revealui.com',
     );
+    expect(document.body.textContent?.replaceAll('Google Meet', '')).not.toMatch(/Meet/);
   });
 
-  it('shows the slot remembered for this booking and hides a different one', () => {
+  it('shows the slot remembered for this booking and hides a different one', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ ok: false, reason: 'missing' }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+      ),
+    );
     window.history.pushState({}, '', '/consultation/book/success?booking=book_ux');
     rememberConsultationReceipt('book_ux', {
       label: 'Wed, Jan 7 · 9:00 AM–10:00 AM ET',
@@ -216,13 +234,64 @@ describe('ConsultationBookPage', () => {
     const matched = render(<ConsultationBookSuccessPage />);
     expect(screen.getByText('Wed, Jan 7 · 9:00 AM–10:00 AM ET')).toBeInTheDocument();
     expect(screen.getByText('This payment is the consultation only.')).toBeInTheDocument();
+    expect(await screen.findByText(CONSULTATION_MEET_FALLBACK)).toBeInTheDocument();
     matched.unmount();
 
     window.history.pushState({}, '', '/consultation/book/success?booking=other');
     render(<ConsultationBookSuccessPage />);
     expect(screen.queryByText('Wed, Jan 7 · 9:00 AM–10:00 AM ET')).not.toBeInTheDocument();
+    expect(await screen.findByText(CONSULTATION_SUCCESS_MISSING)).toBeInTheDocument();
     window.history.pushState({}, '', '/');
     sessionStorage.removeItem('consultation-receipt');
+  });
+
+  it('shows when, Google Meet, prep, and questions without sessionStorage', async () => {
+    sessionStorage.removeItem('consultation-receipt');
+    window.history.pushState({}, '', '/consultation/book/success?booking=book_remote');
+    vi.stubGlobal('fetch', (input: RequestInfo | URL) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      if (url.includes('/api/consultation/booking')) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              ok: true,
+              start: '2026-01-07T14:00:00.000Z',
+              end: '2026-01-07T15:00:00.000Z',
+              meet_link: 'https://meet.google.com/lookup/book_remote',
+              stage_b: false,
+            }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          ),
+        );
+      }
+      return Promise.resolve(new Response('{}', { status: 404 }));
+    });
+    render(<ConsultationBookSuccessPage />);
+    expect(await screen.findByText('Wed, Jan 7 · 9:00 AM–10:00 AM ET')).toBeInTheDocument();
+    expect(screen.getByText('When')).toBeInTheDocument();
+    const meet = screen.getByRole('link', {
+      name: 'https://meet.google.com/lookup/book_remote',
+    });
+    expect(meet).toHaveAttribute('href', 'https://meet.google.com/lookup/book_remote');
+    expect(screen.getByText(/Google Meet:/)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_PREP_BODY)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'founder@revealui.com' })).toBeInTheDocument();
+    expect(screen.getByText('This payment is the consultation only.')).toBeInTheDocument();
+    expect(document.body.textContent?.replaceAll('Google Meet', '')).not.toMatch(/Meet/);
+    window.history.pushState({}, '', '/');
+  });
+
+  it('degrades with Google Meet copy when the booking fetch fails', async () => {
+    sessionStorage.removeItem('consultation-receipt');
+    window.history.pushState({}, '', '/consultation/book/success?booking=book_missing');
+    vi.stubGlobal('fetch', () => Promise.reject(new Error('offline')));
+    render(<ConsultationBookSuccessPage />);
+    expect(await screen.findByText(CONSULTATION_SUCCESS_MISSING)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_SUCCESS)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_PREP_BODY)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'founder@revealui.com' })).toBeInTheDocument();
+    expect(document.body.textContent?.replaceAll('Google Meet', '')).not.toMatch(/Meet/);
+    window.history.pushState({}, '', '/');
   });
 
   it('keeps the pay control and fields full width for a narrow viewport', async () => {

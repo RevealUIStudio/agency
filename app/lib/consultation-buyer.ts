@@ -33,6 +33,19 @@ export const CONSULTATION_AFTER_PAY =
 export const CONSULTATION_SUCCESS =
   'Payment received. The Google Meet link is on the calendar invite.';
 
+/** Success page while the paid booking is still loading. */
+export const CONSULTATION_SUCCESS_LOADING = 'Loading the time and Google Meet link.';
+
+/** Paid webhook has not written the calendar event yet. */
+export const CONSULTATION_SUCCESS_PENDING =
+  'The time and Google Meet link show here when the calendar invite is ready.';
+
+/** No sessionStorage receipt and no paid booking to read. */
+export const CONSULTATION_SUCCESS_MISSING =
+  'This browser does not have the time. The Google Meet link is on the calendar invite.';
+
+export const CONSULTATION_MEET_FALLBACK = 'The Google Meet link is on the calendar invite.';
+
 export const CONSULTATION_PREP_BODY =
   'Send the system you want to look at and the question you want answered. A link is usually enough.';
 
@@ -105,6 +118,57 @@ export function consultationWhenLine(start: string, end: string): string {
   return `When: ${formatConsultationRange(new Date(start), new Date(end))}`;
 }
 
+export interface PaidBookingView {
+  readonly kind: 'paid';
+  readonly start: string;
+  readonly end: string;
+  readonly meetLink: string | null;
+  readonly stageB: boolean;
+}
+
+export type ConsultationBookingView =
+  | PaidBookingView
+  | { readonly kind: 'pending' }
+  | { readonly kind: 'missing' };
+
+function asViewRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+/** Accept only a Google Meet https URL. Anything else stays off the success page. */
+export function googleMeetUrl(value: unknown): string | null {
+  if (typeof value !== 'string' || value.trim() === '') return null;
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== 'https:' || url.hostname !== 'meet.google.com') return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+/** Public booking payload from GET /api/consultation/booking. Omits buyer identity. */
+export function parseConsultationBookingPayload(body: unknown): ConsultationBookingView {
+  const record = asViewRecord(body);
+  if (record?.ok !== true) {
+    return record?.reason === 'pending' ? { kind: 'pending' } : { kind: 'missing' };
+  }
+  if (typeof record.start !== 'string' || typeof record.end !== 'string')
+    return { kind: 'missing' };
+  if (!Number.isFinite(Date.parse(record.start)) || !Number.isFinite(Date.parse(record.end))) {
+    return { kind: 'missing' };
+  }
+  if (typeof record.stage_b !== 'boolean') return { kind: 'missing' };
+  return {
+    kind: 'paid',
+    start: new Date(record.start).toISOString(),
+    end: new Date(record.end).toISOString(),
+    meetLink: googleMeetUrl(record.meet_link),
+    stageB: record.stage_b,
+  };
+}
+
 export function confirmationSubject(start: string, end: string): string {
   return `RevealUI Studio Consultation, ${formatConsultationRange(new Date(start), new Date(end))}`;
 }
@@ -116,12 +180,12 @@ export function confirmationText(booking: {
   readonly stage_b: boolean;
   readonly meet_link: string | null;
 }): string {
-  const meet = booking.meet_link ?? 'The Meet link is on the calendar invite.';
+  const meet = booking.meet_link ?? CONSULTATION_MEET_FALLBACK;
   const lines = [
     'Payment received for your RevealUI Studio Consultation.',
     '',
     consultationWhenLine(booking.start, booking.end),
-    `Meet: ${meet}`,
+    `Google Meet: ${meet}`,
   ];
   if (booking.company) lines.push(`Company: ${booking.company}`);
   lines.push(

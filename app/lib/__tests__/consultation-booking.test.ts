@@ -130,7 +130,7 @@ describe('applyPaidSchedule', () => {
 });
 
 describe('buildConfirmationEmail', () => {
-  it('includes payment, the slot, and the Meet link', () => {
+  it('includes payment, the slot, and the Google Meet link', () => {
     const email = buildConfirmationEmail({
       booking_id: 'book_1',
       start,
@@ -149,8 +149,14 @@ describe('buildConfirmationEmail', () => {
       stripe_session_id: 'cs_1',
     });
     expect(email.subject).toBe('RevealUI Studio Consultation, Wed, Jan 7 · 9:00 AM–10:00 AM ET');
+    expect(email.subject).toContain('RevealUI Studio');
+    expect(email.subject).not.toContain('\u2014');
     expect(email.text).toContain('Payment received');
     expect(email.text).toContain('When: Wed, Jan 7 · 9:00 AM–10:00 AM ET');
+    expect(email.text).toContain('Google Meet: https://meet.google.com/lookup/book_1');
+    expect(email.text).not.toMatch(/(^|\n)Meet:/);
+    expect(email.text).not.toContain('The Meet link');
+    expect(email.text).not.toContain('\u2014');
     expect(email.text).not.toContain(start);
     expect(email.text).toContain('https://meet.google.com/lookup/book_1');
     expect(email.text).toContain('Company: Example Co');

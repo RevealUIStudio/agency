@@ -11,11 +11,14 @@ Order is load-bearing. `save_slot` runs before `create_checkout_session`. Checko
 | `save_slot` | none | Slot is inside generated weekday availability. Body `waive` and `stage_b_fee` are ignored before this action. | Calendar hold, status `slot_held`, 20 minutes. |
 | `create_checkout_session` | none | Prior hold exists, status is `slot_held`, and it has not expired. | Stripe Checkout Session. Lines from `consultationCheckoutLines` only. |
 | `write_calendar_meet_on_pay` | none | `payment_status` is `paid`. A second call returns `already_scheduled`. | Calendar event plus Google Meet. Desk transition stays `no-desk-writer`. |
-| `send_confirm_email` | `draft_only` | Booking status is `paid_scheduled`. | Confirmation draft on the `onConfirmation` sink. Channel is `calendar_meet_invite`. No outbound mail. |
+| `notify_owner_paid` | none | Booking status is `paid_scheduled`. A second delivery does not send again. | Email to founder@revealui.com with buyer name, buyer email, Eastern Time, amount, Google Meet link, booking id, Stage B, and network. Does not mail the buyer. Desk writer stays a stub. |
+| `send_confirm_email` | `draft_only` | Booking status is `paid_scheduled`. | Confirmation draft on the `onConfirmation` sink. Channel is `calendar_meet_invite`. No outbound buyer mail. |
 
 `POST /api/consultation/book` runs `save_slot`, then `create_checkout_session`. If Checkout fails, the hold is released.
 
-`POST /api/stripe/webhook` still accepts `checkout.session.completed` only. After a paid session it runs `write_calendar_meet_on_pay`, then `send_confirm_email`. A draft failure does not fail the calendar write.
+`POST /api/stripe/webhook` still accepts `checkout.session.completed` only. After a paid session it runs `write_calendar_meet_on_pay`, then `notify_owner_paid`, then `send_confirm_email`. The production handler wires `notify_owner_paid` to Gmail for founder@revealui.com. It does not pass a buyer sender. An owner-mail failure or a draft failure does not fail the calendar write. A replay that is already scheduled does not send a second owner notice.
+
+`GET /api/consultation/booking?booking=` returns the paid time, Google Meet link, and Stage B flag for the success page. It does not return the buyer name or email.
 
 ## Stage B and network credit
 

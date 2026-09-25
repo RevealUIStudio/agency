@@ -12,7 +12,7 @@ Example range: `Wed, Jan 7 · 9:00 AM–10:00 AM ET`
 Payment received for your RevealUI Studio Consultation.
 
 When: {Eastern Time range}
-Meet: {meet link, or "The Meet link is on the calendar invite."}
+Google Meet: {meet link, or "The Google Meet link is on the calendar invite."}
 Company: {company, when present}
 The domain pack ($297) is on this payment.
 OR
@@ -24,4 +24,10 @@ Questions: founder@revealui.com
 
 Do not describe the domain pack as free, included, waived, or credited. The add-on is either on the Checkout Session or absent. A network order still uses these sentences: the pack line stays "The domain pack ($297) is on this payment." Do not add a line that the fee was removed. Do not put internal desk notes in the email draft or the calendar invite. The Stripe SKU stays stage-b.
 
-There is no send switch. Do not add a mail provider for this action. Owner send stays outside this repo until Joshua says otherwise.
+The subject contains `RevealUI Studio`. The body says Google Meet. Do not shorten that label to Meet. Do not use an em dash (U+2014). Time ranges keep the en dash from `formatConsultationRange`.
+
+## Studio header
+
+This draft is plain text. The subject and the first line say RevealUI Studio. Do not mount the product `RevealUIWordmark`. Do not add a tagline, a second logo, or site nav to Studio Consultation mail.
+
+There is no send switch on this draft. Do not send it to the buyer. `notify_owner_paid` is a separate action. It notifies founder@revealui.com only. See `docs/consultation-actions.md`.

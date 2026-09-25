@@ -19,12 +19,18 @@ import {
   CONSULTATION_BOOK_INTRO,
   CONSULTATION_CANCEL,
   CONSULTATION_HOLD_NOTE,
+  CONSULTATION_MEET_FALLBACK,
   CONSULTATION_PREP_BODY,
   CONSULTATION_READY_HINT,
   CONSULTATION_SUCCESS,
+  CONSULTATION_SUCCESS_LOADING,
+  CONSULTATION_SUCCESS_MISSING,
+  CONSULTATION_SUCCESS_PENDING,
+  type ConsultationBookingView,
   consultationBookDueCents,
   consultationEmptySlots,
   consultationStageLine,
+  parseConsultationBookingPayload,
   readConsultationReceipt,
   rememberConsultationReceipt,
   STAGE_B_CHECKBOX,
@@ -38,6 +44,7 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
+import { formatConsultationRange } from '@/lib/consultation-slots';
 import { formatUsdFromCents } from '@/lib/money';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL } from '@/lib/site';
 
@@ -471,28 +478,82 @@ export function ConsultationBookPage({
   );
 }
 
+function bookingIdFromLocation(): string {
+  if (typeof window === 'undefined') return '';
+  return new URLSearchParams(window.location.search).get('booking')?.trim() ?? '';
+}
+
 export function ConsultationBookSuccessPage() {
-  const bookingId =
-    typeof window === 'undefined'
-      ? ''
-      : (new URLSearchParams(window.location.search).get('booking') ?? '');
+  const bookingId = bookingIdFromLocation();
   const receipt = readConsultationReceipt(bookingId);
+  const [view, setView] = useState<ConsultationBookingView | 'loading' | 'error'>(
+    bookingId ? 'loading' : { kind: 'missing' },
+  );
+
+  useEffect(() => {
+    if (!bookingId) return;
+    let cancelled = false;
+    const url = `/api/consultation/booking?booking=${encodeURIComponent(bookingId)}`;
+    fetch(url)
+      .then(async (response) => {
+        if (!response.ok) throw new Error('booking');
+        return response.json() as Promise<unknown>;
+      })
+      .then((body) => {
+        if (!cancelled) setView(parseConsultationBookingPayload(body));
+      })
+      .catch(() => {
+        if (!cancelled) setView('error');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [bookingId]);
+
+  const paid = typeof view === 'object' && view.kind === 'paid' ? view : null;
+  const whenLabel = paid
+    ? formatConsultationRange(new Date(paid.start), new Date(paid.end))
+    : (receipt?.label ?? null);
+  const stageB = paid ? paid.stageB : receipt ? receipt.stageB : null;
+  const meetUrl = paid?.meetLink ?? null;
+  const pending = typeof view === 'object' && view.kind === 'pending';
+  let meetCopy = CONSULTATION_MEET_FALLBACK;
+  if (view === 'loading') meetCopy = CONSULTATION_SUCCESS_LOADING;
+  else if (pending) meetCopy = CONSULTATION_SUCCESS_PENDING;
+  else if (!meetUrl && !whenLabel) meetCopy = CONSULTATION_SUCCESS_MISSING;
+
   return (
     <section className={pageClass}>
       <div className={frameClass}>
         <h1 className={headingClass}>Consultation booked</h1>
-        {receipt ? (
-          <>
-            <p className="mt-6 break-words text-base font-semibold text-foreground">
-              {receipt.label}
-            </p>
-            <p className="mt-2 break-words text-base text-muted-foreground">
-              {consultationStageLine(receipt.stageB)}
-            </p>
-          </>
-        ) : null}
         <p className="mt-6 break-words text-lg text-muted-foreground">{CONSULTATION_SUCCESS}</p>
-        <p className="mt-4 break-words text-base text-muted-foreground">{CONSULTATION_PREP_BODY}</p>
+        {whenLabel ? (
+          <div className="mt-6">
+            <p className="text-sm font-semibold text-foreground">When</p>
+            <p className="mt-1 break-words text-base font-semibold text-foreground">{whenLabel}</p>
+          </div>
+        ) : null}
+        {meetUrl ? (
+          <p className="mt-4 break-words text-base text-foreground">
+            Google Meet:{' '}
+            <a href={meetUrl} className="break-all font-semibold text-foreground hover:underline">
+              {meetUrl}
+            </a>
+          </p>
+        ) : (
+          <p className="mt-4 break-words text-base text-muted-foreground">{meetCopy}</p>
+        )}
+        {stageB !== null ? (
+          <p className="mt-4 break-words text-base text-muted-foreground">
+            {consultationStageLine(stageB)}
+          </p>
+        ) : null}
+        <div className="mt-4">
+          <p className="text-sm font-semibold text-foreground">Prep</p>
+          <p className="mt-1 break-words text-base text-muted-foreground">
+            {CONSULTATION_PREP_BODY}
+          </p>
+        </div>
         <p className="mt-4 break-words text-base text-muted-foreground">
           Questions:{' '}
           <a

@@ -1,7 +1,8 @@
 /**
  * Consultation availability, slot hold, and Stripe webhook.
  * Book and the paid webhook call the action registry. The calendar event
- * is the schedule record. Confirmation stays a draft.
+ * is the schedule record. Buyer confirmation stays a draft.
+ * A new paid Google Meet write notifies founder@revealui.com.
  */
 
 import {
@@ -10,6 +11,7 @@ import {
   runPaidConsultation,
 } from '../app/lib/consultation-actions';
 import {
+  type Booking,
   bookInputFromNetwork,
   type ConfirmationEmail,
   parseBookBody,
@@ -24,6 +26,7 @@ import {
   parseNetworkLinkBody,
   verifyNetworkToken,
 } from '../app/lib/consultation-network-waive';
+import type { OwnerPaidNotice } from '../app/lib/consultation-owner';
 import {
   CONSULTATION_TZ,
   generateConsultationSlots,
@@ -35,6 +38,7 @@ import {
   calendarFromEnv,
   consultationEnvFromProcess,
 } from './consultation-calendar';
+import { deliverOwnerPaidNotice } from './consultation-owner-mail';
 import { type StripePort, stripeFromEnv, verifyStripeSignature } from './consultation-stripe';
 import { verifySession } from './session';
 
@@ -48,6 +52,8 @@ export interface ConsultationDeps {
   readonly fetchImpl?: typeof fetch;
   readonly bookingId?: () => string;
   readonly onConfirmation?: (email: ConfirmationEmail) => void;
+  /** Overrides the production Gmail notice. Tests pass a fake sink. */
+  readonly onOwnerPaid?: (notice: OwnerPaidNotice) => void | Promise<void>;
 }
 
 function json(status: number, body: unknown): Response {
@@ -236,12 +242,41 @@ async function networkLink(request: Request, env: ConsultationEnv, now: Date): P
   }
 }
 
+function amountTotalOf(session: object): number | null {
+  const record = session as { amount_total?: unknown };
+  const amount = record.amount_total;
+  if (typeof amount !== 'number' || !Number.isInteger(amount) || amount < 0) return null;
+  return amount;
+}
+
+async function bookingView(request: Request, calendar: CalendarPort): Promise<Response> {
+  const id = new URL(request.url).searchParams.get('booking')?.trim() ?? '';
+  if (!id || id.length > 80 || id.includes('/')) return json(200, { ok: false, reason: 'missing' });
+  let booking: Booking | null;
+  try {
+    booking = await calendar.get(id);
+  } catch {
+    return json(502, { error: 'calendar' });
+  }
+  if (!booking) return json(200, { ok: false, reason: 'missing' });
+  if (booking.status !== 'paid_scheduled') return json(200, { ok: false, reason: 'pending' });
+  return json(200, {
+    ok: true,
+    start: booking.start,
+    end: booking.end,
+    meet_link: booking.meet_link,
+    stage_b: booking.stage_b,
+  });
+}
+
 async function webhook(
   request: Request,
   env: ConsultationEnv,
   calendar: CalendarPort,
   now: Date,
+  fetchImpl: typeof fetch,
   sink: ConsultationDeps['onConfirmation'],
+  ownerSink: ConsultationDeps['onOwnerPaid'],
 ): Promise<Response> {
   if (!env.stripeWebhookSecret) return json(500, { error: 'webhook-unconfigured' });
   const rawBody = await request.text();
@@ -297,6 +332,7 @@ async function webhook(
       sessionId,
       metadata: metadata as Record<string, unknown>,
       booking,
+      amountTotal: amountTotalOf(session),
     },
     {
       now,
@@ -306,6 +342,11 @@ async function webhook(
       stageBPriceId: env.stageBPriceId,
       stageBNetworkCouponId: env.stageBNetworkCouponId,
       onConfirmation: sink,
+      onOwnerPaid:
+        ownerSink ??
+        (async (notice) => {
+          await deliverOwnerPaidNotice(env, notice, fetchImpl);
+        }),
     },
   );
   if (!paid.ok) {
@@ -325,12 +366,15 @@ export async function handleConsultationRequest(
   const known =
     path === '/api/consultation/availability' ||
     path === '/api/consultation/book' ||
+    path === '/api/consultation/booking' ||
     path === '/api/consultation/network-link' ||
     path === '/api/consultation/network-status' ||
     path === '/api/stripe/webhook';
   if (!known) return json(404, { error: 'not-found' });
   const getOnly =
-    path === '/api/consultation/availability' || path === '/api/consultation/network-status';
+    path === '/api/consultation/availability' ||
+    path === '/api/consultation/booking' ||
+    path === '/api/consultation/network-status';
   if (getOnly && request.method !== 'GET') return json(405, { error: 'method' });
   if (!getOnly && request.method !== 'POST') return json(405, { error: 'method' });
 
@@ -347,8 +391,11 @@ export async function handleConsultationRequest(
   if (path === '/api/consultation/availability') {
     return availability(request, calendar, now);
   }
+  if (path === '/api/consultation/booking') {
+    return bookingView(request, calendar);
+  }
   if (path === '/api/stripe/webhook') {
-    return webhook(request, env, calendar, now, deps.onConfirmation);
+    return webhook(request, env, calendar, now, fetchImpl, deps.onConfirmation, deps.onOwnerPaid);
   }
 
   const stripe = deps.stripe ?? stripeFromEnv(env.stripeSecretKey, fetchImpl);
