@@ -18,6 +18,25 @@ afterEach(() => {
 });
 
 describe('ConsultationBookPage', () => {
+  it('renders booking chrome from presentation and does not handroll slot radios', () => {
+    const source = readFileSync(
+      resolve(process.cwd(), 'app/routes/ConsultationBookPage.tsx'),
+      'utf8',
+    );
+    expect(source).toContain("from '@revealui/presentation'");
+    expect(source).toContain('<BookingCalendar');
+    expect(source).toContain('<FormField');
+    expect(source).toContain('<Select');
+    expect(source).toContain('<Input');
+    expect(source).toContain('<Checkbox');
+    expect(source).toContain('<Button');
+    expect(source).toContain('<LinkButton');
+    expect(source).not.toMatch(/<button\b/);
+    expect(source).not.toMatch(/<select\b/);
+    expect(source).not.toMatch(/<input\b/);
+    expect(source).not.toMatch(/type="radio"/);
+  });
+
   it('saves a slot without Stage B and redirects to Checkout', async () => {
     let posted: unknown;
     vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) => {
@@ -57,6 +76,7 @@ describe('ConsultationBookPage', () => {
 
     const onCheckout = vi.fn();
     const view = render(<ConsultationBookPage onCheckout={onCheckout} />);
+    expect(view.container.querySelector('[data-slot="booking-calendar"]')).toBeTruthy();
     expect(view.container.textContent ?? '').not.toMatch(/waive/i);
     expect(view.container.textContent ?? '').not.toContain('calendar.google.com');
     const stageB = await screen.findByRole('checkbox', { name: 'Add the domain pack ($297)' });
@@ -223,7 +243,11 @@ describe('ConsultationBookPage', () => {
     const name = screen.getByLabelText('Name');
     expect(name.className).toContain('w-full');
     expect(name.className).toContain('text-base');
-    expect(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' })).not.toBeChecked();
+    const stageB = screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' });
+    expect(stageB).not.toBeChecked();
+    fireEvent.click(stageB);
+    expect(stageB).toBeChecked();
+    expect(screen.getByText('Due today $597.')).toBeInTheDocument();
     expect(
       await screen.findByText('No open slots for 1 hour in the next 3 weeks.'),
     ).toBeInTheDocument();
@@ -231,6 +255,44 @@ describe('ConsultationBookPage', () => {
     expect(
       await screen.findByText('No open slots for 2 hours in the next 3 weeks.'),
     ).toBeInTheDocument();
+  });
+
+  it('shows the unconfigured calendar state when booking is not set up', async () => {
+    vi.stubGlobal('fetch', () =>
+      Promise.resolve(
+        new Response(JSON.stringify({ error: 'calendar-unconfigured' }), {
+          status: 503,
+          headers: { 'content-type': 'application/json' },
+        }),
+      ),
+    );
+    render(<ConsultationBookPage />);
+    expect(
+      await screen.findByText('Booking is not available on this server yet.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('radio')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Continue to payment' })).toBeDisabled();
+  });
+
+  it('retries a failed slot load from the presentation button', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', () => {
+      calls += 1;
+      if (calls === 1) return Promise.resolve(new Response('no', { status: 500 }));
+      return Promise.resolve(
+        new Response(JSON.stringify({ timezone: 'America/New_York', hours: 1, slots: [] }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+      );
+    });
+    render(<ConsultationBookPage />);
+    expect(await screen.findByText('Could not load open slots.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    expect(
+      await screen.findByText('No open slots for 1 hour in the next 3 weeks.'),
+    ).toBeInTheDocument();
+    expect(calls).toBeGreaterThan(1);
   });
 
   it('keeps a device-width viewport on the studio document', () => {
