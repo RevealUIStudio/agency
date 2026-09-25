@@ -1,6 +1,8 @@
-# Consultation confirmation email
+# Consultation confirmation draft
 
-Sent after the calendar event exists, when `RESEND_API_KEY` and `RESEND_FROM` are both set. A send failure must not roll back the calendar event. The same sentences are in `app/lib/consultation-buyer.ts`, which the webhook and the calendar invite use.
+`send_confirm_email` builds this draft after the calendar event exists. The gate is `draft_only`. Delivery is `draft`. The buyer invite is the Google Calendar event with Google Meet. This repo does not send the draft.
+
+A draft sink failure must not roll back the calendar event. The same sentences are in `app/lib/consultation-buyer.ts`. The calendar invite uses `calendarInviteDescription`. The webhook calls the draft sink only.
 
 Subject: `RevealUI Studio Consultation, {Eastern Time range}`
 
@@ -20,4 +22,6 @@ Prep: send the system you want to look at and the question you want answered. A 
 Questions: founder@revealui.com
 ```
 
-Do not describe the domain pack as free, included, waived, or credited. The add-on is either on the Checkout Session or absent. A network order still uses these sentences: the pack line stays "The domain pack ($297) is on this payment." Do not add a line that the fee was removed. Do not put internal desk notes in the email or the calendar invite. The Stripe SKU stays stage-b.
+Do not describe the domain pack as free, included, waived, or credited. The add-on is either on the Checkout Session or absent. A network order still uses these sentences: the pack line stays "The domain pack ($297) is on this payment." Do not add a line that the fee was removed. Do not put internal desk notes in the email draft or the calendar invite. The Stripe SKU stays stage-b.
+
+There is no send switch. Do not add a mail provider for this action. Owner send stays outside this repo until Joshua says otherwise.

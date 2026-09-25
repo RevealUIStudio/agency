@@ -5,7 +5,6 @@ import { describe, expect, it } from 'vitest';
 import { HERO_HEADLINE, HERO_PROOF, HERO_RESULT, HERO_SHOP_LINE } from '@/components/agency/Hero';
 import { STUDIO_FOR_TITLE } from '@/components/agency/WhoStudioIsFor';
 import { FLEET_NAME } from '@/lib/fleet';
-import { OUTCOME_OPTIONS } from '@/lib/quote';
 import { CONTACT_EMAIL, INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 import { HomePage } from '@/routes/HomePage';
 
@@ -95,12 +94,7 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/make-good/i);
     expect(text).toMatch(/RevealFleet/);
     expect(text).not.toMatch(/RevForge|RevKit|RevDev|Agency Perpetual/);
-    expect(text).toContain('More than one — book an intro');
-    expect(
-      OUTCOME_OPTIONS.reduce(
-        (next, option) => next.replaceAll(option.label, ''),
-        text.replaceAll('More than one — book an intro', '').replaceAll(HERO_PROOF, ''),
-      ),
-    ).not.toContain('\u2014');
+    expect(text).toContain('More than one: book an intro');
+    expect(text).not.toContain('\u2014');
   });
 });

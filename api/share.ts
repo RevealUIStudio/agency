@@ -1,4 +1,4 @@
-import { handleShareRequest } from '../../../server/share-http';
+import { handleShareRequest } from '../server/share-http';
 
 export const config = { runtime: 'edge' };
 

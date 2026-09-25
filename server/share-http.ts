@@ -57,21 +57,56 @@ function isSeedFile(file: string): boolean {
   return (SHARE_SEED_FILES as readonly string[]).includes(file);
 }
 
-function parseSharePath(pathname: string): { slug: string; file: string } | null {
-  const match = pathname.match(/^\/(?:api\/)?share\/([^/]+)\/([^/]+)$/);
-  if (!match) return null;
-  let slug = '';
-  let file = '';
-  try {
-    slug = decodeURIComponent(match[1] ?? '');
-    file = decodeURIComponent(match[2] ?? '');
-  } catch {
+function shareIdentity(slug: string, file: string): { slug: string; file: string } | null {
+  if (!slug || !file || slug.includes('..') || file.includes('..')) return null;
+  if (slug.includes('/') || file.includes('/') || slug.includes('\\') || file.includes('\\')) {
     return null;
   }
-  if (!slug || !file || slug.includes('..') || file.includes('..')) return null;
   if (clientSlugFromHost(`${slug}.revealuistudio.com`) !== slug) return null;
   if (!isSeedFile(file)) return null;
   return { slug, file };
+}
+
+function shareFromPathname(pathname: string): { slug: string; file: string } | null {
+  const match = pathname.match(/^\/(?:api\/)?share\/([^/]+)\/([^/]+)$/);
+  const slug = match?.[1];
+  const file = match?.[2];
+  if (!slug || !file) return null;
+  try {
+    return shareIdentity(decodeURIComponent(slug), decodeURIComponent(file));
+  } catch {
+    return null;
+  }
+}
+
+function isShareRewriteLanding(pathname: string): boolean {
+  if (pathname === '/api/share') return true;
+  try {
+    return decodeURIComponent(pathname) === '/api/share/[slug]/[file]';
+  } catch {
+    return false;
+  }
+}
+
+function shareFromQuery(url: URL): { slug: string; file: string } | null {
+  const slug = url.searchParams.get('slug');
+  const file = url.searchParams.get('file');
+  if (slug === null || file === null) return null;
+  return shareIdentity(slug, file);
+}
+
+/**
+ * Public paths are `/share/:slug/:file` and `/api/share/:slug/:file`.
+ * Vite's catch-all rewrite serves index.html for those URLs because the
+ * dynamic function file is not a filesystem match. vercel.json sends them to
+ * `/api/share`, and that landing may replace `request.url`, so slug and file
+ * are also accepted as a query string. A real path always wins over the query.
+ */
+function parseSharePath(url: URL): { slug: string; file: string } | null {
+  const fromPath = shareFromPathname(url.pathname);
+  if (fromPath) return fromPath;
+  if (!isShareRewriteLanding(url.pathname)) return null;
+  return shareFromQuery(url);
 }
 
 function depsOf(deps?: ShareDeps): { audit: AuditLog; env: SessionEnv } {
@@ -191,7 +226,7 @@ export async function handleShareRequest(request: Request, deps?: ShareDeps): Pr
     }
   }
 
-  const share = parseSharePath(url.pathname);
+  const share = parseSharePath(url);
   if (!share || request.method !== 'GET') {
     const event = audit.append({
       action: 'share.read',

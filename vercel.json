@@ -77,7 +77,8 @@
     { "source": "/og-card.png", "destination": "/og-card.png" },
     { "source": "/proof-gap-checklist.pdf", "destination": "/proof-gap-checklist.pdf" },
     { "source": "/.well-known/(.*)", "destination": "/.well-known/$1" },
-    { "source": "/share/:slug/:file", "destination": "/api/share/:slug/:file" },
+    { "source": "/api/share/:slug/:file", "destination": "/api/share?slug=:slug&file=:file" },
+    { "source": "/share/:slug/:file", "destination": "/api/share?slug=:slug&file=:file" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
