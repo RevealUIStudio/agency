@@ -1,8 +1,10 @@
 import { useLocation } from '@revealui/router';
 import { type ReactNode, useEffect, useRef } from 'react';
+import { ConsultationHeader } from '@/components/ConsultationHeader';
 import { Footer } from '@/components/Footer';
 import { NavBar } from '@/components/NavBar';
 import { RouteHead } from '@/components/RouteHead';
+import { isConsultationBookPath } from '@/lib/site';
 
 export function RootLayout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -36,7 +38,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
-      <NavBar />
+      {isConsultationBookPath(pathname) ? <ConsultationHeader /> : <NavBar />}
       <main
         id="main-content"
         ref={mainRef}
