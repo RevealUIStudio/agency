@@ -10,7 +10,7 @@ Re-read the source docs on the day you post. If a number there moved, the source
 
 ## What changed on the homepage
 
-Nothing in this change. On `test` after the 2026-09-22 offer lock, `PUBLIC_OFFERS` in `app/lib/engagements.ts` is Consultation, Proof Sprint, and Launch. Care is an optional export and is not in that trio. Leave it that way.
+Nothing in this change. On `test` after the 2026-09-26 offer lock, `PUBLIC_OFFERS` in `app/lib/engagements.ts` is Consultation, Pilot, and Launch. Care is an optional export and is not in that trio. Adapter is an add-on, not a fourth card. Leave it that way.
 
 ## Sources (read these, do not invent past them)
 
@@ -21,7 +21,7 @@ Checked 2026-09-23 against public RevealUI `test`:
 - `docs/LOCAL_FIRST.md` — local inference is an optional path. The default documented deploy still uses cloud services (Neon Postgres, Stripe, Cloudflare R2).
 - `docs/MARKETING_METRICS.md` §2 Track A and Track C (last-verified 2026-09-17) — Free / Pro / Max / perpetual prices. §1 names the five FSL packages.
 - Repo-root `docker-compose.yml` header — local Postgres (`pgvector/pgvector:pg16`) as the alternative to Neon; API and admin in the compose; marketing site omitted.
-- Studio offer lock 2026-09-22 — Consultation, Proof Sprint, Launch. Used only in the “if they ask to hire Studio” stub.
+- Studio offer lock 2026-09-26: Consultation, Pilot, Launch. Adapter is an add-on. Used only in the “if they ask to hire Studio” stub.
 
 The coordination-repo copy of this kit was not reachable from this checkout. This file was written from the sources above. It does not carry forward an older price.
 
@@ -48,7 +48,7 @@ Open-source packages are MIT. Pro packages are Fair Source (FSL-1.1-MIT) and con
 | Offer | List price |
 |---|---|
 | Consultation | **$300** (tax $0). Default 1 hour. Multi-hour is $300 × hours. |
-| Proof Sprint | **$3,997**. One site, one receipted action they operate. 100% credits to Launch if Launch starts within 45 days of Proof start. |
+| Pilot | **$3,997**. Includes 1 Adapter. One site, one receipted action they operate. 100% credits to Launch if Launch starts within 45 days of Pilot start. |
 | Launch | **$14,500**. Architecture stays inside this offer. Runbook. 30-day async stabilization. |
 
 Do not put these prices in the opening post. The opening post stays on the product.
@@ -174,7 +174,7 @@ No. RevealUI is not SOC 2 certified, and RevealUI Studio is not SOC 2 or ISO 270
 **“Can you just host it / build it for me?”**
 
 ```
-This thread is the self-host product. If you want RevealUI Studio to implement it: Consultation is $300 (tax $0, default one hour), Proof Sprint is $3,997, Launch is $14,500. A 30-minute intro is on https://revealuistudio.com. Product licenses stay on https://revealui.com.
+This thread is the self-host product. If you want RevealUI Studio to implement it: Consultation is $300 (tax $0, default one hour), Pilot is $3,997 (includes 1 Adapter), Launch is $14,500 (up to 3 Adapters). Adapter is $2,497 and is not sold alone. A 30-minute intro is on https://revealuistudio.com. Product licenses stay on https://revealui.com.
 ```
 
 That stub is the only Studio price block. It has no Care line. It has no waiver line. It has no Pilot line.
@@ -198,5 +198,5 @@ SSO is an operator preview, not a feature I have walked a customer through. Whit
 - [ ] Neither paste says SOC 2 certified, ready, compliant, or audited.
 - [ ] Neither paste names a customer, a logo, or a traction number.
 - [ ] Neither paste mentions CapCut or Cal.com.
-- [ ] `PUBLIC_OFFERS` is still Consultation, Proof Sprint, Launch.
+- [ ] `PUBLIC_OFFERS` is still Consultation, Pilot, Launch. Adapter stays an add-on.
 - [ ] You are posting from your own Reddit and HN accounts, and you can stay for comments.

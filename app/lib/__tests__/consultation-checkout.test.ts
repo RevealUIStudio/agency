@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ADAPTER_LOOKUP_KEY,
   CHECKOUT_BILLING_ADDRESS_COLLECTION,
   CheckoutDiscountError,
   consultationCheckoutLines,
   consultationIntegrationIdentifier,
+  DEFAULT_ADAPTER_PRICE_ID,
   DEFAULT_CONSULTATION_PRICE_ID,
   DEFAULT_STAGE_B_PRICE_ID,
   encodeCheckoutForm,
@@ -29,6 +31,27 @@ describe('consultationCheckoutLines', () => {
     expect(() => consultationCheckoutLines({ hours: 0, stageB: false })).toThrow(
       /consultation-hours/,
     );
+  });
+
+  it('refuses the Adapter price on Consultation checkout', () => {
+    expect(() =>
+      consultationCheckoutLines({
+        hours: 1,
+        stageB: false,
+        consultationPriceId: DEFAULT_ADAPTER_PRICE_ID,
+      }),
+    ).toThrow(/adapter-not-on-consultation-checkout/);
+    expect(() =>
+      consultationCheckoutLines({
+        hours: 1,
+        stageB: true,
+        stageBPriceId: DEFAULT_ADAPTER_PRICE_ID,
+      }),
+    ).toThrow(/adapter-not-on-consultation-checkout/);
+    const lines = consultationCheckoutLines({ hours: 1, stageB: true });
+    expect(lines.map((line) => line.price)).not.toContain(DEFAULT_ADAPTER_PRICE_ID);
+    expect(ADAPTER_LOOKUP_KEY).toBe('studio_adapter');
+    expect(DEFAULT_ADAPTER_PRICE_ID).toBe('price_1UJqwUJz64n6uEibb00OrqFM');
   });
 });
 

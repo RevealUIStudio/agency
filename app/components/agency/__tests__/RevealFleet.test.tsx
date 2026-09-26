@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RevealFleet } from '@/components/agency/RevealFleet';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { FLEET_NAME } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
@@ -24,8 +24,8 @@ describe('RevealFleet', () => {
     const text = container.textContent ?? '';
     expect(text).toContain(CONSULTATION.name);
     expect(text).toContain(CONSULTATION.price);
-    expect(text).toContain(PROOF_SPRINT.name);
-    expect(text).toContain(PROOF_SPRINT.price);
+    expect(text).toContain(PILOT.name);
+    expect(text).toContain(PILOT.price);
     expect(text).toContain(LAUNCH.price);
     expect(text).toMatch(/You run it, or I ship it with you/);
     expect(text).toMatch(/startups/i);

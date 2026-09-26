@@ -1,5 +1,6 @@
 import { Link } from '@revealui/router';
 import { PROOF_GAP_OFFER_NAME, PROOF_GAP_PATH } from '@/content/proof-gap';
+import { DOCS_NAV_LABEL } from '@/lib/blog-copy';
 import { CONTACT_EMAIL, DOCS_URL, STUDIO_LEGAL_NAME } from '@/lib/site';
 
 const footerLinks = [
@@ -19,13 +20,18 @@ export function Footer() {
           <nav aria-label="Footer">
             <ul className="flex flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-4">
               <li>
+                <Link to="/blog" className="hover:text-foreground transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <a
                   href={DOCS_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-foreground transition-colors"
                 >
-                  Documentation
+                  {DOCS_NAV_LABEL}
                 </a>
               </li>
               {footerLinks.map(({ href, label }) => (

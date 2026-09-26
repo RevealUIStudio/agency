@@ -5,13 +5,15 @@ import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 import { describe, expect, it } from 'vitest';
 import {
   ADAPTER,
+  ADAPTER_CENTS,
   ADAPTER_PRICE,
+  ADAPTER_ROLE,
   CONSULTATION,
   CUSTOM_BUILD,
   FLEET_STAMP,
   LAUNCH,
   LAUNCH_PRICE,
-  PROOF_SPRINT,
+  PILOT,
   PUBLIC_OFFERS,
   RUNTIME_METRICS,
 } from '@/lib/engagements';
@@ -20,18 +22,14 @@ describe('public studio offers', () => {
   it('exposes only the three locked stranger-facing SKUs', () => {
     expect(PUBLIC_OFFERS.map((offer) => offer.id)).toEqual([
       'consultation',
-      'proof-sprint',
+      'pilot',
       'launch-package',
     ]);
-    expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual([
-      'Consultation',
-      'Proof Sprint',
-      'Launch',
-    ]);
+    expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual(['Consultation', 'Pilot', 'Launch']);
     expect(CONSULTATION.name).toBe('Consultation');
     expect(CONSULTATION.price).toBe('$300');
-    expect(PROOF_SPRINT.name).toBe('Proof Sprint');
-    expect(PROOF_SPRINT.price).toBe('$3,997');
+    expect(PILOT.name).toBe('Pilot');
+    expect(PILOT.price).toBe('$3,997');
     expect(LAUNCH.name).toBe('Launch');
     expect(LAUNCH.price).toBe('$14,500');
   });
@@ -40,7 +38,7 @@ describe('public studio offers', () => {
     expect(LAUNCH_PACKAGE_PRICE).toBe('$14,500');
     expect(LAUNCH_PRICE).toBe(LAUNCH_PACKAGE_PRICE);
     expect(LAUNCH.price).toBe(LAUNCH_PACKAGE_PRICE);
-    expect(PROOF_SPRINT.price).toBe('$3,997');
+    expect(PILOT.price).toBe('$3,997');
     const source = readFileSync(
       path.join(path.dirname(fileURLToPath(import.meta.url)), '../engagements.ts'),
       'utf8',
@@ -62,21 +60,19 @@ describe('public studio offers', () => {
     expect(names).not.toContain('Working session');
     expect(names).not.toContain('Live page');
     expect(names).not.toContain('Launch package');
-    expect(names).not.toContain(ADAPTER.name);
-    expect(ADAPTER_PRICE).toBe('$2,497');
-    expect(ADAPTER.price).toBe(ADAPTER_PRICE);
-    expect(ADAPTER.optional).toBe(true);
     expect(names).not.toContain('Guardrail');
     expect(names).not.toContain('Guardrail agent');
     expect(names).not.toContain('Guardrail agent (template)');
     expect(names).not.toContain('Knowledge Graph');
-    expect(PROOF_SPRINT.tagline).toBe('One site. One receipted action you operate.');
-    expect(PROOF_SPRINT.description).toMatch(/one receipted action you operate/i);
-    expect(PROOF_SPRINT.description).toMatch(/The domain pack is included/i);
-    expect(PROOF_SPRINT.description).toMatch(/45 days/i);
-    expect(PROOF_SPRINT.description).not.toMatch(/written plan/i);
-    expect(PROOF_SPRINT.description).not.toMatch(/\bdemo\b/i);
-    expect(PROOF_SPRINT.description).not.toMatch(/\bSpec\b/);
+    expect(PILOT.tagline).toBe('One site. One receipted action you operate.');
+    expect(PILOT.description).toMatch(/one receipted action you operate/i);
+    expect(PILOT.description).toMatch(/Includes 1 Adapter/i);
+    expect(PILOT.description).toMatch(/The domain pack is included/i);
+    expect(PILOT.description).toMatch(/45 days/i);
+    expect(PILOT.description).not.toMatch(/written plan/i);
+    expect(PILOT.description).not.toMatch(/\bdemo\b/i);
+    expect(PILOT.description).not.toMatch(/\bSpec\b/);
+    expect(PILOT.description).not.toMatch(/Proof Sprint/);
     expect(LAUNCH.description).toMatch(/inside this offer/i);
     expect(LAUNCH.description).toMatch(/Knowledge Graph is part of the runtime/);
     expect(LAUNCH.description).toMatch(/Electric\+CRDT/);
@@ -94,11 +90,28 @@ describe('public studio offers', () => {
     expect(CONSULTATION.payment).toContain('No holdback');
     expect(CONSULTATION.payment).toContain('Pay $300 per hour when you book the slot');
     expect(CONSULTATION.payment).not.toContain('first half back');
-    expect(PROOF_SPRINT.payment).toContain('Credits 100% to Launch');
-    expect(PROOF_SPRINT.payment).toContain('45 days');
-    expect(PROOF_SPRINT.payment).toContain('You keep the site if you walk');
-    expect(PROOF_SPRINT.payment).not.toContain('first half back');
-    expect(PROOF_SPRINT.payment).not.toContain('holdback');
+    expect(PILOT.payment).toContain('Credits 100% to Launch');
+    expect(PILOT.payment).toContain('45 days');
+    expect(PILOT.payment).toContain('You keep the site if you walk');
+    expect(PILOT.payment).not.toContain('first half back');
+    expect(PILOT.payment).not.toContain('holdback');
+  });
+
+  it('prices Adapter as an add-on that is not a fourth homepage card', () => {
+    expect(PUBLIC_OFFERS.map((offer) => offer.name)).not.toContain(ADAPTER.name);
+    expect(ADAPTER.price).toBe(ADAPTER_PRICE);
+    expect(ADAPTER.price).toBe('$2,497');
+    expect(ADAPTER_CENTS).toBe(249_700);
+    expect(PILOT.description).toMatch(/Includes 1 Adapter/);
+    expect(LAUNCH.description).toMatch(/up to 3 Adapters/);
+    expect(ADAPTER.description).toMatch(/Not sold alone/);
+    expect(ADAPTER.description).toMatch(/while on Care/);
+    expect(ADAPTER_ROLE).toMatch(/leak/);
+    expect(ADAPTER_ROLE).not.toMatch(/\u2014/);
+    const adapterCopy = `${ADAPTER.description} ${ADAPTER.tagline} ${ADAPTER_ROLE}`;
+    expect(adapterCopy).not.toMatch(
+      /Jobber|Zapier|Stripe|Square|Shopify|Twilio|Calendly|HoneyBook|ServiceTitan|Housecall|QuickBooks|HubSpot|Salesforce/i,
+    );
   });
 
   it('pins monorepo metrics to MARKETING_METRICS §1 (2026-08-19)', () => {

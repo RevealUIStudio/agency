@@ -11,6 +11,7 @@ import {
 import { publishedCases } from './data/cases';
 import { publishedPress } from './data/press';
 import { RootLayout } from './layouts/RootLayout';
+import { STUDIO_BLOG_HOME_H1, STUDIO_BLOG_HOME_SUB } from './lib/blog-copy';
 import {
   CONSULTATION_BOOK_INTRO,
   CONSULTATION_CANCEL,
@@ -19,6 +20,8 @@ import {
 } from './lib/consultation-buyer';
 import { listSharePacks, resolveShareViewer } from './lib/share-stage-b';
 import { AboutPage } from './routes/AboutPage';
+import { BlogPage } from './routes/BlogPage';
+import { BlogPostPage } from './routes/BlogPostPage';
 import { CaseStudyPage } from './routes/CaseStudyPage';
 import { CasesPage } from './routes/CasesPage';
 import {
@@ -68,7 +71,7 @@ export function App() {
           meta: {
             title: 'Offers | RevealUI Studio',
             description:
-              'Consultation $300 per hour when you book the slot. Proof Sprint $3,997. Launch $14,500. Proof Sprint and Launch are invoiced after we agree.',
+              'Consultation $300 per hour when you book the slot. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Pilot and Launch are invoiced after we agree.',
           },
         },
         {
@@ -77,7 +80,7 @@ export function App() {
           meta: {
             title: 'Quote | RevealUI Studio',
             description:
-              'Studio quote. Consultation $300. Proof Sprint $3,997. Launch $14,500. Licenses live on revealui.com.',
+              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Licenses live on revealui.com.',
             robots: 'noindex,follow',
           },
         },
@@ -87,7 +90,7 @@ export function App() {
           meta: {
             title: 'Quote | RevealUI Studio',
             description:
-              'Studio quote. Consultation $300. Proof Sprint $3,997. Launch $14,500. Licenses live on revealui.com.',
+              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Licenses live on revealui.com.',
             robots: 'noindex,follow',
           },
         },
@@ -97,7 +100,7 @@ export function App() {
           meta: {
             title: 'Quote | RevealUI Studio',
             description:
-              'Studio quote. Consultation $300. Proof Sprint $3,997. Launch $14,500. Licenses live on revealui.com.',
+              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Licenses live on revealui.com.',
             robots: 'noindex,follow',
           },
         },
@@ -107,7 +110,23 @@ export function App() {
           meta: {
             title: 'How we work | RevealUI Studio',
             description:
-              'How a RevealUI Studio engagement runs. Consultation $300. Proof Sprint $3,997. Launch $14,500. Book a 30-minute intro on Google Calendar.',
+              'How a RevealUI Studio engagement runs. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Book a 30-minute intro on Google Calendar.',
+          },
+        },
+        {
+          path: '/blog',
+          component: BlogPage,
+          meta: {
+            title: `${STUDIO_BLOG_HOME_H1} | RevealUI Studio`,
+            description: STUDIO_BLOG_HOME_SUB,
+          },
+        },
+        {
+          path: '/blog/:slug',
+          component: BlogPostPage,
+          meta: {
+            title: `${STUDIO_BLOG_HOME_H1} | RevealUI Studio`,
+            description: STUDIO_BLOG_HOME_SUB,
           },
         },
         {
@@ -116,7 +135,7 @@ export function App() {
           meta: {
             title: 'About | RevealUI Studio',
             description:
-              'RevealUI Studio is for startups, and for technical founders and small agencies who already run agents. Joshua Vaughn runs it. Consultation, Proof Sprint, and Launch. Remote first. Consultation is paid when you book the slot.',
+              'RevealUI Studio is for startups, and for technical founders and small agencies who already run agents. Joshua Vaughn runs it. Consultation, Pilot, and Launch. Adapter is an add-on and is not sold alone. Remote first. Consultation is paid when you book the slot.',
           },
         },
         {
