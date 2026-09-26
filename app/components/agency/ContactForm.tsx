@@ -10,12 +10,12 @@ import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { z } from 'zod';
 import { submitContact } from '@/lib/api';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
   { value: CONSULTATION.id, label: `${CONSULTATION.name} (${CONSULTATION.price})` },
-  { value: PROOF_SPRINT.id, label: `${PROOF_SPRINT.name} (${PROOF_SPRINT.price})` },
+  { value: PILOT.id, label: `${PILOT.name} (${PILOT.price}, includes 1 Adapter)` },
   { value: LAUNCH.id, label: `${LAUNCH.name} (${LAUNCH.price})` },
   { value: 'general', label: 'General inquiry' },
 ] as const;

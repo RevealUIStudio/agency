@@ -32,7 +32,7 @@ export const SHARE_SEED: Readonly<Record<string, Readonly<Record<string, string>
     'home.txt': exampleNote('/', [
       'Stage A shell for demo.revealuistudio.com.',
       `${STAGE_B_ADDON} ${STAGE_B_DETAIL}`,
-      `The domain pack is ${STAGE_B_PRICE} on its own, or included with Proof Sprint and Launch.`,
+      `The domain pack is ${STAGE_B_PRICE} on its own after Consultation, or included with Pilot and Launch.`,
       'The studio attaches the DNS.',
     ]),
     ...domainPackFiles,

@@ -47,7 +47,9 @@ describe('Hero', () => {
     expect(HERO_RESULT).toMatch(/booking, invoices, and agents with PROOF on your domain/);
     expect(HERO_RESULT).toMatch(/You run it, or I ship it with you/);
     expect(screen.getByText(HERO_MENU)).toBeInTheDocument();
-    expect(HERO_MENU).toBe('Consultation $300 · Proof Sprint $3,997 · Launch $14,500.');
+    expect(HERO_MENU).toBe(
+      'Consultation $300 · Pilot $3,997 (includes 1 Adapter) · Launch $14,500 (up to 3 Adapters) · Adapter $2,497 · Stage B $297.',
+    );
     expect(screen.getByText(HERO_PROOF)).toBeInTheDocument();
     expect(HERO_PROOF).toBe("If an agent did it, there's PROOF: a receipted action you can show.");
     const headline = screen.getByRole('heading', { level: 1, name: HERO_HEADLINE });

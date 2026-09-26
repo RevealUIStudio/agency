@@ -8,6 +8,13 @@
 
 import type { StageBFee } from './consultation-booking';
 import { consultationDueCents } from './consultation-hours';
+import {
+  ADAPTER_STRIPE_LOOKUP_KEY,
+  ADAPTER_STRIPE_PRICE_ID,
+  ADAPTER_STRIPE_PRODUCT_ID,
+} from './engagements';
+
+export { ADAPTER_STRIPE_LOOKUP_KEY, ADAPTER_STRIPE_PRICE_ID, ADAPTER_STRIPE_PRODUCT_ID };
 
 /** Live Consultation price. $300 per hour. Override with STRIPE_CONSULTATION_PRICE_ID. */
 export const DEFAULT_CONSULTATION_PRICE_ID = 'price_1TxpQTJz64n6uEibitNE5eJP' as const;
@@ -50,6 +57,12 @@ export interface CheckoutLine {
   readonly quantity: number;
 }
 
+function refuseAdapterOnConsultationCheckout(price: string): void {
+  if (price === ADAPTER_STRIPE_PRICE_ID) {
+    throw new Error('adapter-not-on-consultation-checkout');
+  }
+}
+
 export function consultationCheckoutLines(input: {
   readonly hours: number;
   readonly stageB: boolean;
@@ -58,15 +71,19 @@ export function consultationCheckoutLines(input: {
 }): readonly CheckoutLine[] {
   const hours = input.hours;
   consultationDueCents(hours);
+  const consultationPrice = input.consultationPriceId || DEFAULT_CONSULTATION_PRICE_ID;
+  const stageBPrice = input.stageBPriceId || DEFAULT_STAGE_B_PRICE_ID;
+  refuseAdapterOnConsultationCheckout(consultationPrice);
+  if (input.stageB) refuseAdapterOnConsultationCheckout(stageBPrice);
   const lines: CheckoutLine[] = [
     {
-      price: input.consultationPriceId || DEFAULT_CONSULTATION_PRICE_ID,
+      price: consultationPrice,
       quantity: hours,
     },
   ];
   if (input.stageB) {
     lines.push({
-      price: input.stageBPriceId || DEFAULT_STAGE_B_PRICE_ID,
+      price: stageBPrice,
       quantity: 1,
     });
   }

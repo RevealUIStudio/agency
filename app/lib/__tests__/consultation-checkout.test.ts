@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ADAPTER_STRIPE_LOOKUP_KEY,
+  ADAPTER_STRIPE_PRICE_ID,
+  ADAPTER_STRIPE_PRODUCT_ID,
   CHECKOUT_BILLING_ADDRESS_COLLECTION,
   CheckoutDiscountError,
   consultationCheckoutLines,
@@ -29,6 +32,27 @@ describe('consultationCheckoutLines', () => {
     expect(() => consultationCheckoutLines({ hours: 0, stageB: false })).toThrow(
       /consultation-hours/,
     );
+  });
+
+  it('refuses the Adapter price on Consultation checkout', () => {
+    expect(() =>
+      consultationCheckoutLines({
+        hours: 1,
+        stageB: false,
+        consultationPriceId: ADAPTER_STRIPE_PRICE_ID,
+      }),
+    ).toThrow(/adapter-not-on-consultation-checkout/);
+    expect(() =>
+      consultationCheckoutLines({
+        hours: 1,
+        stageB: true,
+        stageBPriceId: ADAPTER_STRIPE_PRICE_ID,
+      }),
+    ).toThrow(/adapter-not-on-consultation-checkout/);
+    const lines = consultationCheckoutLines({ hours: 1, stageB: true });
+    expect(lines.map((line) => line.price)).not.toContain(ADAPTER_STRIPE_PRICE_ID);
+    expect(ADAPTER_STRIPE_LOOKUP_KEY).toBe('studio_adapter');
+    expect(ADAPTER_STRIPE_PRODUCT_ID).toBe('prod_VKVybOvDTXLx4u');
   });
 });
 
