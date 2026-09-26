@@ -11,6 +11,7 @@ import {
 import { publishedCases } from './data/cases';
 import { publishedPress } from './data/press';
 import { RootLayout } from './layouts/RootLayout';
+import { STUDIO_BLOG_HOME_H1, STUDIO_BLOG_HOME_SUB } from './lib/blog-copy';
 import {
   CONSULTATION_BOOK_INTRO,
   CONSULTATION_CANCEL,
@@ -116,18 +117,16 @@ export function App() {
           path: '/blog',
           component: BlogPage,
           meta: {
-            title: 'Blog | RevealUI Studio',
-            description:
-              'Essays from Joshua Vaughn and RevealUI Studio. Product reference stays in the documentation.',
+            title: `${STUDIO_BLOG_HOME_H1} | RevealUI Studio`,
+            description: STUDIO_BLOG_HOME_SUB,
           },
         },
         {
           path: '/blog/:slug',
           component: BlogPostPage,
           meta: {
-            title: 'Blog | RevealUI Studio',
-            description:
-              'Essays from Joshua Vaughn and RevealUI Studio. Product reference stays in the documentation.',
+            title: `${STUDIO_BLOG_HOME_H1} | RevealUI Studio`,
+            description: STUDIO_BLOG_HOME_SUB,
           },
         },
         {

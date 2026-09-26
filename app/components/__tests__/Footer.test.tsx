@@ -26,9 +26,9 @@ function renderFooter() {
 }
 
 describe('Footer (agency)', () => {
-  it('labels the docs host as Documentation and prints the email once', () => {
+  it('labels the docs host as Docs and prints the email once', () => {
     const { container } = renderFooter();
-    const docs = screen.getByRole('link', { name: 'Documentation' });
+    const docs = screen.getByRole('link', { name: 'Docs' });
     expect(docs).toHaveAttribute('href', DOCS_URL);
     const blog = screen.getByRole('link', { name: 'Blog' });
     expect(blog).toHaveAttribute('href', '/blog');

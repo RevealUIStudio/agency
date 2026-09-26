@@ -10,7 +10,7 @@ This is the customer-facing site for the **agency arm** of RevealUI Studio (serv
 |---|---|---|---|
 | revealui.com | `RevealUIStudio/revealui` (`apps/marketing`) | Engineers evaluating the OSS platform | Drive install + adoption |
 | revealuistudio.com | **this repo** | Teams evaluating the product studio | Drive a 30-minute intro, one of three paid offers, and the studio blog |
-| docs.revealui.com | `RevealUIStudio/revealui` (`apps/docs`) | Existing platform users | Product reference only. The blog is not a docs pillar. |
+| docs.revealui.com | `RevealUIStudio/revealui` (`apps/docs`) | Existing platform users | Product reference only. Blog is on Studio. Docs are product reference. |
 
 ## Stack
 

@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { Router, RouterProvider, Routes } from '@revealui/router';
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
+import { BLOG_DOCS_BOUNDARY, STUDIO_BLOG_HOME_H1, STUDIO_BLOG_HOME_SUB } from '@/lib/blog-copy';
 import { BlogPage } from '@/routes/BlogPage';
 import { BlogPostPage } from '@/routes/BlogPostPage';
 import { NotFoundPage } from '@/routes/NotFoundPage';
@@ -26,11 +27,13 @@ function renderAt(path: string) {
 describe('Studio blog routes', () => {
   it('lists published essays and keeps held essays off the index', () => {
     renderAt('/blog');
-    expect(screen.getByRole('heading', { level: 1, name: 'Blog' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Documentation' })).toHaveAttribute(
-      'href',
-      'https://docs.revealui.com',
-    );
+    expect(
+      screen.getByRole('heading', { level: 1, name: STUDIO_BLOG_HOME_H1 }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(STUDIO_BLOG_HOME_SUB)).toBeInTheDocument();
+    const docs = screen.getByRole('link', { name: 'Docs' });
+    expect(docs).toHaveAttribute('href', 'https://docs.revealui.com');
+    expect(docs.parentElement?.textContent).toBe(BLOG_DOCS_BOUNDARY);
     const essay = screen.getByRole('link', {
       name: 'The open runtime for forward-deployed agent work',
     });
@@ -57,6 +60,9 @@ describe('Studio blog routes', () => {
     );
     const back = screen.getByRole('link', { name: 'Back to Blog' });
     expect(back).toHaveAttribute('href', '/blog');
+    const docs = screen.getByRole('link', { name: 'Docs' });
+    expect(docs).toHaveAttribute('href', 'https://docs.revealui.com');
+    expect(docs.parentElement?.textContent).toContain(BLOG_DOCS_BOUNDARY);
   });
 
   it('accepts the old docs filename as an alias for a published essay', () => {

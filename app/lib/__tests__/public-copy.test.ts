@@ -326,7 +326,12 @@ describe('public copy gates', () => {
     expect(nav).not.toMatch(/RevealUI/);
     expect(nav).not.toMatch(/Studio/);
     expect(nav).not.toContain('CONTACT_EMAIL');
-    expect(footer).toContain('Documentation');
+    const blogCopy = readFileSync(path.join(repoRoot, 'app/lib/blog-copy.ts'), 'utf8');
+    expect(blogCopy).toContain("export const DOCS_NAV_LABEL = 'Docs'");
+    expect(blogCopy).toContain("export const BLOG_NAV_LABEL = 'Blog'");
+    expect(blogCopy).toContain('Blog is on Studio. Docs are product reference.');
+    expect(footer).toContain('DOCS_NAV_LABEL');
+    expect(footer).not.toContain('Documentation');
     expect(footer).not.toMatch(/docs\.revealui\.com/);
     expect(footer.match(/mailto:\$\{CONTACT_EMAIL\}/g)?.length).toBe(1);
     expect(footer).toContain('STUDIO_LEGAL_NAME');

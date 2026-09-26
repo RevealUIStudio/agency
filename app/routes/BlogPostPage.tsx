@@ -1,8 +1,9 @@
 import { Link, useParams } from '@revealui/router';
 import { useEffect } from 'react';
+import { BlogDocsBoundary } from '@/components/BlogDocsBoundary';
 import { blogPostUrl, findPublishedBlogPost, formatBlogDate } from '@/data/blog';
 import { BlogMarkdown } from '@/lib/blog-markdown';
-import { DOCS_URL, INTRO_CALL_URL } from '@/lib/site';
+import { INTRO_CALL_URL } from '@/lib/site';
 import { NotFoundPage } from './NotFoundPage';
 
 export function BlogPostPage() {
@@ -58,16 +59,7 @@ export function BlogPostPage() {
           <BlogMarkdown source={post.content} />
           <div className="mt-16 border-t border-border pt-8">
             <p className="text-base text-muted-foreground">
-              Product reference stays in{' '}
-              <a
-                href={DOCS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-foreground hover:underline"
-              >
-                Documentation
-              </a>
-              .{' '}
+              <BlogDocsBoundary />{' '}
               <a
                 href={INTRO_CALL_URL}
                 target="_blank"

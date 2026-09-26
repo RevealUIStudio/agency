@@ -69,9 +69,22 @@ Held rows point at the Studio index on purpose. Their reserved slugs (flip the d
 | `https://revealuistudio.com/blog/http-402-payments` | `02-http-402-payments.md` |
 | `https://revealuistudio.com/blog/why-we-built-revealui` | `01-why-we-built-revealui.md` |
 
+## Admitted copy (2026-09-26)
+
+Studio chrome uses these strings only:
+
+- `studio-blog-home-h1-2026-09-26`: Own the stack. Keep the receipts.
+- `studio-blog-home-sub-2026-09-26`: Studio writes for technical founders and small agencies who already run agents. Existing tools report in. You keep the stack. When you need the how-to, Docs has the product reference.
+- `nav-blog-studio-2026-09-26`: label Blog, href `/blog` on this site.
+- `nav-docs-product-2026-09-26`: label Docs, href `https://docs.revealui.com`.
+- `boundary-blog-studio-docs-ref-2026-09-26`: Blog is on Studio. Docs are product reference.
+- `nav-product-blog-points-studio-2026-09-26`: a Blog item on the product stays a link to `https://revealuistudio.com/blog`.
+
+This PR does not add blog routes, essays, or a Blog section inside product docs. Social RSS stays held. Production publish stays held. Base branch is `test`.
+
 ## Docs nav
 
-Remove the sidebar section titled Blog in `apps/docs/app/lib/nav.ts` (`buildDocNavSections`). That section is what presents the blog as a docs pillar. Product reference sections stay.
+Remove the sidebar section titled Blog in `apps/docs/app/lib/nav.ts` (`buildDocNavSections`). If a Blog label remains on the product, it points at `https://revealuistudio.com/blog`. Product reference sections stay.
 
 ## Same-host safety net (this repo)
 

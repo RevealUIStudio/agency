@@ -1,28 +1,19 @@
 import { Link } from '@revealui/router';
+import { BlogDocsBoundary } from '@/components/BlogDocsBoundary';
 import { formatBlogDate, publishedBlogPosts } from '@/data/blog';
-import { DOCS_URL } from '@/lib/site';
+import { STUDIO_BLOG_HOME_H1, STUDIO_BLOG_HOME_SUB } from '@/lib/blog-copy';
 
 export function BlogPage() {
   return (
     <>
       <section className="bg-background py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-6">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Blog</h1>
-          <p className="mt-6 text-lg text-muted-foreground">
-            Essays from Joshua Vaughn and RevealUI Studio. Founder notes, the runtime, and what it
-            takes to leave a system someone else can run.
-          </p>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            {STUDIO_BLOG_HOME_H1}
+          </h1>
+          <p className="mt-6 text-lg text-muted-foreground">{STUDIO_BLOG_HOME_SUB}</p>
           <p className="mt-4 text-base text-muted-foreground">
-            Product reference stays in{' '}
-            <a
-              href={DOCS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-foreground hover:underline"
-            >
-              Documentation
-            </a>
-            .
+            <BlogDocsBoundary />
           </p>
         </div>
       </section>
