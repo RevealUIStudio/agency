@@ -1,5 +1,5 @@
 import { IconCheck, LinkButton } from '@revealui/presentation';
-import { PUBLIC_OFFERS } from '@/lib/engagements';
+import { ADAPTER, ADAPTER_ROLE, PUBLIC_OFFERS, STAGE_B_PRICE } from '@/lib/engagements';
 import { CONSULTATION_BOOK_PATH, INTRO_CALL_URL } from '@/lib/site';
 
 export function ServiceTeasers() {
@@ -12,8 +12,10 @@ export function ServiceTeasers() {
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
             That is the public menu for startups, and for technical founders and small agencies who
-            already run agents. Consultation is paid when you book the slot. Proof Sprint and Launch
-            are invoiced after we agree.
+            already run agents. Consultation is paid when you book the slot. Pilot and Launch are
+            invoiced after we agree. {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. The
+            domain pack (Stage B) is {STAGE_B_PRICE} after Consultation alone, and included at Pilot
+            and Launch.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3">

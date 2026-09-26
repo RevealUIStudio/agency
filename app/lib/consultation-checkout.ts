@@ -16,6 +16,13 @@ export const DEFAULT_CONSULTATION_PRICE_ID = 'price_1TxpQTJz64n6uEibitNE5eJP' as
 export const DEFAULT_STAGE_B_PRICE_ID = 'price_1UIjpPJz64n6uEibxJOYKJ3t' as const;
 
 /**
+ * Live Adapter price. $2,497 once. Lookup key `studio_adapter`.
+ * Not a Consultation Checkout line. The Stripe product id stays in Stripe.
+ */
+export const DEFAULT_ADAPTER_PRICE_ID = 'price_1UJqwUJz64n6uEibb00OrqFM' as const;
+export const ADAPTER_LOOKUP_KEY = 'studio_adapter' as const;
+
+/**
  * Collect a billing address only when the payment method or tax needs one.
  * automatic_tax stays off; this does not turn tax on.
  */
@@ -50,6 +57,12 @@ export interface CheckoutLine {
   readonly quantity: number;
 }
 
+function refuseAdapterOnConsultationCheckout(price: string): void {
+  if (price === DEFAULT_ADAPTER_PRICE_ID) {
+    throw new Error('adapter-not-on-consultation-checkout');
+  }
+}
+
 export function consultationCheckoutLines(input: {
   readonly hours: number;
   readonly stageB: boolean;
@@ -58,15 +71,19 @@ export function consultationCheckoutLines(input: {
 }): readonly CheckoutLine[] {
   const hours = input.hours;
   consultationDueCents(hours);
+  const consultationPrice = input.consultationPriceId || DEFAULT_CONSULTATION_PRICE_ID;
+  const stageBPrice = input.stageBPriceId || DEFAULT_STAGE_B_PRICE_ID;
+  refuseAdapterOnConsultationCheckout(consultationPrice);
+  if (input.stageB) refuseAdapterOnConsultationCheckout(stageBPrice);
   const lines: CheckoutLine[] = [
     {
-      price: input.consultationPriceId || DEFAULT_CONSULTATION_PRICE_ID,
+      price: consultationPrice,
       quantity: hours,
     },
   ];
   if (input.stageB) {
     lines.push({
-      price: input.stageBPriceId || DEFAULT_STAGE_B_PRICE_ID,
+      price: stageBPrice,
       quantity: 1,
     });
   }

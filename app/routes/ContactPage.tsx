@@ -10,8 +10,8 @@ export function ContactPage() {
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Contact</h1>
         <p className="mt-6 text-lg text-muted-foreground">
           Book a Consultation, book a 30-minute intro, email me, or send the form. No account. No
-          payment to book the intro. Consultation is paid when you book the slot. Proof Sprint and
-          Launch are invoiced after we agree.
+          payment to book the intro. Consultation is paid when you book the slot. Pilot and Launch
+          are invoiced after we agree. An Adapter is not sold alone.
         </p>
 
         <div className="mt-12 grid grid-cols-1 gap-6">

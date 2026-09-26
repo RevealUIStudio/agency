@@ -16,6 +16,41 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://revealuistudio.com/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://revealuistudio.com/blog/open-runtime-for-fde-work</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://revealuistudio.com/blog/shareable-upside</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://revealuistudio.com/blog/ui-of-the-future</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://revealuistudio.com/blog/dashboard-agent-chat</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://revealuistudio.com/blog/zero-regex</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://revealuistudio.com/blog/claim-drift</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://revealuistudio.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

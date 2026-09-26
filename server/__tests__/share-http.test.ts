@@ -51,74 +51,74 @@ describe('share server', () => {
     clearSharePacks();
   });
 
-  it('serves the omega seed only on the omega host', async () => {
-    const allowed = await call('https://omega.revealuistudio.com/share/omega/pack.txt', {
-      host: 'omega.revealuistudio.com',
+  it('serves the demo seed only on the demo host', async () => {
+    const allowed = await call('https://demo.revealuistudio.com/share/demo/pack.txt', {
+      host: 'demo.revealuistudio.com',
     });
     expect(allowed.response.status).toBe(200);
-    expect(allowed.raw).toContain('Client slug: omega');
+    expect(allowed.raw).toContain('Client slug: demo');
     expect(allowed.raw).toContain('Route: /pack');
-    const dns = await call('https://omega.revealuistudio.com/share/omega/dns.txt', {
-      host: 'omega.revealuistudio.com',
+    const dns = await call('https://demo.revealuistudio.com/share/demo/dns.txt', {
+      host: 'demo.revealuistudio.com',
     });
     expect(dns.response.status).toBe(200);
     expect(dns.raw).toContain('Route: /dns');
     expect(dns.raw).toContain('CNAME target: cname.vercel-dns.com');
     expect(dns.raw).toContain('The studio attaches the DNS.');
-    const pathNote = await call('https://omega.revealuistudio.com/share/omega/path.txt', {
-      host: 'omega.revealuistudio.com',
+    const pathNote = await call('https://demo.revealuistudio.com/share/demo/path.txt', {
+      host: 'demo.revealuistudio.com',
     });
     expect(pathNote.raw).toContain('Path A is the default');
     expect(allowed.response.headers.get('cache-control')).toBe('private, no-store');
     expect(allowed.audit.entries()[0]).toMatchObject({
       action: 'share.read',
-      tenant: 'omega',
+      tenant: 'demo',
       actor: 'guest',
       decision: 'allow',
     });
 
-    const crossed = await call('https://acme.revealuistudio.com/share/omega/pack.txt', {
+    const crossed = await call('https://acme.revealuistudio.com/share/demo/pack.txt', {
       host: 'acme.revealuistudio.com',
     });
     expect(crossed.response.status).toBe(403);
     expect(crossed.raw).toBe('denied');
-    expect(crossed.raw).not.toContain('Client slug: omega');
+    expect(crossed.raw).not.toContain('Client slug: demo');
     expect(crossed.audit.entries()[0]).toMatchObject({
       decision: 'deny',
       reason: 'tenant',
       actor: 'guest',
     });
 
-    const apex = await call('https://revealuistudio.com/share/omega/pack.txt', {
+    const apex = await call('https://revealuistudio.com/share/demo/pack.txt', {
       host: 'revealuistudio.com',
     });
     expect(apex.response.status).toBe(403);
     expect(apex.raw).not.toContain('pack');
   });
 
-  it('serves the same omega pack on a verified custom domain and refuses an unverified one', async () => {
-    const live = createSharePack('omega', {
+  it('serves the same demo pack on a verified custom domain and refuses an unverified one', async () => {
+    const live = createSharePack('demo', {
       customDomain: 'share.example.com',
       customDomainStatus: 'live',
     });
-    const allowed = await call('https://share.example.com/share/omega/pack.txt', {
+    const allowed = await call('https://share.example.com/share/demo/pack.txt', {
       host: 'share.example.com',
       packs: [live],
     });
     expect(allowed.response.status).toBe(200);
-    expect(allowed.raw).toContain('Client slug: omega');
-    expect(allowed.audit.entries()[0]).toMatchObject({ tenant: 'omega', decision: 'allow' });
+    expect(allowed.raw).toContain('Client slug: demo');
+    expect(allowed.audit.entries()[0]).toMatchObject({ tenant: 'demo', decision: 'allow' });
 
-    const pending = createSharePack('omega', {
+    const pending = createSharePack('demo', {
       customDomain: 'share.example.com',
       customDomainStatus: 'pending_dns',
     });
-    const denied = await call('https://share.example.com/share/omega/pack.txt', {
+    const denied = await call('https://share.example.com/share/demo/pack.txt', {
       host: 'share.example.com',
       packs: [pending],
     });
     expect(denied.response.status).toBe(403);
-    expect(denied.raw).not.toContain('Client slug: omega');
+    expect(denied.raw).not.toContain('Client slug: demo');
   });
 
   it('does not publish tenant seeds as static public files', () => {
@@ -126,21 +126,21 @@ describe('share server', () => {
   });
 
   it('rejects path traversal and a query-string owner flag', async () => {
-    const extra = await call('https://omega.revealuistudio.com/share/omega/pack.txt.bak', {
-      host: 'omega.revealuistudio.com',
+    const extra = await call('https://demo.revealuistudio.com/share/demo/pack.txt.bak', {
+      host: 'demo.revealuistudio.com',
     });
     expect(extra.response.status).toBe(404);
     expect(extra.raw).not.toContain('Client slug');
 
-    const normalized = await call('https://omega.revealuistudio.com/share/omega/../acme/pack.txt', {
-      host: 'omega.revealuistudio.com',
+    const normalized = await call('https://demo.revealuistudio.com/share/demo/../acme/pack.txt', {
+      host: 'demo.revealuistudio.com',
     });
     expect(normalized.response.status).toBe(403);
     expect(normalized.raw).toBe('denied');
     expect(normalized.raw).not.toContain('Client slug');
 
     const queryOwner = await call(
-      `https://acme.revealuistudio.com/share/omega/pack.txt?access_token=${OWNER}&role=owner`,
+      `https://acme.revealuistudio.com/share/demo/pack.txt?access_token=${OWNER}&role=owner`,
       { host: 'acme.revealuistudio.com' },
     );
     expect(queryOwner.response.status).toBe(403);
@@ -148,25 +148,25 @@ describe('share server', () => {
   });
 
   it('reads a seed from the rewrite landing and ignores a query that fights the path', async () => {
-    const owner = await call('https://revealuistudio.com/api/share?slug=omega&file=home.txt', {
+    const owner = await call('https://revealuistudio.com/api/share?slug=demo&file=home.txt', {
       host: 'revealuistudio.com',
       token: OWNER,
     });
     expect(owner.response.status).toBe(200);
-    expect(owner.raw).toContain('Client slug: omega');
+    expect(owner.raw).toContain('Client slug: demo');
     expect(owner.raw).toContain('Route: /');
     expect(owner.audit.entries()[0]).toMatchObject({ actor: 'owner', decision: 'allow' });
 
     const guest = await call(
-      'https://omega.revealuistudio.com/api/share/%5Bslug%5D/%5Bfile%5D?slug=omega&file=pack.txt',
-      { host: 'omega.revealuistudio.com' },
+      'https://demo.revealuistudio.com/api/share/%5Bslug%5D/%5Bfile%5D?slug=demo&file=pack.txt',
+      { host: 'demo.revealuistudio.com' },
     );
     expect(guest.response.status).toBe(200);
     expect(guest.raw).toContain('Denser living pack');
     expect(guest.response.headers.get('content-type')).toBe('text/plain; charset=utf-8');
 
     const crossed = await call(
-      'https://acme.revealuistudio.com/api/share?slug=omega&file=pack.txt',
+      'https://acme.revealuistudio.com/api/share?slug=demo&file=pack.txt',
       {
         host: 'acme.revealuistudio.com',
       },
@@ -176,16 +176,16 @@ describe('share server', () => {
     expect(crossed.raw).not.toContain('Client slug');
 
     const pathWins = await call(
-      'https://omega.revealuistudio.com/share/omega/pack.txt?slug=acme&file=home.txt',
-      { host: 'omega.revealuistudio.com' },
+      'https://demo.revealuistudio.com/share/demo/pack.txt?slug=acme&file=home.txt',
+      { host: 'demo.revealuistudio.com' },
     );
     expect(pathWins.response.status).toBe(200);
     expect(pathWins.raw).toContain('Denser living pack');
     expect(pathWins.raw).not.toContain('Stage A shell');
 
     const traversal = await call(
-      'https://omega.revealuistudio.com/api/share?slug=omega&file=..%2Fhome.txt',
-      { host: 'omega.revealuistudio.com' },
+      'https://demo.revealuistudio.com/api/share?slug=demo&file=..%2Fhome.txt',
+      { host: 'demo.revealuistudio.com' },
     );
     expect(traversal.response.status).toBe(404);
     expect(traversal.raw).not.toContain('Client slug');
@@ -214,7 +214,7 @@ describe('share server', () => {
   });
 
   it('lets the owner session read a tenant seed and records the actor', async () => {
-    const owner = await call('https://revealuistudio.com/api/share/omega/home.txt', {
+    const owner = await call('https://revealuistudio.com/api/share/demo/home.txt', {
       host: 'revealuistudio.com',
       token: OWNER,
     });
@@ -222,7 +222,7 @@ describe('share server', () => {
     expect(owner.raw).toContain('Route: /');
     expect(owner.audit.entries()[0]).toMatchObject({ actor: 'owner', decision: 'allow' });
 
-    const wrong = await call('https://revealuistudio.com/api/share/omega/home.txt', {
+    const wrong = await call('https://revealuistudio.com/api/share/demo/home.txt', {
       host: 'revealuistudio.com',
       token: 'not-the-owner',
     });
@@ -267,7 +267,7 @@ describe('share server', () => {
   it('issues an owner waive as list price plus a matching credit', async () => {
     const waived = await call('https://revealuistudio.com/api/invoice/stage-b', {
       method: 'POST',
-      host: 'omega.revealuistudio.com',
+      host: 'demo.revealuistudio.com',
       token: OWNER,
       body: { attached: true, waive: true, consultationHours: 2 },
     });
@@ -286,7 +286,7 @@ describe('share server', () => {
     expect(waived.audit.entries()[0]).toMatchObject({
       actor: 'owner',
       decision: 'allow',
-      tenant: 'omega',
+      tenant: 'demo',
     });
   });
 

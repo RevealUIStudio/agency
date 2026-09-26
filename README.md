@@ -9,8 +9,8 @@ This is the customer-facing site for the **agency arm** of RevealUI Studio (serv
 | Site | Repo | Audience | Role |
 |---|---|---|---|
 | revealui.com | `RevealUIStudio/revealui` (`apps/marketing`) | Engineers evaluating the OSS platform | Drive install + adoption |
-| revealuistudio.com | **this repo** | Teams evaluating the product studio | Drive a 30-minute intro and one of three paid offers |
-| docs.revealui.com | `RevealUIStudio/revealui` (`apps/docs`) | Existing platform users | Reference + how-to |
+| revealuistudio.com | **this repo** | Teams evaluating the product studio | Drive a 30-minute intro, one of three paid offers, and the studio blog |
+| docs.revealui.com | `RevealUIStudio/revealui` (`apps/docs`) | Existing platform users | Product reference only. Blog is on Studio. Docs are product reference. |
 
 ## Stack
 
@@ -20,7 +20,7 @@ The same stack the platform itself runs on — this site is a real external cons
 - Tailwind CSS v4 via `@tailwindcss/vite`
 - `@revealui/router` (SPA routing via programmatic route registration in `app/App.tsx`)
 - `@revealui/presentation` (component primitives + design tokens)
-- `@revealui/contracts` (Track D Launch price; Consultation and Proof Sprint are studio-only)
+- `@revealui/contracts` (Track D Launch price; Consultation and Pilot are studio-only)
 - Zod (schema + form validation)
 - `@vercel/speed-insights` (consented performance)
 - Self-hosted Umami (consented pageviews / UTM)
@@ -72,7 +72,7 @@ VITE_UMAMI_WEBSITE_ID=0fbf4090-7768-47f8-9f85-5ab24a822160
 | **1** | Scaffold + Hero + service teasers + placeholder routes | shipped |
 | **2** | Real Hero / Services / About copy, ContactForm wired to API (`POST /api/contact`, `source: 'agency'`), Privacy + Terms | shipped |
 | **3** | Reusable case-study template + `/cases` and `/cases/:slug` routes; Press section (`/press`, `/press/:slug`) | template + routes shipped; `publishedCases` / `publishedPress` empty until customer-approved content is added |
-| **4** | Process page, blog (if/when warranted) | `/process` shipped; blog only if/when warranted |
+| **4** | Process page, blog | `/process` and `/blog` shipped. Held essays stay in `content/blog` until a brand pass. See `docs/BLOG-CUTOVER.md`. |
 | **5** | SEO | mostly shipped: `index.html` OG/Twitter cards, Organization JSON-LD, `public/sitemap.xml`, `public/robots.txt`; residual polish as needed |
 
 Strategy and design decisions are coordinated internally; see the founder for context if you're contributing.
@@ -80,7 +80,7 @@ Strategy and design decisions are coordinated internally; see the founder for co
 ## Conventions
 
 - **Visual identity shares Cobalt tokens with RevealUI** — Tailwind tokens from `@revealui/presentation/tokens.css`, never overridden, so the site is system-adaptive (dark/light) automatically. **Typeface:** this site uses Geist / Geist Mono; the product marketing site on revealui.com uses Inter / Inter Tight / JetBrains Mono. Tokens and brand accent stay shared; fonts may diverge deliberately.
-- **Public site is a product-studio homepage plus the three-question calculator.** Defaults to "You will" (Studio). Consultation $300, Proof Sprint $3,997, Launch $14,500. They operate, or they pay to implement. Self-host hops to revealui.com (start free) with no product SKUs. Do not add Fleet / stamp / kit SKUs, $25k / $50k, or third-party booking hosts. The open-source product lives at revealui.com.
+- **Public site is a product-studio homepage plus the three-question calculator.** Defaults to "You will" (Studio). Consultation $300, Pilot $3,997 (includes 1 Adapter), Launch $14,500 (up to 3 Adapters). Adapter $2,497 is an add-on (extras, or while on Care) and is not sold alone. Stage B is $297 after Consultation alone and included at Pilot and Launch. They operate, or they pay to implement. Self-host hops to revealui.com (start free) with no product SKUs. Do not add Fleet / stamp / kit SKUs, $25k / $50k, or third-party booking hosts. The open-source product lives at revealui.com.
 - **No "L.L.C." in any user-facing copy** except the legal-form footer line — brand surface is `RevealUI Studio`, not `RevealUI Studio L.L.C.`.
 
 ## Origin

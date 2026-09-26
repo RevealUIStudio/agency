@@ -8,11 +8,11 @@ describe('clientSlugFromHost', () => {
     expect(clientSlugFromHost('WWW.RevealUIStudio.com.')).toBeNull();
   });
 
-  it('reads the client slug from a share host, including the omega seed', () => {
-    expect(clientSlugFromHost('omega.revealuistudio.com')).toBe(SHARE_SEED_SLUG);
-    expect(clientSlugFromHost('Omega.revealuistudio.com:443')).toBe('omega');
+  it('reads the client slug from a share host, including the demo seed', () => {
+    expect(clientSlugFromHost('demo.revealuistudio.com')).toBe(SHARE_SEED_SLUG);
+    expect(clientSlugFromHost('Demo.revealuistudio.com:443')).toBe('demo');
     expect(clientSlugFromHost('acme.revealuistudio.com')).toBe('acme');
-    expect(clientSlugFromHost('omega.localhost')).toBe('omega');
+    expect(clientSlugFromHost('demo.localhost')).toBe('demo');
   });
 
   it('rejects reserved labels and non-share hosts', () => {

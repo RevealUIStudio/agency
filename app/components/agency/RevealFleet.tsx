@@ -1,5 +1,5 @@
 import { LinkButton } from '@revealui/presentation';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { FLEET_NAME, LEAD_PRODUCT } from '@/lib/fleet';
 import { PRODUCT_SITE_URL } from '@/lib/site';
 
@@ -21,8 +21,8 @@ export function RevealFleet() {
         <p className="mt-4 text-base text-muted-foreground">
           Studio work here is for startups, and for technical founders and small agencies who
           already run agents. You run it, or I ship it with you. The public menu is{' '}
-          {CONSULTATION.name} at {CONSULTATION.price}, {PROOF_SPRINT.name} at {PROOF_SPRINT.price},
-          and {LAUNCH.name} at {LAUNCH.price}.
+          {CONSULTATION.name} at {CONSULTATION.price}, {PILOT.name} at {PILOT.price}, and{' '}
+          {LAUNCH.name} at {LAUNCH.price}.
         </p>
         <div className="mt-10">
           <LinkButton href={PRODUCT_SITE_URL} external>

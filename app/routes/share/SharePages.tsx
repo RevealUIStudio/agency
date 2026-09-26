@@ -28,8 +28,8 @@ export function shareHome(slug: string) {
           {STAGE_B_ADDON} {STAGE_B_DETAIL}
         </p>
         <p>
-          The domain pack is {STAGE_B_PRICE} on its own, or included with Proof Sprint and Launch.
-          The studio attaches the DNS.
+          The domain pack is {STAGE_B_PRICE} on its own after Consultation, or included with Pilot
+          and Launch. The studio attaches the DNS.
         </p>
       </Frame>
     );

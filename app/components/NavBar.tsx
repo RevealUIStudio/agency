@@ -12,7 +12,8 @@ import type React from 'react';
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { publishedCases } from '@/data/cases';
 import { publishedPress } from '@/data/press';
-import { INTRO_CALL_URL } from '@/lib/site';
+import { BLOG_NAV_LABEL, DOCS_NAV_LABEL } from '@/lib/blog-copy';
+import { DOCS_URL, INTRO_CALL_URL } from '@/lib/site';
 
 /** Untiled circuit master in public chrome. Locked 48px box — match revealui.com. */
 const CIRCUIT_R_NAV_SRC = '/revealui-mark.svg';
@@ -42,11 +43,46 @@ function CircuitRNavMark(): React.JSX.Element {
 }
 
 const navLinks = [
-  { href: '/#calculator', label: 'Quote' },
-  { href: '/process', label: 'Process' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-];
+  { href: '/#calculator', label: 'Quote', external: false },
+  { href: '/process', label: 'Process', external: false },
+  { href: '/blog', label: BLOG_NAV_LABEL, external: false },
+  { href: DOCS_URL, label: DOCS_NAV_LABEL, external: true },
+  { href: '/about', label: 'About', external: false },
+  { href: '/contact', label: 'Contact', external: false },
+] as const;
+
+function NavAnchor({
+  href,
+  label,
+  external,
+  onClick,
+  className,
+}: {
+  href: string;
+  label: string;
+  external: boolean;
+  onClick?: () => void;
+  className: string;
+}) {
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onClick}
+        className={className}
+      >
+        {label}
+      </a>
+    );
+  }
+  return (
+    <Link to={href} onClick={onClick} className={className}>
+      {label}
+    </Link>
+  );
+}
 
 export function NavBar() {
   const [open, setOpen] = useState(false);
@@ -83,10 +119,14 @@ export function NavBar() {
 
         {/* Desktop links (md+) */}
         <div className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
-          {navLinks.map(({ href, label }) => (
-            <Link key={href} to={href} className="hover:text-foreground transition-colors">
-              {label}
-            </Link>
+          {navLinks.map(({ href, label, external }) => (
+            <NavAnchor
+              key={href}
+              href={href}
+              label={label}
+              external={external}
+              className="hover:text-foreground transition-colors"
+            />
           ))}
           {publishedCases.length > 0 && (
             <Link to="/cases" className="hover:text-foreground transition-colors">
@@ -138,15 +178,15 @@ export function NavBar() {
           className="border-t border-border bg-card px-6 py-4 md:hidden"
         >
           <div className="flex flex-col gap-1">
-            {navLinks.map(({ href, label }) => (
-              <Link
+            {navLinks.map(({ href, label, external }) => (
+              <NavAnchor
                 key={href}
-                to={href}
+                href={href}
+                label={label}
+                external={external}
                 onClick={close}
                 className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              >
-                {label}
-              </Link>
+              />
             ))}
             {publishedCases.length > 0 && (
               <Link

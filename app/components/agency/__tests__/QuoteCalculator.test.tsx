@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import {
   CONSULTATION_QUOTE_DETAIL,
   HOSTER_OPTIONS,
@@ -41,12 +41,14 @@ describe('QuoteCalculator', () => {
     expect(screen.getByText(/Google Calendar \/ Google Meet/)).toBeInTheDocument();
     expect(screen.queryByText(/Same tool as the product site/)).not.toBeInTheDocument();
     expect(screen.getByText(CONSULTATION.price)).toBeInTheDocument();
-    expect(screen.getByText(PROOF_SPRINT.price)).toBeInTheDocument();
+    expect(screen.getByText(PILOT.price)).toBeInTheDocument();
+    expect(screen.getByText('Included')).toBeInTheDocument();
+    expect(screen.queryByRole('radio', { name: /^Adapter/ })).not.toBeInTheDocument();
     expect(screen.getByText(LAUNCH.price)).toBeInTheDocument();
     expect(screen.getByText(CONSULTATION_QUOTE_DETAIL)).toBeInTheDocument();
     expect(screen.getByText(PROOF_QUOTE_DETAIL)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH_QUOTE_DETAIL)).toBeInTheDocument();
-    expect(screen.queryByText(PROOF_SPRINT.payment)).not.toBeInTheDocument();
+    expect(screen.queryByText(PILOT.payment)).not.toBeInTheDocument();
     expect(screen.queryByText(/four tests/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/first half back/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/keep the stack/i)).not.toBeInTheDocument();
@@ -113,7 +115,22 @@ describe('QuoteCalculator', () => {
     expect(screen.getByText('$1,200')).toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/\bHour\b/);
     expect(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' })).not.toBeChecked();
+    expect(
+      screen.getByRole('checkbox', { name: 'On Care (scoped Adapter add)' }),
+    ).not.toBeChecked();
+    expect(screen.getByLabelText('Extra Adapters')).toHaveValue('0');
     expect(container.textContent ?? '').not.toMatch(/waive/i);
+  });
+
+  it('refuses an extra Adapter on Consultation alone and prices it while on Care', () => {
+    render(<QuoteCalculator />);
+    fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
+    fireEvent.change(screen.getByLabelText('Extra Adapters'), { target: { value: '1' } });
+    expect(screen.getByText('Not sold alone')).toBeInTheDocument();
+    expect(screen.queryByText('$2,497')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('checkbox', { name: 'On Care (scoped Adapter add)' }));
+    expect(screen.queryByText('Not sold alone')).not.toBeInTheDocument();
+    expect(screen.getByText('$2,497')).toBeInTheDocument();
   });
 
   it('keeps Stage B as a paid add-on with no public credit control', () => {

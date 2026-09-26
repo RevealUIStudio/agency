@@ -10,9 +10,9 @@ import { STAGE_B_PRICE } from '../app/lib/engagements';
 function exampleNote(route: string, lines: readonly string[]): string {
   return [
     'EXAMPLE',
-    'RevealUI Studio · Omega · Stage A',
-    'Circuit-R chrome. Client slug: omega.',
-    'Host: omega.revealuistudio.com',
+    'RevealUI Studio · Demo · Stage A',
+    'Circuit-R chrome. Client slug: demo.',
+    'Host: demo.revealuistudio.com',
     `Route: ${route}`,
     ...lines,
     '',
@@ -20,7 +20,7 @@ function exampleNote(route: string, lines: readonly string[]): string {
 }
 
 function domainPackNote(id: DomainPackPageId, route: string): string {
-  return exampleNote(route, domainPackLines(id, 'omega'));
+  return exampleNote(route, domainPackLines(id, 'demo'));
 }
 
 const domainPackFiles = Object.fromEntries(
@@ -28,19 +28,19 @@ const domainPackFiles = Object.fromEntries(
 );
 
 export const SHARE_SEED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
-  omega: {
+  demo: {
     'home.txt': exampleNote('/', [
-      'Stage A shell for omega.revealuistudio.com.',
+      'Stage A shell for demo.revealuistudio.com.',
       `${STAGE_B_ADDON} ${STAGE_B_DETAIL}`,
-      `The domain pack is ${STAGE_B_PRICE} on its own, or included with Proof Sprint and Launch.`,
+      `The domain pack is ${STAGE_B_PRICE} on its own after Consultation, or included with Pilot and Launch.`,
       'The studio attaches the DNS.',
     ]),
     ...domainPackFiles,
     'pack.txt': exampleNote('/pack', [
-      'Denser living pack for omega. The consultation leaves this pack on the studio host.',
+      'Denser living pack for demo. The consultation leaves this pack on the studio host.',
     ]),
     'demo.txt': exampleNote('/demo', [
-      'Demo slot for omega. Example only. The domain pack does not sell a demo.',
+      'Demo slot for demo. Example only. The domain pack does not sell a demo.',
     ]),
   },
 };
