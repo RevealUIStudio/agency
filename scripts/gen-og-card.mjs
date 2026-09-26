@@ -22,7 +22,7 @@ const ROOT = path.resolve(__dirname, '..');
 
 const HEADLINE =
   'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?';
-const SKU_LINE = 'Consultation $300. Proof Sprint $3,997. Launch $14,500.';
+const SKU_LINE = 'Consultation $300. Pilot $3,997. Launch $14,500.';
 const BOOKING_LINE = 'Book a 30-minute intro on Google Calendar.';
 const URL_LINE = 'revealuistudio.com';
 const PLATE = '#060d1a';

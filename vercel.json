@@ -69,6 +69,96 @@
       "source": "/catalog",
       "destination": "/#calculator",
       "permanent": true
+    },
+    {
+      "source": "/blog/01-why-we-built-revealui",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/02-http-402-payments",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/03-multi-agent-coordination",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/04-local-first-ai-stack",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/05-five-primitives",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/06-open-source-and-pro",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/07-agent-first-future",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/08-getting-started",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/09-component-library",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/10-own-your-data",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/11-revealfleet-product-family",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/12-own-your-secrets",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/blog/13-zero-regex",
+      "destination": "/blog/zero-regex",
+      "permanent": true
+    },
+    {
+      "source": "/blog/14-claim-drift",
+      "destination": "/blog/claim-drift",
+      "permanent": true
+    },
+    {
+      "source": "/blog/15-dashboard-agent-chat",
+      "destination": "/blog/dashboard-agent-chat",
+      "permanent": true
+    },
+    {
+      "source": "/blog/16-ui-of-the-future",
+      "destination": "/blog/ui-of-the-future",
+      "permanent": true
+    },
+    {
+      "source": "/blog/17-shareable-upside",
+      "destination": "/blog/shareable-upside",
+      "permanent": true
+    },
+    {
+      "source": "/blog/18-open-runtime-for-fde-work",
+      "destination": "/blog/open-runtime-for-fde-work",
+      "permanent": true
     }
   ],
   "rewrites": [

@@ -93,7 +93,7 @@ describe('stage B share pack', () => {
     expect(white.subtitle).not.toMatch(/RevealUI/);
   });
 
-  it('prices Stage B as an optional Consultation add-on and includes it on Proof Sprint and Launch', () => {
+  it('prices Stage B as an optional Consultation add-on and includes it on Pilot and Launch', () => {
     const off = buildQuote({
       hoster: 'studio',
       outcome: 'consultation',

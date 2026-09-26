@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { ADAPTER, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import {
   buildQuote,
   CONSULTATION_QUOTE_DETAIL,
@@ -15,7 +15,7 @@ import {
 } from '@/lib/quote';
 
 describe('buildQuote', () => {
-  it('defaults to Studio putting a Proof Sprint live', () => {
+  it('defaults to Studio putting a Pilot live', () => {
     expect(DEFAULT_HOSTER).toBe('studio');
     expect(DEFAULT_OUTCOME).toBe('plan');
     expect(DEFAULT_PLACES).toBe('one');
@@ -35,20 +35,23 @@ describe('buildQuote', () => {
     expect(quote.stopQuoting).toBe(false);
     expect(quote.lines.map((line) => line.price)).toEqual([
       CONSULTATION.price,
-      PROOF_SPRINT.price,
+      PILOT.price,
       LAUNCH.price,
+      'Included',
     ]);
     expect(CONSULTATION.price).toBe('$300');
-    expect(PROOF_SPRINT.price).toBe('$3,997');
+    expect(PILOT.price).toBe('$3,997');
     expect(LAUNCH.price).toBe('$14,500');
+    expect(ADAPTER.price).toBe('$2,497');
     expect(quote.lines.map((line) => line.title)).toEqual([
       'Consultation',
-      'Proof Sprint',
+      'Pilot',
       'Launch',
+      'Adapter',
     ]);
 
     const hour = quote.lines.find((line) => line.id === 'consultation');
-    const plan = quote.lines.find((line) => line.id === 'proof-sprint');
+    const plan = quote.lines.find((line) => line.id === 'pilot');
     const launch = quote.lines.find((line) => line.id === 'launch-package');
     expect(hour?.detail).toBe(CONSULTATION_QUOTE_DETAIL);
     expect(hour?.detail).toContain('proof gaps');
@@ -59,6 +62,7 @@ describe('buildQuote', () => {
     expect(plan?.detail).toBe(PROOF_QUOTE_DETAIL);
     expect(plan?.detail).toMatch(/^One site\./);
     expect(plan?.detail).toContain('One receipted action you operate');
+    expect(plan?.detail).toContain('Includes 1 Adapter');
     expect(plan?.detail).toContain('The domain pack is included');
     expect(plan?.detail).toContain('Invoice $3,997 before we start');
     expect(plan?.detail).toContain('Credits 100% to Launch');
@@ -67,6 +71,7 @@ describe('buildQuote', () => {
     expect(launch?.highlighted).toBe(false);
     expect(launch?.detail).toBe(LAUNCH_QUOTE_DETAIL);
     expect(launch?.detail).toMatch(/^One live money path on your accounts/);
+    expect(launch?.detail).toContain('Includes up to 3 Adapters');
     expect(launch?.detail).toContain('Half now, half on delivery.');
     expect(JSON.stringify(quote)).not.toMatch(/four tests/i);
     expect(JSON.stringify(quote)).not.toMatch(/signup-to-paid/i);
@@ -168,5 +173,67 @@ describe('buildQuote', () => {
     });
     expect(quote.lines.find((line) => line.id === 'stage-b')?.price).toBe('Included');
     expect(quote.lines.some((line) => line.id === 'stage-b-credit')).toBe(false);
+  });
+
+  it('includes 1 Adapter on Pilot and prices only extras', () => {
+    const quote = buildQuote({
+      hoster: 'studio',
+      outcome: 'plan',
+      places: 'one',
+      adapterExtras: 2,
+    });
+    expect(quote.lines.find((line) => line.id === 'adapter-included')?.price).toBe('Included');
+    expect(quote.lines.find((line) => line.id === 'adapter-extra')?.price).toBe('$4,994');
+    expect(quote.lines.find((line) => line.id === 'adapter-extra')?.detail).toContain(
+      '2nd and later',
+    );
+    expect(JSON.stringify(quote)).not.toMatch(/Not sold alone/);
+  });
+
+  it('includes up to 3 Adapters on Launch and prices the 4th and later', () => {
+    const quote = buildQuote({
+      hoster: 'studio',
+      outcome: 'launch',
+      places: 'one',
+      adapterExtras: 1,
+    });
+    expect(quote.lines.find((line) => line.id === 'adapter-included')?.detail).toContain('up to 3');
+    expect(quote.lines.find((line) => line.id === 'adapter-extra')?.price).toBe('$2,497');
+    expect(quote.lines.find((line) => line.id === 'adapter-extra')?.detail).toContain(
+      '4th and later',
+    );
+  });
+
+  it('refuses Adapter on Consultation alone and allows it while on Care', () => {
+    const refused = buildQuote({
+      hoster: 'studio',
+      outcome: 'consultation',
+      places: 'one',
+      adapterExtras: 1,
+    });
+    expect(refused.lines.find((line) => line.id === 'adapter-refused')?.price).toBe(
+      'Not sold alone',
+    );
+    expect(refused.lines.some((line) => line.price === '$2,497')).toBe(false);
+
+    const quiet = buildQuote({
+      hoster: 'studio',
+      outcome: 'consultation',
+      places: 'one',
+    });
+    expect(quiet.lines.some((line) => line.id.startsWith('adapter'))).toBe(false);
+
+    const onCare = buildQuote({
+      hoster: 'studio',
+      outcome: 'consultation',
+      places: 'one',
+      onCare: true,
+      adapterExtras: 1,
+    });
+    expect(onCare.lines.find((line) => line.id === 'adapter-extra')?.price).toBe('$2,497');
+    expect(onCare.lines.find((line) => line.id === 'adapter-extra')?.detail).toContain(
+      'while on Care',
+    );
+    expect(onCare.lines.some((line) => line.id === 'adapter-refused')).toBe(false);
   });
 });

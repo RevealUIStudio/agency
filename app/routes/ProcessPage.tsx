@@ -1,6 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
 import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { ADAPTER, ADAPTER_ROLE, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
 export function ProcessPage() {
@@ -15,8 +15,8 @@ export function ProcessPage() {
             Three paid offers for startups, and for technical founders and small agencies who
             already run agents. A 30-minute intro on Google Calendar stays available. No account. No
             payment to book the intro. Google Meet or sit down. If I am not the right fit, I will
-            say so on the call. Consultation is paid when you book the slot. Proof Sprint and Launch
-            are invoiced after we agree.
+            say so on the call. Consultation is paid when you book the slot. Pilot and Launch are
+            invoiced after we agree. {ADAPTER_ROLE}
           </p>
           <p className="mt-4 text-base text-muted-foreground">
             This page is how each offer actually runs: what you send, what you get back, roughly how
@@ -85,21 +85,21 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  The session ends. If you want {PROOF_SPRINT.name} or {LAUNCH.name}, that is a
-                  separate offer and a new invoice.
+                  The session ends. If you want {PILOT.name} or {LAUNCH.name}, that is a separate
+                  offer and a new invoice.
                 </p>
               </div>
             </div>
           </article>
 
-          <article id={PROOF_SPRINT.id}>
+          <article id={PILOT.id}>
             <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-              {PROOF_SPRINT.tagline}
+              {PILOT.tagline}
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              {PROOF_SPRINT.name}. {PROOF_SPRINT.price}.
+              {PILOT.name}. {PILOT.price}.
             </h2>
-            <p className="mt-4 text-base text-muted-foreground">{PROOF_SPRINT.description}</p>
+            <p className="mt-4 text-base text-muted-foreground">{PILOT.description}</p>
             <div className="mt-8 space-y-6 text-base leading-7 text-foreground">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
@@ -125,7 +125,7 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">
-                  {PROOF_SPRINT.payment} {LAUNCH.name} is a separate offer.
+                  {PILOT.payment} {LAUNCH.name} is a separate offer.
                 </p>
               </div>
             </div>
@@ -171,6 +171,14 @@ export function ProcessPage() {
               </div>
             </div>
           </article>
+
+          <aside id={ADAPTER.id} className="border-t border-border pt-16">
+            <h3 className="text-lg font-semibold text-foreground">
+              {ADAPTER.name}. {ADAPTER.price}.
+            </h3>
+            <p className="mt-2 text-base leading-7 text-muted-foreground">{ADAPTER.description}</p>
+            <p className="mt-4 text-base leading-7 text-muted-foreground">{ADAPTER_ROLE}</p>
+          </aside>
 
           <aside id="guardrail-agent" className="border-t border-border pt-16">
             <h3 className="text-lg font-semibold text-foreground">{GUARDRAIL_HEADING}</h3>

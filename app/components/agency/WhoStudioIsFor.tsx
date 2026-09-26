@@ -1,7 +1,7 @@
 export const STUDIO_FOR_TITLE = 'Who Studio is for' as const;
 
 export const STUDIO_FOR_AGENCY =
-  'Small agencies: stop disclosing work your agents can’t receipt. Proof Sprint and Launch leave PROOF on the client’s domain.' as const;
+  'Small agencies: stop disclosing work your agents can’t receipt. Pilot and Launch leave PROOF on the client’s domain.' as const;
 
 export const STUDIO_FOR_BEATS = [
   'For: Technical founders and small agencies who already ship with agents, and need the business layer on their domain, not a wrapper around it.',

@@ -2,6 +2,9 @@ import { LinkButton } from '@revealui/presentation';
 import { useState } from 'react';
 import { STAGE_B_CHECKBOX } from '@/lib/consultation-buyer';
 import {
+  ADAPTER_CALCULATOR_HELP,
+  ADAPTER_EXTRA_OPTIONS,
+  adapterExtraLabel,
   buildQuote,
   CONSULTATION_HOUR_OPTIONS,
   consultationHourLabel,
@@ -11,6 +14,7 @@ import {
   DEFAULT_PLACES,
   HOSTER_OPTIONS,
   type Hoster,
+  ON_CARE_CHECKBOX,
   OUTCOME_OPTIONS,
   type Outcome,
   PLACES_OPTIONS,
@@ -71,6 +75,8 @@ export function QuoteCalculator() {
   const [places, setPlaces] = useState<Places>(DEFAULT_PLACES);
   const [consultationHours, setConsultationHours] = useState<number>(DEFAULT_CONSULTATION_HOURS);
   const [stageB, setStageB] = useState(false);
+  const [adapterExtras, setAdapterExtras] = useState(0);
+  const [onCare, setOnCare] = useState(false);
 
   const quote = buildQuote({
     hoster,
@@ -78,6 +84,8 @@ export function QuoteCalculator() {
     places,
     consultationHours,
     stageB,
+    adapterExtras,
+    onCare,
   });
 
   return (
@@ -134,6 +142,33 @@ export function QuoteCalculator() {
                 ))}
               </select>
             </div>
+            <div>
+              <label htmlFor="adapter-extras" className="text-base font-semibold text-foreground">
+                Extra Adapters
+              </label>
+              <select
+                id="adapter-extras"
+                value={adapterExtras}
+                onChange={(event) => setAdapterExtras(Number(event.target.value))}
+                className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
+              >
+                {ADAPTER_EXTRA_OPTIONS.map((count) => (
+                  <option key={count} value={count}>
+                    {adapterExtraLabel(count)}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-3 text-sm text-muted-foreground">{ADAPTER_CALCULATOR_HELP}</p>
+            </div>
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+              <input
+                type="checkbox"
+                checked={onCare}
+                onChange={(event) => setOnCare(event.target.checked)}
+                className="mt-1 size-4 accent-primary"
+              />
+              <span className="text-sm font-medium text-foreground">{ON_CARE_CHECKBOX}</span>
+            </label>
             <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
               <input
                 type="checkbox"
