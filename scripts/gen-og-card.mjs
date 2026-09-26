@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 /**
  * Rasterize public/og-card.png from the live catalog fixture (app/lib/og-card.ts)
- * plus the Circuit-R tile already on this branch.
+ * plus the transparent Circuit-R master (public/favicon.svg).
  *
  * This repo never had an OG generator — only a static PNG. Do not invent a
- * second headline here. Copy is owned by app/lib/og-card.ts.
+ * second headline here. Copy is owned by app/lib/og-card.ts. Do not lift a
+ * navy plate or checker tile out of a previous card; composite the SVG so
+ * the card gradient shows through the mark.
  *
  * Usage (after pnpm install, with sharp resolvable):
  *   node scripts/gen-og-card.mjs
@@ -102,9 +104,10 @@ async function main() {
   assertLiveCopy();
   const sharp = resolveSharp();
 
-  // Keep the Circuit-R tile already on this branch (88x88 at 72,64).
-  const tileRounded = await sharp(path.join(ROOT, 'public/og-card.png'))
-    .extract({ left: 72, top: 64, width: 88, height: 88 })
+  // Transparent Circuit-R. Same 88px slot the card already uses (72,64).
+  // No navy plate and no checker grid — the card fill shows through.
+  const mark = await sharp(readFileSync(path.join(ROOT, 'public/favicon.svg')))
+    .resize(88, 88, { fit: 'fill' })
     .png()
     .toBuffer();
 
@@ -128,7 +131,7 @@ async function main() {
 
   const card = await sharp(Buffer.from(svg))
     .png()
-    .composite([{ input: tileRounded, left: 72, top: 64 }])
+    .composite([{ input: mark, left: 72, top: 64 }])
     .removeAlpha()
     .png()
     .toBuffer();
