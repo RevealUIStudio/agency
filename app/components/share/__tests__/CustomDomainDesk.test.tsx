@@ -24,7 +24,7 @@ describe('CustomDomainDesk', () => {
   });
 
   it('shows the CNAME target and TXT token, then goes live only when both match', () => {
-    render(<Harness initial={createSharePack('omega', { id: 'omega-pack' })} />);
+    render(<Harness initial={createSharePack('demo', { id: 'demo-pack' })} />);
     expect(document.querySelector('[data-cname-target]')).toHaveTextContent(
       CUSTOM_DOMAIN_CNAME_TARGET,
     );
@@ -37,7 +37,7 @@ describe('CustomDomainDesk', () => {
     expect(document.querySelector('[data-txt-token]')).toHaveTextContent(token);
     expect(screen.getByText('Status: pending_dns')).toBeInTheDocument();
     expect(resolveSharePackId('share.example.com', listSharePacks())).toBeNull();
-    expect(resolveSharePackId('omega.revealuistudio.com', listSharePacks())).toBe('omega-pack');
+    expect(resolveSharePackId('demo.revealuistudio.com', listSharePacks())).toBe('demo-pack');
 
     fireEvent.change(screen.getByLabelText('Observed CNAME'), {
       target: { value: 'example.net' },
@@ -53,7 +53,7 @@ describe('CustomDomainDesk', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Apply supplied records' }));
     expect(screen.getByText('Status: live')).toBeInTheDocument();
-    expect(resolveSharePackId('omega.revealuistudio.com', listSharePacks())).toBe('omega-pack');
-    expect(resolveSharePackId('share.example.com', listSharePacks())).toBe('omega-pack');
+    expect(resolveSharePackId('demo.revealuistudio.com', listSharePacks())).toBe('demo-pack');
+    expect(resolveSharePackId('share.example.com', listSharePacks())).toBe('demo-pack');
   });
 });

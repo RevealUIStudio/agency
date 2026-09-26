@@ -2,7 +2,7 @@
  * Stage A share hosts: `{client}.revealuistudio.com` on the same Vercel project.
  * Apex and www stay the public studio site. Other hosts (localhost, preview
  * URLs) stay the studio site so this SPA still reviews before wildcard DNS.
- * `*.localhost` is the local seed (omega.localhost).
+ * `*.localhost` is the local seed (demo.localhost).
  *
  * OWNER attaches `*.revealuistudio.com` on Vercel and the registrar CNAME.
  * This module does not provision DNS.
@@ -27,7 +27,7 @@ export const RESERVED_SHARE_LABELS = [
   'desk',
 ] as const;
 
-export const SHARE_SEED_SLUG = 'omega' as const;
+export const SHARE_SEED_SLUG = 'demo' as const;
 
 export const SHARE_PATHS = [
   '/',
@@ -49,7 +49,7 @@ function firstLabel(host: string, parent: (typeof SHARE_PARENTS)[number]): strin
   if (!host.endsWith(parent)) return null;
   const head = host.slice(0, -parent.length);
   if (!head || head.includes('.')) {
-    // Nested names still use the left-most label (`omega.preview.revealuistudio.com`).
+    // Nested names still use the left-most label (`demo.preview.revealuistudio.com`).
     const label = head.split('.')[0] ?? '';
     return label || null;
   }

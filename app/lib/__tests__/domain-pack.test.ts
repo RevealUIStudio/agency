@@ -51,18 +51,18 @@ describe('domain pack offer', () => {
       '/onboarding',
       '/walkthrough',
     ]);
-    const dns = domainPackLines('dns', 'omega').join('\n');
-    expect(dns).toContain('Studio host: omega.revealuistudio.com');
+    const dns = domainPackLines('dns', 'demo').join('\n');
+    expect(dns).toContain('Studio host: demo.revealuistudio.com');
     expect(dns).toContain(`CNAME target: ${CUSTOM_DOMAIN_CNAME_TARGET}`);
     expect(dns).toContain('The studio attaches the DNS.');
-    expect(domainPackLines('path', 'omega').join('\n')).toContain('Path A is the default');
-    expect(domainPackLines('proof-gap', 'omega').join('\n')).toContain('proof-gap map');
-    expect(domainPackLines('stack', 'omega').join('\n')).toContain('lightweight sketch');
-    expect(domainPackLines('stack', 'omega').join('\n')).toContain(
+    expect(domainPackLines('path', 'demo').join('\n')).toContain('Path A is the default');
+    expect(domainPackLines('proof-gap', 'demo').join('\n')).toContain('proof-gap map');
+    expect(domainPackLines('stack', 'demo').join('\n')).toContain('lightweight sketch');
+    expect(domainPackLines('stack', 'demo').join('\n')).toContain(
       'Architecture, schema, and review stay inside Launch.',
     );
-    expect(domainPackLines('onboarding', 'omega').join('\n')).toContain('what the share is');
-    expect(domainPackLines('walkthrough', 'omega').join('\n')).toContain('one written walk');
+    expect(domainPackLines('onboarding', 'demo').join('\n')).toContain('what the share is');
+    expect(domainPackLines('walkthrough', 'demo').join('\n')).toContain('one written walk');
   });
 
   it('keeps the invoice list label and the owner credit label on the domain pack', () => {
