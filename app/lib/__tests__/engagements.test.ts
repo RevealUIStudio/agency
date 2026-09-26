@@ -1,9 +1,16 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 import { describe, expect, it } from 'vitest';
 import {
+  ADAPTER,
+  ADAPTER_PRICE,
   CONSULTATION,
   CUSTOM_BUILD,
   FLEET_STAMP,
   LAUNCH,
+  LAUNCH_PRICE,
   PROOF_SPRINT,
   PUBLIC_OFFERS,
   RUNTIME_METRICS,
@@ -29,9 +36,18 @@ describe('public studio offers', () => {
     expect(LAUNCH.price).toBe('$14,500');
   });
 
-  it('keeps Launch at the locked list price until contracts publish the same number', () => {
+  it('reads Launch from the published contracts list', () => {
+    expect(LAUNCH_PACKAGE_PRICE).toBe('$14,500');
+    expect(LAUNCH_PRICE).toBe(LAUNCH_PACKAGE_PRICE);
+    expect(LAUNCH.price).toBe(LAUNCH_PACKAGE_PRICE);
     expect(PROOF_SPRINT.price).toBe('$3,997');
-    expect(LAUNCH.price).toBe('$14,500');
+    const source = readFileSync(
+      path.join(path.dirname(fileURLToPath(import.meta.url)), '../engagements.ts'),
+      'utf8',
+    );
+    expect(source).toContain("from '@revealui/contracts/pricing'");
+    expect(source).not.toContain('TODO(offer-lock)');
+    expect(source).not.toMatch(/LAUNCH_PRICE = '\$14,500'/);
   });
 
   it('does not list internal product lanes on the public menu', () => {
@@ -46,6 +62,10 @@ describe('public studio offers', () => {
     expect(names).not.toContain('Working session');
     expect(names).not.toContain('Live page');
     expect(names).not.toContain('Launch package');
+    expect(names).not.toContain(ADAPTER.name);
+    expect(ADAPTER_PRICE).toBe('$2,497');
+    expect(ADAPTER.price).toBe(ADAPTER_PRICE);
+    expect(ADAPTER.optional).toBe(true);
     expect(names).not.toContain('Guardrail');
     expect(names).not.toContain('Guardrail agent');
     expect(names).not.toContain('Guardrail agent (template)');

@@ -2,16 +2,19 @@
  * Public studio offers for revealuistudio.com.
  *
  * Stranger-facing SKUs are locked (2026-09-22): Consultation, Proof Sprint, Launch.
- * Proof Sprint is $3,997. Launch is $14,500. The previous middle offer and the
- * previous Launch list are retired. Architecture stays inside Launch.
+ * Proof Sprint is $3,997. Launch is the published contracts list. The previous
+ * middle offer and the previous Launch list are retired. Architecture stays
+ * inside Launch.
  *
- * Launch price is a local override until @revealui/contracts publishes $14,500.
  * Care is an optional export and is not on the homepage trio.
+ * Adapter is an optional add-on export and is not a homepage card.
  *
  * Fleet Stamp, Custom Build, and AI Integration stay in this file as
  * internal records (case-study shapes, future private use). They must not
  * be imported by homepage, nav, or pricing surfaces.
  */
+
+import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 
 /**
  * Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1
@@ -42,17 +45,16 @@ export interface PublicOffer {
 export const CONSULTATION_PRICE = '$300' as const;
 export const PROOF_SPRINT_PRICE = '$3,997' as const;
 
-/**
- * TODO(offer-lock): import LAUNCH_PACKAGE_PRICE from `@revealui/contracts/pricing`
- * once that package publishes Launch $14,500 (studio offer lock 2026-09-22).
- * The installed contracts build still exports the retired $7,500 list.
- */
-export const LAUNCH_PRICE = '$14,500' as const;
+/** Published Launch list from `@revealui/contracts/pricing` (0.12.0 is $14,500). */
+export const LAUNCH_PRICE = LAUNCH_PACKAGE_PRICE;
 
 /** Domain pack. $297. Included with Proof Sprint and Launch. Not a homepage SKU. SKU id stays stage-b. */
 export const STAGE_B_PRICE = '$297' as const;
 
 export const CARE_PRICE = '$1,997/mo' as const;
+
+/** Add-on. One tool category. Not a homepage SKU and not sold alone. */
+export const ADAPTER_PRICE = '$2,497' as const;
 
 export const CONSULTATION = {
   id: 'consultation',
@@ -104,6 +106,17 @@ export const LAUNCH = {
 
 /** The only three offers strangers should see on the homepage. */
 export const PUBLIC_OFFERS = [CONSULTATION, PROOF_SPRINT, LAUNCH] as const;
+
+/**
+ * Public add-on. Not in PUBLIC_OFFERS. Not a homepage card.
+ */
+export const ADAPTER = {
+  id: 'adapter',
+  name: 'Adapter',
+  price: ADAPTER_PRICE,
+  optional: true,
+  note: 'Add-on. Not a homepage card. Not sold alone.',
+} as const;
 
 /**
  * Optional monthly care. Export is allowed. Do not add this to PUBLIC_OFFERS
