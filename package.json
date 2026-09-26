@@ -1,6 +1,6 @@
 {
   "name": "@revealui-studio/agency",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "RevealUI Studio agency site — services, case studies, hire-us. Hosted at revealuistudio.com.",
   "private": true,
   "type": "module",
@@ -12,7 +12,7 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
-    "@revealui/contracts": "^0.8.0",
+    "@revealui/contracts": "^0.12.0",
     "@revealui/presentation": "file:vendor/revealui-presentation-0.15.0.tgz",
     "@revealui/router": "^0.3.11",
     "@sentry/react": "^10.74.0",

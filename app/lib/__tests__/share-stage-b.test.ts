@@ -18,9 +18,9 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../
 
 describe('stage B share pack', () => {
   it('defaults chrome to studio and the custom domain to empty', () => {
-    expect(createSharePack('omega')).toEqual({
-      id: 'omega',
-      slug: 'omega',
+    expect(createSharePack('demo')).toEqual({
+      id: 'demo',
+      slug: 'demo',
       customDomain: null,
       chromeLevel: 'studio',
       customDomainStatus: 'none',
@@ -29,27 +29,27 @@ describe('stage B share pack', () => {
 
   it('resolves the studio host and a verified custom host to the same pack id', () => {
     const draft = withCustomDomain(
-      createSharePack('omega', { id: 'omega-pack' }),
+      createSharePack('demo', { id: 'demo-pack' }),
       'share.example.com',
     );
     expect(draft.customDomain).toBe('share.example.com');
     expect(draft.customDomainStatus).toBe('pending_dns');
     expect(resolveSharePackId('share.example.com', [draft])).toBeNull();
-    expect(resolveSharePackId('omega.revealuistudio.com', [draft])).toBe('omega-pack');
+    expect(resolveSharePackId('demo.revealuistudio.com', [draft])).toBe('demo-pack');
 
     const live = verifyCustomDomain(draft, {
       cname: `${CUSTOM_DOMAIN_CNAME_TARGET}.`,
       txt: customDomainTxtToken('share.example.com'),
     });
     expect(live.customDomainStatus).toBe('live');
-    expect(resolveSharePackId('omega.revealuistudio.com', [live])).toBe('omega-pack');
-    expect(resolveSharePackId('share.example.com', [live])).toBe('omega-pack');
-    expect(resolveSharePackId('Share.Example.com:443', [live])).toBe('omega-pack');
+    expect(resolveSharePackId('demo.revealuistudio.com', [live])).toBe('demo-pack');
+    expect(resolveSharePackId('share.example.com', [live])).toBe('demo-pack');
+    expect(resolveSharePackId('Share.Example.com:443', [live])).toBe('demo-pack');
   });
 
   it('does not resolve an unverified custom host', () => {
     const draft = withCustomDomain(
-      createSharePack('omega', { id: 'omega-pack' }),
+      createSharePack('demo', { id: 'demo-pack' }),
       'share.example.com',
     );
     const missed = verifyCustomDomain(draft, {
@@ -66,20 +66,20 @@ describe('stage B share pack', () => {
     expect(wrongTxt.customDomainStatus).toBe('pending_dns');
     expect(resolveSharePackId('share.example.com', [wrongTxt])).toBeNull();
 
-    const empty = verifyCustomDomain(createSharePack('omega'), {
+    const empty = verifyCustomDomain(createSharePack('demo'), {
       cname: CUSTOM_DOMAIN_CNAME_TARGET,
       txt: customDomainTxtToken('share.example.com'),
     });
     expect(empty.customDomainStatus).toBe('none');
     expect(resolveSharePackId('share.example.com', [empty])).toBeNull();
-    expect(resolveSharePackId('omega.revealuistudio.com', [])).toBe('omega');
+    expect(resolveSharePackId('demo.revealuistudio.com', [])).toBe('demo');
   });
 
   it('keeps the three chrome levels distinct', () => {
-    const models = CHROME_LEVELS.map((level) => shareChrome('omega', level));
+    const models = CHROME_LEVELS.map((level) => shareChrome('demo', level));
     const [studio, cobrand, white] = models;
     if (!studio || !cobrand || !white) throw new Error('missing chrome level');
-    expect(shareChrome('omega').level).toBe('studio');
+    expect(shareChrome('demo').level).toBe('studio');
     expect(new Set(models.map((model) => model.subtitle)).size).toBe(3);
     expect(studio.showStudioMark).toBe(true);
     expect(studio.showStudioName).toBe(true);
@@ -89,11 +89,11 @@ describe('stage B share pack', () => {
     expect(cobrand.subtitle).toContain('Co-brand');
     expect(white.showStudioMark).toBe(false);
     expect(white.showStudioName).toBe(false);
-    expect(white.subtitle).toBe('Omega');
+    expect(white.subtitle).toBe('Demo');
     expect(white.subtitle).not.toMatch(/RevealUI/);
   });
 
-  it('prices Stage B as an optional Consultation add-on and includes it on Proof Sprint and Launch', () => {
+  it('prices Stage B as an optional Consultation add-on and includes it on Pilot and Launch', () => {
     const off = buildQuote({
       hoster: 'studio',
       outcome: 'consultation',

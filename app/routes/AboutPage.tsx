@@ -1,4 +1,4 @@
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { CONTACT_EMAIL, STUDIO_CITY } from '@/lib/site';
 
 export function AboutPage() {
@@ -9,7 +9,7 @@ export function AboutPage() {
         <p className="mt-6 text-lg text-muted-foreground">
           RevealUI Studio is for startups, and for technical founders and small agencies who already
           run agents. I ship RevealUI, the agentic business runtime, and take paid studio work:{' '}
-          {CONSULTATION.name}, {PROOF_SPRINT.name}, and {LAUNCH.name}. Remote first. Sitting down in{' '}
+          {CONSULTATION.name}, {PILOT.name}, and {LAUNCH.name}. Remote first. Sitting down in{' '}
           {STUDIO_CITY} is available on the same calendar.
         </p>
         <div className="mt-12 rounded-2xl border border-border bg-muted p-8">

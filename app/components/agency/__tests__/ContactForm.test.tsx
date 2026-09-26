@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ContactForm } from '@/components/agency/ContactForm';
 import { submitContact } from '@/lib/api';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 vi.mock('@/lib/api', () => ({
@@ -43,7 +43,9 @@ describe('ContactForm', () => {
       screen.getByRole('option', { name: `${CONSULTATION.name} (${CONSULTATION.price})` }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('option', { name: `${PROOF_SPRINT.name} (${PROOF_SPRINT.price})` }),
+      screen.getByRole('option', {
+        name: `${PILOT.name} (${PILOT.price}, includes 1 Adapter)`,
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('option', { name: `${LAUNCH.name} (${LAUNCH.price})` }),

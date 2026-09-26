@@ -1,7 +1,7 @@
 /**
  * Proof-gap checklist lead magnet. Soft ask, not a quote form.
  * H1 and gate copy locked 2026-09-18 (Joshua OK publish).
- * PROOF = receipted action. Studio ladder stays Consultation / Proof Sprint / Launch.
+ * PROOF = receipted action. Studio ladder stays Consultation / Pilot / Launch.
  */
 
 export const PROOF_GAP_PATH = '/proof-gap' as const;
@@ -48,11 +48,12 @@ export const PROOF_GAP_THANKS_CONSULT =
   'If you want a diagnose with us: Consultation is $300: path + proof-gap map, pack within one business day.' as const;
 
 export const PROOF_GAP_THANKS_INTRO =
-  "Optional 30-minute intro: you don't need a Google account. Open the Meet link → Join as guest." as const;
+  "Optional 30-minute intro: you don't need a Google account. Open the Google Meet link → Join as guest." as const;
 
 export const PROOF_GAP_DOWNLOAD_LABEL = 'Download the PDF' as const;
 
-export const PROOF_GAP_LADDER = 'Consultation $300 · Proof Sprint $3,997 · Launch $14,500' as const;
+export const PROOF_GAP_LADDER =
+  'Consultation $300 · Pilot $3,997 (includes 1 Adapter) · Launch $14,500 (up to 3 Adapters) · Adapter $2,497 · Stage B $297' as const;
 
 export const PROOF_GAP_REQUEST_TOPIC = 'general' as const;
 
@@ -222,7 +223,7 @@ export const PROOF_GAP_ONE_GAP_PROMPT = 'The one gap I’d fix this week:' as co
 export const PROOF_GAP_NEXT_STEPS = [
   'DIY: Fix that one gap on your stack. Re-run §3 until you can show one receipted action.',
   'Diagnose with us: Consultation $300. Path + proof-gap map; artifact pack within one business day. Lightweight stack sketch (not Architecture sold as Consultation).',
-  'Operate a slice: Proof Sprint $3,997. One site. One receipted action you operate. The domain pack is included.',
+  'Operate a slice: Pilot $3,997. Includes 1 Adapter. One site. One receipted action you operate. The domain pack is included.',
 ] as const;
 
 export const PROOF_GAP_REFUSALS = [
