@@ -8,19 +8,19 @@
 
 import type { StageBFee } from './consultation-booking';
 import { consultationDueCents } from './consultation-hours';
-import {
-  ADAPTER_STRIPE_LOOKUP_KEY,
-  ADAPTER_STRIPE_PRICE_ID,
-  ADAPTER_STRIPE_PRODUCT_ID,
-} from './engagements';
-
-export { ADAPTER_STRIPE_LOOKUP_KEY, ADAPTER_STRIPE_PRICE_ID, ADAPTER_STRIPE_PRODUCT_ID };
 
 /** Live Consultation price. $300 per hour. Override with STRIPE_CONSULTATION_PRICE_ID. */
 export const DEFAULT_CONSULTATION_PRICE_ID = 'price_1TxpQTJz64n6uEibitNE5eJP' as const;
 
 /** Live Stage B price. $297 once. Override with STRIPE_STAGE_B_PRICE_ID. */
 export const DEFAULT_STAGE_B_PRICE_ID = 'price_1UIjpPJz64n6uEibxJOYKJ3t' as const;
+
+/**
+ * Live Adapter price. $2,497 once. Lookup key `studio_adapter`.
+ * Not a Consultation Checkout line. The Stripe product id stays in Stripe.
+ */
+export const DEFAULT_ADAPTER_PRICE_ID = 'price_1UJqwUJz64n6uEibb00OrqFM' as const;
+export const ADAPTER_LOOKUP_KEY = 'studio_adapter' as const;
 
 /**
  * Collect a billing address only when the payment method or tax needs one.
@@ -58,7 +58,7 @@ export interface CheckoutLine {
 }
 
 function refuseAdapterOnConsultationCheckout(price: string): void {
-  if (price === ADAPTER_STRIPE_PRICE_ID) {
+  if (price === DEFAULT_ADAPTER_PRICE_ID) {
     throw new Error('adapter-not-on-consultation-checkout');
   }
 }

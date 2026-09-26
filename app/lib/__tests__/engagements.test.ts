@@ -4,9 +4,6 @@ import {
   ADAPTER_CENTS,
   ADAPTER_PRICE,
   ADAPTER_ROLE,
-  ADAPTER_STRIPE_LOOKUP_KEY,
-  ADAPTER_STRIPE_PRICE_ID,
-  ADAPTER_STRIPE_PRODUCT_ID,
   CONSULTATION,
   CUSTOM_BUILD,
   FLEET_STAMP,
@@ -91,9 +88,6 @@ describe('public studio offers', () => {
     expect(ADAPTER.price).toBe(ADAPTER_PRICE);
     expect(ADAPTER.price).toBe('$2,497');
     expect(ADAPTER_CENTS).toBe(249_700);
-    expect(ADAPTER_STRIPE_PRODUCT_ID).toBe('prod_VKVybOvDTXLx4u');
-    expect(ADAPTER_STRIPE_PRICE_ID).toBe('price_1UJqwUJz64n6uEibb00OrqFM');
-    expect(ADAPTER_STRIPE_LOOKUP_KEY).toBe('studio_adapter');
     expect(PILOT.description).toMatch(/Includes 1 Adapter/);
     expect(LAUNCH.description).toMatch(/up to 3 Adapters/);
     expect(ADAPTER.description).toMatch(/Not sold alone/);

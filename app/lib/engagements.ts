@@ -65,11 +65,6 @@ export const ADAPTER_CENTS = 249_700 as const;
 export const ADAPTER_INCLUDED_ON_PILOT = 1 as const;
 export const ADAPTER_INCLUDED_ON_LAUNCH = 3 as const;
 
-/** Livemode Adapter price. Consultation Checkout must not sell this line. */
-export const ADAPTER_STRIPE_PRODUCT_ID = 'prod_VKVybOvDTXLx4u' as const;
-export const ADAPTER_STRIPE_PRICE_ID = 'price_1UJqwUJz64n6uEibb00OrqFM' as const;
-export const ADAPTER_STRIPE_LOOKUP_KEY = 'studio_adapter' as const;
-
 /** Categorical tool names only. No vendor or competitor company brands. */
 export const ADAPTER_CATEGORIES =
   'field-service CRM / estimating / dispatch, gallery / proofing, shopping cart, phone / SMS, calendar, payments / wallets, or labs / fulfillment' as const;
