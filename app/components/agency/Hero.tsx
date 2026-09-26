@@ -5,7 +5,7 @@ import {
   RECEIPT_HERO_LINES,
   RECEIPT_HERO_TITLE,
 } from '@/content/receipt';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT } from '@/lib/engagements';
+import { ADAPTER, CONSULTATION, LAUNCH, PILOT, STAGE_B_PRICE } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
 /** Visible H1. Known-for lock: agentic business runtime they operate on their domain. */
@@ -21,7 +21,7 @@ export const HOME_DOCUMENT_TITLE =
  * Pain is not the document title. Proof stays out of the H1.
  */
 export const HOME_META_DESCRIPTION =
-  'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents: existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation $300. Proof Sprint $3,997. Launch $14,500. Book a 30-minute intro on Google Calendar.' as const;
+  'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents: existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Book a 30-minute intro on Google Calendar.' as const;
 
 /** Meta-only known-for proof line. Visible hero breath is pain → result → menu → PROOF. */
 export const HERO_SUBLINE =
@@ -35,7 +35,7 @@ export const HERO_RESULT =
   'You already live in Cursor. I put booking, invoices, and agents with PROOF on your domain. You run it, or I ship it with you.' as const;
 
 export const HERO_MENU =
-  `${CONSULTATION.name} ${CONSULTATION.price} · ${PROOF_SPRINT.name} ${PROOF_SPRINT.price} · ${LAUNCH.name} ${LAUNCH.price}.` as const;
+  `${CONSULTATION.name} ${CONSULTATION.price} · ${PILOT.name} ${PILOT.price} (includes 1 Adapter) · ${LAUNCH.name} ${LAUNCH.price} (up to 3 Adapters) · ${ADAPTER.name} ${ADAPTER.price} · Stage B ${STAGE_B_PRICE}.` as const;
 
 export const HERO_PROOF = RECEIPT_HERO_CAPTION.text;
 

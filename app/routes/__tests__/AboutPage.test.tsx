@@ -10,7 +10,7 @@ describe('AboutPage', () => {
     expect(text).toContain('5+ years');
     expect(text).toContain('I ship RevealUI, the agentic business runtime');
     expect(text).toContain('Consultation');
-    expect(text).toContain('Proof Sprint');
+    expect(text).toContain('Pilot');
     expect(text).toContain('Launch');
     expect(text).not.toMatch(/\bHour\b/);
     expect(text).not.toMatch(/Enterprise/);

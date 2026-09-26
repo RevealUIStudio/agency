@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
-import { CONSULTATION, LAUNCH, PROOF_SPRINT, PUBLIC_OFFERS } from '@/lib/engagements';
+import { ADAPTER, CONSULTATION, LAUNCH, PILOT, PUBLIC_OFFERS } from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 import { ProcessPage } from '@/routes/ProcessPage';
 
@@ -13,14 +13,14 @@ describe('ProcessPage', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: 'How we work' })).toBeInTheDocument();
     expect(text).toContain(CONSULTATION.name);
-    expect(text).toContain(PROOF_SPRINT.name);
+    expect(text).toContain(PILOT.name);
     expect(text).toContain(LAUNCH.name);
     expect(text).toContain(CONSULTATION.price);
-    expect(text).toContain(PROOF_SPRINT.price);
+    expect(text).toContain(PILOT.price);
     expect(text).toContain(LAUNCH.price);
 
     expect(document.getElementById(CONSULTATION.id)).not.toBeNull();
-    expect(document.getElementById(PROOF_SPRINT.id)).not.toBeNull();
+    expect(document.getElementById(PILOT.id)).not.toBeNull();
     expect(document.getElementById(LAUNCH.id)).not.toBeNull();
 
     expect(screen.getAllByRole('heading', { name: 'What you send' })).toHaveLength(3);
@@ -33,7 +33,7 @@ describe('ProcessPage', () => {
     expect(text).toContain('One receipted action you operate');
     expect(text).toContain('Credits 100% to Launch');
     expect(text).toContain('Architecture work');
-    expect(text).toContain(PROOF_SPRINT.payment);
+    expect(text).toContain(PILOT.payment);
     expect(text).toContain(LAUNCH.payment);
   });
 
@@ -81,7 +81,9 @@ describe('ProcessPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'How we work' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: GUARDRAIL_HEADING })).toBeInTheDocument();
     expect(text).toContain(GUARDRAIL_BODY);
-    expect(text).toContain('Included in how we scope Proof Sprint and Launch');
+    expect(text).toContain('Included in how we scope Pilot and Launch');
+    expect(text).toContain(ADAPTER.price);
+    expect(text).toContain('Not sold alone');
     expect(text).toContain('Not a separate SKU');
     expect(document.getElementById('guardrail-agent')).not.toBeNull();
 
