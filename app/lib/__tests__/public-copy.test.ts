@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -321,9 +322,12 @@ describe('public copy gates', () => {
     expect(pathCount).toBeGreaterThanOrEqual(70);
     expect(viaCount).toBeGreaterThanOrEqual(50);
     expect(mark).toContain('Q207,159');
-    // revealui test #2787 / f4ee0bac: optically centered v2 Circuit-R.
-    expect(mark).toContain('translate(256,256) scale(1.06) translate(-300,-320)');
+    // Locked kit master: true alpha, translate(-310,-320). sha256 a9403150…
+    expect(mark).toContain('translate(256,256) scale(1.06) translate(-310,-320)');
+    expect(mark).not.toContain('translate(-300');
     expect(mark).not.toContain('translate(-330');
+    expect(mark).not.toContain('<rect');
+    expect(mark).not.toContain('#060d1a');
     expect(mark).toContain('mask="url(#cm)"');
     expect(mark).toContain('maskUnits="userSpaceOnUse"');
     expect(mark).toContain('#0a2c5a');
@@ -341,6 +345,9 @@ describe('public copy gates', () => {
     expect(mark).not.toContain('fill="#003d94"');
     expect(mark).not.toContain('rx="22"');
     expect(mark).toBe(favicon);
+    expect(createHash('sha256').update(mark).digest('hex')).toBe(
+      'a94031503236900c7711cc3c9b766e584fc1079ff820a05a969e8cc1d7acfa33',
+    );
     expect(nav).toContain('/revealui-mark.svg');
     expect(nav).toContain('CIRCUIT_R_NAV_PX = 48');
     expect(nav).toContain('overflow-hidden');
