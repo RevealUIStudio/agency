@@ -15,6 +15,7 @@ function renderFooter() {
     { path: '/privacy', component: () => null },
     { path: '/cookies', component: () => null },
     { path: '/terms', component: () => null },
+    { path: '/blog', component: () => null },
   ]);
   window.history.pushState({}, '', '/');
   return render(
@@ -25,10 +26,13 @@ function renderFooter() {
 }
 
 describe('Footer (agency)', () => {
-  it('labels the docs host as Documentation and prints the email once', () => {
+  it('labels the docs host as Docs and prints the email once', () => {
     const { container } = renderFooter();
-    const docs = screen.getByRole('link', { name: 'Documentation' });
+    const docs = screen.getByRole('link', { name: 'Docs' });
     expect(docs).toHaveAttribute('href', DOCS_URL);
+    const blog = screen.getByRole('link', { name: 'Blog' });
+    expect(blog).toHaveAttribute('href', '/blog');
+    expect(blog.getAttribute('href')).not.toBe(DOCS_URL);
     const checklist = screen.getByRole('link', { name: 'Proof-gap checklist' });
     expect(checklist).toHaveAttribute('href', '/proof-gap');
     expect(screen.queryByRole('link', { name: /docs\.revealui\.com/i })).not.toBeInTheDocument();

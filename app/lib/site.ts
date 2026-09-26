@@ -25,7 +25,7 @@ export const DISCOVERY_CALL_URL = INTRO_CALL_URL;
 /** Studio inbox — contact-form relay target + the direct-email / mailto fallback. */
 export const CONTACT_EMAIL = 'founder@revealui.com';
 
-/** Product docs. Footer "Documentation" points here. */
+/** Product docs. Nav label is Docs. */
 export const DOCS_URL = 'https://docs.revealui.com';
 
 /** Open-source product site. Self-host visitors start free here. */
