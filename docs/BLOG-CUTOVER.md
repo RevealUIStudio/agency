@@ -1,6 +1,6 @@
 # Blog cutover (2026-09-26)
 
-Joshua locked the IA: the blog lives on RevealUI Studio (`revealuistudio.com`, this repo). `docs.revealui.com` stays product reference only. This file is the inventory and the redirect list for FDE. Do not promote this branch to `main` until Joshua says the brand pass is done.
+IA lock (2026-09-26): the blog lives on RevealUI Studio (`revealuistudio.com`, this repo). `docs.revealui.com` stays product reference only. This file is the inventory and the redirect list for FDE. Do not promote this branch to `main`. Public publish and Social RSS stay held.
 
 ## Inventory
 
