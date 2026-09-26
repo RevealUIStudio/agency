@@ -44,6 +44,7 @@ function CircuitRNavMark(): React.JSX.Element {
 const navLinks = [
   { href: '/#calculator', label: 'Quote' },
   { href: '/process', label: 'Process' },
+  { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];

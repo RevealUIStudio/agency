@@ -53,6 +53,8 @@ describe('NavBar (agency)', () => {
     expect(screen.queryByRole('link', { name: /founder@revealui\.com/i })).not.toBeInTheDocument();
     const process = screen.getByRole('link', { name: 'Process' });
     expect(process).toHaveAttribute('href', '/process');
+    const blog = screen.getByRole('link', { name: 'Blog' });
+    expect(blog).toHaveAttribute('href', '/blog');
   });
 
   it('opens the menu and flips the trigger to a disclosure close state', () => {

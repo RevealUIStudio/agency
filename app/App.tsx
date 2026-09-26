@@ -19,6 +19,8 @@ import {
 } from './lib/consultation-buyer';
 import { listSharePacks, resolveShareViewer } from './lib/share-stage-b';
 import { AboutPage } from './routes/AboutPage';
+import { BlogPage } from './routes/BlogPage';
+import { BlogPostPage } from './routes/BlogPostPage';
 import { CaseStudyPage } from './routes/CaseStudyPage';
 import { CasesPage } from './routes/CasesPage';
 import {
@@ -108,6 +110,24 @@ export function App() {
             title: 'How we work | RevealUI Studio',
             description:
               'How a RevealUI Studio engagement runs. Consultation $300. Proof Sprint $3,997. Launch $14,500. Book a 30-minute intro on Google Calendar.',
+          },
+        },
+        {
+          path: '/blog',
+          component: BlogPage,
+          meta: {
+            title: 'Blog | RevealUI Studio',
+            description:
+              'Essays from Joshua Vaughn and RevealUI Studio. Product reference stays in the documentation.',
+          },
+        },
+        {
+          path: '/blog/:slug',
+          component: BlogPostPage,
+          meta: {
+            title: 'Blog | RevealUI Studio',
+            description:
+              'Essays from Joshua Vaughn and RevealUI Studio. Product reference stays in the documentation.',
           },
         },
         {

@@ -19,6 +19,11 @@ export function Footer() {
           <nav aria-label="Footer">
             <ul className="flex flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-4">
               <li>
+                <Link to="/blog" className="hover:text-foreground transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <a
                   href={DOCS_URL}
                   target="_blank"
