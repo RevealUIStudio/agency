@@ -4,8 +4,9 @@
  * There is no historical OG generator in this repo — only the static card.
  * These lines are the live hero / catalog strings (Hero.tsx + engagements.ts).
  * Do not invent a second headline. scripts/gen-og-card.mjs rasterizes this
- * fixture plus the Circuit-R tile. public-copy tests walk this file as utf-8
- * and also read tEXt chunks from the PNG so a raster swap cannot hide
+ * fixture plus the transparent Circuit-R (public/favicon.svg). public-copy
+ * tests walk this file as utf-8 and also read tEXt chunks from the PNG so a
+ * raster swap cannot hide
  * retired identity copy.
  */
 

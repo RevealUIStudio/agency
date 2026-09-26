@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -57,6 +58,114 @@ function pdfPageText(pdf: Buffer): string {
   } catch {
     return pdf.toString('latin1');
   }
+}
+
+function paethPredictor(left: number, up: number, upLeft: number): number {
+  const estimate = left + up - upLeft;
+  const leftDist = Math.abs(estimate - left);
+  const upDist = Math.abs(estimate - up);
+  const upLeftDist = Math.abs(estimate - upLeft);
+  if (leftDist <= upDist && leftDist <= upLeftDist) return left;
+  if (upDist <= upLeftDist) return up;
+  return upLeft;
+}
+
+/** 8-bit non-interlaced PNG. Enough to lock favicon alpha and the OG plate. */
+function decodePng(png: Buffer): {
+  width: number;
+  height: number;
+  colorType: number;
+  rgba: Buffer;
+} {
+  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  if (!png.subarray(0, 8).equals(signature)) throw new Error('not a png');
+  let offset = 8;
+  let width = 0;
+  let height = 0;
+  let bitDepth = 0;
+  let colorType = 0;
+  let interlace = 0;
+  const idat: Buffer[] = [];
+  while (offset + 8 <= png.length) {
+    const length = png.readUInt32BE(offset);
+    const type = png.subarray(offset + 4, offset + 8).toString('ascii');
+    const data = png.subarray(offset + 8, offset + 8 + length);
+    if (type === 'IHDR') {
+      width = data.readUInt32BE(0);
+      height = data.readUInt32BE(4);
+      bitDepth = data[8] ?? 0;
+      colorType = data[9] ?? 0;
+      interlace = data[12] ?? 0;
+    } else if (type === 'IDAT') {
+      idat.push(data);
+    } else if (type === 'IEND') {
+      break;
+    }
+    offset += 12 + length;
+  }
+  if (bitDepth !== 8 || interlace !== 0) {
+    throw new Error(`unsupported png bitDepth=${bitDepth} interlace=${interlace}`);
+  }
+  const channels = colorType === 6 ? 4 : colorType === 2 ? 3 : 0;
+  if (channels === 0) throw new Error(`unsupported png colorType=${colorType}`);
+  const raw = inflateSync(Buffer.concat(idat));
+  const stride = width * channels;
+  const rgba = Buffer.alloc(width * height * 4);
+  let src = 0;
+  let prev = Buffer.alloc(stride);
+  for (let y = 0; y < height; y++) {
+    const filter = raw[src] ?? 0;
+    src += 1;
+    const line = Buffer.alloc(stride);
+    for (let i = 0; i < stride; i++) {
+      const left = i >= channels ? (line[i - channels] ?? 0) : 0;
+      const up = prev[i] ?? 0;
+      const upLeft = i >= channels ? (prev[i - channels] ?? 0) : 0;
+      const value = raw[src + i] ?? 0;
+      if (filter === 0) line[i] = value;
+      else if (filter === 1) line[i] = (value + left) & 255;
+      else if (filter === 2) line[i] = (value + up) & 255;
+      else if (filter === 3) line[i] = (value + Math.floor((left + up) / 2)) & 255;
+      else if (filter === 4) line[i] = (value + paethPredictor(left, up, upLeft)) & 255;
+      else throw new Error(`unsupported png filter ${filter}`);
+    }
+    src += stride;
+    for (let x = 0; x < width; x++) {
+      const sample = x * channels;
+      const dest = (y * width + x) * 4;
+      rgba[dest] = line[sample] ?? 0;
+      rgba[dest + 1] = line[sample + 1] ?? 0;
+      rgba[dest + 2] = line[sample + 2] ?? 0;
+      rgba[dest + 3] = channels === 4 ? (line[sample + 3] ?? 0) : 255;
+    }
+    prev = line;
+  }
+  return { width, height, colorType, rgba };
+}
+
+function pngPixel(decoded: { width: number; rgba: Buffer }, x: number, y: number): number[] {
+  const index = (y * decoded.width + x) * 4;
+  return [
+    decoded.rgba[index] ?? 0,
+    decoded.rgba[index + 1] ?? 0,
+    decoded.rgba[index + 2] ?? 0,
+    decoded.rgba[index + 3] ?? 0,
+  ];
+}
+
+function icoPngFrames(ico: Buffer): Buffer[] {
+  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  const frames: Buffer[] = [];
+  let start = 0;
+  while (start < ico.length) {
+    const at = ico.indexOf(signature, start);
+    if (at < 0) break;
+    const iend = ico.indexOf(Buffer.from('IEND'), at);
+    if (iend < 0) break;
+    frames.push(ico.subarray(at, iend + 8));
+    start = iend + 8;
+  }
+  return frames;
 }
 
 function walk(dir: string, acc: string[] = []): string[] {
@@ -214,9 +323,12 @@ describe('public copy gates', () => {
     expect(pathCount).toBeGreaterThanOrEqual(70);
     expect(viaCount).toBeGreaterThanOrEqual(50);
     expect(mark).toContain('Q207,159');
-    // revealui test #2787 / f4ee0bac: optically centered v2 Circuit-R.
-    expect(mark).toContain('translate(256,256) scale(1.06) translate(-300,-320)');
+    // Locked kit master: true alpha, translate(-310,-320). sha256 a9403150…
+    expect(mark).toContain('translate(256,256) scale(1.06) translate(-310,-320)');
+    expect(mark).not.toContain('translate(-300');
     expect(mark).not.toContain('translate(-330');
+    expect(mark).not.toContain('<rect');
+    expect(mark).not.toContain('#060d1a');
     expect(mark).toContain('mask="url(#cm)"');
     expect(mark).toContain('maskUnits="userSpaceOnUse"');
     expect(mark).toContain('#0a2c5a');
@@ -234,6 +346,9 @@ describe('public copy gates', () => {
     expect(mark).not.toContain('fill="#003d94"');
     expect(mark).not.toContain('rx="22"');
     expect(mark).toBe(favicon);
+    expect(createHash('sha256').update(mark).digest('hex')).toBe(
+      'a94031503236900c7711cc3c9b766e584fc1079ff820a05a969e8cc1d7acfa33',
+    );
     expect(nav).toContain('/revealui-mark.svg');
     expect(nav).toContain('CIRCUIT_R_NAV_PX = 48');
     expect(nav).toContain('overflow-hidden');
@@ -277,6 +392,51 @@ describe('public copy gates', () => {
     );
   });
 
+  it('keeps default Circuit-R rasters transparent and the navy plate on the iOS adapter only', () => {
+    const plate = [6, 13, 26];
+    const faviconPng = decodePng(readFileSync(path.join(repoRoot, 'public/favicon.png')));
+    expect(faviconPng).toMatchObject({ width: 64, height: 64, colorType: 6 });
+    expect(pngPixel(faviconPng, 0, 0)).toEqual([0, 0, 0, 0]);
+    expect(pngPixel(faviconPng, 63, 63)[3]).toBe(0);
+    let opaque = 0;
+    for (let i = 3; i < faviconPng.rgba.length; i += 4) {
+      if (faviconPng.rgba[i] === 255) opaque += 1;
+    }
+    expect(opaque).toBeGreaterThan(100);
+
+    const frames = icoPngFrames(readFileSync(path.join(repoRoot, 'public/favicon.ico'))).map(
+      decodePng,
+    );
+    expect(frames.map((frame) => frame.width).sort((a, b) => a - b)).toEqual([16, 32, 48]);
+    for (const frame of frames) {
+      expect(frame.colorType).toBe(6);
+      expect(pngPixel(frame, 0, 0)).toEqual([0, 0, 0, 0]);
+      expect(pngPixel(frame, frame.width - 1, frame.height - 1)[3]).toBe(0);
+    }
+
+    const apple = decodePng(readFileSync(path.join(repoRoot, 'public/apple-touch-icon.png')));
+    expect(apple).toMatchObject({ width: 180, height: 180, colorType: 2 });
+    expect(pngPixel(apple, 0, 0).slice(0, 3)).toEqual(plate);
+    expect(pngPixel(apple, 90, 90).slice(0, 3)).not.toEqual(plate);
+
+    const card = decodePng(readFileSync(path.join(repoRoot, 'public/og-card.png')));
+    const slotMargin = pngPixel(card, 80, 72);
+    const nearby = pngPixel(card, 48, 48);
+    const gap = Math.max(
+      Math.abs((slotMargin[0] ?? 0) - (nearby[0] ?? 0)),
+      Math.abs((slotMargin[1] ?? 0) - (nearby[1] ?? 0)),
+      Math.abs((slotMargin[2] ?? 0) - (nearby[2] ?? 0)),
+    );
+    expect(slotMargin.slice(0, 3)).not.toEqual(plate);
+    expect(gap).toBeLessThan(24);
+
+    const index = readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+    const rasters = readFileSync(path.join(repoRoot, 'scripts/gen-circuit-r-rasters.mjs'), 'utf8');
+    expect(index).toContain('iOS home-screen adapter only');
+    expect(rasters).toContain('only opaque navy-plate adapter');
+    expect(index).toContain('"logo": "https://revealuistudio.com/favicon.svg"');
+  });
+
   it('keeps og-card.png on the live catalog, not the retired local-shop identity', () => {
     const fixture = readFileSync(path.join(repoRoot, 'app/lib/og-card.ts'), 'utf8');
     const generator = readFileSync(path.join(repoRoot, 'scripts/gen-og-card.mjs'), 'utf8');
@@ -303,6 +463,8 @@ describe('public copy gates', () => {
     expect(generator).toContain(OG_CARD_SKU_LINE);
     expect(generator).toContain(OG_CARD_BOOKING_LINE);
     expect(generator).toContain('#060d1a');
+    expect(generator).toContain('public/favicon.svg');
+    expect(generator).not.toContain('.extract(');
     expect(fixture).not.toMatch(bannedRaster);
     expect(fixture).not.toMatch(/\bHour\b/);
     expect(fixture).not.toMatch(/Architecture artifact/);
