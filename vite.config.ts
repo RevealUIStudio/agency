@@ -36,6 +36,12 @@ function shareServer(): Plugin {
           headers.set('host', host);
           const authorization = req.headers.authorization;
           if (typeof authorization === 'string') headers.set('authorization', authorization);
+          // Socket peer for the consultation throttle. Do not copy
+          // x-forwarded-for from the caller. That header is spoofable here.
+          const peer = req.socket?.remoteAddress;
+          if (typeof peer === 'string' && peer.trim() !== '') {
+            headers.set('x-real-ip', peer.trim());
+          }
           let body: string | undefined;
           if (req.method === 'POST') {
             const chunks: Buffer[] = [];
