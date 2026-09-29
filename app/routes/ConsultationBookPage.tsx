@@ -30,6 +30,7 @@ import {
   consultationBookDueCents,
   consultationEmptySlots,
   consultationStageLine,
+  NETWORK_LINK_USED,
   parseConsultationBookingPayload,
   readConsultationReceipt,
   rememberConsultationReceipt,
@@ -281,6 +282,13 @@ export function ConsultationBookPage({
         }
       }
       if (response.status === 409) {
+        const failure: unknown = await response.json().catch(() => null);
+        const code =
+          failure && typeof failure === 'object' && 'error' in failure ? failure.error : '';
+        if (code === 'network-redeemed') {
+          setSubmitError(NETWORK_LINK_USED);
+          return;
+        }
         setSubmitError('That slot was just taken. Pick another.');
         return;
       }

@@ -8,6 +8,7 @@ import {
   CONSULTATION_PREP_BODY,
   CONSULTATION_SUCCESS,
   CONSULTATION_SUCCESS_MISSING,
+  NETWORK_LINK_USED,
   rememberConsultationReceipt,
 } from '@/lib/consultation-buyer';
 import {
@@ -362,6 +363,46 @@ describe('ConsultationBookPage', () => {
       await screen.findByText('No open slots for 1 hour in the next 3 weeks.'),
     ).toBeInTheDocument();
     expect(calls).toBeGreaterThan(1);
+  });
+
+  it('shows the used-link message when a network Consultation link is already redeemed', async () => {
+    vi.stubGlobal('fetch', (input: RequestInfo | URL) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      if (url.includes('/api/consultation/availability')) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              timezone: 'America/New_York',
+              hours: 1,
+              slots: [
+                {
+                  start: '2026-01-07T14:00:00.000Z',
+                  end: '2026-01-07T15:00:00.000Z',
+                  label: 'Wed, Jan 7 · 9:00 AM–10:00 AM ET',
+                },
+              ],
+            }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          ),
+        );
+      }
+      if (url.includes('/api/consultation/book')) {
+        return Promise.resolve(
+          new Response(JSON.stringify({ error: 'network-redeemed', message: NETWORK_LINK_USED }), {
+            status: 409,
+            headers: { 'content-type': 'application/json' },
+          }),
+        );
+      }
+      return Promise.resolve(new Response('no', { status: 500 }));
+    });
+    render(<ConsultationBookPage />);
+    fireEvent.click(await screen.findByRole('radio', { name: /9:00 AM/ }));
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Ada Buyer' } });
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ada@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Continue to payment' }));
+    expect(await screen.findByText(NETWORK_LINK_USED)).toBeInTheDocument();
+    expect(screen.queryByText('That slot was just taken. Pick another.')).toBeNull();
   });
 
   it('keeps a device-width viewport on the studio document', () => {

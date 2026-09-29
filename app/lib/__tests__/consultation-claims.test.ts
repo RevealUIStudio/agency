@@ -6,6 +6,7 @@ import {
   CONSULTATION_BOOK_INTRO,
   CONSULTATION_SUCCESS,
   consultationStageLine,
+  NETWORK_LINK_USED,
   STAGE_B_ADDON,
   STAGE_B_CHECKBOX,
   STAGE_B_DETAIL,
@@ -57,6 +58,9 @@ describe('consultation public claims', () => {
       'Payment received. The Google Meet link is on the calendar invite.',
     );
     expect(CONSULTATION_SUCCESS).not.toContain('—');
+    expect(NETWORK_LINK_USED).toBe('This network Consultation link has already been used.');
+    expect(NETWORK_LINK_USED).not.toContain('—');
+    expect(NETWORK_LINK_USED.replaceAll('Google Meet', '')).not.toMatch(/Meet/);
   });
 
   it('keeps buyer strings free of a network fee leak', () => {
@@ -70,6 +74,7 @@ describe('consultation public claims', () => {
       consultationStageLine(true),
       consultationStageLine(false),
       CONSULTATION_SUCCESS,
+      NETWORK_LINK_USED,
     ];
     for (const line of lines) expect(line).not.toMatch(leak);
     expect(STAGE_B_ON_ORDER).toBe('Domain pack is on this order.');

@@ -168,6 +168,7 @@ export interface NotifyOwnerValue {
 export interface BookedCheckout {
   readonly bookingId: string;
   readonly checkoutUrl: string;
+  readonly stripeSessionId: string;
   readonly booking: Booking;
 }
 
@@ -497,6 +498,7 @@ export async function runConsultationBook(
     value: {
       bookingId,
       checkoutUrl: checkout.value.checkoutUrl,
+      stripeSessionId: checkout.value.stripeSessionId,
       booking: checkout.value.booking,
     },
   };
