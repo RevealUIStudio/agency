@@ -39,6 +39,7 @@ import {
   consultationEnvFromProcess,
 } from './consultation-calendar';
 import { deliverOwnerPaidNotice } from './consultation-owner-mail';
+import { type ConsultationThrottle, createConsultationThrottle } from './consultation-rate-limit';
 import { type StripePort, stripeFromEnv, verifyStripeSignature } from './consultation-stripe';
 import { verifySession } from './session';
 
@@ -54,6 +55,8 @@ export interface ConsultationDeps {
   readonly onConfirmation?: (email: ConfirmationEmail) => void;
   /** Overrides the production Gmail notice. Tests pass a fake sink. */
   readonly onOwnerPaid?: (notice: OwnerPaidNotice) => void | Promise<void>;
+  /** Fresh limiter for tests. Production uses the process-local map. */
+  readonly throttle?: ConsultationThrottle;
 }
 
 function json(status: number, body: unknown): Response {
@@ -111,6 +114,7 @@ async function availability(
   request: Request,
   calendar: CalendarPort,
   now: Date,
+  throttle: ConsultationThrottle,
 ): Promise<Response> {
   const url = new URL(request.url);
   const hoursRaw = url.searchParams.get('hours');
@@ -134,11 +138,15 @@ async function availability(
     if (!parsed) return json(400, { error: 'to' });
     to = parsed;
   }
+  const cacheKey = `${hours}|${fromRaw?.trim() ?? ''}|${toRaw?.trim() ?? ''}`;
   try {
-    await calendar.expireHolds(now);
-    const busy = await calendar.busy(from, to, now);
-    const slots = generateConsultationSlots({ from, to, now, hours, busy });
-    return json(200, { timezone: CONSULTATION_TZ, hours, slots });
+    const body = await throttle.loadAvailability(cacheKey, now.getTime(), async () => {
+      await calendar.expireHolds(now);
+      const busy = await calendar.busy(from, to, now);
+      const slots = generateConsultationSlots({ from, to, now, hours, busy });
+      return { timezone: CONSULTATION_TZ, hours, slots };
+    });
+    return json(200, body);
   } catch {
     return json(502, { error: 'calendar' });
   }
@@ -357,6 +365,14 @@ async function webhook(
   return json(200, { received: true, status: 'paid_scheduled' });
 }
 
+let processThrottle: ConsultationThrottle | undefined;
+
+function throttleFor(deps: ConsultationDeps): ConsultationThrottle {
+  if (deps.throttle) return deps.throttle;
+  processThrottle ??= createConsultationThrottle();
+  return processThrottle;
+}
+
 export async function handleConsultationRequest(
   request: Request,
   deps: ConsultationDeps = {},
@@ -378,9 +394,13 @@ export async function handleConsultationRequest(
   if (getOnly && request.method !== 'GET') return json(405, { error: 'method' });
   if (!getOnly && request.method !== 'POST') return json(405, { error: 'method' });
 
+  const now = (deps.now ?? (() => new Date()))();
+  const throttle = throttleFor(deps);
+  const limited = throttle.consume(request, path, now.getTime());
+  if (limited) return limited;
+
   const env = deps.env ?? consultationEnvFromProcess();
   const fetchImpl = deps.fetchImpl ?? fetch;
-  const now = (deps.now ?? (() => new Date()))();
 
   if (path === '/api/consultation/network-status') return networkStatus(request, env, now);
   if (path === '/api/consultation/network-link') return networkLink(request, env, now);
@@ -389,7 +409,7 @@ export async function handleConsultationRequest(
   if (!calendar) return json(503, { error: 'calendar-unconfigured' });
 
   if (path === '/api/consultation/availability') {
-    return availability(request, calendar, now);
+    return availability(request, calendar, now, throttle);
   }
   if (path === '/api/consultation/booking') {
     return bookingView(request, calendar);

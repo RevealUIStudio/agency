@@ -12,6 +12,10 @@ import {
   createMemoryCalendar,
 } from '../consultation-calendar';
 import { type ConsultationDeps, handleConsultationRequest } from '../consultation-http';
+import {
+  consultationRateConfigFromEnv,
+  createConsultationThrottle,
+} from '../consultation-rate-limit';
 import { type StripePort, stripeFromEnv, stripeSignatureHeader } from '../consultation-stripe';
 
 const SECRET = 'whsec_test_consultation';
@@ -96,6 +100,7 @@ function harness(
     onOwnerPaid: (notice) => {
       owners.push(notice);
     },
+    throttle: createConsultationThrottle(consultationRateConfigFromEnv({})),
   };
   return {
     calendar,
