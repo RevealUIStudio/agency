@@ -1,5 +1,10 @@
 import { useLocation, useRouter } from '@revealui/router';
 import { useEffect } from 'react';
+import {
+  STUDIO_BLOG_FEED_PATH,
+  STUDIO_BLOG_FEED_TITLE,
+  STUDIO_BLOG_FEED_TYPE,
+} from '@/lib/blog-copy';
 
 /**
  * Applies the active route's metadata to the document head on client-side
@@ -13,7 +18,29 @@ import { useEffect } from 'react';
  * the static index.html title instead of competing with it.
  *
  * Renders nothing.
+ *
+ * Blog paths also keep the RSS alternate link. The shell document carries the
+ * same tag so the first HTML response for a blog URL includes it.
  */
+function isStudioBlogPath(pathname: string): boolean {
+  return pathname === '/blog' || pathname.startsWith('/blog/');
+}
+
+function ensureBlogFeedLink(pathname: string): void {
+  if (!isStudioBlogPath(pathname)) return;
+  let link = document.querySelector<HTMLLinkElement>(
+    `link[rel="alternate"][type="${STUDIO_BLOG_FEED_TYPE}"]`,
+  );
+  if (!link) {
+    link = document.createElement('link');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('rel', 'alternate');
+  link.setAttribute('type', STUDIO_BLOG_FEED_TYPE);
+  link.setAttribute('title', STUDIO_BLOG_FEED_TITLE);
+  link.setAttribute('href', STUDIO_BLOG_FEED_PATH);
+}
+
 export function RouteHead() {
   const router = useRouter();
   const { pathname } = useLocation();
@@ -35,6 +62,7 @@ export function RouteHead() {
       document.head.appendChild(robotsTag);
     }
     robotsTag.setAttribute('content', robots);
+    ensureBlogFeedLink(pathname);
   }, [router, pathname]);
 
   return null;

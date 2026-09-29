@@ -34,6 +34,13 @@
       ]
     },
     {
+      "source": "/rss.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "application/rss+xml; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    },
+    {
       "source": "/.well-known/security.txt",
       "headers": [
         { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
@@ -69,6 +76,11 @@
       "source": "/catalog",
       "destination": "/#calculator",
       "permanent": true
+    },
+    {
+      "source": "/feed.xml",
+      "destination": "/rss.xml",
+      "statusCode": 301
     },
     {
       "source": "/blog/01-why-we-built-revealui",
@@ -164,6 +176,7 @@
   "rewrites": [
     { "source": "/robots.txt", "destination": "/robots.txt" },
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
+    { "source": "/rss.xml", "destination": "/rss.xml" },
     { "source": "/og-card.png", "destination": "/og-card.png" },
     { "source": "/proof-gap-checklist.pdf", "destination": "/proof-gap-checklist.pdf" },
     { "source": "/.well-known/(.*)", "destination": "/.well-known/$1" },
