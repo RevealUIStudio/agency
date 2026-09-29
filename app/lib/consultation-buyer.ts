@@ -27,6 +27,9 @@ export const STAGE_B_DETAIL =
 
 export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 20 minutes.';
 
+/** Second use of a network Consultation link after a Checkout Session exists. */
+export const NETWORK_LINK_USED = 'This network Consultation link has already been used.';
+
 export const CONSULTATION_AFTER_PAY =
   'After payment, the Google Meet link is on the calendar invite.';
 

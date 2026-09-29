@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Booking, ConfirmationEmail } from '../../app/lib/consultation-booking';
+import { NETWORK_LINK_USED } from '../../app/lib/consultation-buyer';
 import {
   DEFAULT_CONSULTATION_PRICE_ID,
   DEFAULT_STAGE_B_PRICE_ID,
@@ -17,6 +18,7 @@ import {
   createConsultationThrottle,
 } from '../consultation-rate-limit';
 import { type StripePort, stripeFromEnv, stripeSignatureHeader } from '../consultation-stripe';
+import { createMemoryNetworkLedger } from '../network-redeem';
 
 const SECRET = 'whsec_test_consultation';
 const NOW = new Date('2026-01-06T15:00:00.000Z');
@@ -88,6 +90,7 @@ function harness(
     calendarId: 'founder',
     ...envExtra,
   };
+  const networkLedger = createMemoryNetworkLedger();
   const deps: ConsultationDeps = {
     now: () => NOW,
     env,
@@ -101,9 +104,11 @@ function harness(
       owners.push(notice);
     },
     throttle: createConsultationThrottle(consultationRateConfigFromEnv({})),
+    networkLedger,
   };
   return {
     calendar,
+    networkLedger,
     checkouts,
     emails,
     owners,
@@ -553,5 +558,279 @@ describe('consultation http', () => {
     expect(message).toContain('Network: no');
     expect(message).not.toContain('\u2014');
     expect(calls.some((call) => call.url.includes('api.resend.com'))).toBe(false);
+  });
+
+  it('accepts the first redemption and reuses the open session for the same email', async () => {
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({
+      secret,
+      now: NOW,
+      email: 'ada@example.com',
+      jti: 'jti-first',
+    });
+    const { deps, checkouts, networkLedger } = harness([], {
+      networkWaiveSecret: secret,
+      stageBNetworkCouponId: 'stage_b_network_credit',
+    });
+    const first = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(first.status).toBe(200);
+    const saved = (await first.json()) as { booking_id: string; checkout_url: string };
+    expect(saved.booking_id).toBe('book_1');
+    expect(saved.checkout_url).toBe('https://checkout.stripe.com/c/pay/cs_test_1');
+    expect(checkouts).toHaveLength(1);
+    const claim = await networkLedger.get('jti-first');
+    expect(claim?.status).toBe('open');
+    expect(claim?.email).toBe('ada@example.com');
+    expect(claim?.stripeSessionId).toBe('cs_test_1');
+    expect(claim?.bookingId).toBe('book_1');
+    expect(claim?.expiresAt).toBe(new Date(NOW.getTime() + 72 * 60 * 60 * 1000).toISOString());
+
+    const again = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(again.status).toBe(200);
+    expect(await again.json()).toEqual({
+      booking_id: 'book_1',
+      checkout_url: 'https://checkout.stripe.com/c/pay/cs_test_1',
+    });
+    expect(checkouts).toHaveLength(1);
+  });
+
+  it('rejects a second redemption', async () => {
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({ secret, now: NOW, jti: 'jti-second' });
+    const { deps, checkouts, networkLedger } = harness([], {
+      networkWaiveSecret: secret,
+      stageBNetworkCouponId: 'stage_b_network_credit',
+    });
+    const first = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(first.status).toBe(200);
+    const saved = (await first.json()) as { booking_id: string };
+
+    const other = await handleConsultationRequest(
+      request(
+        '/api/consultation/book',
+        buyer({ email: 'other@example.com', network_token: token }),
+      ),
+      deps,
+    );
+    expect(other.status).toBe(409);
+    expect(await other.json()).toEqual({
+      error: 'network-redeemed',
+      message: NETWORK_LINK_USED,
+    });
+    expect(checkouts).toHaveLength(1);
+
+    const raw = JSON.stringify({
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          id: 'cs_test_1',
+          payment_status: 'paid',
+          amount_total: 30_000,
+          metadata: {
+            booking_id: saved.booking_id,
+            network_jti: 'jti-second',
+            start: SLOT.start,
+            end: SLOT.end,
+            hours: '1',
+            stage_b: 'true',
+            stage_b_fee: 'waived_network',
+            buyer_email: 'ada@example.com',
+            buyer_name: 'Ada Buyer',
+          },
+        },
+      },
+    });
+    const header = await stripeSignatureHeader(SECRET, raw, Math.floor(NOW.getTime() / 1000));
+    const paid = await handleConsultationRequest(
+      request('/api/stripe/webhook', raw, { 'stripe-signature': header }),
+      deps,
+    );
+    expect(paid.status).toBe(200);
+    expect((await networkLedger.get('jti-second'))?.status).toBe('paid');
+
+    const replay = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(replay.status).toBe(409);
+    expect(await replay.json()).toEqual({
+      error: 'network-redeemed',
+      message: NETWORK_LINK_USED,
+    });
+    expect(checkouts).toHaveLength(1);
+  });
+
+  it('allows retry after a failed checkout', async () => {
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({ secret, now: NOW, jti: 'jti-retry' });
+    let fail = true;
+    let calls = 0;
+    const stripe: StripePort = {
+      async createCheckout() {
+        calls += 1;
+        if (fail) throw new Error('stripe-down');
+        return { id: 'cs_test_retry', url: 'https://checkout.stripe.com/c/pay/cs_test_retry' };
+      },
+    };
+    const { deps, networkLedger, calendar } = harness(
+      [],
+      {
+        networkWaiveSecret: secret,
+        stageBNetworkCouponId: 'stage_b_network_credit',
+      },
+      stripe,
+    );
+    const failed = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(failed.status).toBe(502);
+    expect(await failed.json()).toEqual({ error: 'checkout' });
+    expect(await networkLedger.get('jti-retry')).toBeNull();
+    expect(await calendar.get('book_1')).toBeNull();
+
+    fail = false;
+    const retried = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(retried.status).toBe(200);
+    const saved = (await retried.json()) as { checkout_url: string };
+    expect(saved.checkout_url).toBe('https://checkout.stripe.com/c/pay/cs_test_retry');
+    expect((await networkLedger.get('jti-retry'))?.status).toBe('open');
+    expect(calls).toBe(2);
+  });
+
+  it('rejects an expired token before any redemption row', async () => {
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({
+      secret,
+      now: NOW,
+      ttlSeconds: -10,
+      jti: 'jti-expired',
+    });
+    const { deps, checkouts, networkLedger } = harness([], {
+      networkWaiveSecret: secret,
+      stageBNetworkCouponId: 'stage_b_network_credit',
+    });
+    const response = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: 'network-token' });
+    expect(checkouts).toHaveLength(0);
+    expect(await networkLedger.get('jti-expired')).toBeNull();
+  });
+
+  it('rejects an email mismatch before any redemption row', async () => {
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({
+      secret,
+      now: NOW,
+      email: 'other@example.com',
+      jti: 'jti-mismatch',
+    });
+    const { deps, checkouts, networkLedger } = harness([], {
+      networkWaiveSecret: secret,
+      stageBNetworkCouponId: 'stage_b_network_credit',
+    });
+    const response = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: 'network-email' });
+    expect(checkouts).toHaveLength(0);
+    expect(await networkLedger.get('jti-mismatch')).toBeNull();
+  });
+
+  it('lets only one of two concurrent redeems win', async () => {
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({ secret, now: NOW, jti: 'jti-race' });
+    let release = (): void => undefined;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let calls = 0;
+    const stripe: StripePort = {
+      async createCheckout() {
+        calls += 1;
+        if (calls === 1) await gate;
+        return { id: 'cs_test_race', url: 'https://checkout.stripe.com/c/pay/cs_test_race' };
+      },
+    };
+    const { deps, networkLedger } = harness(
+      [],
+      {
+        networkWaiveSecret: secret,
+        stageBNetworkCouponId: 'stage_b_network_credit',
+      },
+      stripe,
+    );
+    const firstPromise = handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    for (let i = 0; i < 50 && calls === 0; i += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+    expect(calls).toBe(1);
+    const second = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      deps,
+    );
+    expect(second.status).toBe(409);
+    expect(await second.json()).toEqual({
+      error: 'network-redeemed',
+      message: NETWORK_LINK_USED,
+    });
+    release();
+    const first = await firstPromise;
+    expect(first.status).toBe(200);
+    expect(calls).toBe(1);
+    expect((await networkLedger.get('jti-race'))?.status).toBe('open');
+    expect((await networkLedger.get('jti-race'))?.stripeSessionId).toBe('cs_test_race');
+  });
+
+  it('applies the address throttle before the redemption ledger', async () => {
+    const secret = 'network-test-secret';
+    const { token } = await mintNetworkToken({ secret, now: NOW, jti: 'jti-throttle' });
+    const { deps, checkouts, networkLedger } = harness([], {
+      networkWaiveSecret: secret,
+      stageBNetworkCouponId: 'stage_b_network_credit',
+    });
+    const limited: ConsultationDeps = {
+      ...deps,
+      throttle: createConsultationThrottle({
+        ...consultationRateConfigFromEnv({}),
+        bookPerMinute: 1,
+      }),
+    };
+    const first = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      limited,
+    );
+    expect(first.status).toBe(200);
+    const second = await handleConsultationRequest(
+      request('/api/consultation/book', buyer({ network_token: token })),
+      limited,
+    );
+    expect(second.status).toBe(429);
+    expect(await second.json()).toEqual({
+      error: 'rate-limited',
+      message: 'Too many requests. Please retry shortly.',
+    });
+    expect(checkouts).toHaveLength(1);
+    expect((await networkLedger.get('jti-throttle'))?.status).toBe('open');
   });
 });
