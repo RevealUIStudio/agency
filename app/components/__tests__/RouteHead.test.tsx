@@ -21,6 +21,16 @@ function renderAt(path: string) {
       component: () => null,
       meta: { title: 'Engagements | RevealUI Studio', robots: 'noindex,nofollow' },
     },
+    {
+      path: '/blog',
+      component: () => null,
+      meta: { title: 'Blog | RevealUI Studio', description: 'Blog description.' },
+    },
+    {
+      path: '/blog/:slug',
+      component: () => null,
+      meta: { title: 'Essay | RevealUI Studio' },
+    },
   ]);
   window.history.pushState({}, '', path);
   return render(
@@ -63,5 +73,27 @@ describe('RouteHead', () => {
     expect(document.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe(
       'noindex,nofollow',
     );
+  });
+
+  it('adds the Studio blog feed link on the blog index and essay paths', () => {
+    document.head.innerHTML = '';
+    renderAt('/blog');
+    const indexLink = document.querySelector('link[rel="alternate"]');
+    expect(indexLink?.getAttribute('type')).toBe('application/rss+xml');
+    expect(indexLink?.getAttribute('title')).toBe('RevealUI Studio Blog');
+    expect(indexLink?.getAttribute('href')).toBe('/rss.xml');
+    expect(document.querySelectorAll('link[rel="alternate"]')).toHaveLength(1);
+
+    document.head.innerHTML = '';
+    renderAt('/blog/zero-regex');
+    const essayLink = document.querySelector('link[rel="alternate"]');
+    expect(essayLink?.getAttribute('href')).toBe('/rss.xml');
+    expect(essayLink?.getAttribute('title')).toBe('RevealUI Studio Blog');
+  });
+
+  it('leaves the feed link off other studio routes', () => {
+    document.head.innerHTML = '';
+    renderAt('/services');
+    expect(document.querySelector('link[rel="alternate"]')).toBeNull();
   });
 });
