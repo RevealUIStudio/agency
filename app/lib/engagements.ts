@@ -21,13 +21,13 @@ import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 
 /**
  * Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1
- * in the revealui monorepo (claim-drift gate, last verified 2026-08-19).
+ * in the revealui monorepo (cross-checked against package manifests 2026-09-29).
  * Bump only after that SSOT moves.
  */
 export const RUNTIME_METRICS = {
-  // Pinned to revealui docs/MARKETING_METRICS.md §1 (claim-drift, 2026-08-19).
-  packages: 32,
-  mit: 25,
+  // Pinned to revealui docs/MARKETING_METRICS.md §1 (verified 2026-09-29).
+  packages: 33,
+  mit: 26,
   fsl: 5,
 } as const;
 
