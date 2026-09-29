@@ -114,9 +114,9 @@ describe('public studio offers', () => {
     );
   });
 
-  it('pins monorepo metrics to MARKETING_METRICS §1 (2026-08-19)', () => {
-    expect(RUNTIME_METRICS.packages).toBe(32);
-    expect(RUNTIME_METRICS.mit).toBe(25);
+  it('pins monorepo metrics to MARKETING_METRICS §1 (2026-09-29)', () => {
+    expect(RUNTIME_METRICS.packages).toBe(33);
+    expect(RUNTIME_METRICS.mit).toBe(26);
     expect(RUNTIME_METRICS.fsl).toBe(5);
     expect(RUNTIME_METRICS.mit + RUNTIME_METRICS.fsl).toBeLessThanOrEqual(RUNTIME_METRICS.packages);
   });
