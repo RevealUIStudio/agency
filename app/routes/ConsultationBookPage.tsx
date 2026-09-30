@@ -14,25 +14,27 @@ import {
 } from '@revealui/presentation';
 import { type FormEvent, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
+  checkoutReferenceFromLocation,
+  networkTokenFromLocation,
+  scrubCheckoutReferenceFromUrl,
+  scrubNetworkTokenFromUrl,
+} from '@/lib/booking-url';
+import {
   bookingIdFromCheckoutUrl,
   CONSULTATION_AFTER_PAY,
   CONSULTATION_BOOK_INTRO,
   CONSULTATION_CANCEL,
+  CONSULTATION_CHANGE_CONTACT,
+  CONSULTATION_CHANGE_POLICY,
   CONSULTATION_HOLD_NOTE,
-  CONSULTATION_MEET_FALLBACK,
   CONSULTATION_PREP_BODY,
   CONSULTATION_READY_HINT,
   CONSULTATION_SUCCESS,
-  CONSULTATION_SUCCESS_LOADING,
-  CONSULTATION_SUCCESS_MISSING,
-  CONSULTATION_SUCCESS_PENDING,
-  type ConsultationBookingView,
   consultationBookDueCents,
   consultationEmptySlots,
   consultationStageLine,
+  consultationWhenLine,
   NETWORK_LINK_USED,
-  parseConsultationBookingPayload,
-  readConsultationReceipt,
   rememberConsultationReceipt,
   STAGE_B_CHECKBOX,
   STAGE_B_DETAIL,
@@ -45,7 +47,6 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
-import { formatConsultationRange } from '@/lib/consultation-slots';
 import { formatUsdFromCents } from '@/lib/money';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL } from '@/lib/site';
 
@@ -127,18 +128,22 @@ export function ConsultationBookPage({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
-  const [stageB, setStageB] = useState(false);
+  const [stageB, setStageB] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      new URLSearchParams(window.location.search).get('stage_b') === 'true',
+  );
   const [packOnOrder, setPackOnOrder] = useState(false);
+  const [linkToken] = useState(networkTokenFromLocation);
   const [networkToken, setNetworkToken] = useState('');
   const [networkReady, setNetworkReady] = useState(false);
-  const [networkPending, setNetworkPending] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return Boolean(new URLSearchParams(window.location.search).get('nw')?.trim());
-  });
+  const [networkPending, setNetworkPending] = useState(Boolean(linkToken));
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [loadAttempt, setLoadAttempt] = useState(0);
   const payBarRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(scrubNetworkTokenFromUrl, []);
 
   useLayoutEffect(() => {
     const node = payBarRef.current;
@@ -161,7 +166,7 @@ export function ConsultationBookPage({
   }, []);
 
   useEffect(() => {
-    const nw = new URLSearchParams(window.location.search).get('nw')?.trim() ?? '';
+    const nw = linkToken;
     if (!nw) {
       setNetworkPending(false);
       setNetworkReady(true);
@@ -188,7 +193,7 @@ export function ConsultationBookPage({
         setNetworkReady(true);
       });
     return () => controller.abort();
-  }, []);
+  }, [linkToken]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -480,88 +485,122 @@ export function ConsultationBookPage({
               </Button>
             </div>
           </div>
+          <section
+            className="mt-8 rounded-xl border border-border p-5"
+            aria-labelledby="consultation-change-policy"
+          >
+            <h2 id="consultation-change-policy" className="font-semibold text-foreground">
+              Cancellation and rescheduling
+            </h2>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+              {CONSULTATION_CHANGE_POLICY.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+            <p className="mt-3 text-sm text-muted-foreground">{CONSULTATION_CHANGE_CONTACT}</p>
+            <a
+              href="/terms"
+              className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
+            >
+              Read the Studio terms
+            </a>
+          </section>
         </form>
       </div>
     </section>
   );
 }
 
-function bookingIdFromLocation(): string {
-  if (typeof window === 'undefined') return '';
-  return new URLSearchParams(window.location.search).get('booking')?.trim() ?? '';
-}
-
 export function ConsultationBookSuccessPage() {
-  const bookingId = bookingIdFromLocation();
-  const receipt = readConsultationReceipt(bookingId);
-  const [view, setView] = useState<ConsultationBookingView | 'loading' | 'error'>(
-    bookingId ? 'loading' : { kind: 'missing' },
+  const [status, setStatus] = useState<'checking' | 'confirmed' | 'pending' | 'unavailable'>(
+    'checking',
   );
-
+  const [detail, setDetail] = useState<{ label: string; stageB: boolean } | null>(null);
   useEffect(() => {
-    if (!bookingId) return;
-    let cancelled = false;
-    const url = `/api/consultation/booking?booking=${encodeURIComponent(bookingId)}`;
-    fetch(url)
-      .then(async (response) => {
-        if (!response.ok) throw new Error('booking');
-        return response.json() as Promise<unknown>;
-      })
-      .then((body) => {
-        if (!cancelled) setView(parseConsultationBookingPayload(body));
-      })
-      .catch(() => {
-        if (!cancelled) setView('error');
-      });
+    const params = new URLSearchParams(window.location.search);
+    const booking = params.get('booking');
+    const session = checkoutReferenceFromLocation();
+    scrubCheckoutReferenceFromUrl();
+    if (!booking || !session) {
+      setStatus('unavailable');
+      return;
+    }
+    const query = new URLSearchParams({ booking, session_id: session });
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let attempts = 0;
+    async function check() {
+      try {
+        const response = await fetch(`/api/consultation/booking?${query}`, {
+          signal: controller.signal,
+        });
+        const body: unknown = await response.json();
+        if (!response.ok || !body || typeof body !== 'object' || !('status' in body)) {
+          throw new Error('confirmation-unavailable');
+        }
+        if (controller.signal.aborted) return;
+        if (
+          body.status === 'confirmed' &&
+          'start' in body &&
+          typeof body.start === 'string' &&
+          'end' in body &&
+          typeof body.end === 'string' &&
+          'stage_b' in body &&
+          typeof body.stage_b === 'boolean'
+        ) {
+          setDetail({ label: consultationWhenLine(body.start, body.end), stageB: body.stage_b });
+          setStatus('confirmed');
+        } else if (body.status === 'pending') {
+          setStatus('pending');
+          attempts += 1;
+          if (attempts < 6) timer = setTimeout(check, 2000);
+        } else {
+          setStatus('unavailable');
+        }
+      } catch {
+        if (!controller.signal.aborted) setStatus('unavailable');
+      }
+    }
+    void check();
     return () => {
-      cancelled = true;
+      controller.abort();
+      if (timer) clearTimeout(timer);
     };
-  }, [bookingId]);
-
-  const paid = typeof view === 'object' && view.kind === 'paid' ? view : null;
-  const whenLabel = paid
-    ? formatConsultationRange(new Date(paid.start), new Date(paid.end))
-    : (receipt?.label ?? null);
-  const stageB = paid ? paid.stageB : receipt ? receipt.stageB : null;
-  const meetUrl = paid?.meetLink ?? null;
-  const pending = typeof view === 'object' && view.kind === 'pending';
-  let meetCopy = CONSULTATION_MEET_FALLBACK;
-  if (view === 'loading') meetCopy = CONSULTATION_SUCCESS_LOADING;
-  else if (pending) meetCopy = CONSULTATION_SUCCESS_PENDING;
-  else if (!meetUrl && !whenLabel) meetCopy = CONSULTATION_SUCCESS_MISSING;
-
+  }, []);
+  const messages = {
+    checking: 'Checking your payment and booking record…',
+    confirmed: CONSULTATION_SUCCESS,
+    pending:
+      'Your booking is not confirmed yet. Payment or scheduling may still be processing. If you have been charged and this remains unresolved, contact us with your checkout reference.',
+    unavailable:
+      'We could not verify a booking from this link. This page does not confirm payment. Check your calendar invite or contact us with your checkout reference.',
+  };
   return (
     <section className={pageClass}>
       <div className={frameClass}>
-        <h1 className={headingClass}>Consultation booked</h1>
-        <p className="mt-6 break-words text-lg text-muted-foreground">{CONSULTATION_SUCCESS}</p>
-        {whenLabel ? (
-          <div className="mt-6">
-            <p className="text-sm font-semibold text-foreground">When</p>
-            <p className="mt-1 break-words text-base font-semibold text-foreground">{whenLabel}</p>
-          </div>
-        ) : null}
-        {meetUrl ? (
-          <p className="mt-4 break-words text-base text-foreground">
-            Google Meet:{' '}
-            <a href={meetUrl} className="break-all font-semibold text-foreground hover:underline">
-              {meetUrl}
+        <h1 className={headingClass}>
+          {status === 'confirmed' ? 'Consultation booked' : 'Consultation confirmation'}
+        </h1>
+        <p role="status" className="mt-6 break-words text-lg text-muted-foreground">
+          {messages[status]}
+        </p>
+        {status === 'confirmed' && detail ? (
+          <>
+            <p className="mt-6 break-words text-base font-semibold text-foreground">
+              {detail.label}
+            </p>
+            <p className="mt-2 break-words text-base text-muted-foreground">
+              {consultationStageLine(detail.stageB)}
+            </p>
+            <p className="mt-4 break-words text-base text-muted-foreground">
+              {CONSULTATION_PREP_BODY}
+            </p>
+            <p className="mt-4 text-sm text-muted-foreground">{CONSULTATION_CHANGE_CONTACT}</p>
+            <a href="/terms" className="mt-3 inline-block text-primary hover:underline">
+              Cancellation and rescheduling terms
             </a>
-          </p>
-        ) : (
-          <p className="mt-4 break-words text-base text-muted-foreground">{meetCopy}</p>
-        )}
-        {stageB !== null ? (
-          <p className="mt-4 break-words text-base text-muted-foreground">
-            {consultationStageLine(stageB)}
-          </p>
+          </>
         ) : null}
-        <div className="mt-4">
-          <p className="text-sm font-semibold text-foreground">Prep</p>
-          <p className="mt-1 break-words text-base text-muted-foreground">
-            {CONSULTATION_PREP_BODY}
-          </p>
-        </div>
         <p className="mt-4 break-words text-base text-muted-foreground">
           Questions:{' '}
           <a

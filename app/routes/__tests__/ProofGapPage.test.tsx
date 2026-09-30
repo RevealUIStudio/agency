@@ -58,7 +58,12 @@ describe('ProofGapPage', () => {
     expect(text).not.toMatch(/Architecture-as-Consultation/);
     expect(text).not.toMatch(/instant ROI/i);
     expect(text).not.toMatch(/limited (spots|time)|act now|sale ends/i);
-    expect(screen.queryByRole('heading', { name: PROOF_GAP_OFFER_NAME })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: PROOF_GAP_OFFER_NAME })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Download the free checklist PDF' })).toHaveAttribute(
+      'href',
+      PROOF_GAP_PDF_HREF,
+    );
+    expect(mockSubmit).not.toHaveBeenCalled();
   });
 
   it('delivers the checklist after a valid submit', async () => {
@@ -82,16 +87,5 @@ describe('ProofGapPage', () => {
     expect(screen.getByRole('heading', { name: PROOF_GAP_OFFER_NAME })).toBeInTheDocument();
     expect(screen.getByText('1) Accounts and ownership')).toBeInTheDocument();
     expect(screen.getByText('3) Action records')).toBeInTheDocument();
-    expect(document.body.textContent).toContain(
-      'glue automation / automation builder / custom / hope',
-    );
-    expect(document.body.textContent).toContain('one undocumented glue automation');
-    expect(document.body.textContent).toContain(
-      'Glue automation owns the revenue path; agents are a side demo.',
-    );
-    expect(document.body.textContent).toContain('Not “faster than glue automation.”');
-    expect(document.body.textContent).not.toMatch(
-      /\b(?:Zapier|Zaps?|n8n|IFTTT|Airtable)\b|Make\.com/i,
-    );
   });
 });

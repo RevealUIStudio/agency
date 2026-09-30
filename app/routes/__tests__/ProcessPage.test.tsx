@@ -84,10 +84,12 @@ describe('ProcessPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: GUARDRAIL_HEADING })).toBeInTheDocument();
     expect(text).toContain(GUARDRAIL_BODY);
-    expect(text).toContain('Included in how we scope Pilot and Launch');
+    expect(text).toContain(
+      'We review the controls needed for your workflow when scoping Pilot or Launch',
+    );
     expect(text).toContain(ADAPTER.price);
     expect(text).toContain('Not sold alone');
-    expect(text).toContain('Not a separate SKU');
+    expect(text).toContain('they are not enforced controls');
     expect(document.getElementById('guardrail-agent')).not.toBeNull();
 
     expect(text).not.toMatch(/\$3,?500/);

@@ -173,7 +173,7 @@ describe('consultation http', () => {
     expect(saved.checkout_url).toBe('https://checkout.stripe.com/c/pay/cs_test_1');
     expect(checkouts[0]?.lines).toEqual([{ price: DEFAULT_CONSULTATION_PRICE_ID, quantity: 1 }]);
     expect(checkouts[0]?.successUrl).toBe(
-      'https://revealuistudio.com/consultation/book/success?booking=book_1',
+      'https://revealuistudio.com/consultation/book/success?booking=book_1&session_id={CHECKOUT_SESSION_ID}',
     );
     const second = await handleConsultationRequest(
       request('/api/consultation/book', buyer()),
@@ -376,6 +376,11 @@ describe('consultation http', () => {
       deps,
     );
     const saved = (await booked.json()) as { booking_id: string };
+    const pending = await handleConsultationRequest(
+      request(`/api/consultation/booking?booking=${saved.booking_id}&session_id=cs_test_1`),
+      deps,
+    );
+    expect(await pending.json()).toEqual({ status: 'pending' });
     const raw = JSON.stringify({
       type: 'checkout.session.completed',
       data: {
@@ -402,6 +407,21 @@ describe('consultation http', () => {
     );
     expect(first.status).toBe(200);
     expect(await first.json()).toEqual({ received: true, status: 'paid_scheduled' });
+    const confirmed = await handleConsultationRequest(
+      request(`/api/consultation/booking?booking=${saved.booking_id}&session_id=cs_test_1`),
+      deps,
+    );
+    expect(await confirmed.json()).toEqual({ status: 'confirmed', ...SLOT, stage_b: false });
+    const wrongReference = await handleConsultationRequest(
+      request(`/api/consultation/booking?booking=${saved.booking_id}&session_id=cs_wrong`),
+      deps,
+    );
+    expect(wrongReference.status).toBe(404);
+    const missingReference = await handleConsultationRequest(
+      request('/api/consultation/booking'),
+      deps,
+    );
+    expect(missingReference.status).toBe(400);
     const paid = await calendar.get(saved.booking_id);
     expect(paid?.status).toBe('paid_scheduled');
     expect(paid?.meet_link).toBe('https://meet.google.com/lookup/book_1');
@@ -432,16 +452,15 @@ describe('consultation http', () => {
     expect(owners[0]?.text).not.toContain('\u2014');
 
     const view = await handleConsultationRequest(
-      request(`/api/consultation/booking?booking=${saved.booking_id}`),
+      request(`/api/consultation/booking?booking=${saved.booking_id}&session_id=cs_test_1`),
       deps,
     );
     expect(view.status).toBe(200);
     const visible = await view.json();
     expect(visible).toEqual({
-      ok: true,
+      status: 'confirmed',
       start: SLOT.start,
       end: SLOT.end,
-      meet_link: paid?.meet_link,
       stage_b: false,
     });
     const hidden = JSON.stringify(visible);
@@ -457,6 +476,55 @@ describe('consultation http', () => {
     expect((await calendar.get(saved.booking_id))?.meet_link).toBe(paid?.meet_link);
     expect(emails).toHaveLength(1);
     expect(owners).toHaveLength(1);
+  });
+
+  it('does not recreate an expired paid hold over a replacement booking', async () => {
+    const { deps, calendar, emails } = harness();
+    const first = await handleConsultationRequest(request('/api/consultation/book', buyer()), deps);
+    const { booking_id: oldId } = (await first.json()) as { booking_id: string };
+    const later = new Date(NOW.getTime() + 21 * 60_000);
+    const laterDeps = { ...deps, now: () => later };
+    await calendar.expireHolds(later);
+    const second = await handleConsultationRequest(
+      request('/api/consultation/book', buyer()),
+      laterDeps,
+    );
+    expect(second.status).toBe(200);
+    const { booking_id: newId } = (await second.json()) as { booking_id: string };
+    async function pay(id: string) {
+      const raw = JSON.stringify({
+        type: 'checkout.session.completed',
+        data: {
+          object: {
+            id: `session-${id}`,
+            payment_status: 'paid',
+            metadata: {
+              booking_id: id,
+              ...SLOT,
+              hours: '1',
+              buyer_name: 'Ada',
+              buyer_email: 'ada@example.com',
+            },
+          },
+        },
+      });
+      const signature = await stripeSignatureHeader(
+        SECRET,
+        raw,
+        Math.floor(later.getTime() / 1000),
+      );
+      return handleConsultationRequest(
+        request('/api/stripe/webhook', raw, { 'stripe-signature': signature }),
+        laterDeps,
+      );
+    }
+    expect((await pay(newId)).status).toBe(200);
+    const latePayment = await pay(oldId);
+    expect(latePayment.status).toBe(409);
+    expect(await latePayment.json()).toEqual({ error: 'booking-expired' });
+    expect(await calendar.get(oldId)).toBeNull();
+    expect((await calendar.get(newId))?.status).toBe('paid_scheduled');
+    expect(emails).toHaveLength(1);
   });
 
   it('rejects a bad signature and ignores an unpaid session', async () => {

@@ -46,12 +46,14 @@ export async function submitContact(data: ContactFormData): Promise<string | nul
     if (!res.ok) {
       const body = (await res.json().catch(() => ({}))) as ContactResponseError;
       return (
-        body.error ??
-        `We couldn't deliver your message right now (status ${res.status}). Email ${CONTACT_EMAIL} directly and we'll respond within one business day.`
+        (typeof body.error === 'string' ? body.error : undefined) ??
+        `We couldn't deliver your message right now (status ${res.status}). Email ${CONTACT_EMAIL} directly and we aim to respond within 1–2 business days.`
       );
     }
 
-    return null;
+    const body: unknown = await res.json();
+    if (body && typeof body === 'object' && 'success' in body && body.success === true) return null;
+    return `We could not confirm that your message was accepted. Email ${CONTACT_EMAIL} directly.`;
   } catch (err) {
     return err instanceof Error
       ? `Network error: ${err.message}. Email ${CONTACT_EMAIL} directly.`

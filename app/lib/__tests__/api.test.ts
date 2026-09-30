@@ -42,6 +42,18 @@ describe('submitContact', () => {
     });
   });
 
+  it('does not treat an unconfirmed 200 response as accepted delivery', async () => {
+    fetchMock.mockResolvedValueOnce({ ok: true, json: async () => ({ success: false }) });
+    expect(
+      await submitContact({
+        name: 'Jo',
+        email: 'jo@example.com',
+        topic: 'general',
+        message: 'A question about setup.',
+      }),
+    ).toContain('could not confirm');
+  });
+
   it('returns the server error body when present', async () => {
     fetchMock.mockResolvedValueOnce({
       ok: false,

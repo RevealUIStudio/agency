@@ -24,7 +24,7 @@ describe('TrustRoadmap', () => {
     expect(TRUST_ROADMAP.map((bucket) => bucket.label)).toEqual([
       'Now',
       'Next',
-      'When cash',
+      'Independent assessment (not scheduled)',
       'Not claimed until a Studio report exists',
     ]);
     for (const bucket of TRUST_ROADMAP) {

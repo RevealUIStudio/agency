@@ -307,21 +307,31 @@ function amountTotalOf(session: object): number | null {
 }
 
 async function bookingView(request: Request, calendar: CalendarPort): Promise<Response> {
-  const id = new URL(request.url).searchParams.get('booking')?.trim() ?? '';
-  if (!id || id.length > 80 || id.includes('/')) return json(200, { ok: false, reason: 'missing' });
+  const params = new URL(request.url).searchParams;
+  const id = params.get('booking')?.trim() ?? '';
+  const sessionId = params.get('session_id')?.trim() ?? '';
+  if (
+    !id ||
+    id.length > 80 ||
+    id.includes('/') ||
+    !sessionId.startsWith('cs_') ||
+    sessionId.length > 256
+  ) {
+    return json(400, { error: 'invalid-reference' });
+  }
   let booking: Booking | null;
   try {
     booking = await calendar.get(id);
   } catch {
     return json(502, { error: 'calendar' });
   }
-  if (!booking) return json(200, { ok: false, reason: 'missing' });
-  if (booking.status !== 'paid_scheduled') return json(200, { ok: false, reason: 'pending' });
+  if (!booking) return json(404, { error: 'booking-missing' });
+  if (booking.status !== 'paid_scheduled') return json(200, { status: 'pending' });
+  if (booking.stripe_session_id !== sessionId) return json(404, { error: 'booking-missing' });
   return json(200, {
-    ok: true,
+    status: 'confirmed',
     start: booking.start,
     end: booking.end,
-    meet_link: booking.meet_link,
     stage_b: booking.stage_b,
   });
 }
@@ -408,6 +418,8 @@ async function webhook(
     },
   );
   if (!paid.ok) {
+    if (paid.error === 'hold-missing' || paid.error === 'hold-expired')
+      return json(409, { error: 'booking-expired' });
     if (paid.error === 'booking-missing') return json(500, { error: 'booking-missing' });
     if (paid.error === 'payment-required') return json(200, { received: true, status: 'ignored' });
     return json(500, { error: 'calendar' });

@@ -29,7 +29,7 @@ export const TRUST_ROADMAP = [
     ],
   },
   {
-    label: 'When cash',
+    label: 'Independent assessment (not scheduled)',
     items: [
       'Engage an independent auditor for an in-scope Studio system and period.',
       'A Studio SOC 2 report will be shared when it exists.',
