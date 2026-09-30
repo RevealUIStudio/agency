@@ -21,7 +21,7 @@ Published on Studio (house style pass already applied: Pilot, no em dashes, no o
 - `14-claim-drift.md`
 - `13-zero-regex.md`
 
-Held in `content/blog` until a brand pass. Each `todo` names `RevealUIStudio/revealui docs/blog/<file>`. They still name outside vendors, so they are not linked from `/blog` and they are not in the sitemap.
+Held in `content/blog` until a publish decision. Each `todo` names `RevealUIStudio/revealui docs/blog/<file>`. Tool and infra names in these essays stay categorical. They are not linked from `/blog` and they are not in the sitemap.
 
 ## Required redirects (docs host to Studio)
 

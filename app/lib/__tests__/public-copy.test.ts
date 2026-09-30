@@ -16,6 +16,7 @@ import {
   PROOF_GAP_SECTIONS,
 } from '@/content/proof-gap';
 import { engagementLabels } from '@/data/cases';
+import { findBannedToolNames } from '@/lib/buyer-facing-names';
 import { PUBLIC_OFFERS } from '@/lib/engagements';
 import {
   OG_CARD_BOOKING_LINE,
@@ -28,9 +29,6 @@ import { INTRO_CALL_URL } from '@/lib/site';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const bannedBookingHost = new RegExp(`${'cal'}\\.com`, 'i');
-
-/** Competitor product brands. Public proof-gap copy stays categorical. */
-const PROOF_GAP_BANNED_BRANDS = /\b(?:Zapier|Zaps?|n8n|IFTTT|Airtable)\b|Make\.com/i;
 
 function ascii85Decode(buf: Buffer): Buffer {
   let s = buf.toString('latin1').replace(/\s/g, '');
@@ -631,7 +629,8 @@ describe('public copy gates', () => {
     expect(hero).toContain('CONSULTATION.name');
     expect(hero).toContain('PILOT.name');
     expect(hero).toContain('LAUNCH.name');
-    expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville|Jobber|QBO/i);
+    expect(hero).not.toMatch(/Fortune 500|SOC ?2 certified|SOC2 ready|Maryville/i);
+    expect(findBannedToolNames(hero)).toEqual([]);
     expect(hero).not.toMatch(/Meet the Fleet/i);
     expect(about).toContain('the agentic business runtime');
     expect(about).toMatch(/paid studio work:/);
@@ -774,13 +773,18 @@ describe('public copy gates', () => {
 
     expect(trust).toContain('RevealUI Studio is not SOC 2 or ISO 27001 certified today.');
     expect(trust).toContain('We are building toward SOC 2\\u2013capable controls');
-    expect(trust).toContain('Neon (database)');
+    expect(trust).toContain('the database');
+    expect(trust).toContain('the hosting provider');
+    expect(trust).toContain('the payments processor');
+    expect(trust).toContain('error telemetry');
+    expect(trust).toContain('because a vendor is');
+    expect(findBannedToolNames(trust)).toEqual([]);
     expect(trust).toContain('Not claimed until a Studio report exists');
     expect(trust).toContain('Are you SOC 2 certified?');
     expect(trust).toContain('Not yet.');
     expect(trust).not.toMatch(/We are SOC ?2 certified/i);
     expect(trust).not.toMatch(/In audit/i);
-    expect(trust).not.toMatch(/Our stack is SOC ?2 because Neon/i);
+    expect(trust).toContain('That our stack is SOC 2 because a vendor is.');
     expect(footer).not.toMatch(/SOC ?2/);
     expect(footer).not.toMatch(/Fortune 500/);
     expect(hero).not.toMatch(/SOC ?2|certified|ISO 27001/i);
@@ -914,7 +918,7 @@ describe('public copy gates', () => {
     expect(copy).not.toMatch(/revolutionize|empower|seamless/i);
     expect(copy).not.toMatch(/RevMind/);
     expect(copy).not.toMatch(/Architecture-as-Consultation/);
-    expect(copy).not.toMatch(PROOF_GAP_BANNED_BRANDS);
+    expect(findBannedToolNames(copy)).toEqual([]);
     expect(page).toContain('PROOF_GAP_H1');
     expect(page).toContain('ProofGapForm');
     expect(footer).toContain('PROOF_GAP_PATH');
@@ -931,7 +935,7 @@ describe('public copy gates', () => {
     expect(pdfText).not.toMatch(/HOLD public|Joshua OK|Media Manager|agency#204|publish OK/i);
     expect(pdfText).not.toContain('\\227');
     expect(pdfText).not.toContain('\u2014');
-    expect(pdfText).not.toMatch(PROOF_GAP_BANNED_BRANDS);
+    expect(findBannedToolNames(pdfText)).toEqual([]);
     expect(
       vercel.rewrites.some(
         (rule) =>
@@ -955,12 +959,12 @@ describe('public copy gates', () => {
     );
     expect(copy).toContain('Glue automation owns the revenue path; agents are a side demo.');
     expect(copy).toContain('Not “faster than glue automation.”');
-    expect(copy).not.toMatch(PROOF_GAP_BANNED_BRANDS);
+    expect(findBannedToolNames(copy)).toEqual([]);
     expect(copy).not.toMatch(/\u2014/);
     expect(pdfText).toContain('glue automation / automation builder / custom / hope');
     expect(pdfText).toContain('one undocumented glue automation');
     expect(pdfText).toContain('Glue automation owns the revenue path');
-    expect(pdfText).not.toMatch(PROOF_GAP_BANNED_BRANDS);
+    expect(findBannedToolNames(pdfText)).toEqual([]);
     expect(pdfText).not.toContain('\u2014');
   });
 });

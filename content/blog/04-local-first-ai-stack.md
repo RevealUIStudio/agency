@@ -20,7 +20,7 @@ RevealUI's local-first story comes from four independent pieces that happen to c
 | Layer | Technology | What it does |
 |-------|-----------|-------------|
 | **Secrets** | RevVault (age encryption) | Credentials stay on your machine, encrypted at rest |
-| **AI inference (default)** | Inference snaps / Ollama (open models) | Local LLM inference. Cloud-compatible providers (Groq, HuggingFace, OpenAI-compatible) are pluggable via env vars but opt-in. |
+| **AI inference (default)** | A local inference runtime (open models) | Local LLM inference. Cloud AI model providers and chat-completions-compatible endpoints are pluggable via env vars but opt-in. |
 | **Dev environment** | Nix flakes + direnv | Reproducible environment, zero manual tool installs |
 | **Business logic** | RevealUI | Auth, content, payments, AI agents  -  all wired |
 
@@ -32,39 +32,26 @@ RevealUI uses [RevVault](https://github.com/RevealUIStudio/revvault) for credent
 
 ```bash
 # Store a secret
-revvault set my-project/stripe/secret-key
+revvault set my-project/payments/secret-key
 
 # Retrieve it
-revvault get my-project/stripe/secret-key
+revvault get my-project/payments/secret-key
 
 # Load into environment (used by .envrc)
 revvault export-env my-project > .env.local
 ```
 
-The practical upside: your `.env` never touches Vercel's secret storage, your CI system, or any third-party dashboard unless you put it there explicitly. The `.envrc` in every RevealUI project calls `revvault export-env` at shell entry  -  credentials are decrypted on the fly, used in memory, never written to disk in plaintext.
+The practical upside: your `.env` never touches the hosting provider's secret storage, your CI system, or any third-party dashboard unless you put it there explicitly. The `.envrc` in every RevealUI project calls `revvault export-env` at shell entry  -  credentials are decrypted on the fly, used in memory, never written to disk in plaintext.
 
-Contrast this with the standard pattern: secrets in Vercel, AWS Secrets Manager, or a `.env` file checked into a private repo. All three involve trusting a third party with values that should only exist on hardware you control.
+Contrast this with the standard pattern: secrets in a hosting provider, a cloud provider's secrets manager, or a `.env` file checked into a private repo. All three involve trusting a third party with values that should only exist on hardware you control.
 
 ## Local inference: your models, your hardware
 
-RevealUI's AI agents run on open source models locally. The recommended path is **Ubuntu Inference Snaps**  -  Canonical's snap-packaged model serving with hardware-aware engine selection, signed packages, and zero configuration:
+RevealUI's AI agents run on open source models locally. The recommended path is a signed local inference runtime: install one allowlisted open model, and the runtime selects an engine for the hardware. The product docs name the install command.
 
-```bash
-# Install a model (one command)
-sudo snap install nemotron-3-nano
+The runtime serves a chat-completions-compatible API locally. The `@revealui/ai` package detects the running runtime and routes agent calls to it. The same agent orchestration, memory system, and MCP integrations work with any supported inference path, because they all expose chat-completions-compatible `/v1/chat/completions` endpoints.
 
-# Check status
-gemma3 status
-```
-
-Each snap serves an OpenAI-compatible API locally. The `@revealui/ai` package auto-detects the running snap and routes agent calls to it. The same agent orchestration, memory system, and MCP integrations work with any supported inference path  -  because they all expose OpenAI-compatible `/v1/chat/completions` endpoints.
-
-As a fallback, **Ollama** supports any open source GGUF model (default: `qwen2.5:3b`):
-
-```bash
-ollama serve &
-ollama pull qwen2.5:3b
-```
+As a fallback, a second local runtime can serve any open GGUF chat model. Start that runtime and pull an open chat model. The product docs name the commands.
 
 No API key. No usage bill. No data leaving your machine.
 
@@ -78,11 +65,11 @@ git clone https://github.com/RevealUIStudio/revealui
 cd RevealUI
 direnv allow        # Nix builds and activates the full dev environment
 
-# Install a model via inference snaps (recommended)
-sudo snap install nemotron-3-nano
+# Install one allowlisted open model (recommended).
+# The product docs name the command.
 
-# Or use Ollama
-ollama pull qwen2.5:3b
+# Or start a local inference runtime and pull an open chat model.
+# The product docs name those commands.
 ```
 
 No `apt install`, no `brew install`, no conda environment. Every developer on the project gets the same toolchain regardless of what's on their system. It works the same on a Ryzen laptop as it does on a Mac or a Linux CI runner.
@@ -99,8 +86,8 @@ flake.nix
 └── devShell
     └── nodejs, pnpm, biome          # Standard RevealUI toolchain
 
-sudo snap install nemotron-3-nano    # Or: ollama pull qwen2.5:3b
-└── OpenAI-compatible API served locally
+install one allowlisted open model    # Or: pull an open chat model on a local runtime
+└── chat-completions-compatible API served locally
 
 @revealui/ai                         # Agent orchestration routes to local model
 ├── planning, memory, CRDT           # Full agent stack
@@ -111,7 +98,7 @@ The entire business stack with local AI  -  People, Content, Offers, Payments, a
 
 ## Who this is for
 
-The "local-first" configuration is one of several inference paths. RevealUI supports Ubuntu Inference Snaps (Canonical's managed runtime, planned recommended) and Ollama (any open source GGUF model, default local). Cloud-compatible providers (Groq, HuggingFace, and OpenAI-compatible endpoints) are pluggable but opt-in via env vars. Pick the path that fits your trust + cost profile; there is no vendor lock-in.
+The "local-first" configuration is one of several inference paths. RevealUI supports a signed local runtime (planned recommended) and a local runtime for any open GGUF model. Cloud AI model providers and chat-completions-compatible endpoints are pluggable but opt-in via env vars. Pick the path that fits your trust and cost profile.
 
 But there's a real and growing audience for whom those concerns matter:
 
@@ -125,19 +112,19 @@ For these cases, RevealUI with local inference is the only full-stack agentic ru
 
 ## What you don't give up
 
-Running locally doesn't mean running poorly. The RevealUI agent stack has the same capabilities whether it's talking to a cloud model or a local Gemma 4 instance:
+Running locally doesn't mean running poorly. The RevealUI agent stack has the same capabilities whether it's talking to a cloud model or a smaller local model:
 
 - **Planning and tools**  -  agents can create todos, read and write files, execute shell commands
 - **Memory**  -  episodic memory, working memory, CRDT-based persistence across sessions
-- **MCP integrations**  -  14 first-party MCP servers (Stripe, Neon, Vercel, Playwright, Code Validator, Next.js DevTools, plus RevealUI-internal Content / Email / Memory / Stripe / Docs servers, the contracts introspection server, and the adapter base class)
+- **MCP integrations**  -  14 first-party MCP servers (a payments processor, a database, and a hosting provider, plus Playwright, Code Validator, Next.js DevTools, and RevealUI-internal servers for content, email, memory, payments, and docs, the contracts introspection server, and the adapter base class)
 - **Orchestration**  -  multi-agent coordination, sub-agent spawning, streaming
 
-What you do give up: the raw capability of a 70B+ cloud model. Smaller local models like Gemma 4 are excellent for structured tasks  -  code generation, data processing, form filling, API orchestration  -  but won't match a frontier model on open-ended reasoning. For most business automation use cases, that's an acceptable trade.
+What you do give up: the raw capability of a 70B+ cloud model. Smaller local models are excellent for structured tasks  -  code generation, data processing, form filling, API orchestration  -  but won't match a frontier model on open-ended reasoning. For most business automation use cases, that's an acceptable trade.
 
 ## Setup guide
 
-See [Local-First Setup](/local-first) for the step-by-step guide: hardware requirements, Nix setup, inference snaps / Ollama installation, connecting `@revealui/ai`, and configuring RevVault.
+See [Local-First Setup](/local-first) for the step-by-step guide: hardware requirements, Nix setup, local inference runtime installation, connecting `@revealui/ai`, and configuring RevVault.
 
 ---
 
-*RevealUI is MIT licensed and available on [GitHub](https://github.com/RevealUIStudio/revealui). Get started with `npx create-revealui`.*
+*RevealUI is MIT licensed and available on [the source repository](https://github.com/RevealUIStudio/revealui). Get started with `npx create-revealui`.*

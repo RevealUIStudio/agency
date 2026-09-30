@@ -1,7 +1,7 @@
 import { CONTACT_EMAIL } from '@/lib/site';
 
 export function PrivacyPage() {
-  const lastUpdated = 'September 19, 2026';
+  const lastUpdated = 'September 30, 2026';
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -47,16 +47,16 @@ export function PrivacyPage() {
 
           <h3 className="mt-6 text-lg font-semibold text-foreground">Server logs</h3>
           <p>
-            Our hosting provider (Vercel) records standard server logs for security and reliability:
-            IP address, request path, user agent, and timestamp. We do not augment these logs with
+            Our hosting provider records standard server logs for security and reliability: IP
+            address, request path, user agent, and timestamp. We do not augment these logs with
             additional identifiers.
           </p>
 
           <h3 className="mt-6 text-lg font-semibold text-foreground">Performance telemetry</h3>
           <p>
-            The Site may load Vercel Speed Insights after you accept optional cookies. It reports
-            aggregate page-load timings to our Vercel project and is not used for advertising. It
-            stays off until you accept. See the{' '}
+            The Site may load performance telemetry from the hosting provider after you accept
+            optional cookies. It reports aggregate page-load timings to the hosting project and is
+            not used for advertising. It stays off until you accept. See the{' '}
             <a href="/cookies" className="font-semibold text-foreground hover:underline">
               Cookie Policy
             </a>
@@ -65,18 +65,18 @@ export function PrivacyPage() {
 
           <h3 className="mt-6 text-lg font-semibold text-foreground">Pageview analytics</h3>
           <p>
-            After you accept optional cookies, the Site may load a self-hosted Umami tracker. It
+            After you accept optional cookies, the Site may load a self-hosted pageview tracker. It
             records page views, the referring URL, and UTM campaign parameters. It is not used for
             advertising and stays off until you accept.
           </p>
 
           <h3 className="mt-6 text-lg font-semibold text-foreground">Error telemetry</h3>
           <p>
-            After you accept optional cookies, the Site may initialize Sentry to diagnose
+            After you accept optional cookies, the Site may initialize error telemetry to diagnose
             application errors. Tracing and a partial recording of the moments before a crash may
             run only after you accept, and only in production. We do not record sessions
-            continuously or proactively. Sentry stays off until you accept, and stays dormant when
-            error telemetry is not configured.
+            continuously or proactively. Error telemetry stays off until you accept, and stays
+            dormant when it is not configured.
           </p>
 
           <h3 className="mt-6 text-lg font-semibold text-foreground">What we do not collect</h3>
@@ -104,56 +104,21 @@ export function PrivacyPage() {
           <p>We share data only with the service providers necessary to operate the Site:</p>
           <ul className="list-disc space-y-2 pl-6">
             <li>
-              <strong>Vercel</strong>: Site hosting, server logs, and Speed Insights performance
-              telemetry (
-              <a
-                href="https://vercel.com/legal/privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-foreground hover:underline"
-              >
-                Vercel Privacy Policy
-              </a>
-              )
+              <strong>Hosting provider</strong>: site hosting, server logs, and performance
+              telemetry.
             </li>
             <li>
-              <strong>Fly.io</strong>: hosts our Umami instance for consented pageview analytics (
-              <a
-                href="https://fly.io/legal/privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-foreground hover:underline"
-              >
-                Fly.io Privacy Policy
-              </a>
-              )
+              <strong>Long-running services host</strong>: hosts the pageview analytics instance for
+              consented analytics.
             </li>
             <li>
-              <strong>Sentry</strong>: consented application error tracking and crash-replay
-              diagnostics (
-              <a
-                href="https://sentry.io/privacy/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-foreground hover:underline"
-              >
-                Sentry Privacy Policy
-              </a>
-              ). Error data may include browser context, page URL, and a partial session recording
-              captured at the time of an error. No continuous session recording is performed.
+              <strong>Error telemetry</strong>: consented application error tracking and
+              crash-replay diagnostics. Error data may include browser context, page URL, and a
+              partial session recording captured at the time of an error. No continuous session
+              recording is performed.
             </li>
             <li>
-              <strong>Google Workspace</strong>: email correspondence at our @revealui.com addresses
-              (
-              <a
-                href="https://policies.google.com/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-foreground hover:underline"
-              >
-                Google Privacy Policy
-              </a>
-              )
+              <strong>Email provider</strong>: email correspondence at our @revealui.com addresses.
             </li>
           </ul>
           <p>
@@ -172,7 +137,7 @@ export function PrivacyPage() {
             </li>
             <li>
               <strong>Server logs:</strong> retained per our hosting provider&apos;s policy
-              (typically ≤ 90 days for Vercel).
+              (typically 90 days or less).
             </li>
             <li>You may request earlier deletion at any time. See Section 5.</li>
           </ul>
@@ -223,10 +188,10 @@ export function PrivacyPage() {
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">7. Cookies</h2>
           <p>
-            The Site does not set advertising or marketing cookies. After you accept, Vercel Speed
-            Insights may measure performance, our self-hosted Umami tracker may record page views,
-            and Sentry may collect crash diagnostics (including an on-error replay, never a
-            continuous recording). We do not use third-party ad trackers. If we introduce
+            The Site does not set advertising or marketing cookies. After you accept, performance
+            telemetry may measure page loads, our self-hosted pageview tracker may record page
+            views, and error telemetry may collect crash diagnostics (including an on-error replay,
+            never a continuous recording). We do not use third-party ad trackers. If we introduce
             non-essential cookies beyond these consented tools, we will update this policy and
             surface a consent control where required.
           </p>

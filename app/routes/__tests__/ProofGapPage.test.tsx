@@ -14,6 +14,7 @@ import {
   PROOF_GAP_THANKS_TITLE,
 } from '@/content/proof-gap';
 import { submitContact } from '@/lib/api';
+import { findBannedToolNames } from '@/lib/buyer-facing-names';
 import { INTRO_CALL_URL } from '@/lib/site';
 import { ProofGapPage } from '@/routes/ProofGapPage';
 
@@ -52,7 +53,7 @@ describe('ProofGapPage', () => {
     expect(screen.getByRole('button', { name: PROOF_GAP_CTA })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /Request a quote/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Request a quote/i })).not.toBeInTheDocument();
-    expect(text).not.toMatch(/\b(?:Zapier|Zaps?|n8n|IFTTT|Airtable)\b|Make\.com/i);
+    expect(findBannedToolNames(text)).toEqual([]);
     expect(text).not.toMatch(/revolutionize|empower|seamless/i);
     expect(text).not.toMatch(/RevMind/);
     expect(text).not.toMatch(/Architecture-as-Consultation/);
@@ -78,7 +79,7 @@ describe('ProofGapPage', () => {
       'href',
       INTRO_CALL_URL,
     );
-    expect(screen.getByText(/you don't need a Google account/i)).toBeInTheDocument();
+    expect(screen.getByText(/Open the Google Meet link/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: PROOF_GAP_OFFER_NAME })).toBeInTheDocument();
     expect(screen.getByText('1) Accounts and ownership')).toBeInTheDocument();
     expect(screen.getByText('3) Action records')).toBeInTheDocument();
@@ -90,8 +91,6 @@ describe('ProofGapPage', () => {
       'Glue automation owns the revenue path; agents are a side demo.',
     );
     expect(document.body.textContent).toContain('Not “faster than glue automation.”');
-    expect(document.body.textContent).not.toMatch(
-      /\b(?:Zapier|Zaps?|n8n|IFTTT|Airtable)\b|Make\.com/i,
-    );
+    expect(findBannedToolNames(document.body.textContent ?? '')).toEqual([]);
   });
 });

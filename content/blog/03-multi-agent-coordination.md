@@ -7,7 +7,7 @@ audience: user
 author: Joshua Vaughn
 ---
 
-I built most of RevealUI with three Claude Code instances running simultaneously.
+I built most of RevealUI with three AI code editor instances running simultaneously.
 
 One in a terminal at the project root, handling builds, deployments, and database migrations. One in the IDE, doing code editing and documentation. One in a second terminal, running the CI gate and catching anything the others missed.
 
@@ -23,7 +23,7 @@ What I needed was a coordination protocol. Not a distributed lock system. Not an
 
 ## The Workboard
 
-The solution is a markdown file: `.claude/workboard.md`.
+The solution is a markdown file in the repo: `workboard.md`.
 
 ```markdown
 # RevealUI Workboard
@@ -34,10 +34,10 @@ _Last updated: 2026-03-07_
 | id | env | started | task | files | updated |
 |----|-----|---------|------|-------|---------|
 | conductor | terminal | 2026-03-07T02:24Z | run pnpm gate | .gitignore, README.md, packages/test/ | 2026-03-07T02:43Z |
-| zed-revealui | zed-acp | 2026-03-07T02:24Z | implement Phase 5.5 MCP marketplace | apps/server/src/routes/marketplace.ts, packages/db/src/schema/marketplace.ts | 2026-03-07T02:43Z |
+| editor-a | editor | 2026-03-07T02:24Z | implement Phase 5.5 MCP marketplace | apps/server/src/routes/marketplace.ts, packages/db/src/schema/marketplace.ts | 2026-03-07T02:43Z |
 
 ## Recent
-- [2026-03-07 02:38] zed-revealui: Phase 5.5 marketplace routes complete
+- [2026-03-07 02:38] editor-a: Phase 5.5 marketplace routes complete
 - [2026-03-06 23:00] conductor: Phase 5.4 Forge Docker committed
 ```
 
@@ -49,16 +49,16 @@ That's it. No daemon. No network calls. No distributed state. A markdown table.
 
 ## How Agents Register
 
-The registration happens via a Claude Code hook  -  a shell script that runs on session start:
+The registration happens via an AI code editor hook: a shell script that runs on session start. The sample below uses `AGENT_ROLE` as a stand-in. The product docs name the real session variable.
 
 ```javascript
-// ~/.claude/hooks/session-start.js
+// code editor hooks directory / session-start.js
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
 
 const WORKBOARD_PATH = process.env.REVEALUI_WORKBOARD_PATH
-const SESSION_ID = process.env.CLAUDE_AGENT_ROLE ?? `session-${process.pid}`
+const SESSION_ID = process.env.AGENT_ROLE ?? `session-${process.pid}`
 
 if (!WORKBOARD_PATH) process.exit(0)
 
@@ -72,16 +72,16 @@ const updated = insertRow(content, row)
 fs.writeFileSync(WORKBOARD_PATH, updated)
 ```
 
-The `CLAUDE_AGENT_ROLE` environment variable identifies which agent is which. In `.envrc`:
+The `AGENT_ROLE` environment variable identifies which agent is which. In `.envrc`:
 
 ```bash
-export CLAUDE_AGENT_ROLE=zed-revealui
+export AGENT_ROLE=editor-a
 ```
 
 In the terminal launch script:
 
 ```bash
-export CLAUDE_AGENT_ROLE=conductor
+export AGENT_ROLE=conductor
 ```
 
 Every agent gets a stable identity across restarts.
@@ -93,12 +93,12 @@ Every agent gets a stable identity across restarts.
 The conflict-prevention mechanism is file claiming. When an agent starts editing a set of files, it stamps its row in the workboard:
 
 ```
-| zed-revealui | ... | apps/server/src/routes/marketplace.ts, packages/db/src/schema/ | ... |
+| editor-a | ... | apps/server/src/routes/marketplace.ts, packages/db/src/schema/ | ... |
 ```
 
-A second agent, before editing `packages/db/src/schema/marketplace.ts`, reads the workboard and sees that `zed-revealui` has claimed that directory. It either waits, picks a different task, or asks the human to resolve the conflict.
+A second agent, before editing `packages/db/src/schema/marketplace.ts`, reads the workboard and sees that `editor-a` has claimed that directory. It either waits, picks a different task, or asks the human to resolve the conflict.
 
-The ownership is advisory, not enforced. There's no lock that prevents writes. The protocol relies on agents actually checking before editing  -  which Claude Code does naturally when given the workboard context. If an agent is going to edit a claimed file, it knows to coordinate first.
+The ownership is advisory, not enforced. There's no lock that prevents writes. The protocol relies on agents actually checking before editing  -  which an AI code editor does naturally when given the workboard context. If an agent is going to edit a claimed file, it knows to coordinate first.
 
 This is the right level of enforcement. Hard locks create deadlocks. Advisory ownership surfaces conflicts without blocking work.
 
@@ -109,17 +109,17 @@ This is the right level of enforcement. Hard locks create deadlocks. Advisory ow
 File ownership stamps update automatically via a PostToolUse hook that fires after every file write:
 
 ```javascript
-// ~/.claude/hooks/post-tool-use.js
+// code editor hooks directory / post-tool-use.js
 // Fires after Write/Edit tool calls. Stamps the workboard with edited files
 
 const TOOL_EVENTS_THAT_WRITE = new Set(['Write', 'Edit', 'NotebookEdit'])
 
-const toolName = process.env.CLAUDE_TOOL_NAME
-const filePath = process.env.CLAUDE_TOOL_INPUT_file_path
+const toolName = process.env.TOOL_NAME
+const filePath = process.env.TOOL_INPUT_FILE_PATH
 
 if (!TOOL_EVENTS_THAT_WRITE.has(toolName) || !filePath) process.exit(0)
 
-const sessionId = process.env.CLAUDE_AGENT_ROLE
+const sessionId = process.env.AGENT_ROLE
 const workboard = process.env.REVEALUI_WORKBOARD_PATH
 
 // Update the files column in our workboard row
@@ -168,7 +168,7 @@ It doesn't solve everything:
 
 We extracted the workboard protocol into a proper package: [`@revealui/harnesses`](https://github.com/RevealUIStudio/revealui/tree/main/packages/harnesses).
 
-> **How this evolved.** RevealUI's own coordination has matured past the exact hooks above: today the Claude Code hooks *read and warn* rather than write the workboard, agents maintain it directly, and a coordination daemon tracks live session state over RPC. The file-based workboard stays the durable, greppable, git-committed archive layer, which is the part that mattered most. `@revealui/harnesses` ships the productized version.
+> **How this evolved.** RevealUI's own coordination has matured past the exact hooks above: today the AI code editor hooks *read and warn* rather than write the workboard, agents maintain it directly, and a coordination daemon tracks live session state over RPC. The file-based workboard stays the durable, greppable, git-committed archive layer, which is the part that mattered most. `@revealui/harnesses` ships the productized version.
 
 ```bash
 # List harnesses the running coordination daemon has detected
@@ -206,13 +206,13 @@ if (!clean) {
 wb.releaseFiles('my-agent')
 ```
 
-The package also includes adapters for Claude Code, Cursor, and GitHub Copilot  -  so you can coordinate across different AI tools on the same codebase.
+The package also includes adapters for AI code editors, so you can coordinate across different AI tools on the same codebase.
 
 ---
 
 ## Try It
 
-The hooks live in `~/.claude/hooks/` and are wired in `~/.claude/settings.json`. The workboard itself is just a markdown file you check into your repo at `.claude/workboard.md`.
+The hooks live in the code editor's hooks directory and are wired in that editor's settings file. The workboard itself is just a markdown file you check into your repo.
 
 If you're running multiple AI coding agents on the same codebase, the workboard protocol is the lowest-overhead coordination mechanism I've found. It's readable by humans, greppable, diffable, and doesn't require any infrastructure beyond a shared filesystem.
 

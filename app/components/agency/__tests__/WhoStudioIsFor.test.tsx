@@ -7,9 +7,10 @@ import {
   STUDIO_FOR_TITLE,
   WhoStudioIsFor,
 } from '@/components/agency/WhoStudioIsFor';
+import { findBannedToolNames } from '@/lib/buyer-facing-names';
 
 describe('WhoStudioIsFor', () => {
-  it('names three concrete beats and keeps Jobber as an anti only', () => {
+  it('names three concrete beats', () => {
     const { container } = render(<WhoStudioIsFor />);
     expect(screen.getByRole('heading', { level: 2, name: STUDIO_FOR_TITLE })).toBeInTheDocument();
     expect(document.getElementById('who')).not.toBeNull();
@@ -27,7 +28,8 @@ describe('WhoStudioIsFor', () => {
     expect(text).not.toContain('\u2014');
     expect(text).not.toMatch(/SOC ?2 certified|SOC2 ready|\baudited\b|SOC 2 compliant/i);
     expect(text).not.toMatch(/Fortune 500/);
-    expect(text).not.toMatch(/Maryville|QBO|QuickBooks|RevDev|RevForge|RevKit/i);
+    expect(text).not.toMatch(/Maryville|RevDev|RevForge|RevKit/i);
+    expect(findBannedToolNames(text)).toEqual([]);
     expect(text).not.toMatch(/high-stakes|regulated|mission-driven/i);
   });
 });

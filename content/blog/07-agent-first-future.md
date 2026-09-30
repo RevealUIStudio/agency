@@ -24,9 +24,9 @@ They are AI agents. And agents do not browse websites.
 
 ## The shift from human-first to agent-first
 
-When you build a SaaS product today, the acquisition funnel looks something like this: a developer searches Google, lands on your marketing page, reads the hero section, clicks "Get Started," creates an account, enters a credit card, and starts building. Every pixel on your landing page is optimized for that flow.
+When you build a SaaS product today, the acquisition funnel looks something like this: a developer runs a web search, lands on your marketing page, reads the hero section, clicks "Get Started," creates an account, enters a credit card, and starts building. Every pixel on your landing page is optimized for that flow.
 
-Now consider what happens when a developer asks Claude, "What platform has billing built in and supports MCP?" The agent does not open a browser. It does not read your hero banner. It does not care about your gradient backgrounds or testimonial carousel. It searches structured data sources -- package registries, OpenAPI specs, Agent Cards, tool definitions -- and evaluates them programmatically.
+Now consider what happens when a developer asks an AI model provider, "What platform has billing built in and supports MCP?" The agent does not open a browser. It does not read your hero banner. It does not care about your gradient backgrounds or testimonial carousel. It searches structured data sources -- package registries, OpenAPI specs, Agent Cards, tool definitions -- and evaluates them programmatically.
 
 This is not a hypothetical future. Industry coverage and analyst forecasts in 2025–2026 have consistently put autonomous AI agents on the path to becoming primary consumers of web APIs and structured data, with adoption projections in the tens of percent of enterprise applications and the agent-economy total addressable market growing at high double-digit rates year-over-year. (Specific figures cycle quickly; treat the directional signal as the durable claim, not the exact percentages.)
 
@@ -119,14 +119,14 @@ Four protocols converge to create the agent-first web. Each solves a different p
 
 | Protocol | Created by | Governed by | Purpose | RevealUI implementation |
 |---|---|---|---|---|
-| **A2A** (Agent-to-Agent) | Google | Linux Foundation (Agentic AI Foundation) | Agents discover and delegate work to other agents | Agent Cards at `/.well-known/agent.json`. `POST /a2a` advertises `tasks/send`; the handler currently chats or stubs rather than a full task lifecycle |
-| **MCP** (Model Context Protocol) | Anthropic | Open standard | Agents use tools exposed by MCP servers | 14 first-party MCP servers: Stripe, Neon, Vercel, Code Validator, Playwright, Next.js DevTools, plus the RevealUI-internal Content / Email / Memory / Stripe / Docs servers, the contracts introspection server, and the adapter base class |
-| **x402** (HTTP 402 Payment Required) | Coinbase | Open standard | Internet-native micropayments for machine-to-machine commerce | Per-call USDC payments on Base, Coinbase facilitator verification, marketplace payment proxy |
+| **A2A** (Agent-to-Agent) | Open protocol | Linux Foundation (Agentic AI Foundation) | Agents discover and delegate work to other agents | Agent Cards at `/.well-known/agent.json`. `POST /a2a` advertises `tasks/send`; the handler currently chats or stubs rather than a full task lifecycle |
+| **MCP** (Model Context Protocol) | Published standard | Open standard | Agents use tools exposed by MCP servers | 14 first-party MCP servers: a payments processor, a database, and a hosting provider, plus Code Validator, Playwright, Next.js DevTools, and RevealUI-internal servers for content, email, memory, payments, and docs, the contracts introspection server, and the adapter base class |
+| **x402** (HTTP 402 Payment Required) | Open protocol | Open standard | Internet-native micropayments for machine-to-machine commerce | Per-call USDC payments on Base, a payment facilitator, marketplace payment proxy |
 | **OpenAPI** | OpenAPI Initiative | Linux Foundation | Machine-readable API descriptions | Auto-generated from Hono route definitions with Zod schemas |
 
 ### A2A: How agents find and talk to each other
 
-Google's Agent-to-Agent protocol, now stewarded by the Linux Foundation's Agentic AI Foundation, defines how agents discover each other and delegate tasks. The core primitive is the **Agent Card** -- a JSON document at a well-known URL that describes what an agent can do.
+The Agent-to-Agent protocol, now stewarded by the Linux Foundation's Agentic AI Foundation, defines how agents discover each other and delegate tasks. The core primitive is the **Agent Card** -- a JSON document at a well-known URL that describes what an agent can do.
 
 RevealUI advertises an Agent Card and accepts JSON-RPC at `POST /a2a`. Discovery is public. `tasks/send` is advertised; the handler currently chats or stubs rather than running a full A2A 1.0 lifecycle. An external agent can:
 
@@ -159,7 +159,7 @@ curl -X POST https://api.example.com/a2a \
   }'
 ```
 
-Agents use the host's configured inference path. The `createLLMClientFromEnv()` factory auto-detects the available backend (Ubuntu Inference Snaps or Ollama)  -  no API keys required, no vendor lock-in.
+Agents use the host's configured inference path. The `createLLMClientFromEnv()` factory auto-detects the available local inference runtime. No API keys required for that local path.
 
 ### MCP: How agents use tools
 
@@ -167,9 +167,9 @@ The Model Context Protocol (MCP) defines how agents invoke tools. Where A2A is a
 
 RevealUI ships with 14 first-party MCP servers (full list in [`packages/mcp/src/servers/`](https://github.com/RevealUIStudio/revealui/tree/main/packages/mcp/src/servers)). The six that cover the core infrastructure stack:
 
-- **Stripe** -- Create checkout sessions, manage subscriptions, query payment history
-- **Neon / pgvector** -- Database management, connection pooling, branch operations, and vector embeddings on the primary store
-- **Vercel** -- Deployment management, environment variables, domain configuration
+- **payments processor** -- Create checkout sessions, manage subscriptions, query payment history
+- **the database / pgvector** -- Database management, connection pooling, branch operations, and vector embeddings on the primary store
+- **hosting provider** -- Deployment management, environment variables, domain configuration
 - **Code Validator** -- Static analysis, security scanning, TypeScript type checking
 - **Playwright** -- Browser automation, E2E testing, screenshot capture
 - **Next.js DevTools** -- Route inspection, build analysis, performance profiling
@@ -180,7 +180,7 @@ These servers are open source (MIT licensed). Anyone can run them, fork them, or
 
 This is the piece most people have not seen yet, and it is the one that makes the economics work.
 
-HTTP status code 402 -- Payment Required -- has been reserved since 1997 but never had a standard implementation. Coinbase's x402 protocol fills that gap. When an agent makes a request and the server requires payment, it returns HTTP 402 with an `X-PAYMENT-REQUIRED` header containing the price and payment details. The agent pays in USDC on Base (an Ethereum L2), then retries with a signed payment proof in the `X-PAYMENT-PAYLOAD` header.
+HTTP status code 402, Payment Required, has been reserved since 1997 but never had a standard implementation. The x402 protocol fills that gap. When an agent makes a request and the server requires payment, it returns HTTP 402 with an `X-PAYMENT-REQUIRED` header containing the price and payment details. The agent pays in USDC on Base (an Ethereum L2), then retries with a signed payment proof in the `X-PAYMENT-PAYLOAD` header.
 
 Here is what the flow looks like in practice when an agent invokes a marketplace MCP server:
 
@@ -209,7 +209,7 @@ Agent                          RevealUI Marketplace             MCP Server
   | <-------------------------------- |                            |
 ```
 
-The payment is verified by Coinbase's public facilitator at `x402.org/facilitator`. No API key required for verification. The entire flow is stateless from the agent's perspective -- pay, prove, get access.
+The payment is verified by a public facilitator at `x402.org/facilitator`. No API key required for verification. The entire flow is stateless from the agent's perspective: pay, prove, get access.
 
 RevealUI's marketplace will use x402 as the payment rail for all per-call MCP server invocations (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526)). The default price will be $0.001 USDC per call, but each server sets its own price.
 
@@ -242,9 +242,9 @@ curl -X POST https://api.example.com/api/marketplace/servers \
 
 **For agents:** Other agents discover your server via the marketplace registry or A2A protocol, evaluate its capabilities from the structured metadata, and invoke it with x402 payment.
 
-**The economics:** Developers earn 80% of each call's revenue. RevealUI takes 20%. Payouts happen via Stripe Connect -- developers onboard once, and transfers are batched automatically. At $0.001 per call, a server handling 100,000 calls per month generates $80 for the developer and $20 for the platform. At $0.005 per call, those numbers are $400 and $100.
+**The economics:** Developers earn 80% of each call's revenue. RevealUI takes 20%. Payouts happen via the payments processor's connected accounts -- developers onboard once, and transfers are batched automatically. At $0.001 per call, a server handling 100,000 calls per month generates $80 for the developer and $20 for the platform. At $0.005 per call, those numbers are $400 and $100.
 
-This will be the first combined MCP + A2A registry (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526)). Smithery, mcpt, OpenTools, and Glama.ai list MCP servers. The a2a-registry.org lists A2A agents. RevealUI's marketplace is the first to combine both -- agents that are discoverable via A2A *and* tools that are invocable via MCP, with a payment layer that lets the economics work without manual billing integration. Registration on external registries (a2a-registry.org, Smithery, mcpt, OpenTools, Glama.ai) is planned for hard launch.
+This will be the first combined MCP + A2A registry (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526)). Several public registries list MCP servers. A separate registry lists A2A agents. RevealUI's marketplace combines both: agents that are discoverable via A2A and tools that are invocable via MCP, with a payment layer that lets the economics work without a separate billing integration. Registration on those external registries is planned for hard launch.
 
 The marketplace is secured against common attack vectors. Developer-supplied MCP server URLs are validated against an SSRF guard that blocks loopback, link-local, and private RFC-1918 ranges. Proxied requests have a 30-second timeout. Rate limiting prevents probe abuse (30 invocations per minute per caller). And the x402 payment itself acts as an economic rate limiter -- every call costs real money, which naturally deters spam.
 
@@ -258,7 +258,7 @@ If you deploy a RevealUI instance today, you get agent-native infrastructure wit
 
 **Feature gating works for both audiences.** When a human user hits a Pro feature, they see the billing page and can upgrade. When an agent hits a Pro feature without a license, it gets a structured JSON error with the pricing URL. When the x402 flag is set (`X402_ENABLED`, default off; planned, [#93](https://github.com/RevealUIStudio/revealui/issues/93)), agents can pay per-call instead of subscribing -- the same feature, two access patterns.
 
-**You will be able to earn money from MCP servers while you sleep (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526)).** Publish an MCP server to the marketplace, set a per-call price, onboard with Stripe Connect, and agent calls generate passive revenue. The marketplace handles discovery, payment verification, proxying, transaction recording, and developer payouts.
+**You will be able to earn money from MCP servers while you sleep (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526)).** Publish an MCP server to the marketplace, set a per-call price, onboard with the payments processor's connected accounts, and agent calls generate passive revenue. The marketplace handles discovery, payment verification, proxying, transaction recording, and developer payouts.
 
 **The same code serves both audiences.** This is the key architectural insight. You do not build a "human API" and an "agent API." You build one API with Zod schemas and OpenAPI definitions. Humans consume it via the admin dashboard. Agents consume it via the OpenAPI spec and A2A protocol. The code is identical.
 
@@ -290,9 +290,9 @@ curl -s https://your-api.example.com/.well-known/marketplace.json | jq '.servers
 
 **Step 4: Add `AGENTS.md` to your repository.**
 
-The Agentic AI Foundation (the same organization governing A2A) has standardized the `AGENTS.md` file as the equivalent of `README.md` for AI coding agents. It tells agents like Claude Code, Cursor, and Copilot how to work with your codebase -- what the project does, how to build and test it, what conventions to follow.
+The Agentic AI Foundation (the same organization governing A2A) has standardized the `AGENTS.md` file as the equivalent of `README.md` for AI coding agents. It tells AI code editors how to work with your codebase: what the project does, how to build and test it, what conventions to follow.
 
-RevealUI already has a `CLAUDE.md` that serves this purpose. An `AGENTS.md` in your repository root makes the same information available to all coding agents, not just Claude.
+RevealUI already has a project instructions file that serves this purpose. An `AGENTS.md` in your repository root makes the same information available to all coding agents, not just one code editor.
 
 ## The long view
 
@@ -308,4 +308,4 @@ The user interface for the future has yet to reveal itself. But we know one thin
 
 *RevealUI is the open runtime for businesses that run their own AI. People, Content, Offers, Payments, and Agents, pre-wired and ready to deploy. Learn more at [revealui.com](https://revealui.com).*
 
-*Follow the project on [GitHub](https://github.com/RevealUIStudio/revealui).*
+*Follow the project on [the source repository](https://github.com/RevealUIStudio/revealui).*

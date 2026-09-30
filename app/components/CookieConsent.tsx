@@ -72,8 +72,8 @@ export function CookieConsent() {
                 Cookies
               </h2>
               <p className="text-sm text-muted-foreground">
-                Necessary cookies are not used on this site (there is no login). Speed Insights,
-                Umami pageview analytics, and Sentry crash tracing stay off until you accept.{' '}
+                Necessary cookies are not used on this site (there is no login). Performance
+                telemetry, pageview analytics, and error telemetry stay off until you accept.{' '}
                 <a href="/cookies" className="font-medium text-foreground underline">
                   Cookie policy
                 </a>

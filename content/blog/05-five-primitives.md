@@ -7,7 +7,7 @@ audience: user
 author: Joshua Vaughn
 ---
 
-> **Status note (updated 2026-05-26):** One forward-looking system mentioned in this post is not transactable in production today: **x402 agent-to-agent payments** (designed and code-complete behind `X402_ENABLED=false`). Everything else described (auth, content, Stripe billing, MCP wiring, agent primitives) runs today. See [What Works Today](../WHAT_WORKS_TODAY.md) for the current per-feature shipping status.
+> **Status note (updated 2026-05-26):** One forward-looking system mentioned in this post is not transactable in production today: **x402 agent-to-agent payments** (designed and code-complete behind `X402_ENABLED=false`). Everything else described (auth, content, payments processor billing, MCP wiring, agent primitives) runs today. See [What Works Today](../WHAT_WORKS_TODAY.md) for the current per-feature shipping status.
 
 ---
 
@@ -90,9 +90,9 @@ The sign-in flow always returns the same error message regardless of whether the
 
 ### OAuth without auto-linking
 
-RevealUI supports OAuth with GitHub, Google, and Vercel. The critical design decision here is that OAuth identities are **never** auto-linked to existing accounts by email.
+RevealUI supports OAuth with a source host, an identity provider, and a hosting provider. The critical design decision here is that OAuth identities are **never** auto-linked to existing accounts by email.
 
-Why? Auto-linking is an account takeover vector. If an attacker controls a Google account with your email address, they sign in via OAuth and instantly gain access to your existing account. RevealUI requires explicit linking: you must be authenticated with your existing session and then manually connect a provider.
+Why? Auto-linking is an account takeover vector. If an attacker controls an identity-provider account with your email address, they sign in via OAuth and instantly gain access to your existing account. RevealUI requires explicit linking: you must be authenticated with your existing session and then manually connect a provider.
 
 ```typescript
 // packages/auth/src/server/oauth.ts .  upsertOAuthUser
@@ -131,7 +131,7 @@ These functions return booleans or `WhereClause` objects, enabling row-level sec
 
 ### How People connects to everything else
 
-The user ID is the foreign key for everything. Content has an `authorId`. Offers have licenses keyed to `customerId`. Payments are tied via `stripeCustomerId`. Agent tasks are metered per `userId`. One identity, five primitives.
+The user ID is the foreign key for everything. Content has an `authorId`. Offers have licenses keyed to `customerId`. Payments are tied via the payments customer id. Agent tasks are metered per `userId`. One identity, five primitives.
 
 ---
 
@@ -267,8 +267,8 @@ This is used as middleware in the API. AI routes check `requireFeature('ai')`. M
 
 RevealUI supports three billing models simultaneously:
 
-1. **Subscriptions** -- Monthly recurring charges via Stripe. Standard for SaaS.
-2. **Agent credits** -- Usage-based metering for AI tasks. Pro tier gets 10,000 tasks/month, Max gets 50,000, Enterprise is unlimited. Reporting overage to Stripe Billing Meters is in development. During early access, usage is tracked but not billed.
+1. **Subscriptions** -- Monthly recurring charges via the payments processor. Standard for SaaS.
+2. **Agent credits** -- Usage-based metering for AI tasks. Pro tier gets 10,000 tasks/month, Max gets 50,000, Enterprise is unlimited. Reporting overage to payments processor usage meters is in development. During early access, usage is tracked but not billed.
 3. **Perpetual licenses** -- One-time purchase, own forever, with an optional annual support renewal. The license JWT has no expiration, and the system tracks `supportExpiresAt` separately from the license validity.
 
 ### License verification API
@@ -309,23 +309,25 @@ Offers are purchased by People. License keys are generated from the Payments web
 
 ## 4. Payments
 
-Payments are where business software earns its name. RevealUI integrates Stripe end-to-end: checkout, portal, subscription lifecycle, refunds, chargebacks, and usage reporting.
+Payments are where business software earns its name. RevealUI integrates a payments processor end to end: checkout, portal, subscription lifecycle, refunds, chargebacks, and usage reporting.
 
 ### Circuit breaker protection
 
-Every Stripe API call goes through a circuit breaker. If Stripe returns 5 consecutive failures, the breaker opens and requests fail fast with a 503 for 30 seconds instead of piling up timeouts. After the cooldown, 2 successful requests close the breaker.
+Every payments processor API call goes through a circuit breaker. If the processor returns 5 consecutive failures, the breaker opens and requests fail fast with a 503 for 30 seconds instead of piling up timeouts. After the cooldown, 2 successful requests close the breaker.
+
+The sample below shows the shape of that call, written by category. The product source uses the payments processor SDK.
 
 ```typescript
 // apps/server/src/routes/billing.ts
-const stripeBreaker = new CircuitBreaker({
+const paymentsBreaker = new CircuitBreaker({
   failureThreshold: 5,
   resetTimeout: 30_000,
   successThreshold: 2,
 });
 
-async function withStripe<T>(operation: (stripe: Stripe) => Promise<T>): Promise<T> {
+async function withPayments<T>(operation: (client: PaymentsClient) => Promise<T>): Promise<T> {
   try {
-    return await stripeBreaker.execute(() => operation(getStripeClient()));
+    return await paymentsBreaker.execute(() => operation(getPaymentsClient()));
   } catch (error) {
     if (error instanceof CircuitBreakerOpenError) {
       throw new HTTPException(503, {
@@ -339,7 +341,7 @@ async function withStripe<T>(operation: (stripe: Stripe) => Promise<T>): Promise
 
 ### DB-backed webhook idempotency
 
-Stripe delivers webhooks at least once. In a multi-region deployment (Vercel edge), the same webhook can arrive at different instances simultaneously. RevealUI uses a `processed_webhook_events` table with an atomic INSERT to deduplicate:
+The payments processor delivers webhooks at least once. In a multi-region deployment on the hosting provider, the same webhook can arrive at different instances simultaneously. RevealUI uses a `processed_webhook_events` table with an atomic INSERT to deduplicate:
 
 ```typescript
 // apps/server/src/routes/webhooks.ts
@@ -358,18 +360,18 @@ async function checkAndMarkProcessed(
   } catch (err) {
     // PostgreSQL unique constraint violation = already processed
     if ((err as { code?: string }).code === '23505') return true;
-    throw err; // Unknown error -- return 500 so Stripe retries
+    throw err; // Unknown error -- return 500 so the payments processor retries
   }
 }
 ```
 
-If the INSERT succeeds, this is the first time we have seen this event. If it hits a unique constraint violation, another instance already processed it. Any other database error returns 500 to Stripe, which will retry the webhook -- safe because our deduplication is idempotent.
+If the INSERT succeeds, this is the first time we have seen this event. If it hits a unique constraint violation, another instance already processed it. Any other database error returns 500 to the payments processor, which will retry the webhook. Deduplication keeps that retry safe.
 
 ### Subscription lifecycle
 
 The webhook handler covers the full subscription lifecycle:
 
-- **`checkout.session.completed`** -- Creates the Stripe customer record, generates an Ed25519-signed license key, inserts it into the licenses table, and sends the activation email.
+- **`checkout.session.completed`** -- Creates the payments customer record, generates an Ed25519-signed license key, inserts it into the licenses table, and sends the activation email.
 - **`customer.subscription.updated`** -- Handles tier upgrades (new license key at the higher tier) and reactivation (payment recovered after a failed charge). On successful payment recovery, the license is re-activated and the user gets a recovery notification.
 - **`customer.subscription.deleted`** -- Revokes the license and downgrades to free.
 - **`invoice.payment_failed`** -- Sends a payment failure notification with a link to update billing details.
@@ -382,7 +384,7 @@ RevealUI implements the x402 payment protocol for machine-to-machine payments (d
 
 ### How Payments connects to everything else
 
-Payments are initiated by People (checkout requires a session). Successful payments generate Offers (license keys). Payment status controls feature access across Content and Agents. Webhook events update the `users` table (`stripeCustomerId`) and the licenses table (Offers). Chargebacks revoke licenses instantly.
+Payments are initiated by People (checkout requires a session). Successful payments generate Offers (license keys). Payment status controls feature access across Content and Agents. Webhook events update the users table (the payments customer id) and the licenses table (Offers). Chargebacks revoke licenses instantly.
 
 ---
 
@@ -410,7 +412,7 @@ app.openapi(agentStreamRoute, async (c) => {
     return c.json({ error: "Feature 'ai' requires a Pro or Enterprise license." }, 403);
   }
 
-  // Create inference client from environment (snaps > Ollama)
+  // Create inference client from environment (signed local runtime, then a local GGUF runtime)
   const llmClient = llmClientMod.createLLMClientFromEnv();
 
   const runtime = new streamingRuntimeMod.StreamingAgentRuntime({
@@ -431,10 +433,10 @@ The `@revealui/ai` package is loaded dynamically. If the license is free, the im
 
 ### Open-Model Inference
 
-RevealUI defaults to open-weight models (no API key, no cloud bill, no vendor lock-in). Cloud providers (Groq, HuggingFace, and OpenAI-compatible endpoints) are opt-in via environment variables. The inference path is auto-detected:
+RevealUI defaults to open-weight models (no API key, no cloud bill). Cloud AI model providers and chat-completions-compatible endpoints are opt-in via environment variables. The inference path is auto-detected:
 
-1. **Ubuntu Inference Snaps** (recommended)  -  Canonical snap runtime (US-origin allowlist: Nemotron-3-nano, Gemma 3/4, Nemotron Omni)
-2. **Ollama** (fallback)  -  Any open source GGUF model (chat: `qwen2.5:3b`, embeddings: `nomic-embed-text`)
+1. **A signed local inference runtime** (recommended). Install one allowlisted open chat model. The product docs name the command.
+2. **A local GGUF runtime** (fallback). Any open chat model and an open embeddings model. The product docs name the commands.
 
 ### CRDT-based memory system
 
@@ -442,7 +444,7 @@ The AI memory system uses four memory types, modeled on cognitive science:
 
 - **Episodic** -- Records of past interactions and their outcomes. "What happened the last time we ran this task?"
 - **Working** -- Short-term context for the current task. Cleared between sessions.
-- **Semantic** -- Long-term knowledge stored as vector embeddings in Postgres (Neon pgvector), without a separate vector vendor. Hosted retrieval uses VectorMemory.
+- **Semantic** -- Long-term knowledge stored as vector embeddings in Postgres (pgvector), without a separate vector vendor. Hosted retrieval uses VectorMemory.
 - **Procedural** -- Learned procedures and workflows. "How do we deploy to production?"
 
 Memory operations use CRDTs (Conflict-free Replicated Data Types) for conflict resolution, so multiple agents can write to the same memory space without coordination locks.
@@ -453,21 +455,21 @@ RevealUI ships **14 first-party MCP (Model Context Protocol) servers** in `@reve
 
 | Server | Purpose |
 |--------|---------|
-| Stripe | Query customers, invoices, subscriptions from AI agents |
-| Neon | Run SQL queries, manage database branches (remote endpoint at `mcp.neon.tech`), and store embeddings on pgvector |
+| payments processor | Query customers, invoices, subscriptions from AI agents |
+| database | Run SQL queries, manage database branches on a remote database endpoint, and store embeddings on pgvector |
 | Knowledge graph | Opt-in MCP for fleet graph queries (`knowledge-graph`; not a default spawn) |
-| Vercel | Deploy, inspect deployments, manage environment variables |
+| hosting provider | Deploy, inspect deployments, manage environment variables |
 | Code Validator | Static analysis and lint checking within agent workflows |
 | Playwright | Browser automation for testing and scraping |
 | Next.js DevTools | Next.js 16+ runtime diagnostics and automation |
 
-In addition to those seven, RevealUI ships first-party servers (`revealui-content`, `revealui-email`, `revealui-memory`, `revealui-stripe`) and the shared `adapter` base class, all under [`packages/mcp/src/servers/`](https://github.com/RevealUIStudio/revealui/tree/main/packages/mcp/src/servers). The knowledge-graph server is allowlisted for hypervisor spawn and is not a default spawn.
+In addition to those seven, RevealUI ships first-party servers for content, email, memory, and payments, plus the shared adapter base class, all under [`packages/mcp/src/servers/`](https://github.com/RevealUIStudio/revealui/tree/main/packages/mcp/src/servers). The knowledge-graph server is allowlisted for hypervisor spawn and is not a default spawn.
 
-These servers are tools that agents can invoke during task execution. An agent can query your Stripe dashboard, check your deployment status, and run your test suite without you writing integration code.
+These servers are tools that agents can invoke during task execution. An agent can query your payments processor dashboard, check your deployment status, and run your test suite without you writing integration code.
 
 ### A2A protocol
 
-RevealUI exposes Google A2A discovery cards at `/.well-known/agent.json` and accepts JSON-RPC at `POST /a2a`. The card advertises:
+RevealUI exposes A2A discovery cards at `/.well-known/agent.json` and accepts JSON-RPC at `POST /a2a`. The card advertises:
 
 - **`tasks/send`** -- Advertised; the handler currently chats or stubs rather than a durable task runner
 - **`tasks/sendSubscribe`** -- Advertised subscribe method
@@ -487,11 +489,11 @@ AI is not free. RevealUI tracks task usage per billing cycle:
 | Max | 50,000 tasks |
 | Enterprise | Unlimited |
 
-Usage beyond the quota is tracked in the `agent_task_usage` table. Reporting that overage to Stripe Billing Meters is in development. During early access, usage is recorded but not billed, so execution is never blocked on a meter.
+Usage beyond the quota is tracked in the `agent_task_usage` table. Reporting that overage to payments processor usage meters is in development. During early access, usage is recorded but not billed, so execution is never blocked on a meter.
 
 ### How Agents connects to everything else
 
-AI agents authenticate through the People system (session cookies or API keys). Agents create and modify Content (posts, pages, media). Agent execution is metered through Offers (task quotas per tier). Overage billing feeds through Payments (Stripe Billing Meters). The A2A protocol enables agents to purchase services from other agents via x402, closing the loop.
+AI agents authenticate through the People system (session cookies or API keys). Agents create and modify Content (posts, pages, media). Agent execution is metered through Offers (task quotas per tier). Overage billing feeds through Payments (payments processor usage meters). The A2A protocol enables agents to purchase services from other agents via x402, closing the loop.
 
 ---
 
