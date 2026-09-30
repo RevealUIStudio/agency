@@ -1,6 +1,6 @@
 # Launch pulse kit — r/selfhosted and Show HN
 
-Owner paste only. Joshua posts both threads under his own name and stays for comments.
+Owner paste only. The author posts both threads under their own name and stays for comments.
 
 Do not post this from a bot, a script, CI, or an agent. Do not merge a promotion off the back of this file.
 
@@ -58,7 +58,7 @@ Do not put these prices in the opening post. The opening post stays on the produ
 - **Care is $1,997/mo, optional, and off the stranger homepage.** Do not name Care. Do not quote $1,997. Do not link a Care checkout. Do not offer it as a follow-on in the thread.
 - Do not mention the domain pack, Stage B, a $297 custom-domain add-on, or any fee waiver.
 - Do not write Pilot, $1,500, or $7,500.
-- Do not mention CapCut or Cal.com. Studio intro booking, if you must point at it, is the Google Calendar intro already on revealuistudio.com.
+- Do not mention a short-form video editor or a third-party booking host. Studio intro booking, if you must point at it, is the Google Calendar intro already on revealuistudio.com.
 - Do not claim SOC 2 certified, SOC 2 ready, SOC 2 compliant, SOC 2 audited, or ISO 27001 certified. Honest line if asked: not certified. A vendor’s report covers the vendor, not RevealUI and not RevealUI Studio.
 - Do not invent customers, logos, revenue, uptime, star counts, download counts, or user counts. There are no paying external customers yet (`docs/WHAT_IS.md`). Say that if someone asks about traction. Do not imply a customer base.
 - Do not claim a phone-home or telemetry number you have not just verified in the tree.
@@ -197,6 +197,6 @@ SSO is an operator preview, not a feature I have walked a customer through. Whit
 - [ ] Neither paste names Care, Pilot, $1,500, $7,500, the domain pack, Stage B, or a waiver.
 - [ ] Neither paste says SOC 2 certified, ready, compliant, or audited.
 - [ ] Neither paste names a customer, a logo, or a traction number.
-- [ ] Neither paste mentions CapCut or Cal.com.
+- [ ] Neither paste mentions a short-form video editor or a third-party booking host.
 - [ ] `PUBLIC_OFFERS` is still Consultation, Pilot, Launch. Adapter stays an add-on.
 - [ ] You are posting from your own Reddit and HN accounts, and you can stay for comments.
