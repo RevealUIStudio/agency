@@ -52,7 +52,8 @@ export const CONSULTATION_MEET_FALLBACK = 'The Google Meet link is on the calend
 export const CONSULTATION_PREP_BODY =
   'Send the system you want to look at and the question you want answered. A link is usually enough.';
 
-export const CONSULTATION_CANCEL = 'No charge. The hold ends within 20 minutes.';
+export const CONSULTATION_CANCEL =
+  'Checkout was canceled. Your temporary slot hold expires within 20 minutes.';
 
 export const CONSULTATION_READY_HINT = 'Pick a slot, then enter your name and email.';
 

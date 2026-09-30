@@ -9,14 +9,13 @@ export function ProcessPage() {
       <section className="bg-background py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-6">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            How we work
+            Know what happens before the work starts.
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            Three paid offers for startups, and for technical founders and small agencies who
-            already run agents. A 30-minute intro on Google Calendar stays available. No account. No
-            payment to book the intro. Google Meet or sit down. If I am not the right fit, I will
-            say so on the call. Consultation is paid when you book the slot. Pilot and Launch are
-            invoiced after we agree. {ADAPTER_ROLE}
+            We agree on the problem, the deliverable, and the payment terms before starting. Here is
+            what you bring and what each engagement leaves you with. The 30-minute intro is free.
+            Consultation is paid when booking; Pilot and Launch are invoiced after scope is agreed.{' '}
+            {ADAPTER_ROLE}
           </p>
           <p className="mt-4 text-base text-muted-foreground">
             This page is how each offer actually runs: what you send, what you get back, roughly how
@@ -64,7 +63,8 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  Notes and a next step. No leftover site. Not a rebuild. Not ongoing support.
+                  Session notes and a recommended next step. Implementation and ongoing support are
+                  separate engagements.
                 </p>
               </div>
               <div>
@@ -151,10 +151,9 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  A live handoff on your accounts. The domain pack is included. You own what we
-                  ship. You own the accounts and the data. If we disappear, you still have the
-                  company. Not a multi-month platform. Not an “AI” headline. Not unlimited
-                  revisions.
+                  A live flow on your accounts, with the domain pack, a runbook, and 30 days of
+                  async stabilization. You keep the code, accounts, and data. Work outside the
+                  agreed flow is scoped separately.
                 </p>
               </div>
               <div>

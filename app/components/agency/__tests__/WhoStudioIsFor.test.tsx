@@ -15,22 +15,14 @@ describe('WhoStudioIsFor', () => {
     expect(document.getElementById('who')).not.toBeNull();
     expect(screen.getByText(STUDIO_FOR_AGENCY)).toBeInTheDocument();
     expect(STUDIO_FOR_AGENCY).toBe(
-      'Small agencies: stop disclosing work your agents can’t receipt. Pilot and Launch leave PROOF on the client’s domain.',
+      'For agency work, the delivered system lives on your client’s accounts. You can hand over the code, data, and operating notes.',
     );
     for (const beat of STUDIO_FOR_BEATS) {
       expect(screen.getByText(beat)).toBeInTheDocument();
     }
     expect(STUDIO_FOR_BEATS).toHaveLength(3);
-    expect(STUDIO_FOR_BEATS[0]).toMatch(/^For:/);
-    expect(STUDIO_FOR_BEATS[0]).toMatch(/technical founders and small agencies/i);
-    expect(STUDIO_FOR_BEATS[0]).toMatch(/business layer on their domain/i);
-    expect(STUDIO_FOR_BEATS[1]).toMatch(/^Not for:/);
-    expect(STUDIO_FOR_BEATS[1]).toMatch(/hosted chatbot/i);
-    expect(STUDIO_FOR_BEATS[1]).toMatch(/Jobber swap/i);
-    expect(STUDIO_FOR_BEATS[1]).toMatch(/compliance checkbox/i);
-    expect(STUDIO_FOR_BEATS[2]).toMatch(/^The deal:/);
-    expect(STUDIO_FOR_BEATS[2]).toMatch(/You bring the domain/);
-    expect(STUDIO_FOR_BEATS[2]).toMatch(/pay Launch to implement/);
+    expect(STUDIO_FOR_BEATS.join(' ')).toMatch(/maintain the infrastructure and software/);
+    expect(STUDIO_FOR_BEATS.join(' ')).toMatch(/before work starts/);
     const text = container.textContent ?? '';
     expect(text).not.toContain('\u2014');
     expect(text).not.toMatch(/SOC ?2 certified|SOC2 ready|\baudited\b|SOC 2 compliant/i);

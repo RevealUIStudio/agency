@@ -35,10 +35,8 @@ describe('QuoteCalculator', () => {
     expect(screen.getByRole('radio', { name: OUTCOME_OPTIONS[2].label })).toBeInTheDocument();
 
     expect(screen.getByText(QUOTE_CALCULATOR_LEAD)).toBeInTheDocument();
-    expect(QUOTE_CALCULATOR_LEAD).toMatch(/PROOF means a receipted action/);
-    expect(QUOTE_CALCULATOR_LEAD).toMatch(/not outcome validation\./);
-    expect(QUOTE_CALCULATOR_LEAD).not.toMatch(/proof of work/i);
-    expect(screen.getByText(/Google Calendar \/ Google Meet/)).toBeInTheDocument();
+    expect(QUOTE_CALCULATOR_LEAD).toMatch(/listed price/);
+    expect(QUOTE_CALCULATOR_LEAD).toMatch(/Product licenses are separate/);
     expect(screen.queryByText(/Same tool as the product site/)).not.toBeInTheDocument();
     expect(screen.getByText(CONSULTATION.price)).toBeInTheDocument();
     expect(screen.getByText(PILOT.price)).toBeInTheDocument();

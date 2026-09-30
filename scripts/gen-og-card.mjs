@@ -8,7 +8,7 @@
  * navy plate or checker tile out of a previous card; composite the SVG so
  * the card gradient shows through the mark.
  *
- * Usage (after pnpm install, with sharp resolvable):
+ * Usage (after pnpm install, with development dependencies installed):
  *   node scripts/gen-og-card.mjs
  */
 import { createHash } from 'node:crypto';
@@ -55,16 +55,11 @@ function assertLiveCopy() {
 
 function resolveSharp() {
   const require = createRequire(import.meta.url);
-  const search = [
-    path.join(ROOT, 'node_modules'),
-    '/tmp/raster/node_modules',
-    process.env.SHARP_PATH,
-  ].filter(Boolean);
   try {
-    return require(require.resolve('sharp', { paths: search }));
+    return require('sharp');
   } catch {
     throw new Error(
-      'sharp is required to rasterize og-card.png. Install it locally or set SHARP_PATH.',
+      'sharp is a required development dependency. Run pnpm install before generating the card.',
     );
   }
 }
