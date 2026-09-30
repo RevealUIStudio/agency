@@ -478,8 +478,11 @@ describe('public copy gates', () => {
     );
     expect(OG_CARD_HEADLINE).not.toBe(HERO_HEADLINE);
     expect(OG_CARD_HEADLINE).not.toBe(HERO_SHOP_LINE);
-    expect(OG_CARD_SKU_LINE).toBe('Consultation $300. Pilot $3,997. Launch $14,500.');
+    expect(OG_CARD_SKU_LINE).toBe(
+      'Consultation $300/hr, Pilot $3,997 (includes 1 Adapter), Launch $14,500 (up to 3 Adapters), Care $1,997/mo',
+    );
     expect(OG_CARD_SKU_LINE).toBe(OG_CARD_SKU_FROM_OFFERS);
+    expect(OG_CARD_SKU_LINE).not.toContain('Proof Sprint');
     expect(OG_CARD_BOOKING_LINE).toBe('Book a 30-minute intro on Google Calendar.');
     expect(OG_CARD_URL).toBe('revealuistudio.com');
     expect(hero).toContain(HERO_HEADLINE);

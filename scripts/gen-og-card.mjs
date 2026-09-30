@@ -3,7 +3,7 @@
  * Rasterize public/og-card.png from the live catalog fixture (app/lib/og-card.ts)
  * plus the transparent Circuit-R master (public/favicon.svg).
  *
- * This repo never had an OG generator — only a static PNG. Do not invent a
+ * This repo never had an OG generator. Only a static PNG. Do not invent a
  * second headline here. Copy is owned by app/lib/og-card.ts. Do not lift a
  * navy plate or checker tile out of a previous card; composite the SVG so
  * the card gradient shows through the mark.
@@ -22,7 +22,10 @@ const ROOT = path.resolve(__dirname, '..');
 
 const HEADLINE =
   'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?';
-const SKU_LINE = 'Consultation $300. Pilot $3,997. Launch $14,500.';
+const SKU_LINE =
+  'Consultation $300/hr, Pilot $3,997 (includes 1 Adapter), Launch $14,500 (up to 3 Adapters), Care $1,997/mo';
+const SKU_ROW_1 = 'Consultation $300/hr, Pilot $3,997 (includes 1 Adapter),';
+const SKU_ROW_2 = 'Launch $14,500 (up to 3 Adapters), Care $1,997/mo';
 const BOOKING_LINE = 'Book a 30-minute intro on Google Calendar.';
 const URL_LINE = 'revealuistudio.com';
 const PLATE = '#060d1a';
@@ -41,6 +44,12 @@ function assertLiveCopy() {
   }
   if (!hero.includes('The agentic business runtime startups operate on their own domain.')) {
     throw new Error('Hero.tsx lost the known-for H1 lock');
+  }
+  if (`${SKU_ROW_1} ${SKU_ROW_2}` !== SKU_LINE) {
+    throw new Error('SKU rows drifted from the locked SKU line');
+  }
+  if (SKU_LINE.includes('Proof Sprint')) {
+    throw new Error('Proof Sprint is retired as a public name');
   }
   if (!fixture.includes(SKU_LINE)) {
     throw new Error('app/lib/og-card.ts is missing the locked SKU line');
@@ -99,12 +108,14 @@ async function main() {
   assertLiveCopy();
   const sharp = resolveSharp();
 
-  // Transparent Circuit-R. Same 88px slot the card already uses (72,64).
-  // No navy plate and no checker grid — the card fill shows through.
-  const mark = await sharp(readFileSync(path.join(ROOT, 'public/favicon.svg')))
-    .resize(88, 88, { fit: 'fill' })
-    .png()
-    .toBuffer();
+  // Transparent Circuit-R master already in the repo. Same 88px slot (72,64).
+  // No navy plate and no checker grid. The card fill shows through.
+  const markSvg = readFileSync(path.join(ROOT, 'public/favicon.svg'));
+  const markText = markSvg.toString('utf8');
+  if (markText.includes('<rect') || markText.includes('#060d1a')) {
+    throw new Error('Circuit-R master must be the transparent variant');
+  }
+  const mark = await sharp(markSvg).resize(88, 88, { fit: 'fill' }).png().toBuffer();
 
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
@@ -119,8 +130,9 @@ async function main() {
   <text x="72" y="318" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">Tired of booking in one tab,</text>
   <text x="72" y="368" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">invoices in another,</text>
   <text x="72" y="418" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">and an agent in a third that leaves no receipt?</text>
-  <text x="72" y="468" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="22" font-weight="500">${SKU_LINE}</text>
-  <text x="72" y="500" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="22" font-weight="500">${BOOKING_LINE}</text>
+  <text x="72" y="462" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="20" font-weight="500">${SKU_ROW_1}</text>
+  <text x="72" y="490" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="20" font-weight="500">${SKU_ROW_2}</text>
+  <text x="72" y="528" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="22" font-weight="500">${BOOKING_LINE}</text>
   <text x="72" y="588" fill="#8aa0bd" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="18" font-weight="400">${URL_LINE}</text>
 </svg>`;
 
