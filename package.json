@@ -67,7 +67,7 @@
       "@vitest/coverage-v8": ">=4.1.11 <5",
       "postcss": "8.5.25",
       "nanoid@<3.3.18": "3.3.18",
-      "undici": ">=7.29.0 <8",
+      "undici": "7.29.1",
       "vite": "8.2.0",
       "typescript": "7.0.2"
     }
