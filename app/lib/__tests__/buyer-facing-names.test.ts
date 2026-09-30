@@ -72,8 +72,8 @@ describe('buyer-facing tool names', () => {
 
   it('keeps the public ladder and adapter categories', () => {
     const kit = read('docs/gap-specs/GAP-433-launch-kit.md');
-    expect(kit).toContain('Pilot $3,997');
-    expect(kit).toContain('Launch $14,500');
+    expect(kit).toContain('Pilot is $3,997');
+    expect(kit).toContain('Launch is $14,500');
     expect(kit).not.toContain('Proof Sprint');
     expect(kit).not.toMatch(/alternative to/i);
     expect(ADAPTER_CATEGORIES).toBe(
