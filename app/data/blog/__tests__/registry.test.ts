@@ -3,52 +3,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { allBlogPosts, publishedBlogPosts, STUDIO_SITE_ORIGIN } from '@/data/blog';
+import { findBannedToolNames } from '@/lib/buyer-facing-names';
 import { docsBlogPath, studioBlogPath } from '../../../../content/blog/registry';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
-
-const VENDOR_WORDS = [
-  'Stripe',
-  'Vercel',
-  'Anthropic',
-  'OpenAI',
-  'Claude',
-  'Neon',
-  'Radix',
-  'MUI',
-  'Cloudflare',
-  'GitHub',
-  'Palantir',
-  'Databricks',
-  'Salesforce',
-  'a16z',
-  'Clerk',
-  'Payload',
-  'Supabase',
-  'Slack',
-  'Ollama',
-  'Ubuntu',
-  'AT&T',
-  'T-Mobile',
-  'Google',
-];
-
-function hasTerm(haystack: string, needle: string): boolean {
-  const lower = haystack.toLowerCase();
-  const target = needle.toLowerCase();
-  let from = 0;
-  while (from < lower.length) {
-    const at = lower.indexOf(target, from);
-    if (at === -1) return false;
-    const before = at === 0 ? '' : (lower[at - 1] ?? '');
-    const afterIndex = at + target.length;
-    const after = afterIndex >= lower.length ? '' : (lower[afterIndex] ?? '');
-    const boundary = (ch: string) => ch === '' || ch < 'a' || ch > 'z';
-    if (boundary(before) && boundary(after)) return true;
-    from = at + 1;
-  }
-  return false;
-}
 
 function publishedBody(file: string): string {
   return readFileSync(path.join(repoRoot, 'content/blog', file), 'utf8').replaceAll(
@@ -83,9 +41,7 @@ describe('studio blog registry', () => {
       expect(body).not.toContain('\u2014');
       expect(body).not.toContain('Proof Sprint');
       expect(body.toLowerCase()).not.toContain('ten years');
-      for (const word of VENDOR_WORDS) {
-        expect(hasTerm(body, word), `${post.file} names ${word}`).toBe(false);
-      }
+      expect(findBannedToolNames(body), post.file).toEqual([]);
     }
     const upside = publishedBody('17-shareable-upside.md');
     const future = publishedBody('16-ui-of-the-future.md');

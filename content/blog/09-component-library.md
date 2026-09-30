@@ -37,7 +37,7 @@ That is the whole external surface. There is no component framework underneath.
 
 ## No library underneath
 
-It is worth being specific, because "zero dependencies" is a claim people make loosely. Search the source of `@revealui/presentation` for Radix, MUI, Headless UI, Chakra, or React Aria and you will find nothing. There is no `class-variance-authority` either, which is the one most projects keep even after they drop the rest.
+It is worth being specific, because "zero dependencies" is a claim people make loosely. Search the source of `@revealui/presentation` for a popular component library and you will find nothing. There is no `class-variance-authority` either, which is the one most projects keep even after they drop the rest.
 
 The three things those libraries usually provide are all in-package:
 
@@ -91,7 +91,7 @@ Because the tokens are semantic rather than literal, a component never says "blu
 
 ## The trade-off
 
-Here is the honest version. A from-scratch component layer trades away two real things: the ecosystem breadth of a Radix or an MUI, and the millions of hours of edge-case hardening that a widely used library accumulates. If you need an exotic widget that is not among the 60, you build it, on the same primitives, rather than `npm install`-ing it in an afternoon.
+Here is the honest version. A from-scratch component layer trades away two real things: the ecosystem breadth of a widely used component library, and the millions of hours of edge-case hardening that library accumulates. If you need an exotic widget that is not among the 60, you build it, on the same primitives, rather than `npm install`-ing it in an afternoon.
 
 What you get back is ownership. No major-version migrations dictated by someone else's roadmap. No dependency that can change behavior under you. No styling you cannot reach. For business software, where the component needs are broad but not exotic, that is the trade I want, and it is the one RevealUI makes by default.
 

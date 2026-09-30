@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { HERO_HEADLINE, HERO_PROOF, HERO_RESULT, HERO_SHOP_LINE } from '@/components/agency/Hero';
 import { STUDIO_FOR_TITLE } from '@/components/agency/WhoStudioIsFor';
+import { findBannedToolNames } from '@/lib/buyer-facing-names';
 import { FLEET_NAME } from '@/lib/fleet';
 import { CONTACT_EMAIL, INTRO_CALL_URL, PRODUCT_SITE_URL } from '@/lib/site';
 import { HomePage } from '@/routes/HomePage';
@@ -80,7 +81,8 @@ describe('HomePage', () => {
     expect(text).toContain('RevealUI Studio is not SOC 2 or ISO 27001 certified today.');
     expect(text).not.toMatch(/We are SOC ?2 certified/i);
     expect(text).not.toMatch(/In audit/i);
-    expect(text).not.toMatch(/Our stack is SOC ?2 because Neon/i);
+    expect(text).toContain('That our stack is SOC 2 because a vendor is.');
+    expect(findBannedToolNames(text)).toEqual([]);
     expect(text).not.toMatch(/SOC2 ready/i);
     expect(text).not.toMatch(/24\/7/);
     expect(text).not.toMatch(/testimonial/i);

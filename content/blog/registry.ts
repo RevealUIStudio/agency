@@ -3,7 +3,8 @@
  *
  * Bodies live next to this file as markdown. Public routes read `published`.
  * Held essays stay in the repo so the move from the product docs tree is
- * complete, and stay off /blog until a brand pass.
+ * complete, and stay off /blog until a publish decision. Tool and infra
+ * names in those essays stay categorical.
  *
  * Source of the move: RevealUIStudio/revealui `docs/blog/*.md` on `test`
  * (2026-09-26). Docs URLs use the filename stem. Studio URLs use `slug`.
@@ -17,12 +18,12 @@ export interface BlogEntry {
   readonly author: string;
   readonly file: string;
   readonly published: boolean;
-  /** Present when the essay is held. Names the monorepo path still to brand-pass. */
+  /** Present when the essay is held. Names the source path. Publish is a separate decision. */
   readonly todo?: string;
 }
 
 function held(file: string): string {
-  return `Brand pass before publish. Source: RevealUIStudio/revealui docs/blog/${file}. The essay still names outside vendors, so it stays off the public index.`;
+  return `Held off the public index until publish. Source: RevealUIStudio/revealui docs/blog/${file}. Tool and infra names in this essay stay categorical.`;
 }
 
 export const BLOG_ENTRIES: readonly BlogEntry[] = [
