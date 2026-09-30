@@ -14,6 +14,7 @@ import {
   PROOF_GAP_THANKS_TITLE,
 } from '@/content/proof-gap';
 import { submitContact } from '@/lib/api';
+import { findBannedToolNames } from '@/lib/buyer-facing-names';
 import { INTRO_CALL_URL } from '@/lib/site';
 import { ProofGapPage } from '@/routes/ProofGapPage';
 
@@ -52,13 +53,18 @@ describe('ProofGapPage', () => {
     expect(screen.getByRole('button', { name: PROOF_GAP_CTA })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /Request a quote/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Request a quote/i })).not.toBeInTheDocument();
-    expect(text).not.toMatch(/faster than Zap/i);
+    expect(findBannedToolNames(text)).toEqual([]);
     expect(text).not.toMatch(/revolutionize|empower|seamless/i);
     expect(text).not.toMatch(/RevMind/);
     expect(text).not.toMatch(/Architecture-as-Consultation/);
     expect(text).not.toMatch(/instant ROI/i);
     expect(text).not.toMatch(/limited (spots|time)|act now|sale ends/i);
-    expect(screen.queryByRole('heading', { name: PROOF_GAP_OFFER_NAME })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: PROOF_GAP_OFFER_NAME })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Download the free checklist PDF' })).toHaveAttribute(
+      'href',
+      PROOF_GAP_PDF_HREF,
+    );
+    expect(mockSubmit).not.toHaveBeenCalled();
   });
 
   it('delivers the checklist after a valid submit', async () => {
@@ -78,9 +84,10 @@ describe('ProofGapPage', () => {
       'href',
       INTRO_CALL_URL,
     );
-    expect(screen.getByText(/you don't need a Google account/i)).toBeInTheDocument();
+    expect(screen.getByText(/Open the Google Meet link/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: PROOF_GAP_OFFER_NAME })).toBeInTheDocument();
     expect(screen.getByText('1) Accounts and ownership')).toBeInTheDocument();
     expect(screen.getByText('3) Action records')).toBeInTheDocument();
+    expect(findBannedToolNames(document.body.textContent ?? '')).toEqual([]);
   });
 });

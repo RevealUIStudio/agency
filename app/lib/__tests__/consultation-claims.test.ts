@@ -52,10 +52,10 @@ describe('consultation public claims', () => {
     expect(source).toContain('CONSULTATION_SUCCESS');
     expect(STAGE_B_CHECKBOX).toBe('Add the domain pack ($297)');
     expect(CONSULTATION_AFTER_PAY).toBe(
-      'After payment, the Google Meet link is on the calendar invite.',
+      'After payment and scheduling are confirmed, the Meet link is on your calendar invite.',
     );
     expect(CONSULTATION_SUCCESS).toBe(
-      'Payment received. The Google Meet link is on the calendar invite.',
+      'Payment and scheduling confirmed. Look for your calendar invite with the Meet link.',
     );
     expect(CONSULTATION_SUCCESS).not.toContain('—');
     expect(NETWORK_LINK_USED).toBe('This network Consultation link has already been used.');

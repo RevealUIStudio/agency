@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ProofGapForm } from '@/components/agency/ProofGapForm';
 import {
   PROOF_GAP_BULLETS,
@@ -9,6 +8,7 @@ import {
   PROOF_GAP_NEXT_STEPS,
   PROOF_GAP_OFFER_NAME,
   PROOF_GAP_ONE_GAP_PROMPT,
+  PROOF_GAP_PDF_HREF,
   PROOF_GAP_PROOF_LINE,
   PROOF_GAP_REFUSALS,
   PROOF_GAP_SCORE_BANDS,
@@ -96,8 +96,6 @@ function ProofGapChecklist() {
 }
 
 export function ProofGapPage() {
-  const [delivered, setDelivered] = useState(false);
-
   return (
     <>
       <section className="bg-background py-16 sm:py-24">
@@ -125,17 +123,34 @@ export function ProofGapPage() {
           </ul>
 
           <div className="relative mt-12">
-            <ProofGapForm onSuccess={() => setDelivered(true)} />
+            <a
+              href={PROOF_GAP_PDF_HREF}
+              download
+              className="inline-block font-semibold text-primary hover:underline"
+            >
+              Download the free checklist PDF
+            </a>
+            <h2 className="mt-10 text-2xl font-semibold text-foreground">
+              Want help reviewing your checklist?
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              The checklist is available without giving us your details. This optional form sends a
+              review inquiry to Studio; it does not subscribe you to marketing.
+            </p>
+            <div className="mt-6">
+              <ProofGapForm />
+            </div>
           </div>
 
-          {!delivered && (
+          {
             <p className="mt-8 text-sm text-muted-foreground">
-              Soft ask only. {PROOF_GAP_LADDER}. Paid work is invoiced after we agree.
+              {PROOF_GAP_LADDER}. Consultation is paid when you book. Pilot and Launch are invoiced
+              after scope is agreed.
             </p>
-          )}
+          }
         </div>
       </section>
-      {delivered && <ProofGapChecklist />}
+      <ProofGapChecklist />
     </>
   );
 }

@@ -10,11 +10,7 @@ describe('RevealFleet', () => {
   it('names the family, leads with RevealUI, and links to the product site', () => {
     render(<RevealFleet />);
     expect(screen.getByRole('heading', { level: 2, name: FLEET_NAME })).toBeInTheDocument();
-    expect(screen.getByText(/RevealUI is the agentic business runtime/)).toBeInTheDocument();
-    expect(
-      screen.getByText(/Knowledge Graph is part of that runtime \(Electric\+CRDT\)/),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/not a Studio SKU/)).toBeInTheDocument();
+    expect(screen.getByText(/family of software behind/)).toBeInTheDocument();
     const product = screen.getByRole('link', { name: 'RevealUI on revealui.com' });
     expect(product).toHaveAttribute('href', PRODUCT_SITE_URL);
   });
@@ -23,13 +19,11 @@ describe('RevealFleet', () => {
     const { container } = render(<RevealFleet />);
     const text = container.textContent ?? '';
     expect(text).toContain(CONSULTATION.name);
-    expect(text).toContain(CONSULTATION.price);
+    expect(text).not.toContain(CONSULTATION.price);
     expect(text).toContain(PILOT.name);
-    expect(text).toContain(PILOT.price);
-    expect(text).toContain(LAUNCH.price);
-    expect(text).toMatch(/You run it, or I ship it with you/);
-    expect(text).toMatch(/startups/i);
-    expect(text).toMatch(/technical founders and small agencies/i);
+    expect(text).not.toContain(PILOT.price);
+    expect(text).toContain(LAUNCH.name);
+    expect(text).toContain('Product licenses are separate');
     expect(text).not.toMatch(/\$49/);
     expect(text).not.toMatch(/\$99/);
     expect(text).not.toMatch(/Pro Perpetual/);

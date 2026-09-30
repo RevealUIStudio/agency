@@ -42,9 +42,9 @@ Each of these came out of operating RevealUI ourselves. We needed them, so we bu
 
 **RevForge** (Beta) is a white-label stamping tool for operators. It generates branded, domain-locked RevealUI trial kits as self-hosted runtime instances, so an agency or platform can hand a customer their own deployment without forking anything by hand.
 
-**RevDev** (Alpha) is a multi-agent IDE harness: a desktop Studio, a terminal Console, and a Node daemon that coordinate AI coding agents across a multi-repo workspace. It speaks to Claude, Cursor, and Copilot through a shared coordination layer. Alpha means it works and we use it, not that it is bulletproof yet.
+**RevDev** (Alpha) is a multi-agent IDE harness: a desktop Studio, a terminal Console, and a Node daemon that coordinate AI coding agents across a multi-repo workspace. It speaks to an AI model provider and AI code editors through a shared coordination layer. Alpha means it works and we use it, not that it is bulletproof yet.
 
-**RevCon** (Alpha) is editor config sync. One source of truth for Zed, VS Code, and Cursor settings, symlinked into every project, so you edit a config once and it propagates fleet-wide.
+**RevCon** (Alpha) is editor config sync. One source of truth for code editor settings, symlinked into every project, so you edit a config once and it propagates fleet-wide.
 
 **RevSkills** (Active, MIT) is a library of Agent Skills: auth flows, schema patterns, test scaffolds, and more, ready to drop into any agent. Free, open, importable.
 

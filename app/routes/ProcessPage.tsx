@@ -104,15 +104,16 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you send</h3>
                 <p className="mt-2 text-muted-foreground">
-                  Your domain, your Vercel project, your model key, and how the work happens today.
+                  Your domain, your hosting provider project, your AI model provider key, and how
+                  the work happens today.
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
                   One site. One receipted action you operate. The domain pack is included. Your
-                  Vercel, your model key. Not hosted chatbot SaaS. Product licenses live on
-                  revealui.com.
+                  hosting provider, your AI model provider key. Not hosted chatbot SaaS. Product
+                  licenses live on revealui.com.
                 </p>
               </div>
               <div>

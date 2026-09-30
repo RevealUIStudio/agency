@@ -11,7 +11,7 @@ RevealUI is open source today; the commercial side is pre-launch. Before we talk
 
 This is a solo-founder project. I don't have a VC board to answer to or a growth team optimizing conversion funnels. I have a business model I believe in, and I'd rather explain it plainly than have you discover the trade-offs later.
 
-> **Status note (updated 2026-07-29):** Two revenue surfaces described later in this post (the **MCP Marketplace** (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526); third-party publishing + 80/20 revenue share) and **x402 agent payments** (coming soon, [#93](https://github.com/RevealUIStudio/revealui/issues/93))) remain **planned, not fully shipped**. The first-party MCP catalog (servers under `packages/mcp/src/servers/`) does ship today; third-party publishing, marketplace discovery UI, and developer payouts are still incomplete. x402 is designed and code-complete behind `X402_ENABLED=false`. **Stripe is live** in production (live mode on since 2026-06-26). See [What Works Today](../WHAT_WORKS_TODAY.md) for the current shipping status of every commercial surface.
+> **Status note (updated 2026-07-29):** Two revenue surfaces described later in this post (the **MCP Marketplace** (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526); third-party publishing + 80/20 revenue share) and **x402 agent payments** (coming soon, [#93](https://github.com/RevealUIStudio/revealui/issues/93))) remain **planned, not fully shipped**. The first-party MCP catalog (servers under `packages/mcp/src/servers/`) does ship today; third-party publishing, marketplace discovery UI, and developer payouts are still incomplete. x402 is designed and code-complete behind `X402_ENABLED=false`. **The payments processor is live** in production (live mode on since 2026-06-26). See [What Works Today](../WHAT_WORKS_TODAY.md) for the current shipping status of every commercial surface.
 
 ---
 
@@ -43,8 +43,8 @@ RevealUI Pro includes:
 
 - **AI agents** -- task execution, multi-step workflows, autonomous operations
 - **CRDT memory** -- working memory, episodic memory, and vector storage that persists across agent sessions
-- **LLM orchestration** -- open-model inference via Ubuntu Inference Snaps and Ollama
-- **Editor integrations** -- config sync for Zed and VS Code
+- **LLM orchestration** -- open-model inference on a local inference runtime
+- **Editor integrations** -- config sync for AI code editors
 - **Harness coordination** -- workboard-based agent orchestration, JSON-RPC communication, daemon management
 - **MCP framework** -- the hypervisor, 14 first-party servers, and the adapter base class that connect agents to tools
 
@@ -71,14 +71,14 @@ Pro packages are published to npm as compiled distributions. You can install the
 | **Users/editors** | 3 | 25 | 100 | Unlimited |
 | **Agent tasks/mo** | Local AI | 10,000 | 50,000 | Unlimited |
 | **API rate limit** | 200 req/min | 300 req/min | 600 req/min | 1,000 req/min |
-| **Auth** | Session + OAuth (GitHub / Google / Vercel) | Same | Same | Session + OAuth + Enterprise SSO (OIDC/SAML SP-initiated, [#449](https://github.com/RevealUIStudio/revealui/issues/449)) |
+| **Auth** | Session + OAuth (a source host, an identity provider, or a hosting provider) | Same | Same | Session + OAuth + Enterprise SSO (OIDC/SAML SP-initiated, [#449](https://github.com/RevealUIStudio/revealui/issues/449)) |
 | **admin collections** | Unlimited | Unlimited | Unlimited | Unlimited |
 | **Real-time sync** | Basic | Full | Full | Full |
-| **Local AI inference (Snaps / Ollama)** | Yes | Yes | Yes | Yes |
+| **Local AI inference (a local inference runtime)** | Yes | Yes | Yes | Yes |
 | **AI agents (orchestration)** | -- | Yes | Yes | Yes |
 | **AI memory** | -- | Full (working + episodic + vector) | Full | Full |
 | **Advanced inference config** | -- | -- | Yes | Yes |
-| **Stripe payments** | -- | Built-in | Built-in | Built-in |
+| **Payments** | -- | Built-in | Built-in | Built-in |
 | **Monitoring dashboard** | -- | Yes | Yes | Yes |
 | **Custom domains** | -- | Yes | Yes | Yes |
 | **Multi-tenant** | -- | -- | -- | Yes |
@@ -88,7 +88,7 @@ Pro packages are published to npm as compiled distributions. You can install the
 
 A few things worth noting about this table.
 
-**The free tier is genuinely useful.** Unlimited admin collections, session-based auth, basic real-time sync, local AI inference (Inference Snaps / Ollama), and full source code access. You can build and run a real product on the free tier. I don't want "free" to mean "demo."
+**The free tier is genuinely useful.** Unlimited admin collections, session-based auth, basic real-time sync, local AI inference (a local inference runtime), and full source code access. You can build and run a real product on the free tier. I don't want "free" to mean "demo."
 
 **Open-core business primitives work on free.** People, Content, Offers, and Payments, the MIT core, are fully functional at every tier. Free doesn't cripple the business stack to pressure upgrades. The tier boundaries are about scale (more sites, more users, higher rate limits) and AI capabilities.
 
@@ -138,11 +138,11 @@ I'm not going to share revenue projections here. That's not the point. The point
 
 RevealUI isn't just a framework you install. It's an open runtime for businesses that run their own AI, with an ecosystem strategy.
 
-**MCP Marketplace (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526)).** Developers will be able to publish MCP servers -- tools that AI agents use to interact with external services -- with per-call pricing via the x402 payment protocol. Server authors earn 80% of revenue. The publish/list/invoke/onboard endpoints are wired today; third-party developer payouts are not fully shipped yet (Stripe live mode is already on for first-party billing). We handle discovery, billing, and the agent routing infrastructure. The goal is a self-sustaining marketplace where developers build specialized integrations and get paid for their work.
+**MCP Marketplace (coming soon, [#526](https://github.com/RevealUIStudio/revealui/issues/526)).** Developers will be able to publish MCP servers -- tools that AI agents use to interact with external services -- with per-call pricing via the x402 payment protocol. Server authors earn 80% of revenue. The publish/list/invoke/onboard endpoints are wired today; third-party developer payouts are not fully shipped yet (payments processor live mode is already on for first-party billing). We handle discovery, billing, and the agent routing infrastructure. The goal is a self-sustaining marketplace where developers build specialized integrations and get paid for their work.
 
 **"Built with RevealUI" badge.** Completely opt-in. If you display the badge, you get 500 bonus agent tasks per month. If you don't want it, don't use it. We will never require attribution. MIT means MIT.
 
-**Template marketplace.** Starter projects on Vercel that showcase RevealUI for specific use cases -- SaaS boilerplates, e-commerce setups, documentation sites, internal tools. These lower the barrier to getting started and demonstrate what's possible.
+**Template marketplace.** Starter projects on a hosting provider that showcase RevealUI for specific use cases -- SaaS boilerplates, e-commerce setups, documentation sites, internal tools. These lower the barrier to getting started and demonstrate what's possible.
 
 **Community discussions.** Free support for everyone through community forums. Pro and above get priority support with faster response times. The community is where we build trust, gather feedback, and help people succeed -- regardless of what tier they're on.
 
@@ -178,7 +178,7 @@ What I do know is that the alternative -- restrictive licensing, crippled free t
 
 RevealUI is the business stack I wanted when I started building software companies. People, Content, Offers, Payments, and Agents, pre-wired, open source, and ready to deploy. If it's useful to you at $0, that's a win. If it's useful enough to pay for, even better.
 
-The code is on [GitHub](https://github.com/RevealUIStudio/revealui). The license is MIT. The Pro features include a 7-day free trial. Everything I've described in this post is verifiable.
+The code is on [the source repository](https://github.com/RevealUIStudio/revealui). The license is MIT. The Pro features include a 7-day free trial. Everything I've described in this post is verifiable.
 
 Build something.
 

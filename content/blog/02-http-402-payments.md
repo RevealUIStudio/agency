@@ -8,13 +8,13 @@ audience: user
 author: Joshua Vaughn
 ---
 
-> **Coming soon, not yet live (roadmap, tracked in [#93](https://github.com/RevealUIStudio/revealui/issues/93)):** x402 payments in RevealUI are **designed and code-complete but dormant** today. The feature flag `X402_ENABLED=false` is the default; the endpoints exist but won't transact. Stripe live mode is already on for first-party billing; x402 agent payments remain behind the flag until that surface ships. See [What Works Today](../WHAT_WORKS_TODAY.md) for current shipping status. This post explains the design and how to wire it; it does not claim x402 payments are currently transactable through RevealUI in production.
+> **Coming soon, not yet live (roadmap, tracked in [#93](https://github.com/RevealUIStudio/revealui/issues/93)):** x402 payments in RevealUI are **designed and code-complete but dormant** today. The feature flag `X402_ENABLED=false` is the default; the endpoints exist but won't transact. Payments processor live mode is already on for first-party billing; x402 agent payments remain behind the flag until that surface ships. See [What Works Today](../WHAT_WORKS_TODAY.md) for current shipping status. This post explains the design and how to wire it; it does not claim x402 payments are currently transactable through RevealUI in production.
 
 ---
 
 HTTP 402 is the status code that was never used.
 
-It's been in the spec since 1996. The RFC says it's "reserved for future use" and the intended use was always some form of payment. For 30 years, practically nobody sent it. The web settled on subscription models and API keys  -  you authenticate with a token, and billing happens out-of-band via Stripe.
+It's been in the spec since 1996. The RFC says it's "reserved for future use" and the intended use was always some form of payment. For 30 years, practically nobody sent it. The web settled on subscription models and API keys  -  you authenticate with a token, and billing happens out-of-band via the payments processor.
 
 That model works fine for most APIs. But it breaks down for AI agent systems, where:
 
@@ -23,7 +23,7 @@ That model works fine for most APIs. But it breaks down for AI agent systems, wh
 - You want granular per-call pricing, not flat subscriptions
 - Payment is better handled at the protocol level than the application level
 
-The [x402 protocol](https://x402.org)  -  developed by Coinbase  -  finally gives 402 a real use. Here's the design we have built in RevealUI and how it will work once x402 ships, and why it's the right model for AI-native APIs.
+The [x402 protocol](https://x402.org), an open payments protocol, finally gives 402 a real use. Here's the design we have built in RevealUI and how it will work once x402 ships, and why it's the right model for AI-native APIs.
 
 ---
 
@@ -149,10 +149,10 @@ app.post("/a2a/:agentId/tasks/send", async (c) => {
 });
 ```
 
-From the caller side, the Coinbase x402 SDK handles the whole cycle automatically:
+From the caller side, an x402 client SDK handles the whole cycle automatically. The protocol docs name the package.
 
 ```typescript
-import { withPaymentInterceptor } from "@coinbase/x402/fetch";
+import { withPaymentInterceptor } from "x402/fetch";
 import { createWalletClient } from "viem";
 
 const wallet = createWalletClient({
@@ -193,7 +193,7 @@ Authorization: Bearer <your-token>
 }
 ```
 
-Each invocation goes through x402 automatically. The developer's actual server URL is never exposed  -  callers invoke via the RevealUI proxy, which verifies payment before forwarding. Revenue accumulates in the `marketplace_transactions` table and flows to the developer via Stripe Connect.
+Each invocation goes through x402 automatically. The developer's actual server URL is never exposed  -  callers invoke via the RevealUI proxy, which verifies payment before forwarding. Revenue accumulates in the `marketplace_transactions` table and flows to the developer via the payments processor's connected accounts.
 
 The price-setting logic matters. For a `pricePerCallUsdc` of `"0.005"`:
 
@@ -216,7 +216,7 @@ The subscription model has a fundamental mismatch with AI agents: agents make au
 
 With x402, the wallet is the identity. An agent running inside a customer's infrastructure pays directly from the customer's wallet for each call it makes. There's no shared API key to manage. No rate limits to distribute across tenants. No billing reconciliation at the end of the month.
 
-It also solves the "cold start" problem for API monetization. Traditionally, if you want to charge for an API, you need Stripe, a billing portal, subscription management, and an API key system  -  weeks of work before you can accept your first dollar. With x402, you add one middleware function and set a receiving address. That's it.
+It also solves the "cold start" problem for API monetization. Traditionally, if you want to charge for an API, you need a payments processor, a billing portal, subscription management, and an API key system  -  weeks of work before you can accept your first dollar. With x402, you add one middleware function and set a receiving address. That's it.
 
 This is early. The tooling is still rough. Not every developer wants to deal with on-chain payments. But for AI-native infrastructure  -  where calls are autonomous, granular, and high-volume  -  it's a better model than what we've had.
 

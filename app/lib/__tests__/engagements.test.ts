@@ -5,6 +5,7 @@ import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 import { describe, expect, it } from 'vitest';
 import {
   ADAPTER,
+  ADAPTER_CATEGORIES,
   ADAPTER_CENTS,
   ADAPTER_PRICE,
   ADAPTER_ROLE,
@@ -108,10 +109,13 @@ describe('public studio offers', () => {
     expect(ADAPTER.description).toMatch(/while on Care/);
     expect(ADAPTER_ROLE).toMatch(/leak/);
     expect(ADAPTER_ROLE).not.toMatch(/\u2014/);
-    const adapterCopy = `${ADAPTER.description} ${ADAPTER.tagline} ${ADAPTER_ROLE}`;
-    expect(adapterCopy).not.toMatch(
-      /Jobber|Zapier|Stripe|Square|Shopify|Twilio|Calendly|HoneyBook|ServiceTitan|Housecall|QuickBooks|HubSpot|Salesforce/i,
+    expect(ADAPTER_CATEGORIES).toBe(
+      'field-service CRM / estimating / dispatch, gallery / proofing, shopping cart, phone / SMS, calendar, payments / wallets, or labs / fulfillment',
     );
+    expect(ADAPTER.description).toBe(
+      `One custom integration to one tool category (${ADAPTER_CATEGORIES}). Governed read/write where scoped, the agent can act on it, a receipt proves the action, and a short runbook. Pilot includes 1. Launch includes up to 3. List price is for extras, or a scoped add while on Care. Not sold alone.`,
+    );
+    expect(ADAPTER.tagline).toBe('How the leak fix sticks. One tool category.');
   });
 
   it('pins monorepo metrics to MARKETING_METRICS §1 (2026-09-29)', () => {

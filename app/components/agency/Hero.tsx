@@ -9,12 +9,11 @@ import { ADAPTER, CONSULTATION, LAUNCH, PILOT, STAGE_B_PRICE } from '@/lib/engag
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
 /** Visible H1. Known-for lock: agentic business runtime they operate on their domain. */
-export const HERO_HEADLINE =
-  'The agentic business runtime startups operate on their own domain.' as const;
+export const HERO_HEADLINE = 'Build a business workflow your team can operate.' as const;
 
 /** Document title / OG title. Same known-for sentence as the H1, without the period. */
 export const HOME_DOCUMENT_TITLE =
-  'RevealUI Studio | The agentic business runtime startups operate on their own domain' as const;
+  'RevealUI Studio | Build a business workflow your team can operate' as const;
 
 /**
  * Home meta / OG / Twitter description. Known-for H1 + proof subline + ladder.
@@ -25,14 +24,14 @@ export const HOME_META_DESCRIPTION =
 
 /** Meta-only known-for proof line. Visible hero breath is pain → result → menu → PROOF. */
 export const HERO_SUBLINE =
-  'I help technical founders and small agencies turn agent workflows into business systems they can operate on their own accounts.' as const;
+  'I help technical founders and small agencies review, test, and launch RevealUI workflows on their own accounts.' as const;
 
 /** Pain. Promoted above prices. Not the H1. */
 export const HERO_SHOP_LINE =
-  'I help technical founders and small agencies turn agent workflows into business systems they can operate on their own accounts.' as const;
+  'I help technical founders and small agencies review, test, and launch RevealUI workflows on their own accounts.' as const;
 
 export const HERO_RESULT =
-  'Start with a focused Consultation, test one action with a Pilot, or put one business flow into production with Launch.' as const;
+  'Work directly with Joshua Vaughn, the founder and builder of RevealUI. We agree on scope, deliverables, and maintenance responsibilities before work starts.' as const;
 
 export const HERO_MENU =
   `${CONSULTATION.name} ${CONSULTATION.price} · ${PILOT.name} ${PILOT.price} (includes 1 Adapter) · ${LAUNCH.name} ${LAUNCH.price} (up to 3 Adapters) · ${ADAPTER.name} ${ADAPTER.price} · Stage B ${STAGE_B_PRICE}.` as const;
@@ -52,14 +51,13 @@ export function Hero() {
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_SHOP_LINE}</p>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_RESULT}</p>
-          <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_MENU}</p>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">{HERO_PROOF}</p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <LinkButton href={INTRO_CALL_URL} external>
-              Book a 30-minute intro
+              Book a free 30-minute intro
             </LinkButton>
             <LinkButton href="/#calculator" appearance="outline" variant="neutral">
-              Get a quote
+              Find your starting point
             </LinkButton>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">

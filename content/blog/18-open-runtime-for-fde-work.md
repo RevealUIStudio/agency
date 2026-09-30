@@ -57,4 +57,4 @@ The industry already decided last-mile humans matter. The open question is what 
 
 RevealUI's answer: a customer-owned runtime where your business and the agents that run it live under one roof, and every agent is a user with a receipt trail you can check.
 
-Start with the source: [github.com/RevealUIStudio/revealui](https://github.com/RevealUIStudio/revealui). Or start a conversation about a studio engagement at [revealuistudio.com](https://revealuistudio.com).
+Start with the source: [the repository](https://github.com/RevealUIStudio/revealui). Or start a conversation about a studio engagement at [revealuistudio.com](https://revealuistudio.com).

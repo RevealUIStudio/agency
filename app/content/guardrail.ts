@@ -6,4 +6,4 @@
 export const GUARDRAIL_HEADING = 'Guardrail agent (template)' as const;
 
 export const GUARDRAIL_BODY =
-  'Keep agents honest on your domain. Price locks, lane locks, receipts. Included in how we scope Pilot and Launch. Not a separate SKU.' as const;
+  'The Guardrail template checks configured claims and records enforcement results. Lane ownership and pricing fields are illustrative; they are not enforced controls. We review the controls needed for your workflow when scoping Pilot or Launch.' as const;

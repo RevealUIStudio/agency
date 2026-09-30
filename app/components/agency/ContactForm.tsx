@@ -225,7 +225,8 @@ export function ContactForm() {
         {status === 'loading' ? 'Sending…' : 'Send message'}
       </Button>
       <p className="text-xs text-muted-foreground">
-        We respond within 1-2 business days. By sending, you agree to our{' '}
+        We aim to respond within 1–2 business days. We use these details to respond to your inquiry.
+        Read our{' '}
         <a href="/privacy" className="font-semibold text-muted-foreground hover:underline">
           Privacy Policy
         </a>

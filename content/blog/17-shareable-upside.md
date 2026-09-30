@@ -64,7 +64,7 @@ If you only want a magic button that prints money with no learning, this is not 
 Look at the work.
 
 - Product: [revealui.com](https://revealui.com)
-- Code: [github.com/RevealUIStudio/revealui](https://github.com/RevealUIStudio/revealui)
+- Code: [the repository](https://github.com/RevealUIStudio/revealui)
 - Studio: [revealuistudio.com](https://revealuistudio.com)
 
 If it earns your trust, take the leap. Host it. Break it. Tell me where it fails. Hire the studio if you want a hand with the last mile. Or build on your own with the same discipline of putting real systems in real hands. The goal is not that every path runs through me. The goal is that more people own the upside.
