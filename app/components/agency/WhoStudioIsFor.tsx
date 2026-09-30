@@ -1,12 +1,12 @@
-export const STUDIO_FOR_TITLE = 'Who Studio is for' as const;
+export const STUDIO_FOR_TITLE = 'For teams ready to operate what they build.' as const;
 
 export const STUDIO_FOR_AGENCY =
-  'Small agencies: stop disclosing work your agents can’t receipt. Pilot and Launch leave PROOF on the client’s domain.' as const;
+  'For agency work, the delivered system lives on your client’s accounts. You can hand over the code, data, and operating notes.' as const;
 
 export const STUDIO_FOR_BEATS = [
-  'For: Technical founders and small agencies who already ship with agents, and need the business layer on their domain, not a wrapper around it.',
-  'Not for: Hosted chatbot bolt-ons, Jobber swaps, or buying only for a compliance checkbox.',
-  'The deal: You bring the domain. Studio ships booking, invoices, and agents with receipts. You operate, or you pay Launch to implement.',
+  'You already use agents and have a workflow that needs accounts, billing, integrations, or a dependable handoff.',
+  'You will need someone to maintain the infrastructure and software after handoff. We will discuss that responsibility before work starts.',
+  'I help turn your workflow into a system your team can run on its own accounts.',
 ] as const;
 
 export function WhoStudioIsFor() {

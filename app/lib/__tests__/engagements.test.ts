@@ -74,9 +74,9 @@ describe('public studio offers', () => {
     expect(PILOT.description).not.toMatch(/\bSpec\b/);
     expect(PILOT.description).not.toMatch(/Proof Sprint/);
     expect(LAUNCH.description).toMatch(/inside this offer/i);
-    expect(LAUNCH.description).toMatch(/Knowledge Graph is part of the runtime/);
-    expect(LAUNCH.description).toMatch(/Electric\+CRDT/);
-    expect(LAUNCH.description).toMatch(/not a fourth Studio offer/);
+    expect(LAUNCH.includes).toContain('Runbook');
+    expect(LAUNCH.includes).toContain('30-day async stabilization');
+    expect(PUBLIC_OFFERS).toHaveLength(3);
     expect(LAUNCH.description).not.toMatch(/\$\d/);
   });
 
@@ -114,9 +114,9 @@ describe('public studio offers', () => {
     );
   });
 
-  it('pins monorepo metrics to MARKETING_METRICS §1 (2026-08-19)', () => {
-    expect(RUNTIME_METRICS.packages).toBe(32);
-    expect(RUNTIME_METRICS.mit).toBe(25);
+  it('pins monorepo metrics to MARKETING_METRICS §1 (2026-09-29)', () => {
+    expect(RUNTIME_METRICS.packages).toBe(33);
+    expect(RUNTIME_METRICS.mit).toBe(26);
     expect(RUNTIME_METRICS.fsl).toBe(5);
     expect(RUNTIME_METRICS.mit + RUNTIME_METRICS.fsl).toBeLessThanOrEqual(RUNTIME_METRICS.packages);
   });

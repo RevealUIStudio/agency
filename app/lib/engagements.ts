@@ -21,13 +21,13 @@ import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 
 /**
  * Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1
- * in the revealui monorepo (claim-drift gate, last verified 2026-08-19).
+ * in the revealui monorepo (cross-checked against package manifests 2026-09-29).
  * Bump only after that SSOT moves.
  */
 export const RUNTIME_METRICS = {
-  // Pinned to revealui docs/MARKETING_METRICS.md §1 (claim-drift, 2026-08-19).
-  packages: 32,
-  mit: 25,
+  // Pinned to revealui docs/MARKETING_METRICS.md §1 (verified 2026-09-29).
+  packages: 33,
+  mit: 26,
   fsl: 5,
 } as const;
 
@@ -70,10 +70,14 @@ export const CONSULTATION = {
   id: 'consultation',
   name: 'Consultation',
   price: CONSULTATION_PRICE,
-  tagline: 'Path A by default. A denser living pack.',
+  tagline: 'Get a clear next step.',
   description:
-    'Path A is the default. Path B if you ask for it. You leave with a denser living pack and a Stage A share URL on your name at revealuistudio.com. Tax is $0. Remote, or in person.',
-  includes: ['Path A by default', 'Path B if you ask', 'Denser living pack', 'Stage A share URL'],
+    'Bring the system you want to review and the question you need answered. We will work through it in a focused session, with session notes and a recommended next step.',
+  includes: [
+    'A focused review of your system',
+    'Session notes and a next step',
+    'Session share URL',
+  ],
   notIncluded: [
     'A free Pilot',
     'An Adapter sold alone',
@@ -112,9 +116,9 @@ export const LAUNCH = {
   id: 'launch-package',
   name: 'Launch',
   price: LAUNCH_PRICE,
-  tagline: 'Architecture inside. Runbook. 30-day stabilization.',
+  tagline: 'Put one business flow into production.',
   description:
-    'One live flow on your accounts. Includes up to 3 Adapters (one tool category each). Architecture work (schema, primitives, review) happens inside this offer, not as a named SKU. The domain pack is included. You get a runbook and 30 days of async stabilization. Knowledge Graph is part of the runtime (Electric+CRDT), not a fourth Studio offer. We scope it on the call and take it live. You own the result.',
+    'I design and implement one agreed business flow on your accounts. Includes up to 3 Adapters (one tool category each). Architecture work happens inside this offer. The domain pack is included. You receive a runbook and 30 days of async stabilization.',
   includes: [
     'One live flow on your accounts',
     'Up to 3 Adapters (one tool category each)',

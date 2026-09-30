@@ -102,21 +102,21 @@ export function QuoteCalculator() {
         <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="space-y-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
             <ChoiceGroup
-              legend="Who puts it live?"
+              legend="Who will implement it?"
               name="hoster"
               value={hoster}
               options={HOSTER_OPTIONS}
               onChange={setHoster}
             />
             <ChoiceGroup
-              legend="What has to work?"
+              legend="What do you need to achieve?"
               name="outcome"
               value={outcome}
               options={OUTCOME_OPTIONS}
               onChange={setOutcome}
             />
             <ChoiceGroup
-              legend="How many places?"
+              legend="How many sites?"
               name="places"
               value={places}
               options={PLACES_OPTIONS}

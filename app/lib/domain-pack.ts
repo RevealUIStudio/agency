@@ -45,8 +45,8 @@ export function domainPackLines(id: DomainPackPageId, slug: string): readonly st
       ];
     case 'path':
       return [
-        'Path A is the default for this consultation.',
-        'Path B is the alternate, written here when you ask for it on the call.',
+        'This page records the recommended next step from the consultation.',
+        'Any alternative discussed in the session is recorded alongside it.',
         'This page is the path note for the domain pack.',
       ];
     case 'proof-gap':

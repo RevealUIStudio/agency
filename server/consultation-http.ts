@@ -16,6 +16,7 @@ import {
   type ConfirmationEmail,
   parseBookBody,
 } from '../app/lib/consultation-booking';
+import { NETWORK_LINK_USED } from '../app/lib/consultation-buyer';
 import { consultationDueCents } from '../app/lib/consultation-hours';
 import {
   mintNetworkToken,
@@ -35,11 +36,18 @@ import {
 import {
   type CalendarPort,
   type ConsultationEnv,
+  calendarConfigured,
   calendarFromEnv,
   consultationEnvFromProcess,
 } from './consultation-calendar';
 import { deliverOwnerPaidNotice } from './consultation-owner-mail';
+import { type ConsultationThrottle, createConsultationThrottle } from './consultation-rate-limit';
 import { type StripePort, stripeFromEnv, verifyStripeSignature } from './consultation-stripe';
+import {
+  createGoogleNetworkLedger,
+  createMemoryNetworkLedger,
+  type NetworkRedeemLedger,
+} from './network-redeem';
 import { verifySession } from './session';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -54,6 +62,10 @@ export interface ConsultationDeps {
   readonly onConfirmation?: (email: ConfirmationEmail) => void;
   /** Overrides the production Gmail notice. Tests pass a fake sink. */
   readonly onOwnerPaid?: (notice: OwnerPaidNotice) => void | Promise<void>;
+  /** Fresh limiter for tests. Production uses the process-local map. */
+  readonly throttle?: ConsultationThrottle;
+  /** Shared jti ledger. Production uses the calendar store when this is omitted. */
+  readonly networkLedger?: NetworkRedeemLedger;
 }
 
 function json(status: number, body: unknown): Response {
@@ -111,6 +123,7 @@ async function availability(
   request: Request,
   calendar: CalendarPort,
   now: Date,
+  throttle: ConsultationThrottle,
 ): Promise<Response> {
   const url = new URL(request.url);
   const hoursRaw = url.searchParams.get('hours');
@@ -134,14 +147,22 @@ async function availability(
     if (!parsed) return json(400, { error: 'to' });
     to = parsed;
   }
+  const cacheKey = `${hours}|${fromRaw?.trim() ?? ''}|${toRaw?.trim() ?? ''}`;
   try {
-    await calendar.expireHolds(now);
-    const busy = await calendar.busy(from, to, now);
-    const slots = generateConsultationSlots({ from, to, now, hours, busy });
-    return json(200, { timezone: CONSULTATION_TZ, hours, slots });
+    const body = await throttle.loadAvailability(cacheKey, now.getTime(), async () => {
+      await calendar.expireHolds(now);
+      const busy = await calendar.busy(from, to, now);
+      const slots = generateConsultationSlots({ from, to, now, hours, busy });
+      return { timezone: CONSULTATION_TZ, hours, slots };
+    });
+    return json(200, body);
   } catch {
     return json(502, { error: 'calendar' });
   }
+}
+
+function redeemed(): Response {
+  return json(409, { error: 'network-redeemed', message: NETWORK_LINK_USED });
 }
 
 async function book(
@@ -151,6 +172,7 @@ async function book(
   stripe: StripePort,
   now: Date,
   bookingId: string,
+  ledger: NetworkRedeemLedger,
 ): Promise<Response> {
   let raw: unknown;
   try {
@@ -171,6 +193,24 @@ async function book(
     });
     if (!claims) return json(400, { error: 'network-token' });
     if (!networkEmailMatches(claims, parsed.email)) return json(400, { error: 'network-email' });
+    let reserved: Awaited<ReturnType<NetworkRedeemLedger['reserve']>>;
+    try {
+      reserved = await ledger.reserve({
+        jti: claims.jti,
+        email: parsed.email,
+        expiresAt: new Date(claims.exp * 1000),
+        now,
+      });
+    } catch {
+      return json(502, { error: 'calendar' });
+    }
+    if (reserved.outcome === 'rejected') return redeemed();
+    if (reserved.outcome === 'reuse') {
+      return json(200, {
+        booking_id: reserved.bookingId,
+        checkout_url: reserved.checkoutUrl,
+      });
+    }
   }
   const input = bookInputFromNetwork(parsed, claims);
   const origin = siteOrigin(request, env);
@@ -184,8 +224,25 @@ async function book(
     stageBNetworkCouponId: env.stageBNetworkCouponId,
   });
   if (!booked.ok) {
+    if (claims) await ledger.release(claims.jti).catch(() => undefined);
     const mapped = bookHttp(booked.error);
     return json(mapped.status, { error: mapped.error });
+  }
+  if (claims) {
+    try {
+      const recorded = await ledger.commit({
+        jti: claims.jti,
+        email: parsed.email,
+        now,
+        expiresAt: new Date(claims.exp * 1000),
+        stripeSessionId: booked.value.stripeSessionId,
+        checkoutUrl: booked.value.checkoutUrl,
+        bookingId: booked.value.bookingId,
+      });
+      if (recorded === 'rejected') return redeemed();
+    } catch {
+      return json(502, { error: 'calendar' });
+    }
   }
   return json(200, { booking_id: bookingId, checkout_url: booked.value.checkoutUrl });
 }
@@ -277,6 +334,7 @@ async function webhook(
   fetchImpl: typeof fetch,
   sink: ConsultationDeps['onConfirmation'],
   ownerSink: ConsultationDeps['onOwnerPaid'],
+  ledger: NetworkRedeemLedger,
 ): Promise<Response> {
   if (!env.stripeWebhookSecret) return json(500, { error: 'webhook-unconfigured' });
   const rawBody = await request.text();
@@ -354,7 +412,20 @@ async function webhook(
     if (paid.error === 'payment-required') return json(200, { received: true, status: 'ignored' });
     return json(500, { error: 'calendar' });
   }
+  const networkJti =
+    metadata && 'network_jti' in metadata && typeof metadata.network_jti === 'string'
+      ? metadata.network_jti
+      : '';
+  if (networkJti) await ledger.markPaid(networkJti).catch(() => undefined);
   return json(200, { received: true, status: 'paid_scheduled' });
+}
+
+let processThrottle: ConsultationThrottle | undefined;
+
+function throttleFor(deps: ConsultationDeps): ConsultationThrottle {
+  if (deps.throttle) return deps.throttle;
+  processThrottle ??= createConsultationThrottle();
+  return processThrottle;
 }
 
 export async function handleConsultationRequest(
@@ -378,9 +449,19 @@ export async function handleConsultationRequest(
   if (getOnly && request.method !== 'GET') return json(405, { error: 'method' });
   if (!getOnly && request.method !== 'POST') return json(405, { error: 'method' });
 
+  const now = (deps.now ?? (() => new Date()))();
+  const throttle = throttleFor(deps);
+  const limited = throttle.consume(request, path, now.getTime());
+  if (limited) return limited;
+
   const env = deps.env ?? consultationEnvFromProcess();
   const fetchImpl = deps.fetchImpl ?? fetch;
-  const now = (deps.now ?? (() => new Date()))();
+  // The address throttle already ran. The jti ledger is touched only after that.
+  const networkLedger =
+    deps.networkLedger ??
+    (calendarConfigured(env)
+      ? createGoogleNetworkLedger(env, fetchImpl)
+      : createMemoryNetworkLedger());
 
   if (path === '/api/consultation/network-status') return networkStatus(request, env, now);
   if (path === '/api/consultation/network-link') return networkLink(request, env, now);
@@ -389,17 +470,26 @@ export async function handleConsultationRequest(
   if (!calendar) return json(503, { error: 'calendar-unconfigured' });
 
   if (path === '/api/consultation/availability') {
-    return availability(request, calendar, now);
+    return availability(request, calendar, now, throttle);
   }
   if (path === '/api/consultation/booking') {
     return bookingView(request, calendar);
   }
   if (path === '/api/stripe/webhook') {
-    return webhook(request, env, calendar, now, fetchImpl, deps.onConfirmation, deps.onOwnerPaid);
+    return webhook(
+      request,
+      env,
+      calendar,
+      now,
+      fetchImpl,
+      deps.onConfirmation,
+      deps.onOwnerPaid,
+      networkLedger,
+    );
   }
 
   const stripe = deps.stripe ?? stripeFromEnv(env.stripeSecretKey, fetchImpl);
   if (!stripe) return json(503, { error: 'stripe-unconfigured' });
   const bookingId = (deps.bookingId ?? (() => crypto.randomUUID()))();
-  return book(request, env, calendar, stripe, now, bookingId);
+  return book(request, env, calendar, stripe, now, bookingId, networkLedger);
 }

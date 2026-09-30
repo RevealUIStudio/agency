@@ -80,7 +80,7 @@ describe('ProofGapPage', () => {
     );
     expect(screen.getByText(/you don't need a Google account/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: PROOF_GAP_OFFER_NAME })).toBeInTheDocument();
-    expect(screen.getByText('1) Ownership & domain')).toBeInTheDocument();
-    expect(screen.getByText('3) Receipted actions (PROOF)')).toBeInTheDocument();
+    expect(screen.getByText('1) Accounts and ownership')).toBeInTheDocument();
+    expect(screen.getByText('3) Action records')).toBeInTheDocument();
   });
 });

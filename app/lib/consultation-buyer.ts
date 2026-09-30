@@ -27,6 +27,9 @@ export const STAGE_B_DETAIL =
 
 export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 20 minutes.';
 
+/** Second use of a network Consultation link after a Checkout Session exists. */
+export const NETWORK_LINK_USED = 'This network Consultation link has already been used.';
+
 export const CONSULTATION_AFTER_PAY =
   'After payment, the Google Meet link is on the calendar invite.';
 
@@ -49,7 +52,8 @@ export const CONSULTATION_MEET_FALLBACK = 'The Google Meet link is on the calend
 export const CONSULTATION_PREP_BODY =
   'Send the system you want to look at and the question you want answered. A link is usually enough.';
 
-export const CONSULTATION_CANCEL = 'No charge. The hold ends within 20 minutes.';
+export const CONSULTATION_CANCEL =
+  'Checkout was canceled. Your temporary slot hold expires within 20 minutes.';
 
 export const CONSULTATION_READY_HINT = 'Pick a slot, then enter your name and email.';
 

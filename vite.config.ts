@@ -1,8 +1,11 @@
+import { writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
+import { STUDIO_BLOG_FEED_PATH } from './app/lib/blog-copy';
+import { RSS_CONTENT_TYPE, renderStudioRss } from './app/lib/rss';
 import { handleConsultationRequest } from './server/consultation-http';
 import { handleShareRequest } from './server/share-http';
 
@@ -33,6 +36,12 @@ function shareServer(): Plugin {
           headers.set('host', host);
           const authorization = req.headers.authorization;
           if (typeof authorization === 'string') headers.set('authorization', authorization);
+          // Socket peer for the consultation throttle. Do not copy
+          // x-forwarded-for from the caller. That header is spoofable here.
+          const peer = req.socket?.remoteAddress;
+          if (typeof peer === 'string' && peer.trim() !== '') {
+            headers.set('x-real-ip', peer.trim());
+          }
           let body: string | undefined;
           if (req.method === 'POST') {
             const chunks: Buffer[] = [];
@@ -74,12 +83,47 @@ function shareServer(): Plugin {
   };
 }
 
+function rssFeed(): Plugin {
+  const attach: Plugin['configureServer'] = (server) => {
+    server.middlewares.use((req, res, next) => {
+      const pathOnly = (req.url ?? '').split('?')[0] ?? '';
+      if (pathOnly === '/feed.xml') {
+        res.statusCode = 301;
+        res.setHeader('Location', STUDIO_BLOG_FEED_PATH);
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        res.end('');
+        return;
+      }
+      if (pathOnly !== STUDIO_BLOG_FEED_PATH) {
+        next();
+        return;
+      }
+      res.statusCode = 200;
+      res.setHeader('Content-Type', RSS_CONTENT_TYPE);
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.end(renderStudioRss());
+    });
+  };
+
+  return {
+    name: 'studio-rss-feed',
+    configureServer: attach,
+    configurePreviewServer: attach,
+    writeBundle(options) {
+      if (!options.dir) {
+        throw new Error('Blog feed build is missing an output directory');
+      }
+      writeFileSync(path.join(options.dir, 'rss.xml'), renderStudioRss(), 'utf8');
+    },
+  };
+}
+
 export default defineConfig({
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
     'process.env.LOG_LEVEL': 'undefined',
   },
-  plugins: [tailwindcss(), react(), shareServer()],
+  plugins: [tailwindcss(), react(), shareServer(), rssFeed()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './app'),

@@ -8,14 +8,14 @@ export function ServiceTeasers() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Three offers.
+            Choose the next step for your system.
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            That is the public menu for startups, and for technical founders and small agencies who
-            already run agents. Consultation is paid when you book the slot. Pilot and Launch are
-            invoiced after we agree. {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. The
-            domain pack (Stage B) is {STAGE_B_PRICE} after Consultation alone, and included at Pilot
-            and Launch.
+            Review the problem, test one action, or launch one business flow. Each engagement has a
+            defined deliverable and payment terms. Consultation is paid when booking. Pilot and
+            Launch are invoiced after we agree on scope.
+            {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. The domain pack is
+            {STAGE_B_PRICE} after Consultation alone, and included at Pilot and Launch.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3">

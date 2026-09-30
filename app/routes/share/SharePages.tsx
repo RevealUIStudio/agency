@@ -21,8 +21,8 @@ export function shareHome(slug: string) {
     return (
       <Frame slug={slug} title={`${slug} share`}>
         <p>
-          Stage A shell for {slug}.revealuistudio.com. Circuit-R, RevealUI Studio, and this client
-          name are the chrome.
+          Your consultation workspace at {slug}.revealuistudio.com. Open the available material
+          below to review your session and next steps.
         </p>
         <p>
           {STAGE_B_ADDON} {STAGE_B_DETAIL}
@@ -50,7 +50,10 @@ export function sharePack(slug: string) {
   return function SharePack() {
     return (
       <Frame slug={slug} title="Pack">
-        <p>Denser living pack for {slug}. The consultation leaves this pack on the studio host.</p>
+        <p>
+          Session material for {slug}. Prepared content appears in the workspace when it has been
+          added.
+        </p>
       </Frame>
     );
   };
@@ -60,7 +63,9 @@ export function shareDemo(slug: string) {
   return function ShareDemo() {
     return (
       <Frame slug={slug} title="Demo">
-        <p>Demo slot for {slug}. Example only. The domain pack does not sell a demo.</p>
+        <p>
+          Example workspace for {slug}. This is demonstration content, not completed client work.
+        </p>
       </Frame>
     );
   };

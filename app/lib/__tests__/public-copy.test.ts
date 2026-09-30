@@ -7,11 +7,16 @@ import { describe, expect, it } from 'vitest';
 import {
   HERO_HEADLINE,
   HERO_SHOP_LINE,
-  HERO_SUBLINE,
   HOME_DOCUMENT_TITLE,
   HOME_META_DESCRIPTION,
 } from '@/components/agency/Hero';
+import {
+  PROOF_GAP_CHECK_COUNT,
+  PROOF_GAP_SCORE_PROMPT,
+  PROOF_GAP_SECTIONS,
+} from '@/content/proof-gap';
 import { engagementLabels } from '@/data/cases';
+import { PUBLIC_OFFERS } from '@/lib/engagements';
 import {
   OG_CARD_BOOKING_LINE,
   OG_CARD_HEADLINE,
@@ -184,6 +189,28 @@ function walk(dir: string, acc: string[] = []): string[] {
 }
 
 describe('public copy gates', () => {
+  it('declares the social-image dependency and has no machine-specific fallback', () => {
+    const manifest = JSON.parse(readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
+    expect(manifest.devDependencies.sharp).toBeDefined();
+    const generator = readFileSync(path.join(repoRoot, 'scripts/gen-og-card.mjs'), 'utf8');
+    expect(generator).not.toContain('/tmp/raster');
+    expect(generator).not.toContain('process.env.SHARP_PATH');
+  });
+
+  it('keeps the web checklist and PDF synchronized with section data', () => {
+    const count = PROOF_GAP_SECTIONS.reduce((total, section) => total + section.checks.length, 0);
+    expect(PROOF_GAP_CHECK_COUNT).toBe(count);
+    expect(PROOF_GAP_SCORE_PROMPT).toContain(`/ ${count} checks`);
+    const pdf = pdfPageText(readFileSync(path.join(repoRoot, 'public/proof-gap-checklist.pdf')));
+    expect(pdf).toContain(`/ ${count} checks`);
+    for (const section of PROOF_GAP_SECTIONS) {
+      for (const check of section.checks) expect(pdf).toContain(`${check.id} `);
+    }
+  });
+
+  it('never exposes the retired offer name on public surfaces', () => {
+    expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual(['Consultation', 'Pilot', 'Launch']);
+  });
   it('uses only the Google Calendar intro URL', () => {
     expect(INTRO_CALL_URL).toContain('calendar.google.com');
     expect(INTRO_CALL_URL).not.toMatch(bannedBookingHost);
@@ -575,7 +602,7 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain(HOME_DOCUMENT_TITLE);
     expect(jsonLd).toContain(HOME_META_DESCRIPTION);
     expect(jsonLd).toContain(
-      'The agentic business runtime startups operate on their own domain. Technical founders and small agencies who already run agents: existing tools report in, you keep the stack. Powerful + safe: agents leave receipts; catalog matches checkout. Consultation, Pilot, or Launch. Remote first. Book a 30-minute intro.',
+      'The agentic business runtime startups operate on their own domain. I help technical founders and small agencies turn agent workflows into business systems they can operate on their own accounts. Consultation, Pilot, or Launch. Remote first. Book a 30-minute intro.',
     );
     expect(jsonLd).not.toContain('The agentic runtime startups operate on their own domain');
     expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
@@ -585,14 +612,14 @@ describe('public copy gates', () => {
     );
     expect(hero).toContain('The agentic business runtime startups operate on their own domain.');
     expect(hero).not.toMatch(/HERO_HEADLINE = 'The agentic runtime startups/);
-    expect(hero).toContain('existing tools report in, you keep the stack');
-    expect(hero).toContain('agents leave receipts; catalog matches checkout');
-    expect(hero).toContain('Powerful + safe');
+    expect(hero).toContain('systems they can operate on their own accounts');
+    expect(hero).toContain('RECEIPT_HERO_CAPTION');
+    expect(hero).not.toContain('Powerful + safe');
     expect(hero).toContain(
-      'Tired of Zap owning the critical path, agents that act without PROOF, and client updates with nothing receipted?',
+      'I help technical founders and small agencies turn agent workflows into business systems they can operate on their own accounts.',
     );
     expect(hero).toContain(
-      'You already live in Cursor. I put booking, invoices, and agents with PROOF on your domain. You run it, or I ship it with you.',
+      'Start with a focused Consultation, test one action with a Pilot, or put one business flow into production with Launch.',
     );
     expect(hero).toContain('HERO_MENU');
     expect(hero).toContain('CONSULTATION.name');
@@ -620,16 +647,13 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain('"price": "14500"');
     expect(jsonLd).not.toContain('"price": "3500"');
     expect(quote).toContain("DEFAULT_OUTCOME: Outcome = 'plan'");
-    expect(quote).toContain("label: 'Consultation: diagnose the path / proof gap ($300)'");
+    expect(quote).toContain("label: 'Consultation: review my system ($300 per hour)'");
+    expect(quote).toContain("label: 'Pilot: run one action on one site (includes 1 Adapter)'");
     expect(quote).toContain(
-      "label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)'",
+      "label: 'Launch: put one business flow into production (up to 3 Adapters)'",
     );
-    expect(quote).toContain("label: 'Launch: money path live on my accounts (up to 3 Adapters)'");
-    expect(quote).toContain('PROOF means a receipted action');
-    expect(quote).toContain('not outcome validation.');
-    expect(quote).not.toMatch(/proof of work/i);
-    expect(quote).toContain('Google Calendar / Google Meet');
-    expect(quote).not.toContain('Google Calendar / Meet)');
+    expect(quote).toContain('Product licenses are separate');
+    expect(quote).not.toContain('outcome validation or proof of work. Licenses');
     expect(quote).not.toMatch(/free website/i);
   });
 
@@ -720,27 +744,25 @@ describe('public copy gates', () => {
     expect(HOME_DOCUMENT_TITLE).toBe(
       'RevealUI Studio | The agentic business runtime startups operate on their own domain',
     );
-    expect(HOME_META_DESCRIPTION).toContain(HERO_HEADLINE);
-    expect(HOME_META_DESCRIPTION).toContain(HERO_SUBLINE);
-    expect(HOME_META_DESCRIPTION).toContain(
-      'Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297.',
-    );
-    expect(HOME_META_DESCRIPTION).toContain('agents leave receipts; catalog matches checkout');
-    expect(HOME_META_DESCRIPTION).toContain('Powerful + safe');
+    expect(HOME_META_DESCRIPTION).toContain('RevealUI business flow');
+    expect(HOME_META_DESCRIPTION).toContain('Joshua Vaughn');
+    expect(HOME_META_DESCRIPTION).toContain('review, test, or launch');
+    expect(HOME_META_DESCRIPTION).toContain('free 30-minute intro');
+    expect(HOME_META_DESCRIPTION).not.toContain('Powerful + safe');
     expect(HOME_META_DESCRIPTION).not.toContain(HERO_SHOP_LINE);
     expect(HOME_DOCUMENT_TITLE).not.toContain('Tired of');
     expect(app).not.toContain('The agentic runtime startups operate on their own domain');
     expect(home).toContain('WhoStudioIsFor');
     expect(home).toContain('TrustRoadmap');
-    expect(who).toContain("STUDIO_FOR_TITLE = 'Who Studio is for'");
+    expect(who).toContain("STUDIO_FOR_TITLE = 'For teams ready to operate what they build.'");
     expect(who).toContain(
-      'Small agencies: stop disclosing work your agents can’t receipt. Pilot and Launch leave PROOF on the client’s domain.',
+      'For agency work, the delivered system lives on your client’s accounts. You can hand over the code, data, and operating notes.',
     );
-    expect(who).toMatch(/For: Technical founders and small agencies/i);
-    expect(who).toMatch(/Not for: Hosted chatbot bolt-ons/);
-    expect(who).toMatch(/The deal: You bring the domain/);
-    expect(who).toMatch(/pay Launch to implement/);
-    expect(who).toMatch(/Jobber swap/);
+    expect(who).toMatch(/workflow that needs accounts/);
+    expect(who).toMatch(/maintain the infrastructure and software/);
+    expect(who).toMatch(/before work starts/);
+    expect(who).toMatch(/system your team can run/);
+    expect(who).not.toMatch(/Jobber swap/);
     expect(who).not.toMatch(/SOC ?2 certified|SOC2 ready|\baudited\b|SOC 2 compliant/i);
     expect(who).not.toMatch(/Fortune 500|high-stakes|regulated|mission-driven/i);
 
@@ -814,16 +836,15 @@ describe('public copy gates', () => {
     const hero = readFileSync(path.join(repoRoot, 'app/components/agency/Hero.tsx'), 'utf8');
     expect(offers).toContain("name: 'Consultation'");
     expect(offers).toContain("name: 'Pilot'");
-    expect(offers).not.toContain("name: 'Proof Sprint'");
     expect(offers).toContain("name: 'Launch'");
     expect(offers).not.toMatch(/name: 'Knowledge Graph'/);
-    expect(offers).toContain('Knowledge Graph is part of the runtime (Electric+CRDT)');
-    expect(offers).toContain('not a fourth Studio offer');
-    expect(quote).toContain("label: 'Consultation: diagnose the path / proof gap ($300)'");
+    expect(offers).toContain('30 days of async stabilization');
+    expect(PUBLIC_OFFERS).toHaveLength(3);
+    expect(quote).toContain("label: 'Consultation: review my system ($300 per hour)'");
+    expect(quote).toContain("label: 'Pilot: run one action on one site (includes 1 Adapter)'");
     expect(quote).toContain(
-      "label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)'",
+      "label: 'Launch: put one business flow into production (up to 3 Adapters)'",
     );
-    expect(quote).toContain("label: 'Launch: money path live on my accounts (up to 3 Adapters)'");
     expect(quote).not.toMatch(/Knowledge Graph/);
     expect(quote).not.toMatch(/RevMind/);
     expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
@@ -879,10 +900,9 @@ describe('public copy gates', () => {
     expect(copy).toContain("PROOF_GAP_H1 = 'Can you prove what your agents did last week?'");
     expect(copy).toContain("PROOF_GAP_DOCUMENT_TITLE = 'Proof-gap checklist | RevealUI Studio'");
     expect(copy).toContain("PROOF_GAP_CTA = 'Get the free checklist'");
-    expect(copy).toContain('PROOF is a receipted action');
-    expect(copy).toContain(
-      'Consultation $300 · Pilot $3,997 (includes 1 Adapter) · Launch $14,500 (up to 3 Adapters) · Adapter $2,497 · Stage B $297',
-    );
+    expect(copy).toContain('An action record names who acted');
+    expect(copy).toContain('Pilot $3,997 (includes 1 Adapter)');
+    expect(copy).toContain('Launch $14,500 (up to 3 Adapters)');
     expect(copy).toContain('Not “faster than Zap.”');
     expect(copy).not.toMatch(/Request a quote/);
     expect(copy).not.toMatch(/revolutionize|empower|seamless/i);
@@ -899,6 +919,9 @@ describe('public copy gates', () => {
     expect(pdfText).toContain('Proof-gap checklist');
     expect(pdfText).toContain('RevealUI Studio');
     expect(pdfText).toMatch(/RevealUI Studio \\267 Proof-gap checklist/);
+    expect(pdfText).toContain('Pilot $3,997');
+    expect(pdfText).toContain('Launch $14,500');
+    expect(pdfText).not.toMatch(/Proof Sprint|\$0 gifts|Asset unlocked for Joshua/i);
     expect(pdfText).not.toMatch(/HOLD public|Joshua OK|Media Manager|agency#204|publish OK/i);
     expect(pdfText).not.toContain('\\227');
     expect(pdfText).not.toContain('\u2014');

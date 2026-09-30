@@ -68,7 +68,7 @@ describe('share server', () => {
     const pathNote = await call('https://demo.revealuistudio.com/share/demo/path.txt', {
       host: 'demo.revealuistudio.com',
     });
-    expect(pathNote.raw).toContain('Path A is the default');
+    expect(pathNote.raw).toContain('recommended next step from the consultation');
     expect(allowed.response.headers.get('cache-control')).toBe('private, no-store');
     expect(allowed.audit.entries()[0]).toMatchObject({
       action: 'share.read',
