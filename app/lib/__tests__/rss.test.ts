@@ -4,35 +4,10 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { allBlogPosts, type BlogEntry, publishedBlogPosts, STUDIO_SITE_ORIGIN } from '@/data/blog';
 import { STUDIO_BLOG_FEED_ALTERNATE_TAG, STUDIO_BLOG_HOME_SUB } from '@/lib/blog-copy';
+import { findBannedToolNames } from '@/lib/buyer-facing-names';
 import { formatRfc822, RSS_CONTENT_TYPE, renderStudioRss } from '@/lib/rss';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-
-const VENDOR_WORDS = [
-  'Stripe',
-  'Vercel',
-  'Anthropic',
-  'OpenAI',
-  'Claude',
-  'Neon',
-  'Radix',
-  'MUI',
-  'Cloudflare',
-  'GitHub',
-  'Palantir',
-  'Databricks',
-  'Salesforce',
-  'a16z',
-  'Clerk',
-  'Payload',
-  'Supabase',
-  'Slack',
-  'Ollama',
-  'Ubuntu',
-  'AT&T',
-  'T-Mobile',
-  'Google',
-];
 
 type Header = { key: string; value: string };
 type Redirect = {
@@ -47,23 +22,6 @@ type HostConfig = {
   redirects: Redirect[];
   rewrites: Rewrite[];
 };
-
-function hasTerm(haystack: string, needle: string): boolean {
-  const lower = haystack.toLowerCase();
-  const target = needle.toLowerCase();
-  let from = 0;
-  while (from < lower.length) {
-    const at = lower.indexOf(target, from);
-    if (at === -1) return false;
-    const before = at === 0 ? '' : (lower[at - 1] ?? '');
-    const afterIndex = at + target.length;
-    const after = afterIndex >= lower.length ? '' : (lower[afterIndex] ?? '');
-    const boundary = (ch: string) => ch === '' || ch < 'a' || ch > 'z';
-    if (boundary(before) && boundary(after)) return true;
-    from = at + 1;
-  }
-  return false;
-}
 
 function directChild(parent: Element, name: string): Element | undefined {
   return [...parent.children].find(
@@ -137,9 +95,7 @@ describe('studio blog rss', () => {
     expect(xml).not.toMatch(/price_[A-Za-z0-9]+/);
     expect(xml).not.toMatch(/sk_(live|test)_/);
     expect(xml).not.toMatch(/whsec_/);
-    for (const word of VENDOR_WORDS) {
-      expect(hasTerm(xml, word), word).toBe(false);
-    }
+    expect(findBannedToolNames(xml)).toEqual([]);
     for (const post of allBlogPosts) {
       expect(xml).not.toContain(post.author);
     }

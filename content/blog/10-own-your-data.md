@@ -13,19 +13,19 @@ RevealUI takes the opposite position on every one of those. The database is stan
 
 ## Standard Postgres, not a proprietary database
 
-RevealUI runs on Postgres. Specifically NeonDB, which is Postgres, the real thing, with the standard wire protocol and `pg_dump` that does exactly what you expect. The schema is 123 tables defined with Drizzle ORM, typed end to end, and it is not hiding any vendor-only behavior in the hot path.
+RevealUI runs on Postgres. It is the real thing, with the standard wire protocol and `pg_dump` that does exactly what you expect. The schema is 123 tables defined with Drizzle ORM, typed end to end, and it is not hiding any vendor-only behavior in the hot path.
 
 That choice has a few consequences worth naming:
 
-- Your queries are SQL. They run on Neon today and on any other Postgres tomorrow, managed or self-hosted, without a rewrite.
+- Your queries are SQL. They run on the hosted database today and on any other Postgres tomorrow, managed or self-hosted, without a rewrite.
 - Your data is a `pg_dump` away from being somewhere else. There is no export API to beg for and no proprietary format to reverse-engineer.
 - The schema is in your repo, in TypeScript, versioned with migrations. You can read it, diff it, and own it.
 
-New features are built to stay portable on purpose: the project is mid-migration off an earlier Supabase dependency, and the rule for new code is that it must not depend on any one provider's Postgres extensions. Standard first.
+New features are built to stay portable on purpose: the project is mid-migration off an earlier hosted-database dependency, and the rule for new code is that it must not depend on any one provider's Postgres extensions. Standard first.
 
 ## Object storage you can move
 
-Files, images, and uploads go to Cloudflare R2, which is S3-compatible. That hyphenated word is the whole point. R2 is the canonical backend (the old Vercel Blob integration was retired), but the code talks to it through the S3 API, the same API that AWS S3, MinIO, and a dozen other stores speak.
+Files, images, and uploads go to S3-compatible object storage. That compatibility is the whole point. Object storage is the canonical backend (an older hosting-provider blob integration was retired), and the code talks to it through the S3 API, the same API that other object stores speak.
 
 So the storage layer passes the same test the database does. Point the S3 credentials at a different provider and your application does not notice. Your media is not trapped behind a vendor SDK with no standard under it. It is objects in a bucket, addressable the way object storage has been addressable for fifteen years.
 

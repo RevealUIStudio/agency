@@ -48,7 +48,7 @@ export const PROOF_GAP_THANKS_CONSULT =
   'Want help reviewing the result? Book a Consultation at $300 per hour.' as const;
 
 export const PROOF_GAP_THANKS_INTRO =
-  "Optional 30-minute intro: you don't need a Google account. Open the Google Meet link → Join as guest." as const;
+  "Optional 30-minute intro: you don't need an account. Open the Google Meet link → Join as guest." as const;
 
 export const PROOF_GAP_DOWNLOAD_LABEL = 'Download the PDF' as const;
 
@@ -87,7 +87,7 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
       },
       {
         id: '1.2',
-        text: 'You can name who holds Stripe / DNS / GitHub / DB keys for the path that matters',
+        text: 'You can name who holds payments processor / DNS / source host / database keys for the path that matters',
       },
       {
         id: '1.3',
@@ -157,7 +157,7 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
       },
       {
         id: '4.2',
-        text: 'Outbound (email / Slack) isn’t auto-fired from a prompt without review',
+        text: 'Outbound (email provider / team chat) isn’t auto-fired from a prompt without review',
       },
       {
         id: '4.3',

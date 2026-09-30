@@ -1,4 +1,4 @@
-# Launch pulse kit — r/selfhosted and Show HN
+# Launch pulse kit: r/selfhosted and Show HN
 
 Owner paste only. The author posts both threads under their own name and stays for comments.
 
@@ -16,18 +16,18 @@ Nothing in this change. On `test` after the 2026-09-26 offer lock, `PUBLIC_OFFER
 
 Checked 2026-09-23 against public RevealUI `test`:
 
-- `docs/WHAT_IS.md` (last updated 2026-09-16) — definition, tier names, prices, “no paying external customers yet,” self-host.
-- `docs/QUICK_START.md` — `npx create-revealui@latest`, Node.js 24+, pnpm 10+, Neon example for `POSTGRES_URL`, Stripe and R2 marked optional for local dev.
-- `docs/LOCAL_FIRST.md` — local inference is an optional path. The default documented deploy still uses cloud services (Neon Postgres, Stripe, Cloudflare R2).
-- `docs/MARKETING_METRICS.md` §2 Track A and Track C (last-verified 2026-09-17) — Free / Pro / Max / perpetual prices. §1 names the five FSL packages.
-- Repo-root `docker-compose.yml` header — local Postgres (`pgvector/pgvector:pg16`) as the alternative to Neon; API and admin in the compose; marketing site omitted.
+- `docs/WHAT_IS.md` (last updated 2026-09-16): definition, tier names, prices, “no paying external customers yet,” self-host.
+- `docs/QUICK_START.md`: `npx create-revealui@latest`, Node.js 24+, pnpm 10+, a hosted database example for `POSTGRES_URL`, with the payments processor and object storage marked optional for local dev.
+- `docs/LOCAL_FIRST.md`: local inference is an optional path. The default documented deploy still uses cloud services (a hosted database, a payments processor, and object storage).
+- `docs/MARKETING_METRICS.md` §2 Track A and Track C (last-verified 2026-09-17): Free / Pro / Max / perpetual prices. §1 names the five FSL packages.
+- Repo-root `docker-compose.yml` header: local Postgres (`pgvector/pgvector:pg16`) as the local database; API and admin in the compose; marketing site omitted.
 - Studio offer lock 2026-09-26: Consultation, Pilot, Launch. Adapter is an add-on. Used only in the “if they ask to hire Studio” stub.
 
 The coordination-repo copy of this kit was not reachable from this checkout. This file was written from the sources above. It does not carry forward an older price.
 
 ---
 
-## INTERNAL — price lock (do not paste this table)
+## INTERNAL: price lock (do not paste this table)
 
 ### Product licenses (revealui.com)
 
@@ -43,7 +43,7 @@ Max is **$99/mo**. Do not write **$299**.
 
 Open-source packages are MIT. Pro packages are Fair Source (FSL-1.1-MIT) and convert to MIT two years after each release. The five FSL packages named in Marketing Metrics §1 (last-verified 2026-09-17) are `@revealui/ai`, `@revealui/engines`, `@revealui/harnesses`, `@revealui/mcp`, and `@revealui/services`. Re-check that list before you name them in a comment.
 
-### Studio services — only if a stranger asks to hire RevealUI Studio
+### Studio services: only if a stranger asks to hire RevealUI Studio
 
 | Offer | List price |
 |---|---|
@@ -67,12 +67,12 @@ Do not put these prices in the opening post. The opening post stays on the produ
 
 ---
 
-## PASTE — r/selfhosted
+## PASTE: r/selfhosted
 
 **Title**
 
 ```
-RevealUI — self-hosted runtime for people, offers, payments, and agents
+RevealUI: self-hosted runtime for people, offers, payments, and agents
 ```
 
 **Body**
@@ -85,15 +85,15 @@ RevealUI is an agentic business runtime you run on your own domain. People, cont
 Two ways in:
 
 - New app: `npx create-revealui@latest` (Node.js 24+, pnpm 10+). Steps are in docs/QUICK_START.md.
-- Self-host compose: repo-root docker-compose.yml. It includes local Postgres (pgvector/pgvector:pg16) as the alternative to Neon, the Hono API on port 3004, and the Next.js admin on port 4000. Copy .env.production.example to .env and read the file before you start it. The marketing site is not in that compose.
+- Self-host compose: repo-root docker-compose.yml. It includes local Postgres (pgvector/pgvector:pg16) as the local database, the Hono API on port 3004, and the Next.js admin on port 4000. Copy .env.production.example to .env and read the file before you start it. The marketing site is not in that compose.
 
-Honest limits. The published quick start uses a Neon Postgres URL, and it marks Stripe and object storage optional for local dev. The default documented deploy still uses those cloud pieces. Local inference (Ollama or Ubuntu Inference Snaps) is an optional path, not the default. I am not describing a zero-account offline appliance.
+Honest limits. The published quick start uses a hosted database URL, and it marks the payments processor and object storage optional for local dev. The default documented deploy still uses those cloud pieces. Local inference (a local inference runtime) is an optional path, not the default. I am not describing a zero-account offline appliance.
 
 License. Open-source packages are MIT. Pro packages are Fair Source (FSL-1.1-MIT) and convert to MIT two years after each release.
 
 Licenses, if you want one. Free is $0 (1 site, 3 users, local AI). Pro is $49/mo. Max is $99/mo ($799/yr). Enterprise is inquire, and you still self-host. You can clone the repo without buying a license.
 
-Where it actually is. The runtime is shipped and the product docs mark it Beta. Stripe live mode is on. That is a billing-rail fact, not a customer claim. There are no paying external customers yet. RevealUI is not SOC 2 certified.
+Where it actually is. The runtime is shipped and the product docs mark it Beta. Payments processor live mode is on. That is a billing-rail fact, not a customer claim. There are no paying external customers yet. RevealUI is not SOC 2 certified.
 
 Repo: https://github.com/RevealUIStudio/revealui
 Site: https://revealui.com
@@ -102,12 +102,12 @@ Docs: https://docs.revealui.com
 I will stay in the comments.
 ```
 
-## PASTE — Show HN
+## PASTE: Show HN
 
 **Title** (keep the Show HN prefix)
 
 ```
-Show HN: RevealUI – self-hosted runtime for people, offers, payments, and agents
+Show HN: RevealUI, self-hosted runtime for people, offers, payments, and agents
 ```
 
 **URL**
@@ -121,30 +121,30 @@ https://github.com/RevealUIStudio/revealui
 ```
 I built RevealUI. It is an agentic business runtime you run on your own domain. Humans and agents share one permission model, one API, and one data model across five primitives: people, content, offers, payments, and agents. "Content" means offers and pages you already ship, not a video CMS.
 
-Self-host is the point of the post. `npx create-revealui@latest` is the new-project path (Node.js 24+, pnpm 10+). The repo-root docker-compose.yml runs local Postgres (pgvector/pgvector:pg16) as an alternative to Neon, plus the Hono API (port 3004) and the Next.js admin (port 4000). The marketing site is not in that compose. The quick start's database example is Neon, and Stripe and object storage are optional for local dev. Local inference via Ollama or Ubuntu Inference Snaps is optional. The default documented deploy still uses cloud Postgres, Stripe, and object storage. This is not a single-binary homelab app with no accounts.
+Self-host is the point of the post. `npx create-revealui@latest` is the new-project path (Node.js 24+, pnpm 10+). The repo-root docker-compose.yml runs local Postgres (pgvector/pgvector:pg16) as the local database, plus the Hono API (port 3004) and the Next.js admin (port 4000). The marketing site is not in that compose. The quick start's database example is a hosted database, and the payments processor and object storage are optional for local dev. Local inference via a local inference runtime is optional. The default documented deploy still uses a hosted database, a payments processor, and object storage. This is not a single-binary homelab app with no accounts.
 
 Open-source packages are MIT. Pro packages are FSL-1.1-MIT and convert to MIT two years after each release.
 
 Free is $0. Pro is $49/mo. Max is $99/mo ($799/yr). Enterprise is inquire. You still self-host. I am not posting this to sell a hosted seat.
 
-The runtime is shipped and marked Beta in the product docs. There are no paying external customers yet. Stripe live mode is on; that only means the billing rail exists. RevealUI is not SOC 2 certified.
+The runtime is shipped and marked Beta in the product docs. There are no paying external customers yet. Payments processor live mode is on; that only means the billing rail exists. RevealUI is not SOC 2 certified.
 
 Docs: https://docs.revealui.com
 What it is, in the repo's own words: docs/WHAT_IS.md
 
-I will stay for comments. Corrections to the install path are welcome — the compose file and docs/QUICK_START.md are the source, not this comment, if they disagree.
+I will stay for comments. Corrections to the install path are welcome: the compose file and docs/QUICK_START.md are the source, not this comment, if they disagree.
 ```
 
 ---
 
-## INTERNAL — comment stubs
+## INTERNAL: comment stubs
 
 Type these yourself if the question shows up. Do not pre-schedule them. Do not mention Care.
 
 **“Is this really self-hosted?”**
 
 ```
-The compose file ships a local Postgres container (pgvector/pgvector:pg16) because migrations create the vector extension. That is the documented alternative to Neon. The API and admin are in the same compose. You still bring secrets, and billing needs Stripe keys before checkout works. The quick start marks Stripe and R2 optional for local dev. I do not claim it boots with an empty .env.
+The compose file ships a local Postgres container (pgvector/pgvector:pg16) because migrations create the vector extension. That is the local database in the compose file. The API and admin are in the same compose. You still bring secrets, and billing needs payments processor keys before checkout works. The quick start marks the payments processor and object storage optional for local dev. I do not claim it boots with an empty .env.
 ```
 
 **“What’s the license / what’s not MIT?”**

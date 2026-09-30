@@ -9,7 +9,7 @@ author: Joshua Vaughn
 
 The `.env` file is where security quietly rots.
 
-It starts innocently. You paste a Stripe key into `.env.local` to get a feature working. A teammate copies it into Slack to unblock themselves. CI needs it, so it goes into the provider dashboard too. Six months later your most sensitive credentials exist in plaintext in four places, none of them encrypted, and nobody remembers all four. The day one of them leaks, you find out from a billing alert.
+It starts innocently. You paste a payments processor key into `.env.local` to get a feature working. A teammate copies it into team chat to unblock themselves. CI needs it, so it goes into the provider dashboard too. Six months later your most sensitive credentials exist in plaintext in four places, none of them encrypted, and nobody remembers all four. The day one of them leaks, you find out from a billing alert.
 
 RevealUI refuses that bargain. Every project in the fleet keeps its secrets in **RevVault**, an age-encrypted local secret store, and nothing lives in plaintext on disk.
 
@@ -21,10 +21,10 @@ The model is simple. Secrets are encrypted at rest. They are decrypted on demand
 
 ```bash
 # Store a secret (prompts for the value, never echoed)
-revvault set my-project/stripe/secret-key
+revvault set my-project/payments/secret-key
 
 # Read it back
-revvault get my-project/stripe/secret-key
+revvault get my-project/payments/secret-key
 
 # Load a whole namespace into your shell environment
 revvault export-env my-project > /dev/null   # used by .envrc, not a file
@@ -57,4 +57,4 @@ The trade you are making is real surface area, your own key and your own store, 
 
 ---
 
-*RevealUI is the open runtime for businesses that run their own AI. RevVault is part of the RevealFleet family; read the source and get started on [GitHub](https://github.com/RevealUIStudio/revvault).*
+*RevealUI is the open runtime for businesses that run their own AI. RevVault is part of the RevealFleet family; read the source and get started in [the repository](https://github.com/RevealUIStudio/revvault).*
