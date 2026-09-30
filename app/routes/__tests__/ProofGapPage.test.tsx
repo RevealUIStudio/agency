@@ -52,7 +52,7 @@ describe('ProofGapPage', () => {
     expect(screen.getByRole('button', { name: PROOF_GAP_CTA })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /Request a quote/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Request a quote/i })).not.toBeInTheDocument();
-    expect(text).not.toMatch(/faster than Zap/i);
+    expect(text).not.toMatch(/\b(?:Zapier|Zaps?|n8n|IFTTT|Airtable)\b|Make\.com/i);
     expect(text).not.toMatch(/revolutionize|empower|seamless/i);
     expect(text).not.toMatch(/RevMind/);
     expect(text).not.toMatch(/Architecture-as-Consultation/);
@@ -82,5 +82,16 @@ describe('ProofGapPage', () => {
     expect(screen.getByRole('heading', { name: PROOF_GAP_OFFER_NAME })).toBeInTheDocument();
     expect(screen.getByText('1) Accounts and ownership')).toBeInTheDocument();
     expect(screen.getByText('3) Action records')).toBeInTheDocument();
+    expect(document.body.textContent).toContain(
+      'glue automation / automation builder / custom / hope',
+    );
+    expect(document.body.textContent).toContain('one undocumented glue automation');
+    expect(document.body.textContent).toContain(
+      'Glue automation owns the revenue path; agents are a side demo.',
+    );
+    expect(document.body.textContent).toContain('Not “faster than glue automation.”');
+    expect(document.body.textContent).not.toMatch(
+      /\b(?:Zapier|Zaps?|n8n|IFTTT|Airtable)\b|Make\.com/i,
+    );
   });
 });

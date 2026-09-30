@@ -109,7 +109,7 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
       },
       {
         id: '2.2',
-        text: 'You know what owns the critical path (Zap / n8n / custom / hope)',
+        text: 'You know what owns the critical path (glue automation / automation builder / custom / hope)',
       },
       {
         id: '2.3',
@@ -117,10 +117,10 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
       },
       {
         id: '2.4',
-        text: 'You’re not one undocumented Zap away from “nobody knows how leads get booked”',
+        text: 'You’re not one undocumented glue automation away from “nobody knows how leads get booked”',
       },
     ],
-    redFlag: 'Zap owns the revenue path; agents are a side demo.',
+    redFlag: 'Glue automation owns the revenue path; agents are a side demo.',
   },
   {
     title: '3) Action records',
@@ -232,7 +232,7 @@ export const PROOF_GAP_NEXT_STEPS = [
 ] as const;
 
 export const PROOF_GAP_REFUSALS = [
-  'Not “faster than Zap.”',
+  'Not “faster than glue automation.”',
   'Not cheaper than freelancers.',
   'Not SOC 2 certified.',
   'Not a hosted chatbot you rent forever.',
