@@ -4,10 +4,8 @@ import { resolve } from 'node:path';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
-  CONSULTATION_MEET_FALLBACK,
-  CONSULTATION_PREP_BODY,
+  CONSULTATION_CHANGE_POLICY,
   CONSULTATION_SUCCESS,
-  CONSULTATION_SUCCESS_MISSING,
   NETWORK_LINK_USED,
   rememberConsultationReceipt,
 } from '@/lib/consultation-buyer';
@@ -85,6 +83,8 @@ describe('ConsultationBookPage', () => {
     const view = render(<ConsultationBookPage onCheckout={onCheckout} />);
     expect(view.container.querySelector('[data-slot="booking-calendar"]')).toBeTruthy();
     expect(view.container.textContent ?? '').not.toMatch(/waive/i);
+    for (const policy of CONSULTATION_CHANGE_POLICY)
+      expect(screen.getByText(policy)).toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toContain('calendar.google.com');
     const stageB = await screen.findByRole('checkbox', { name: 'Add the domain pack ($297)' });
     expect(stageB).not.toBeChecked();
@@ -157,6 +157,7 @@ describe('ConsultationBookPage', () => {
     });
 
     const view = render(<ConsultationBookPage onCheckout={vi.fn()} />);
+    expect(window.location.search).toBe('?hours=1');
     expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
     expect(screen.queryByRole('checkbox', { name: 'Add the domain pack ($297)' })).toBeNull();
     expect(screen.getByText('Due today $300.')).toBeInTheDocument();
@@ -175,6 +176,35 @@ describe('ConsultationBookPage', () => {
       });
     });
     window.history.pushState({}, '', '/');
+  });
+
+  it('keeps a signed link after URL scrubbing and a page remount', async () => {
+    window.history.pushState({}, '', '/consultation/book?nw=signed-token&hours=2');
+    const statusRequests: string[] = [];
+    vi.stubGlobal('fetch', (input: RequestInfo | URL) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      if (url.includes('/api/consultation/network-status')) {
+        statusRequests.push(url);
+        return Promise.resolve(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+      }
+      return Promise.resolve(
+        new Response(JSON.stringify({ slots: [] }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+      );
+    });
+    const first = render(<ConsultationBookPage />);
+    expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
+    expect(window.location.search).toBe('?hours=2');
+    first.unmount();
+
+    render(<ConsultationBookPage />);
+    expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
+    expect(statusRequests).toEqual([
+      '/api/consultation/network-status?nw=signed-token',
+      '/api/consultation/network-status?nw=signed-token',
+    ]);
   });
 
   it('keeps the optional pack when the signed link does not verify', async () => {
@@ -205,93 +235,65 @@ describe('ConsultationBookPage', () => {
     window.history.pushState({}, '', '/');
   });
 
-  it('shows the payment confirmation line', () => {
+  it('does not confirm a payment from a direct URL or browser receipt', () => {
+    window.history.pushState({}, '', '/consultation/book/success?booking=book_ux');
+    rememberConsultationReceipt('book_ux', { label: 'Unverified local slot', stageB: false });
     render(<ConsultationBookSuccessPage />);
-    expect(screen.getByText(CONSULTATION_SUCCESS)).toBeInTheDocument();
-    expect(screen.getByText(CONSULTATION_PREP_BODY)).toBeInTheDocument();
-    expect(screen.getByText('Prep')).toBeInTheDocument();
-    expect(screen.getByText(CONSULTATION_SUCCESS_MISSING)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'founder@revealui.com' })).toHaveAttribute(
-      'href',
-      'mailto:founder@revealui.com',
-    );
-    expect(document.body.textContent?.replaceAll('Google Meet', '')).not.toMatch(/Meet/);
+    expect(screen.queryByText(CONSULTATION_SUCCESS)).not.toBeInTheDocument();
+    expect(screen.queryByText('Unverified local slot')).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('could not verify');
+    window.history.pushState({}, '', '/');
+    sessionStorage.removeItem('consultation-receipt');
   });
 
-  it('shows the slot remembered for this booking and hides a different one', async () => {
-    vi.stubGlobal('fetch', () =>
-      Promise.resolve(
-        new Response(JSON.stringify({ ok: false, reason: 'missing' }), {
-          status: 200,
-          headers: { 'content-type': 'application/json' },
-        }),
+  it('shows payment and schedule only after the server confirms them', async () => {
+    window.history.pushState(
+      {},
+      '',
+      '/consultation/book/success?booking=book_ux&session_id=cs_test_1',
+    );
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            status: 'confirmed',
+            start: '2026-01-07T14:00:00.000Z',
+            end: '2026-01-07T15:00:00.000Z',
+            stage_b: false,
+          }),
+        ),
       ),
     );
-    window.history.pushState({}, '', '/consultation/book/success?booking=book_ux');
-    rememberConsultationReceipt('book_ux', {
-      label: 'Wed, Jan 7 · 9:00 AM–10:00 AM ET',
-      stageB: false,
-    });
-    const matched = render(<ConsultationBookSuccessPage />);
-    expect(screen.getByText('Wed, Jan 7 · 9:00 AM–10:00 AM ET')).toBeInTheDocument();
-    expect(screen.getByText('This payment is the consultation only.')).toBeInTheDocument();
-    expect(await screen.findByText(CONSULTATION_MEET_FALLBACK)).toBeInTheDocument();
-    matched.unmount();
-
-    window.history.pushState({}, '', '/consultation/book/success?booking=other');
     render(<ConsultationBookSuccessPage />);
-    expect(screen.queryByText('Wed, Jan 7 · 9:00 AM–10:00 AM ET')).not.toBeInTheDocument();
-    expect(await screen.findByText(CONSULTATION_SUCCESS_MISSING)).toBeInTheDocument();
-    window.history.pushState({}, '', '/');
-    sessionStorage.removeItem('consultation-receipt');
-  });
-
-  it('shows when, Google Meet, prep, and questions without sessionStorage', async () => {
-    sessionStorage.removeItem('consultation-receipt');
-    window.history.pushState({}, '', '/consultation/book/success?booking=book_remote');
-    vi.stubGlobal('fetch', (input: RequestInfo | URL) => {
-      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
-      if (url.includes('/api/consultation/booking')) {
-        return Promise.resolve(
-          new Response(
-            JSON.stringify({
-              ok: true,
-              start: '2026-01-07T14:00:00.000Z',
-              end: '2026-01-07T15:00:00.000Z',
-              meet_link: 'https://meet.google.com/lookup/book_remote',
-              stage_b: false,
-            }),
-            { status: 200, headers: { 'content-type': 'application/json' } },
-          ),
-        );
-      }
-      return Promise.resolve(new Response('{}', { status: 404 }));
-    });
-    render(<ConsultationBookSuccessPage />);
-    expect(await screen.findByText('Wed, Jan 7 · 9:00 AM–10:00 AM ET')).toBeInTheDocument();
-    expect(screen.getByText('When')).toBeInTheDocument();
-    const meet = screen.getByRole('link', {
-      name: 'https://meet.google.com/lookup/book_remote',
-    });
-    expect(meet).toHaveAttribute('href', 'https://meet.google.com/lookup/book_remote');
-    expect(screen.getByText(/Google Meet:/)).toBeInTheDocument();
-    expect(screen.getByText(CONSULTATION_PREP_BODY)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'founder@revealui.com' })).toBeInTheDocument();
-    expect(screen.getByText('This payment is the consultation only.')).toBeInTheDocument();
-    expect(document.body.textContent?.replaceAll('Google Meet', '')).not.toMatch(/Meet/);
-    window.history.pushState({}, '', '/');
-  });
-
-  it('degrades with Google Meet copy when the booking fetch fails', async () => {
-    sessionStorage.removeItem('consultation-receipt');
-    window.history.pushState({}, '', '/consultation/book/success?booking=book_missing');
-    vi.stubGlobal('fetch', () => Promise.reject(new Error('offline')));
-    render(<ConsultationBookSuccessPage />);
-    expect(await screen.findByText(CONSULTATION_SUCCESS_MISSING)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Consultation booked' })).toBeInTheDocument();
     expect(screen.getByText(CONSULTATION_SUCCESS)).toBeInTheDocument();
-    expect(screen.getByText(CONSULTATION_PREP_BODY)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'founder@revealui.com' })).toBeInTheDocument();
-    expect(document.body.textContent?.replaceAll('Google Meet', '')).not.toMatch(/Meet/);
+    expect(window.location.search).not.toContain('cs_test_1');
+    window.history.pushState({}, '', '/');
+  });
+
+  it('does not turn a pending payment or failed lookup into a confirmation', async () => {
+    window.history.pushState(
+      {},
+      '',
+      '/consultation/book/success?booking=book_ux&session_id=cs_test_1',
+    );
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response(JSON.stringify({ status: 'pending' }))),
+    );
+    const pending = render(<ConsultationBookSuccessPage />);
+    expect(await screen.findByText(/Your booking is not confirmed yet/)).toBeInTheDocument();
+    expect(screen.queryByText(CONSULTATION_SUCCESS)).not.toBeInTheDocument();
+    pending.unmount();
+    window.history.pushState(
+      {},
+      '',
+      '/consultation/book/success?booking=unknown&session_id=cs_test_1',
+    );
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('{}', { status: 404 })));
+    render(<ConsultationBookSuccessPage />);
+    expect(await screen.findByText(/We could not verify a booking/)).toBeInTheDocument();
     window.history.pushState({}, '', '/');
   });
 

@@ -24,8 +24,7 @@ import {
  * known-for H1. This card line is not the homepage H1 and is not the live
  * hero pain breath.
  */
-export const OG_CARD_HEADLINE =
-  'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?';
+export const OG_CARD_HEADLINE = 'Build a business workflow your team can operate.';
 
 /**
  * Locked public ladder painted on the card.
@@ -38,7 +37,7 @@ export const OG_CARD_SKU_LINE =
 /** Catalog composition the SKU line must stay equal to. */
 export const OG_CARD_SKU_FROM_OFFERS = `${CONSULTATION.name} ${CONSULTATION.price}/hr, ${PILOT.name} ${PILOT.price} (includes ${ADAPTER_INCLUDED_ON_PILOT} Adapter), ${LAUNCH.name} ${LAUNCH.price} (up to ${ADAPTER_INCLUDED_ON_LAUNCH} Adapters), ${CARE.name} ${CARE.price}`;
 
-export const OG_CARD_BOOKING_LINE = 'Book a 30-minute intro on Google Calendar.';
+export const OG_CARD_BOOKING_LINE = 'Book a free 30-minute intro.';
 
 export const OG_CARD_URL = 'revealuistudio.com';
 

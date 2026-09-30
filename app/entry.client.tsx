@@ -7,8 +7,12 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { CookieConsent } from './components/CookieConsent';
+import { scrubCheckoutReferenceFromUrl, scrubNetworkTokenFromUrl } from './lib/booking-url';
 import { initSentry } from './lib/sentry';
 
+// A signed booking link carries buyer details. Remove it before telemetry starts.
+scrubNetworkTokenFromUrl();
+scrubCheckoutReferenceFromUrl();
 // Initialise Sentry before mounting. No-op if VITE_SENTRY_DSN is absent
 // or analytics consent has not been granted (returning visitors with the
 // consent cookie initialise here; first-time accept goes through SentryTracker).

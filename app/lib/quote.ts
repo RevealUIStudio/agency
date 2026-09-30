@@ -31,7 +31,6 @@ import {
   CONSULTATION,
   LAUNCH,
   PILOT,
-  STAGE_B_PRICE,
 } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { PRODUCT_SITE_URL } from '@/lib/site';
@@ -55,35 +54,32 @@ export const HOSTER_OPTIONS = [
 
 export const OUTCOME_OPTIONS = [
   { value: 'consultation', label: 'Consultation: review my system ($300 per hour)' },
-  {
-    value: 'plan',
-    label: 'Pilot: run one action on one site (includes 1 Adapter)',
-  },
-  { value: 'launch', label: 'Launch: put one business flow into production (up to 3 Adapters)' },
+  { value: 'plan', label: 'Pilot: run one action on one site' },
+  { value: 'launch', label: 'Launch: put one business flow into production' },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
   { value: 'one', label: 'One business, one site' },
-  { value: 'many', label: 'More than one: book an intro' },
+  { value: 'many', label: 'More than one site' },
 ] as const satisfies readonly { value: Places; label: string }[];
 
 export const QUOTE_CALCULATOR_HEADING = 'Find your starting point.' as const;
 
 export const QUOTE_CALCULATOR_LEAD =
-  `Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. Product licenses are separate. Pilot includes 1 Adapter; Launch includes up to 3. Extra Adapters are ${ADAPTER.price} each and are not sold alone. The domain pack is ${STAGE_B_PRICE} after Consultation alone.` as const;
+  'Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. Product licenses are separate.' as const;
 
 export const CONSULTATION_QUOTE_DETAIL =
-  'One focused pass on the critical path, proof gaps, or a stuck live flow. Notes + next step. Pay $300 when you book the hour. No leftover site. No holdback.' as const;
+  'A focused review of your system. You receive session notes and a recommended next step. Pay $300 when you book the hour. Implementation and ongoing support are separate.' as const;
 
 export const PROOF_QUOTE_DETAIL =
-  'One site. One receipted action you operate. Includes 1 Adapter (one tool category). The domain pack is included. You keep it. Invoice $3,997 before we start. Credits 100% to Launch if you start Launch within 45 days.' as const;
+  'One supported action on one site, with a record you can inspect. Includes 1 Adapter (one tool category). The domain pack is included. Invoice $3,997 before work starts. Credit toward Launch follows the agreed 45-day terms.' as const;
 
 export const LAUNCH_QUOTE_DETAIL =
-  'One live money path on your accounts. Includes up to 3 Adapters (one tool category each). Architecture inside this offer. Half now, half on delivery. You own the result.' as const;
+  'One agreed business flow on your accounts, with up to 3 Adapters (one tool category each), architecture, a runbook, and 30 days of async stabilization. Half before work starts, half on delivery.' as const;
 
 export const QUOTE_OWNERSHIP = [
   'You own the accounts and the data.',
-  'If we disappear, you still have the company.',
+  'Review the software licenses, service dependencies, and maintenance responsibilities before choosing your setup.',
 ] as const;
 
 export const QUOTE_INTRO_LINE =
@@ -177,7 +173,6 @@ export function consultationQuoteDetail(hours: number): string {
 }
 
 function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
-  if (answers.stageB !== true) return [];
   const included = answers.outcome === 'plan' || answers.outcome === 'launch';
   if (included) {
     return [
@@ -190,6 +185,7 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
       },
     ];
   }
+  if (answers.stageB !== true) return [];
   const role = answers.viewerRole === 'owner' ? 'owner' : 'guest';
   const invoice = buildStageBInvoice({
     attached: true,
@@ -280,7 +276,7 @@ function adapterLines(answers: QuoteAnswers): readonly QuoteLine[] {
 
 function studioLines(answers: QuoteAnswers): readonly QuoteLine[] {
   const hours = consultationHourCount(answers.consultationHours ?? DEFAULT_CONSULTATION_HOURS);
-  return [
+  const offers: QuoteLine[] = [
     {
       id: CONSULTATION.id,
       title: CONSULTATION.name,
@@ -302,6 +298,9 @@ function studioLines(answers: QuoteAnswers): readonly QuoteLine[] {
       detail: LAUNCH_QUOTE_DETAIL,
       highlighted: answers.outcome === 'launch',
     },
+  ];
+  return [
+    ...offers.filter((line) => line.highlighted),
     ...adapterLines(answers),
     ...stageBLines(answers),
   ];
@@ -331,7 +330,12 @@ export function buildQuote(answers: QuoteAnswers): Quote {
 
   return {
     kind: 'studio',
-    heading: 'Studio',
+    heading:
+      answers.outcome === 'consultation'
+        ? CONSULTATION.name
+        : answers.outcome === 'plan'
+          ? PILOT.name
+          : LAUNCH.name,
     body: STUDIO_QUOTE_BODY,
     lines: studioLines(answers),
     stopQuoting: false,

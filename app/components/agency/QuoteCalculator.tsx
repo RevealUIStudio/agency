@@ -108,76 +108,95 @@ export function QuoteCalculator() {
               options={HOSTER_OPTIONS}
               onChange={setHoster}
             />
-            <ChoiceGroup
-              legend="What do you need to achieve?"
-              name="outcome"
-              value={outcome}
-              options={OUTCOME_OPTIONS}
-              onChange={setOutcome}
-            />
-            <ChoiceGroup
-              legend="How many sites?"
-              name="places"
-              value={places}
-              options={PLACES_OPTIONS}
-              onChange={setPlaces}
-            />
-            <div>
-              <label
-                htmlFor="consultation-hours"
-                className="text-base font-semibold text-foreground"
-              >
-                Consultation hours
-              </label>
-              <select
-                id="consultation-hours"
-                value={consultationHours}
-                onChange={(event) => setConsultationHours(Number(event.target.value))}
-                className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
-              >
-                {CONSULTATION_HOUR_OPTIONS.map((count) => (
-                  <option key={count} value={count}>
-                    {consultationHourLabel(count)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="adapter-extras" className="text-base font-semibold text-foreground">
-                Extra Adapters
-              </label>
-              <select
-                id="adapter-extras"
-                value={adapterExtras}
-                onChange={(event) => setAdapterExtras(Number(event.target.value))}
-                className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
-              >
-                {ADAPTER_EXTRA_OPTIONS.map((count) => (
-                  <option key={count} value={count}>
-                    {adapterExtraLabel(count)}
-                  </option>
-                ))}
-              </select>
-              <p className="mt-3 text-sm text-muted-foreground">{ADAPTER_CALCULATOR_HELP}</p>
-            </div>
-            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-              <input
-                type="checkbox"
-                checked={onCare}
-                onChange={(event) => setOnCare(event.target.checked)}
-                className="mt-1 size-4 accent-primary"
-              />
-              <span className="text-sm font-medium text-foreground">{ON_CARE_CHECKBOX}</span>
-            </label>
-            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-              <input
-                type="checkbox"
-                checked={stageB}
-                onChange={(event) => setStageB(event.target.checked)}
-                className="mt-1 size-4 accent-primary"
-              />
-              <span className="text-sm font-medium text-foreground">{STAGE_B_CHECKBOX}</span>
-            </label>
+            {hoster === 'studio' ? (
+              <>
+                <ChoiceGroup
+                  legend="What do you need to achieve?"
+                  name="outcome"
+                  value={outcome}
+                  options={OUTCOME_OPTIONS}
+                  onChange={setOutcome}
+                />
+                <ChoiceGroup
+                  legend="How many sites?"
+                  name="places"
+                  value={places}
+                  options={PLACES_OPTIONS}
+                  onChange={setPlaces}
+                />
+                {places === 'one' && outcome === 'consultation' ? (
+                  <>
+                    <div>
+                      <label
+                        htmlFor="consultation-hours"
+                        className="text-base font-semibold text-foreground"
+                      >
+                        Consultation hours
+                      </label>
+                      <select
+                        id="consultation-hours"
+                        value={consultationHours}
+                        onChange={(event) => setConsultationHours(Number(event.target.value))}
+                        className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
+                      >
+                        {CONSULTATION_HOUR_OPTIONS.map((count) => (
+                          <option key={count} value={count}>
+                            {consultationHourLabel(count)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                ) : null}
+                <div>
+                  <label
+                    htmlFor="adapter-extras"
+                    className="text-base font-semibold text-foreground"
+                  >
+                    Extra Adapters
+                  </label>
+                  <select
+                    id="adapter-extras"
+                    value={adapterExtras}
+                    onChange={(event) => setAdapterExtras(Number(event.target.value))}
+                    className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
+                  >
+                    {ADAPTER_EXTRA_OPTIONS.map((count) => (
+                      <option key={count} value={count}>
+                        {adapterExtraLabel(count)}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="mt-3 text-sm text-muted-foreground">{ADAPTER_CALCULATOR_HELP}</p>
+                </div>
+                {outcome === 'consultation' ? (
+                  <>
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                      <input
+                        type="checkbox"
+                        checked={onCare}
+                        onChange={(event) => setOnCare(event.target.checked)}
+                        className="mt-1 size-4 accent-primary"
+                      />
+                      <span className="text-sm font-medium text-foreground">
+                        {ON_CARE_CHECKBOX}
+                      </span>
+                    </label>
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                      <input
+                        type="checkbox"
+                        checked={stageB}
+                        onChange={(event) => setStageB(event.target.checked)}
+                        className="mt-1 size-4 accent-primary"
+                      />
+                      <span className="text-sm font-medium text-foreground">
+                        {STAGE_B_CHECKBOX}
+                      </span>
+                    </label>
+                  </>
+                ) : null}
+              </>
+            ) : null}
           </div>
 
           <aside
@@ -228,11 +247,14 @@ export function QuoteCalculator() {
                   external
                   className="w-full justify-center"
                 >
-                  Start free
+                  Compare product licenses
                 </LinkButton>
               ) : null}
-              {quote.stopQuoting ? null : (
-                <LinkButton href={CONSULTATION_BOOK_PATH} className="w-full justify-center">
+              {quote.stopQuoting || outcome !== 'consultation' ? null : (
+                <LinkButton
+                  href={`${CONSULTATION_BOOK_PATH}?hours=${consultationHours}&stage_b=${stageB ? 'true' : 'false'}`}
+                  className="w-full justify-center"
+                >
                   Book a Consultation
                 </LinkButton>
               )}
@@ -243,7 +265,9 @@ export function QuoteCalculator() {
                 variant={quote.productHandoffUrl || !quote.stopQuoting ? 'neutral' : undefined}
                 className="w-full justify-center"
               >
-                Book a 30-minute intro
+                {quote.kind === 'studio' && outcome !== 'consultation'
+                  ? `Discuss ${quote.heading} on a free intro`
+                  : 'Book a free 30-minute intro'}
               </LinkButton>
             </div>
           </aside>

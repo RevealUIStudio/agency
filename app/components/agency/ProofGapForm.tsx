@@ -186,7 +186,7 @@ export function ProofGapForm({ onSuccess }: { onSuccess?: () => void }) {
         {status === 'loading' ? 'Sending…' : PROOF_GAP_CTA}
       </Button>
       <p className="text-xs text-muted-foreground">
-        Name and email only. We use the same inbox as the contact form. By sending, you agree to our{' '}
+        We use your name and email to respond to this inquiry. Read our{' '}
         <a href="/privacy" className="font-semibold text-muted-foreground hover:underline">
           Privacy Policy
         </a>

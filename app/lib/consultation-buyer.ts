@@ -31,21 +31,10 @@ export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 
 export const NETWORK_LINK_USED = 'This network Consultation link has already been used.';
 
 export const CONSULTATION_AFTER_PAY =
-  'After payment, the Google Meet link is on the calendar invite.';
+  'After payment and scheduling are confirmed, the Meet link is on your calendar invite.';
 
 export const CONSULTATION_SUCCESS =
-  'Payment received. The Google Meet link is on the calendar invite.';
-
-/** Success page while the paid booking is still loading. */
-export const CONSULTATION_SUCCESS_LOADING = 'Loading the time and Google Meet link.';
-
-/** Paid webhook has not written the calendar event yet. */
-export const CONSULTATION_SUCCESS_PENDING =
-  'The time and Google Meet link show here when the calendar invite is ready.';
-
-/** No sessionStorage receipt and no paid booking to read. */
-export const CONSULTATION_SUCCESS_MISSING =
-  'This browser does not have the time. The Google Meet link is on the calendar invite.';
+  'Payment and scheduling confirmed. Look for your calendar invite with the Meet link.';
 
 export const CONSULTATION_MEET_FALLBACK = 'The Google Meet link is on the calendar invite.';
 
@@ -54,6 +43,15 @@ export const CONSULTATION_PREP_BODY =
 
 export const CONSULTATION_CANCEL =
   'Checkout was canceled. Your temporary slot hold expires within 20 minutes.';
+
+export const CONSULTATION_CHANGE_POLICY = [
+  'At least 24 hours before the scheduled start: choose a full refund of Consultation time or a free reschedule.',
+  'With less than 24 hours’ notice, before the scheduled start: one free reschedule. No automatic refund of Consultation time.',
+  'A no-show has no automatic refund. If Studio cancels, choose a full refund of Consultation time or a new date.',
+  'Undelivered domain-pack work is refundable. Delivered work follows its scope disclosed before work starts.',
+] as const;
+
+export const CONSULTATION_CHANGE_CONTACT = `Email ${CONTACT_EMAIL} with your booking reference to cancel or reschedule. Notice is measured from receipt of your email to the scheduled start.`;
 
 export const CONSULTATION_READY_HINT = 'Pick a slot, then enter your name and email.';
 
@@ -196,6 +194,9 @@ export function confirmationText(booking: {
     consultationStageLine(booking.stage_b),
     '',
     `Prep: ${CONSULTATION_PREP_BODY}`,
+    'Changes:',
+    ...CONSULTATION_CHANGE_POLICY,
+    CONSULTATION_CHANGE_CONTACT,
     `Questions: ${CONTACT_EMAIL}`,
   );
   return lines.join('\n');
@@ -213,6 +214,9 @@ export function calendarInviteDescription(booking: {
   lines.push(
     consultationStageLine(booking.stage_b),
     `Prep: ${CONSULTATION_PREP_BODY}`,
+    'Changes:',
+    ...CONSULTATION_CHANGE_POLICY,
+    CONSULTATION_CHANGE_CONTACT,
     `Questions: ${CONTACT_EMAIL}`,
   );
   return lines.join('\n');

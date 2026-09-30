@@ -9,14 +9,5 @@
 export const FLEET_NAME = 'RevealFleet' as const;
 export const LEAD_PRODUCT = 'RevealUI' as const;
 
-/** Product catalog a stranger can buy on revealui.com. */
-export const PRODUCT_CATALOG = {
-  free: 'Free',
-  pro: '$49',
-  max: '$99',
-  enterprise: 'Inquire',
-  proPerpetual: '$1,499',
-} as const;
-
 export const REVVAULT_ROLE =
   'RevVault is encrypted secret management inside Pro. It is not a separate paid SKU on this page.' as const;

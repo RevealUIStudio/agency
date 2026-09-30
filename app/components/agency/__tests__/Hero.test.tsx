@@ -16,17 +16,17 @@ describe('Studio hero', () => {
     expect(screen.getByRole('heading', { level: 1, name: HERO_HEADLINE })).toBeInTheDocument();
     expect(screen.getByText(HERO_SHOP_LINE)).toBeInTheDocument();
     expect(screen.getByText(HERO_RESULT)).toBeInTheDocument();
-    expect(screen.getByText(HERO_MENU)).toBeInTheDocument();
+    expect(screen.queryByText(HERO_MENU)).not.toBeInTheDocument();
     expect(container).not.toHaveTextContent(/Proof Sprint|Powerful \+ safe|PROOF|\u2014/);
   });
 
   it('links the free intro and quote to their supported destinations', () => {
     render(<Hero />);
-    expect(screen.getByRole('link', { name: 'Book a 30-minute intro' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Book a free 30-minute intro' })).toHaveAttribute(
       'href',
       INTRO_CALL_URL,
     );
-    expect(screen.getByRole('link', { name: 'Get a quote' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Find your starting point' })).toHaveAttribute(
       'href',
       '/#calculator',
     );

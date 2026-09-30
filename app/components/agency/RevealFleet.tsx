@@ -14,15 +14,14 @@ export function RevealFleet() {
           {FLEET_NAME}
         </h2>
         <p className="mt-4 text-base text-muted-foreground">
-          {FLEET_NAME} is the family name. {LEAD_PRODUCT} is the agentic business runtime. Knowledge
-          Graph is part of that runtime (Electric+CRDT), not a Studio SKU. Licenses live on
-          revealui.com. This page does not sell a product catalog.
+          {FLEET_NAME} is the family of software behind {LEAD_PRODUCT} and the tools we use to build
+          and operate it. RevealUI brings people, content, offers, payments, and agents into one
+          self-hosted runtime. You can inspect the source before choosing a license.
         </p>
         <p className="mt-4 text-base text-muted-foreground">
-          Studio work here is for startups, and for technical founders and small agencies who
-          already run agents. You run it, or I ship it with you. The public menu is{' '}
-          {CONSULTATION.name} at {CONSULTATION.price}, {PILOT.name} at {PILOT.price}, and{' '}
-          {LAUNCH.name} at {LAUNCH.price}.
+          Studio helps you apply that foundation to an agreed workflow on your accounts. Start with
+          a focused {CONSULTATION.name}, test one action with a {PILOT.name}, or implement a
+          business flow with {LAUNCH.name}. Product licenses are separate.
         </p>
         <div className="mt-10">
           <LinkButton href={PRODUCT_SITE_URL} external>

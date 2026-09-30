@@ -20,13 +20,12 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
-const HEADLINE =
-  'Tired of booking in one tab, invoices in another, and an agent in a third that leaves no receipt?';
+const HEADLINE = 'Build a business workflow your team can operate.';
 const SKU_LINE =
   'Consultation $300/hr, Pilot $3,997 (includes 1 Adapter), Launch $14,500 (up to 3 Adapters), Care $1,997/mo';
 const SKU_ROW_1 = 'Consultation $300/hr, Pilot $3,997 (includes 1 Adapter),';
 const SKU_ROW_2 = 'Launch $14,500 (up to 3 Adapters), Care $1,997/mo';
-const BOOKING_LINE = 'Book a 30-minute intro on Google Calendar.';
+const BOOKING_LINE = 'Book a free 30-minute intro.';
 const URL_LINE = 'revealuistudio.com';
 const PLATE = '#060d1a';
 const AMBER = '#eeb300';
@@ -42,8 +41,8 @@ function assertLiveCopy() {
   if (!fixture.includes(HEADLINE)) {
     throw new Error('og-card headline drifted from app/lib/og-card.ts');
   }
-  if (!hero.includes('The agentic business runtime startups operate on their own domain.')) {
-    throw new Error('Hero.tsx lost the known-for H1 lock');
+  if (!hero.includes(HEADLINE)) {
+    throw new Error('OG headline must match the published hero headline');
   }
   if (`${SKU_ROW_1} ${SKU_ROW_2}` !== SKU_LINE) {
     throw new Error('SKU rows drifted from the locked SKU line');
@@ -127,9 +126,8 @@ async function main() {
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
   <rect x="72" y="248" width="96" height="6" rx="3" fill="${AMBER}"/>
-  <text x="72" y="318" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">Tired of booking in one tab,</text>
-  <text x="72" y="368" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">invoices in another,</text>
-  <text x="72" y="418" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">and an agent in a third that leaves no receipt?</text>
+  <text x="72" y="318" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">Build a business workflow</text>
+  <text x="72" y="368" fill="#ffffff" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="40" font-weight="700">your team can operate.</text>
   <text x="72" y="462" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="20" font-weight="500">${SKU_ROW_1}</text>
   <text x="72" y="490" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="20" font-weight="500">${SKU_ROW_2}</text>
   <text x="72" y="528" fill="#c5d4e8" font-family="Inter, Liberation Sans, DejaVu Sans, sans-serif" font-size="22" font-weight="500">${BOOKING_LINE}</text>

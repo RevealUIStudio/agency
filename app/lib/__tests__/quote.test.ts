@@ -1,17 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { ADAPTER, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
+import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import {
   buildQuote,
-  CONSULTATION_QUOTE_DETAIL,
   DEFAULT_HOSTER,
   DEFAULT_OUTCOME,
   DEFAULT_PLACES,
   INTRO_BODY,
   INTRO_HEADING,
-  LAUNCH_QUOTE_DETAIL,
-  PROOF_QUOTE_DETAIL,
   SELF_HOST_HANDOFF,
-  STUDIO_QUOTE_BODY,
 } from '@/lib/quote';
 
 describe('buildQuote', () => {
@@ -21,65 +17,16 @@ describe('buildQuote', () => {
     expect(DEFAULT_PLACES).toBe('one');
   });
 
-  it('prints the three Studio prices and leads the result card with result + PROOF', () => {
-    const quote = buildQuote({
-      hoster: DEFAULT_HOSTER,
-      outcome: DEFAULT_OUTCOME,
-      places: DEFAULT_PLACES,
-    });
-    expect(quote.kind).toBe('studio');
-    expect(quote.body).toBe(STUDIO_QUOTE_BODY);
-    expect(quote.body).toMatch(/You run it, or we implement with you/);
-    expect(quote.body).not.toMatch(/You run it, or I ship it with you/);
-    expect(quote.body).not.toMatch(/They operate, or they pay to implement/);
-    expect(quote.stopQuoting).toBe(false);
-    expect(quote.lines.map((line) => line.price)).toEqual([
-      CONSULTATION.price,
-      PILOT.price,
-      LAUNCH.price,
-      'Included',
-    ]);
-    expect(CONSULTATION.price).toBe('$300');
-    expect(PILOT.price).toBe('$3,997');
-    expect(LAUNCH.price).toBe('$14,500');
-    expect(ADAPTER.price).toBe('$2,497');
-    expect(quote.lines.map((line) => line.title)).toEqual([
-      'Consultation',
-      'Pilot',
-      'Launch',
-      'Adapter',
-    ]);
-
-    const hour = quote.lines.find((line) => line.id === 'consultation');
-    const plan = quote.lines.find((line) => line.id === 'pilot');
-    const launch = quote.lines.find((line) => line.id === 'launch-package');
-    expect(hour?.detail).toBe(CONSULTATION_QUOTE_DETAIL);
-    expect(hour?.detail).toContain('proof gaps');
-    expect(hour?.detail).toContain('Pay $300 when you book the hour');
-    expect(hour?.detail).toContain('No holdback');
-    expect(hour?.detail).toContain('No leftover site');
-    expect(plan?.highlighted).toBe(true);
-    expect(plan?.detail).toBe(PROOF_QUOTE_DETAIL);
-    expect(plan?.detail).toMatch(/^One site\./);
-    expect(plan?.detail).toContain('One receipted action you operate');
-    expect(plan?.detail).toContain('Includes 1 Adapter');
-    expect(plan?.detail).toContain('The domain pack is included');
-    expect(plan?.detail).toContain('Invoice $3,997 before we start');
-    expect(plan?.detail).toContain('Credits 100% to Launch');
-    expect(plan?.detail).toContain('45 days');
-    expect(plan?.detail).not.toContain('first half back');
-    expect(launch?.highlighted).toBe(false);
-    expect(launch?.detail).toBe(LAUNCH_QUOTE_DETAIL);
-    expect(launch?.detail).toMatch(/^One live money path on your accounts/);
-    expect(launch?.detail).toContain('Includes up to 3 Adapters');
-    expect(launch?.detail).toContain('Half now, half on delivery.');
-    expect(JSON.stringify(quote)).not.toMatch(/four tests/i);
-    expect(JSON.stringify(quote)).not.toMatch(/signup-to-paid/i);
-    expect(JSON.stringify(quote)).not.toMatch(/first half back/i);
-    expect(JSON.stringify(quote)).not.toMatch(/keep the stack/i);
-    expect(JSON.stringify(quote)).not.toMatch(/live-or-holdback/i);
-    expect(JSON.stringify(quote)).not.toMatch(/outcome validation/i);
-    expect(JSON.stringify(quote)).not.toMatch(/proof of work/i);
+  it('shows the selected engagement and includes the domain pack without another charge', () => {
+    const pilot = buildQuote({ hoster: 'studio', outcome: 'plan', places: 'one' });
+    expect(pilot.heading).toBe('Pilot');
+    expect(pilot.lines.map((line) => line.price)).toEqual([PILOT.price, 'Included', 'Included']);
+    expect(pilot.lines.some((line) => line.id === CONSULTATION.id || line.id === LAUNCH.id)).toBe(
+      false,
+    );
+    const launch = buildQuote({ hoster: 'studio', outcome: 'launch', places: 'one', stageB: true });
+    expect(launch.lines.map((line) => line.price)).toEqual([LAUNCH.price, 'Included', 'Included']);
+    expect(launch.lines[0]?.detail).toContain('Half before work starts, half on delivery');
   });
 
   it('sends self-host visitors to the product site without quoting product SKUs', () => {

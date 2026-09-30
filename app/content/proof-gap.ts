@@ -1,5 +1,5 @@
 /**
- * Proof-gap checklist lead magnet. Soft ask, not a quote form.
+ * Proof-gap checklist lead magnet. Soft ask. not a quote form.
  * H1 and gate copy locked 2026-09-18 (Joshua OK publish).
  * PROOF = receipted action. Studio ladder stays Consultation / Pilot / Launch.
  */
@@ -27,7 +27,7 @@ export const PROOF_GAP_KNOWN_FOR =
 export const PROOF_GAP_PROOF_LINE =
   'An action record names who acted, what they changed, and when. It helps you inspect the action; it does not by itself prove the outcome was correct.' as const;
 
-export const PROOF_GAP_CTA = 'Get the free checklist' as const;
+export const PROOF_GAP_CTA = 'Ask about a checklist review' as const;
 
 export const PROOF_GAP_BULLETS = [
   'Ownership & domain: whose keys, whose infra',
@@ -37,9 +37,10 @@ export const PROOF_GAP_BULLETS = [
   'Client updates you can back with links',
 ] as const;
 
-export const PROOF_GAP_THANKS_TITLE = 'Your proof-gap checklist' as const;
+export const PROOF_GAP_THANKS_TITLE = 'Review inquiry sent' as const;
 
-export const PROOF_GAP_THANKS_LEAD = "Here's your proof-gap checklist." as const;
+export const PROOF_GAP_THANKS_LEAD =
+  'Your review inquiry was sent to Studio. We aim to respond within 1–2 business days.' as const;
 
 export const PROOF_GAP_THANKS_BODY =
   'Review each section and count the checks marked No or Partial. Choose the gap that most affects your current workflow and address it first.' as const;
@@ -52,18 +53,17 @@ export const PROOF_GAP_THANKS_INTRO =
 
 export const PROOF_GAP_DOWNLOAD_LABEL = 'Download the PDF' as const;
 
-export const PROOF_GAP_LADDER =
-  'Consultation $300 · Pilot $3,997 (includes 1 Adapter) · Launch $14,500 (up to 3 Adapters) · Adapter $2,497 · Stage B $297' as const;
+export const PROOF_GAP_LADDER = 'Consultation $300 · Pilot $3,997 · Launch $14,500' as const;
 
 export const PROOF_GAP_REQUEST_TOPIC = 'general' as const;
 
 export const PROOF_GAP_REQUEST_MESSAGE =
-  'Please send the proof-gap checklist. I asked from the /proof-gap gate.' as const;
+  'I would like help reviewing the proof-gap checklist. Please contact me about the appropriate next step.' as const;
 
 export const PROOF_GAP_HOW_TO = [
   'Walk each section. Mark Yes / Partial / No.',
-  'Count No + Partial. That is your proof-gap score (higher = more risk).',
-  "Don't chase a perfect score. Pick the one gap that would embarrass you in a client update this week.",
+  'Count No + Partial to identify checks needing attention. This is a planning aid, not a validated risk assessment.',
+  'Choose the gap that most affects your workflow or your ability to explain it to a client.',
 ] as const;
 
 export interface ProofGapCheck {
@@ -109,11 +109,11 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
       },
       {
         id: '2.2',
-        text: 'You know what owns the critical path (glue automation / automation builder / custom / hope)',
+        text: 'You know which service or component operates the critical path',
       },
       {
         id: '2.3',
-        text: 'Failures surface somewhere humans look, not only in a vendor dashboard',
+        text: 'Failures surface somewhere humans look. not only in a vendor dashboard',
       },
       {
         id: '2.4',
@@ -127,7 +127,7 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
     checks: [
       {
         id: '3.1',
-        text: 'When an agent acts, something durable is written (log / receipt / audit row), not only chat',
+        text: 'When an agent acts, something durable is written (log / receipt / audit row). not only chat',
       },
       {
         id: '3.2',
@@ -228,14 +228,12 @@ export const PROOF_GAP_ONE_GAP_PROMPT = 'The one gap I’d fix this week:' as co
 export const PROOF_GAP_NEXT_STEPS = [
   'DIY: Fix that one gap on your stack. Re-run §3 until you can show one receipted action.',
   'Review with Studio: Consultation is $300 per hour. Bring your system and receive session notes and a next step.',
-  'Operate a slice: Pilot $3,997. Includes 1 Adapter. One site. One receipted action you operate. The domain pack is included.',
+  'Operate a slice: Pilot. $3,997. One site. One receipted action you operate. The domain pack is included.',
 ] as const;
 
 export const PROOF_GAP_REFUSALS = [
-  'Not “faster than glue automation.”',
-  'Not cheaper than freelancers.',
-  'Not SOC 2 certified.',
-  'Not a hosted chatbot you rent forever.',
-  'Not Architecture sold as Consultation.',
-  'Not a fourth Studio menu price.',
+  'This checklist is a planning aid, not a certification or validated risk score.',
+  'An action record does not establish that a business outcome was correct.',
+  'RevealUI Studio does not currently have an independent SOC 2 report or ISO 27001 certification.',
+  'Your selected services, software licenses, and maintenance responsibilities still apply.',
 ] as const;

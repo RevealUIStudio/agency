@@ -18,7 +18,6 @@ import {
   type ConfirmationEmail,
   createHold,
   deskScheduleTransition,
-  stageBFeeOf,
 } from './consultation-booking';
 import {
   CheckoutDiscountError,
@@ -198,49 +197,6 @@ function bookingIdOf(metadata: Record<string, unknown>, booking: Booking | null)
   return booking?.booking_id ?? '';
 }
 
-function restoreBooking(metadata: Record<string, unknown>, sessionId: string): Booking | null {
-  const bookingId = metadata.booking_id;
-  const start = metadata.start;
-  const end = metadata.end;
-  const name = metadata.buyer_name;
-  const email = metadata.buyer_email;
-  const hours = Number(metadata.hours);
-  if (typeof bookingId !== 'string' || typeof start !== 'string' || typeof end !== 'string') {
-    return null;
-  }
-  if (typeof name !== 'string' || typeof email !== 'string' || !Number.isInteger(hours)) {
-    return null;
-  }
-  const startMs = Date.parse(start);
-  const endMs = Date.parse(end);
-  if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) return null;
-  return {
-    booking_id: bookingId,
-    start: new Date(startMs).toISOString(),
-    end: new Date(endMs).toISOString(),
-    hours,
-    name,
-    email,
-    company:
-      typeof metadata.company === 'string' && metadata.company.trim().length > 0
-        ? metadata.company.trim()
-        : null,
-    stage_b:
-      stageBFeeOf(metadata.stage_b_fee, metadata.stage_b === 'true') === 'waived_network' ||
-      metadata.stage_b === 'true',
-    stage_b_fee: stageBFeeOf(metadata.stage_b_fee, metadata.stage_b === 'true'),
-    network_jti:
-      typeof metadata.network_jti === 'string' && metadata.network_jti.length > 0
-        ? metadata.network_jti
-        : null,
-    status: 'slot_held',
-    expires_at: new Date(0).toISOString(),
-    event_id: null,
-    meet_link: null,
-    stripe_session_id: sessionId || null,
-  };
-}
-
 const saveSlot: ConsultationAction<SaveSlotInput, SaveSlotValue> = {
   id: 'save_slot',
   description: 'Hold a Consultation slot before payment.',
@@ -339,7 +295,7 @@ const createCheckoutSession: ConsultationAction<CreateCheckoutInput, CheckoutSes
       const session = await deps.stripe.createCheckout({
         booking: stored,
         lines,
-        successUrl: `${deps.origin}/consultation/book/success?booking=${encodeURIComponent(stored.booking_id)}`,
+        successUrl: `${deps.origin}/consultation/book/success?booking=${encodeURIComponent(stored.booking_id)}&session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: `${deps.origin}/consultation/book/cancel`,
         stageBNetworkCouponId:
           stored.stage_b_fee === 'waived_network' ? deps.stageBNetworkCouponId : undefined,
@@ -387,8 +343,13 @@ const writeCalendarMeetOnPay: ConsultationAction<PaidMeetInput, PaidMeetValue> =
       };
     }
 
-    const booking = input.booking ?? restoreBooking(input.metadata, input.sessionId);
-    if (!booking) return fail('booking-missing');
+    const booking = input.booking;
+    if (!booking) return fail('hold-missing');
+    if (
+      !Number.isFinite(Date.parse(booking.expires_at)) ||
+      Date.parse(booking.expires_at) <= deps.now.getTime()
+    )
+      return fail('hold-expired');
 
     try {
       const scheduled = await deps.calendar.schedulePaid(booking, input.sessionId);

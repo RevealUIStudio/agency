@@ -1,7 +1,8 @@
+import { CONSULTATION_CHANGE_CONTACT, CONSULTATION_CHANGE_POLICY } from '@/lib/consultation-buyer';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 export function TermsPage() {
-  const lastUpdated = 'August 21, 2026';
+  const lastUpdated = 'September 30, 2026';
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -20,30 +21,45 @@ export function TermsPage() {
           </p>
 
           <p>
-            The Site is informational. It exists to describe our services and to let you reach out
-            about a potential engagement. The Site does not provide a software service, host
-            customer applications, or process payments.
+            The Site describes our services, lets you contact us, and offers paid Consultation
+            booking through Stripe Checkout. It does not provide a software service or host customer
+            applications.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">
             1. Engagement terms are separate
           </h2>
           <p>
-            Nothing on the Site constitutes a binding offer or contract for professional services.
-            Service tiers and prices listed on{' '}
+            Pilot and Launch details listed on{' '}
             <a href="/services" className="font-semibold text-foreground hover:underline">
               /services
             </a>{' '}
-            are starting points for scoping conversations, not standing offers. Any engagement we
-            enter into is governed by a separate, signed Statement of Work or Master Services
-            Agreement that supersedes the marketing copy on the Site.
+            are starting points for scoping conversations. Consultation length and price are shown
+            before payment at booking and Checkout. Other engagements are governed by a separate,
+            signed Statement of Work or Master Services Agreement that supersedes the marketing copy
+            on the Site.
+          </p>
+
+          <h3 className="mt-8 text-xl font-semibold text-foreground">
+            Paid Consultation cancellations and rescheduling
+          </h3>
+          <ul className="list-disc space-y-2 pl-6">
+            {CONSULTATION_CHANGE_POLICY.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+          <p>{CONSULTATION_CHANGE_CONTACT}</p>
+          <p>
+            These conditions apply to paid Consultation bookings. Pilot and Launch follow their
+            signed engagement terms. Product license refunds follow the separate RevealUI product
+            policy.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">
-            2. The open-source RevealUI platform is separate
+            2. The RevealUI software platform is separate
           </h2>
           <p>
-            The Site is distinct from the open-source RevealUI platform (revealui.com,
+            The Site is distinct from the RevealUI software platform (revealui.com,
             admin.revealui.com, api.revealui.com, docs.revealui.com). Use of the platform is
             governed by its own terms at{' '}
             <a
@@ -55,7 +71,7 @@ export function TermsPage() {
               revealui.com/terms
             </a>
             , and by the MIT and Fair Source licenses applied to its source code in the public
-            repository. Those terms, not these, govern your use of the open-source software.
+            repository. Those terms, not these, govern your use of the software.
           </p>
 
           <h2 className="mt-12 text-2xl font-bold text-foreground">3. Acceptable Use</h2>
@@ -82,7 +98,7 @@ export function TermsPage() {
             or republish Site content without written permission.
           </p>
           <p>
-            The open-source RevealUI platform code, hosted at{' '}
+            The RevealUI software platform code, hosted at{' '}
             <a
               href="https://github.com/RevealUIStudio"
               target="_blank"
@@ -92,7 +108,7 @@ export function TermsPage() {
               github.com/RevealUIStudio
             </a>
             , is licensed under MIT (most packages) or Fair Source / FSL-1.1-MIT (the Pro packages).
-            Those repository licenses are the controlling terms for the open-source code, not these
+            Those repository licenses are the controlling terms for the source code, not these
             Terms.
           </p>
 
