@@ -29,6 +29,9 @@ import { INTRO_CALL_URL } from '@/lib/site';
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const bannedBookingHost = new RegExp(`${'cal'}\\.com`, 'i');
 
+/** Competitor product brands. Public proof-gap copy stays categorical. */
+const PROOF_GAP_BANNED_BRANDS = /\b(?:Zapier|Zaps?|n8n|IFTTT|Airtable)\b|Make\.com/i;
+
 function ascii85Decode(buf: Buffer): Buffer {
   let s = buf.toString('latin1').replace(/\s/g, '');
   if (s.endsWith('~>')) s = s.slice(0, -2);
@@ -903,12 +906,12 @@ describe('public copy gates', () => {
     expect(copy).toContain('An action record names who acted');
     expect(copy).toContain('Pilot $3,997 (includes 1 Adapter)');
     expect(copy).toContain('Launch $14,500 (up to 3 Adapters)');
-    expect(copy).toContain('Not “faster than Zap.”');
+    expect(copy).toContain('Not “faster than glue automation.”');
     expect(copy).not.toMatch(/Request a quote/);
     expect(copy).not.toMatch(/revolutionize|empower|seamless/i);
     expect(copy).not.toMatch(/RevMind/);
     expect(copy).not.toMatch(/Architecture-as-Consultation/);
-    expect(copy).not.toMatch(/PROOF_GAP_H1 = '.*faster than Zap/i);
+    expect(copy).not.toMatch(PROOF_GAP_BANNED_BRANDS);
     expect(page).toContain('PROOF_GAP_H1');
     expect(page).toContain('ProofGapForm');
     expect(footer).toContain('PROOF_GAP_PATH');
@@ -925,6 +928,7 @@ describe('public copy gates', () => {
     expect(pdfText).not.toMatch(/HOLD public|Joshua OK|Media Manager|agency#204|publish OK/i);
     expect(pdfText).not.toContain('\\227');
     expect(pdfText).not.toContain('\u2014');
+    expect(pdfText).not.toMatch(PROOF_GAP_BANNED_BRANDS);
     expect(
       vercel.rewrites.some(
         (rule) =>
@@ -932,5 +936,28 @@ describe('public copy gates', () => {
           rule.destination === '/proof-gap-checklist.pdf',
       ),
     ).toBe(true);
+  });
+
+  it('keeps competitor product brands out of the proof-gap checklist', () => {
+    const copy = readFileSync(path.join(repoRoot, 'app/content/proof-gap.ts'), 'utf8');
+    const pdfText = pdfPageText(
+      readFileSync(path.join(repoRoot, 'public/proof-gap-checklist.pdf')),
+    );
+
+    expect(copy).toContain(
+      'You know what owns the critical path (glue automation / automation builder / custom / hope)',
+    );
+    expect(copy).toContain(
+      'You’re not one undocumented glue automation away from “nobody knows how leads get booked”',
+    );
+    expect(copy).toContain('Glue automation owns the revenue path; agents are a side demo.');
+    expect(copy).toContain('Not “faster than glue automation.”');
+    expect(copy).not.toMatch(PROOF_GAP_BANNED_BRANDS);
+    expect(copy).not.toMatch(/\u2014/);
+    expect(pdfText).toContain('glue automation / automation builder / custom / hope');
+    expect(pdfText).toContain('one undocumented glue automation');
+    expect(pdfText).toContain('Glue automation owns the revenue path');
+    expect(pdfText).not.toMatch(PROOF_GAP_BANNED_BRANDS);
+    expect(pdfText).not.toContain('\u2014');
   });
 });
