@@ -11,7 +11,9 @@ describe('ProcessPage', () => {
     const { container } = render(<ProcessPage />);
     const text = container.textContent ?? '';
 
-    expect(screen.getByRole('heading', { level: 1, name: 'How we work' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Know what happens before the work starts.' }),
+    ).toBeInTheDocument();
     expect(text).toContain(CONSULTATION.name);
     expect(text).toContain(PILOT.name);
     expect(text).toContain(LAUNCH.name);
@@ -28,8 +30,8 @@ describe('ProcessPage', () => {
     expect(screen.getAllByRole('heading', { name: 'How long' })).toHaveLength(3);
     expect(screen.getAllByRole('heading', { name: 'What happens next' })).toHaveLength(3);
 
-    expect(text).toContain('Notes and a next step');
-    expect(text).toContain('No leftover site');
+    expect(text).toContain('Session notes and a recommended next step');
+    expect(text).toContain('Implementation and ongoing support are separate engagements');
     expect(text).toContain('One receipted action you operate');
     expect(text).toContain('Credits 100% to Launch');
     expect(text).toContain('Architecture work');
@@ -46,7 +48,6 @@ describe('ProcessPage', () => {
     }
     expect(screen.getAllByRole('link', { name: CONTACT_EMAIL }).length).toBeGreaterThan(0);
     expect(screen.getByText(/Google Calendar plus Google Meet/)).toBeInTheDocument();
-    expect(screen.getByText(/Google Meet or sit down/)).toBeInTheDocument();
   });
 
   it('does not invent proof, retired SKUs, or booking hosts', () => {
@@ -78,7 +79,9 @@ describe('ProcessPage', () => {
     const text = container.textContent ?? '';
 
     expect(PUBLIC_OFFERS).toHaveLength(3);
-    expect(screen.getByRole('heading', { level: 1, name: 'How we work' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Know what happens before the work starts.' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: GUARDRAIL_HEADING })).toBeInTheDocument();
     expect(text).toContain(GUARDRAIL_BODY);
     expect(text).toContain('Included in how we scope Pilot and Launch');

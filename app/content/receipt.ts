@@ -6,7 +6,7 @@
 
 import type { AuditEvent } from '@revealui/presentation';
 
-export const RECEIPT_HERO_TITLE = 'How we work, on record' as const;
+export const RECEIPT_HERO_TITLE = 'An example engagement record' as const;
 
 export const RECEIPT_HERO_LINES: readonly AuditEvent[] = [
   {
@@ -18,7 +18,7 @@ export const RECEIPT_HERO_LINES: readonly AuditEvent[] = [
   {
     ts: '09:42:08',
     actor: 'studio',
-    action: 'invoiced',
+    action: 'paid',
     object: 'Consultation $300',
   },
   {
@@ -43,6 +43,6 @@ export const RECEIPT_HERO_INTEGRITY = {
 
 // Canonical foil. Process page is the honest next hop, not a second CTA.
 export const RECEIPT_HERO_CAPTION = {
-  text: "If an agent did it, there's PROOF: a receipted action you can show.",
+  text: 'Illustration only. These are example events, not a customer engagement.',
   link: { label: 'How we work →', href: '/process' },
 } as const;

@@ -13,19 +13,19 @@ export const PROOF_GAP_H1 = 'Can you prove what your agents did last week?' as c
 export const PROOF_GAP_DOCUMENT_TITLE = 'Proof-gap checklist | RevealUI Studio' as const;
 
 export const PROOF_GAP_META_DESCRIPTION =
-  'Can you prove what your agents did last week? Free checklist. Score ownership, critical path, receipts (PROOF), and human gates in about ten minutes. No quote form required.' as const;
+  'Can you prove what your agents did last week? Use this free checklist to review who owns your workflow, which actions leave records, and where human approval is needed. Choose one gap to fix first.' as const;
 
 export const PROOF_GAP_OFFER_NAME = 'Proof-gap checklist' as const;
 
 export const PROOF_GAP_SUB =
-  'Free checklist. Score ownership, critical path, receipts (PROOF), and human gates in about ten minutes. No quote form required.' as const;
+  'Use this free checklist to review who owns your workflow, which actions leave records, and where human approval is needed. Choose one gap to fix first.' as const;
 
 /** Known-for identity. Subline only. Never this page's H1. */
 export const PROOF_GAP_KNOWN_FOR =
   'We are known for the agentic business runtime technical founders and small agencies operate on their own domain. Existing tools report in. You keep the stack.' as const;
 
 export const PROOF_GAP_PROOF_LINE =
-  'PROOF is a receipted action: a durable record that an agent really did something on your system (identity · time · target).' as const;
+  'An action record names who acted, what they changed, and when. It helps you inspect the action; it does not by itself prove the outcome was correct.' as const;
 
 export const PROOF_GAP_CTA = 'Get the free checklist' as const;
 
@@ -42,10 +42,10 @@ export const PROOF_GAP_THANKS_TITLE = 'Your proof-gap checklist' as const;
 export const PROOF_GAP_THANKS_LEAD = "Here's your proof-gap checklist." as const;
 
 export const PROOF_GAP_THANKS_BODY =
-  "Walk the sections. Count No + Partial. Pick one gap you'd be embarrassed to leave open in a client update this week, then fix that path until you can show a receipted action (PROOF)." as const;
+  'Review each section and count the checks marked No or Partial. Choose the gap that most affects your current workflow and address it first.' as const;
 
 export const PROOF_GAP_THANKS_CONSULT =
-  'If you want a diagnose with us: Consultation is $300: path + proof-gap map, pack within one business day.' as const;
+  'Want help reviewing the result? Book a Consultation at $300 per hour.' as const;
 
 export const PROOF_GAP_THANKS_INTRO =
   "Optional 30-minute intro: you don't need a Google account. Open the Google Meet link → Join as guest." as const;
@@ -79,7 +79,7 @@ export interface ProofGapSection {
 
 export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
   {
-    title: '1) Ownership & domain',
+    title: '1) Accounts and ownership',
     checks: [
       {
         id: '1.1',
@@ -98,10 +98,10 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
         text: '“AI features” aren’t locked to one chat UI you’ll lose if the subscription ends',
       },
     ],
-    redFlag: '“Our agency’s Cursor did it” with no artifact on the client’s accounts.',
+    redFlag: 'The work happened in agency tools, with no record on the client accounts.',
   },
   {
-    title: '2) Tools that talk (without a spaghetti critical path)',
+    title: '2) Workflow connections',
     checks: [
       {
         id: '2.1',
@@ -123,7 +123,7 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
     redFlag: 'Zap owns the revenue path; agents are a side demo.',
   },
   {
-    title: '3) Receipted actions (PROOF)',
+    title: '3) Action records',
     checks: [
       {
         id: '3.1',
@@ -135,7 +135,7 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
       },
       {
         id: '3.3',
-        text: 'Receipts tie to identity + time + target (who / what / when), not a vibes summary',
+        text: 'Action records identify who acted, what they changed, and when.',
       },
       {
         id: '3.4',
@@ -146,10 +146,10 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
         text: 'Failed / refused actions are visible too (fail closed > silent skip)',
       },
     ],
-    redFlag: '“The agent said it worked” is the only proof.',
+    redFlag: 'The only evidence of the action is the agent response.',
   },
   {
-    title: '4) Humans in the loop (gates)',
+    title: '4) Human approvals',
     checks: [
       {
         id: '4.1',
@@ -168,10 +168,10 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
         text: 'Plan rules for agents match plan rules for humans (no “agent-only god mode”)',
       },
     ],
-    redFlag: 'Autodialer energy, spray-and-pray CRM, or “just let the agent email everyone.”',
+    redFlag: 'Outgoing messages can be sent without the required human review.',
   },
   {
-    title: '5) Client / stakeholder updates',
+    title: '5) Client updates',
     checks: [
       {
         id: '5.1',
@@ -183,27 +183,27 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
       },
       {
         id: '5.3',
-        text: 'Stakeholders know Free vs paid gates (no accidental “Unlimited” theater)',
+        text: 'Stakeholders understand which features and limits apply to each plan.',
       },
       {
         id: '5.4',
-        text: 'Architecture talk matches what actually runs (no orphan diagrams)',
+        text: 'System diagrams describe the software and connections that actually run.',
       },
     ],
-    redFlag: 'Beautiful decks; no durable trail.',
+    redFlag: 'Updates describe activity without links to action records.',
   },
   {
-    title: '6) Catalog honesty (if you sell or package AI)',
+    title: '6) Pricing and availability',
     checks: [
       { id: '6.1', text: 'Public prices match checkout' },
       { id: '6.2', text: '“Coming soon” isn’t sold as live' },
       {
         id: '6.3',
-        text: 'You don’t claim SOC 2 / compliance theater you don’t have',
+        text: 'Public certification claims have supporting documentation.',
       },
       {
         id: '6.4',
-        text: 'Chatbot SaaS isn’t what you’re shipping if buyers keep the keys',
+        text: 'The product description explains who operates the software and holds the accounts.',
       },
     ],
     redFlag: 'Catalog and checkout tell different stories.',
@@ -211,18 +211,23 @@ export const PROOF_GAP_SECTIONS: readonly ProofGapSection[] = [
 ] as const;
 
 export const PROOF_GAP_SCORE_BANDS = [
-  { band: '0–3', meaning: 'Tight. Keep shipping; spot-check receipts monthly.' },
-  { band: '4–8', meaning: 'Typical. Pick one §3 or §1 gap this week.' },
-  { band: '9+', meaning: 'Exposed. Don’t scale outreach until PROOF exists on one path.' },
+  { band: '0–3', meaning: 'Review the remaining gaps and check records regularly.' },
+  { band: '4–8', meaning: 'Choose one ownership or action-record gap to address.' },
+  { band: '9+', meaning: 'Review the gaps before expanding the workflow.' },
 ] as const;
 
-export const PROOF_GAP_SCORE_PROMPT = 'My score: ____ / 24 checks marked No or Partial.' as const;
+export const PROOF_GAP_CHECK_COUNT = PROOF_GAP_SECTIONS.reduce(
+  (total, section) => total + section.checks.length,
+  0,
+);
+
+export const PROOF_GAP_SCORE_PROMPT = `My score: ____ / ${PROOF_GAP_CHECK_COUNT} checks marked No or Partial.`;
 
 export const PROOF_GAP_ONE_GAP_PROMPT = 'The one gap I’d fix this week:' as const;
 
 export const PROOF_GAP_NEXT_STEPS = [
   'DIY: Fix that one gap on your stack. Re-run §3 until you can show one receipted action.',
-  'Diagnose with us: Consultation $300. Path + proof-gap map; artifact pack within one business day. Lightweight stack sketch (not Architecture sold as Consultation).',
+  'Review with Studio: Consultation is $300 per hour. Bring your system and receive session notes and a next step.',
   'Operate a slice: Pilot $3,997. Includes 1 Adapter. One site. One receipted action you operate. The domain pack is included.',
 ] as const;
 

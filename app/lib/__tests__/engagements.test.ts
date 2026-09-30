@@ -74,9 +74,9 @@ describe('public studio offers', () => {
     expect(PILOT.description).not.toMatch(/\bSpec\b/);
     expect(PILOT.description).not.toMatch(/Proof Sprint/);
     expect(LAUNCH.description).toMatch(/inside this offer/i);
-    expect(LAUNCH.description).toMatch(/Knowledge Graph is part of the runtime/);
-    expect(LAUNCH.description).toMatch(/Electric\+CRDT/);
-    expect(LAUNCH.description).toMatch(/not a fourth Studio offer/);
+    expect(LAUNCH.includes).toContain('Runbook');
+    expect(LAUNCH.includes).toContain('30-day async stabilization');
+    expect(PUBLIC_OFFERS).toHaveLength(3);
     expect(LAUNCH.description).not.toMatch(/\$\d/);
   });
 

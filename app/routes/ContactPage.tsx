@@ -7,11 +7,12 @@ export function ContactPage() {
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-3xl px-6">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Contact</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          Tell me what needs to work.
+        </h1>
         <p className="mt-6 text-lg text-muted-foreground">
-          Book a Consultation, book a 30-minute intro, email me, or send the form. No account. No
-          payment to book the intro. Consultation is paid when you book the slot. Pilot and Launch
-          are invoiced after we agree. An Adapter is not sold alone.
+          Share your current system, the problem you want to solve, and whether you need a review or
+          implementation. You can also book a free 30-minute intro. An Adapter is not sold alone.
         </p>
 
         <div className="mt-12 grid grid-cols-1 gap-6">

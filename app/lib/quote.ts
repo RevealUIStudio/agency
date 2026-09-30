@@ -54,12 +54,12 @@ export const HOSTER_OPTIONS = [
 ] as const satisfies readonly { value: Hoster; label: string }[];
 
 export const OUTCOME_OPTIONS = [
-  { value: 'consultation', label: 'Consultation: diagnose the path / proof gap ($300)' },
+  { value: 'consultation', label: 'Consultation: review my system ($300 per hour)' },
   {
     value: 'plan',
-    label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)',
+    label: 'Pilot: run one action on one site (includes 1 Adapter)',
   },
-  { value: 'launch', label: 'Launch: money path live on my accounts (up to 3 Adapters)' },
+  { value: 'launch', label: 'Launch: put one business flow into production (up to 3 Adapters)' },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
@@ -67,10 +67,10 @@ export const PLACES_OPTIONS = [
   { value: 'many', label: 'More than one: book an intro' },
 ] as const satisfies readonly { value: Places; label: string }[];
 
-export const QUOTE_CALCULATOR_HEADING = 'Who runs it. What has to work. One price.' as const;
+export const QUOTE_CALCULATOR_HEADING = 'Find your starting point.' as const;
 
 export const QUOTE_CALCULATOR_LEAD =
-  `Studio quotes only: Consultation $300, Pilot $3,997 (includes 1 Adapter), Launch $14,500 (up to 3 Adapters). Adapter ${ADAPTER.price} for an extra tool category, or a scoped add while on Care. Not sold alone. Stage B domain pack is ${STAGE_B_PRICE} after Consultation alone, and included at Pilot and Launch. Solutions for critical-path ownership, agents without PROOF, and a live money path. PROOF means a receipted action, not outcome validation. Licenses live on revealui.com.` as const;
+  `Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. Product licenses are separate. Pilot includes 1 Adapter; Launch includes up to 3. Extra Adapters are ${ADAPTER.price} each and are not sold alone. The domain pack is ${STAGE_B_PRICE} after Consultation alone.` as const;
 
 export const CONSULTATION_QUOTE_DETAIL =
   'One focused pass on the critical path, proof gaps, or a stuck live flow. Notes + next step. Pay $300 when you book the hour. No leftover site. No holdback.' as const;

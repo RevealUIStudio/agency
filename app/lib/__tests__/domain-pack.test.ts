@@ -55,10 +55,12 @@ describe('domain pack offer', () => {
     expect(dns).toContain('Studio host: demo.revealuistudio.com');
     expect(dns).toContain(`CNAME target: ${CUSTOM_DOMAIN_CNAME_TARGET}`);
     expect(dns).toContain('The studio attaches the DNS.');
-    expect(domainPackLines('path', 'demo').join('\n')).toContain('Path A is the default');
-    expect(domainPackLines('proof-gap', 'demo').join('\n')).toContain('proof-gap map');
-    expect(domainPackLines('stack', 'demo').join('\n')).toContain('lightweight sketch');
-    expect(domainPackLines('stack', 'demo').join('\n')).toContain(
+    expect(domainPackLines('path', 'omega').join('\n')).toContain(
+      'recommended next step from the consultation',
+    );
+    expect(domainPackLines('proof-gap', 'omega').join('\n')).toContain('proof-gap map');
+    expect(domainPackLines('stack', 'omega').join('\n')).toContain('lightweight sketch');
+    expect(domainPackLines('stack', 'omega').join('\n')).toContain(
       'Architecture, schema, and review stay inside Launch.',
     );
     expect(domainPackLines('onboarding', 'demo').join('\n')).toContain('what the share is');
