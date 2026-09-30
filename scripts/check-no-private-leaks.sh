@@ -51,7 +51,7 @@ PATTERNS=(
   # --- Canonical-scanner patterns (inherited from revskills) ---
   "abs-home-path|/home/[a-z][a-z0-9_-]+|absolute user home path (/home/<username>/...)"
   "abs-windows-user|[Cc]:[\\\\/]Users[\\\\/][A-Za-z0-9_-]+|absolute Windows user path (C:\\\\Users\\\\<name>)"
-  "private-jv-repo|/?revfleet/\\.jv|private repo path (~/revfleet/.jv/...)"
+  "private-jv-repo|[~/][A-Za-z][A-Za-z0-9._-]*/\\.jv|private planning checkout under a named fleet directory"
   "private-jv-name|revealui-jv|private repo name (revealui-jv)"
   "lts-drive|/mnt/e/|LTS drive mount path"
   "forge-drive|/mnt/forge/|Forge drive mount path"
