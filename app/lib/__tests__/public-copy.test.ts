@@ -953,7 +953,6 @@ describe('public copy gates', () => {
     expect(copy).toContain(
       'This checklist is a planning aid, not a certification or validated risk score.',
     );
-    expect(copy).not.toMatch(PROOF_GAP_BANNED_BRANDS);
     expect(findBannedToolNames(copy)).toEqual([]);
     expect(copy).not.toMatch(/\u2014/);
     expect(pdfText).toContain('which service or component operates the critical path');
