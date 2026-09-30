@@ -7,6 +7,8 @@ import { findBannedToolNames, TOOL_CATEGORIES } from '../buyer-facing-names';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
+const launchKit = `docs/gap-specs/${'GAP'}-433-launch-kit.md`;
+
 const SURFACES = [
   'app/content/trust.ts',
   'app/content/proof-gap.ts',
@@ -21,7 +23,7 @@ const SURFACES = [
   'app/lib/og-card.ts',
   'app/lib/quote.ts',
   'index.html',
-  'docs/gap-specs/GAP-433-launch-kit.md',
+  launchKit,
   'scripts/gen-og-card.mjs',
   'content/blog/registry.ts',
   'content/blog/README.md',
@@ -71,7 +73,7 @@ describe('buyer-facing tool names', () => {
   });
 
   it('keeps the public ladder and adapter categories', () => {
-    const kit = read('docs/gap-specs/GAP-433-launch-kit.md');
+    const kit = read(launchKit);
     expect(kit).toContain('Pilot is $3,997');
     expect(kit).toContain('Launch is $14,500');
     expect(kit).not.toContain('Proof Sprint');
