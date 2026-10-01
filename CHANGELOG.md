@@ -1,5 +1,11 @@
 # @revealui-studio/agency
 
+## 0.3.5
+
+### Patch Changes
+
+- Lead the Studio homepage with delivered ownership, inspectable source and a defined scope. Keep accurate independent-assessment status and the SOC 2 journey in expandable FAQs, and link the checklist to that shared FAQ instead of repeating Studio certification status.
+
 ## 0.3.4
 
 ### Patch Changes
