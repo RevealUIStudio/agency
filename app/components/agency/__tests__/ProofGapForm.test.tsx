@@ -46,8 +46,8 @@ describe('ProofGapForm', () => {
     render(<ProofGapForm />);
     fireEvent.click(screen.getByRole('button', { name: PROOF_GAP_CTA }));
 
-    expect(await screen.findByText('Name is required')).toBeInTheDocument();
-    expect(screen.getByText('Email is required')).toBeInTheDocument();
+    expect(await screen.findByText('Name must be at least 2 characters')).toBeInTheDocument();
+    expect(screen.getByText('Enter a valid email address')).toBeInTheDocument();
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 
@@ -108,7 +108,8 @@ describe('ProofGapForm', () => {
     expect(onSuccess).not.toHaveBeenCalled();
   });
 
-  it('honeypot success skips the network and still delivers', async () => {
+  it('waits for endpoint acceptance before showing inquiry success', async () => {
+    mockSubmit.mockResolvedValueOnce(null);
     const onSuccess = vi.fn();
     render(<ProofGapForm onSuccess={onSuccess} />);
 
@@ -119,7 +120,9 @@ describe('ProofGapForm', () => {
     fireEvent.click(screen.getByRole('button', { name: PROOF_GAP_CTA }));
 
     expect(await screen.findByText(PROOF_GAP_THANKS_TITLE)).toBeInTheDocument();
-    expect(mockSubmit).not.toHaveBeenCalled();
+    expect(mockSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ website: 'https://spam.example' }),
+    );
     expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 });

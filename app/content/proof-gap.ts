@@ -37,10 +37,10 @@ export const PROOF_GAP_BULLETS = [
   'Client updates you can back with links',
 ] as const;
 
-export const PROOF_GAP_THANKS_TITLE = 'Review inquiry sent' as const;
+export const PROOF_GAP_THANKS_TITLE = 'Review inquiry accepted' as const;
 
 export const PROOF_GAP_THANKS_LEAD =
-  'Your review inquiry was sent to Studio. We aim to respond within 1–2 business days.' as const;
+  'Your review inquiry was accepted by Studio. We aim to respond within 1–2 business days.' as const;
 
 export const PROOF_GAP_THANKS_BODY =
   'Review each section and count the checks marked No or Partial. Choose the gap that most affects your current workflow and address it first.' as const;

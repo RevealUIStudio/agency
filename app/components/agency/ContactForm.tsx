@@ -1,3 +1,4 @@
+import { ContactInquirySchema } from '@revealui/contracts/public-inquiry';
 import {
   ButtonCVA as Button,
   Callout,
@@ -8,7 +9,6 @@ import {
 } from '@revealui/presentation';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
-import { z } from 'zod';
 import { submitContact } from '@/lib/api';
 import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
@@ -27,23 +27,12 @@ interface FieldErrors {
   name?: string;
   email?: string;
   message?: string;
+  company?: string;
 }
 
 function validateField(field: keyof FieldErrors, value: string): string | undefined {
-  switch (field) {
-    case 'name':
-      if (!value.trim()) return 'Name is required';
-      if (value.trim().length < 2) return 'Name must be at least 2 characters';
-      return undefined;
-    case 'email':
-      if (!value.trim()) return 'Email is required';
-      if (!z.email().safeParse(value).success) return 'Enter a valid email address';
-      return undefined;
-    case 'message':
-      if (!value.trim()) return 'Message is required';
-      if (value.trim().length < 20) return 'Tell us a bit more: at least 20 characters';
-      return undefined;
-  }
+  const result = ContactInquirySchema.shape[field].safeParse(value);
+  return result.success ? undefined : result.error.issues[0]?.message;
 }
 
 export function ContactForm() {
@@ -72,16 +61,10 @@ export function ContactForm() {
       name: validateField('name', formData.name),
       email: validateField('email', formData.email),
       message: validateField('message', formData.message),
+      company: validateField('company', formData.company),
     };
     setFieldErrors(errors);
     if (Object.values(errors).some(Boolean)) return;
-
-    // Honeypot: a filled 'website' field means a bot. Show a fake success and
-    // skip the network call entirely so the bot gets no signal either way.
-    if (formData.website) {
-      setStatus('success');
-      return;
-    }
 
     setStatus('loading');
     const error = await submitContact({
@@ -102,9 +85,9 @@ export function ContactForm() {
 
   if (status === 'success') {
     return (
-      <Callout variant="success" title="Message sent">
+      <Callout variant="success" title="Inquiry accepted">
         <p className="text-sm">
-          We&apos;ll respond within 1-2 business days. If it&apos;s urgent, email{' '}
+          We aim to respond within 1–2 business days. If it&apos;s urgent, email{' '}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
             className="font-semibold text-foreground hover:underline"
@@ -126,6 +109,7 @@ export function ContactForm() {
             type="text"
             required
             autoComplete="name"
+            maxLength={ContactInquirySchema.shape.name.maxLength ?? undefined}
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             onBlur={() => handleBlur('name')}
@@ -140,6 +124,7 @@ export function ContactForm() {
             type="email"
             required
             autoComplete="email"
+            maxLength={ContactInquirySchema.shape.email.maxLength ?? undefined}
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             onBlur={() => handleBlur('email')}
@@ -149,11 +134,20 @@ export function ContactForm() {
           />
         </FormField>
       </div>
-      <FormField id="contact-company" label="Company" description="Optional">
+      <FormField
+        id="contact-company"
+        label="Company"
+        description="Optional"
+        error={fieldErrors.company}
+      >
         <Input
           id="contact-company"
           type="text"
           autoComplete="organization"
+          maxLength={ContactInquirySchema.shape.company.unwrap().maxLength ?? undefined}
+          onBlur={() => handleBlur('company')}
+          aria-invalid={fieldErrors.company ? true : undefined}
+          invalid={!!fieldErrors.company}
           value={formData.company}
           onChange={(e) => setFormData({ ...formData, company: e.target.value })}
           placeholder="Company or project name"
@@ -177,6 +171,7 @@ export function ContactForm() {
           id="contact-message"
           required
           rows={6}
+          maxLength={ContactInquirySchema.shape.message.maxLength ?? undefined}
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
           onBlur={() => handleBlur('message')}

@@ -57,9 +57,9 @@ describe('ContactForm', () => {
     render(<ContactForm />);
     fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
 
-    expect(await screen.findByText('Name is required')).toBeInTheDocument();
-    expect(screen.getByText('Email is required')).toBeInTheDocument();
-    expect(screen.getByText('Message is required')).toBeInTheDocument();
+    expect(await screen.findByText('Name must be at least 2 characters')).toBeInTheDocument();
+    expect(screen.getByText('Enter a valid email address')).toBeInTheDocument();
+    expect(screen.getByText('Message must be at least 20 characters')).toBeInTheDocument();
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 
@@ -69,7 +69,7 @@ describe('ContactForm', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
 
     expect(await screen.findByText('Enter a valid email address')).toBeInTheDocument();
-    expect(screen.getByText('Tell us a bit more: at least 20 characters')).toBeInTheDocument();
+    expect(screen.getByText('Message must be at least 20 characters')).toBeInTheDocument();
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 
@@ -107,7 +107,7 @@ describe('ContactForm', () => {
       website: '',
     });
 
-    expect(await screen.findByText('Message sent')).toBeInTheDocument();
+    expect(await screen.findByText('Inquiry accepted')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: CONTACT_EMAIL })).toHaveAttribute(
       'href',
       `mailto:${CONTACT_EMAIL}`,
@@ -123,10 +123,11 @@ describe('ContactForm', () => {
 
     expect(await screen.findByText('Inbox is temporarily unavailable.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
-    expect(screen.queryByText('Message sent')).not.toBeInTheDocument();
+    expect(screen.queryByText('Inquiry accepted')).not.toBeInTheDocument();
   });
 
-  it('honeypot success skips the network and shows Message sent', async () => {
+  it('sends the honeypot to the endpoint and waits for its acceptance', async () => {
+    mockSubmit.mockResolvedValueOnce(null);
     render(<ContactForm />);
 
     fillRequiredFields();
@@ -135,7 +136,23 @@ describe('ContactForm', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
 
-    expect(await screen.findByText('Message sent')).toBeInTheDocument();
+    expect(await screen.findByText('Inquiry accepted')).toBeInTheDocument();
+    expect(mockSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ website: 'https://spam.example' }),
+    );
+  });
+  it.each([
+    ['Name', 'x'.repeat(121)],
+    ['Company', 'x'.repeat(121)],
+    ['Message', 'x'.repeat(5001)],
+  ])('blocks an oversized %s using the server contract', async (label, value) => {
+    render(<ContactForm />);
+    fillRequiredFields();
+    fireEvent.change(screen.getByLabelText(label), { target: { value } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
+    await waitFor(() =>
+      expect(screen.getByLabelText(label)).toHaveAttribute('aria-invalid', 'true'),
+    );
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 });
