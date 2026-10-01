@@ -12,8 +12,8 @@ export function HomePage() {
   const { hash } = useLocation();
 
   useEffect(() => {
-    if (hash !== '#calculator') return;
-    document.getElementById('calculator')?.scrollIntoView({ block: 'start' });
+    if (!hash) return;
+    document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' });
   }, [hash]);
 
   return (

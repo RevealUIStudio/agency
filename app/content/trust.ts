@@ -1,54 +1,25 @@
 /**
- * Auditor Marketer-paste (2026-09-13), restated by category.
- * Source of truth for public Trust/SOC 2 copy. Do not strengthen.
+ * Benefits and compliance FAQ source of truth.
+ * Keep current status and future plans distinct from delivered benefits.
  * Subprocessors and hosting are categories, not vendor names.
  */
 
-export const TRUST_TITLE = 'Trust' as const;
+export const TRUST_TITLE = 'A system your team can own and operate.' as const;
 
 export const TRUST_SHORT = [
-  'RevealUI Studio is not SOC 2 or ISO 27001 certified today.',
-  'We are building toward SOC 2\u2013capable controls for the Studio and product stack we operate. That roadmap is public below. We will only say RevealUI Studio is SOC 2 certified when an independent auditor issues a report that names our in-scope system and period.',
-  'Infrastructure vendors we use publish their own SOC 2 Type II attestations for their platforms, including the database, the hosting provider, the host for long-running services, the payments processor, and error telemetry. Those reports cover the vendor, not RevealUI Studio. Shared responsibility still applies: their attestation is not our certification.',
-] as const;
-
-export const TRUST_ROADMAP = [
-  {
-    label: 'Now',
-    items: [
-      'RevealUI Studio is not SOC 2 or ISO 27001 certified today.',
-      'We are building toward SOC 2\u2013capable controls for the Studio and product stack we operate.',
-      'Vendors we use publish SOC 2 Type II attestations for their own platforms. Those reports cover the vendor, not RevealUI Studio.',
-    ],
-  },
-  {
-    label: 'Next',
-    items: [
-      'Keep this roadmap public and honest.',
-      'Share vendor attestations under NDA and describe current controls when asked.',
-    ],
-  },
-  {
-    label: 'Independent assessment (not scheduled)',
-    items: [
-      'Engage an independent auditor for an in-scope Studio system and period.',
-      'A Studio SOC 2 report will be shared when it exists.',
-    ],
-  },
-  {
-    label: 'Not claimed until a Studio report exists',
-    items: [
-      'That RevealUI Studio is SOC 2 certified.',
-      'That RevealUI Studio is SOC 2 audited, compliant, or SOC 2 ready.',
-      'That our stack is SOC 2 because a vendor is.',
-    ],
-  },
+  'The delivered system lives on your accounts. Your team can take over the code, data, and operating notes.',
+  'Choose a defined scope: Consultation gives you session notes and a next step. Pilot delivers one receipted action you operate.',
+  'Inspect RevealUI source and documentation before choosing a product license. Studio services help you apply that foundation to your workflow.',
 ] as const;
 
 export const TRUST_FAQ = [
   {
-    q: 'Are you SOC 2 certified?',
-    a: 'Not yet. We publish an honest roadmap toward SOC 2\u2013capable controls. Vendors we use (the database, the hosting provider, the payments processor, and others) publish SOC 2 Type II for their own platforms; that is not a RevealUI Studio certification.',
+    q: 'Does RevealUI Studio have a SOC 2 report or ISO 27001 certification?',
+    a: 'RevealUI Studio does not currently have an independent SOC 2 report or ISO 27001 certification. Infrastructure vendors we use publish their own SOC 2 Type II attestations for their platforms, including the database, the hosting provider, the host for long-running services, the payments processor, and error telemetry. Those reports cover the vendor, not RevealUI Studio.',
+  },
+  {
+    q: 'What is your SOC 2 journey?',
+    a: 'Our roadmap is to develop the controls and evidence needed for an independent assessment of the Studio system we operate. An independent assessment is not scheduled. We will publish progress as it happens and share a Studio SOC 2 report when one exists; the roadmap is not an attestation.',
   },
   {
     q: 'Can you share compliance docs?',

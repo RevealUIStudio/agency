@@ -30,7 +30,9 @@ describe('HomePage', () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: STUDIO_FOR_TITLE })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 2, name: 'Trust' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'A system your team can own and operate.' }),
+    ).toBeInTheDocument();
     expect(document.getElementById('who')).not.toBeNull();
     expect(document.getElementById('trust')).not.toBeNull();
     expect(document.getElementById('calculator')).not.toBeNull();
@@ -78,10 +80,11 @@ describe('HomePage', () => {
     expect(text).not.toMatch(/Starter Kit/i);
     expect(text).not.toMatch(/waitlist/i);
     expect(text).not.toMatch(/HIPAA/i);
-    expect(text).toContain('RevealUI Studio is not SOC 2 or ISO 27001 certified today.');
+    expect(text).toContain('The delivered system lives on your accounts.');
+    expect(text).toContain('does not currently have an independent SOC 2 report');
     expect(text).not.toMatch(/We are SOC ?2 certified/i);
     expect(text).not.toMatch(/In audit/i);
-    expect(text).toContain('That our stack is SOC 2 because a vendor is.');
+    expect(text).toContain('Those reports cover the vendor, not RevealUI Studio.');
     expect(findBannedToolNames(text)).toEqual([]);
     expect(text).not.toMatch(/SOC2 ready/i);
     expect(text).not.toMatch(/24\/7/);

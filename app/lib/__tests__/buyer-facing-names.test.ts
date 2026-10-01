@@ -58,7 +58,7 @@ describe('buyer-facing tool names', () => {
     expect(trust).toContain('the hosting provider');
     expect(trust).toContain('the payments processor');
     expect(trust).toContain('error telemetry');
-    expect(trust).toContain('because a vendor is');
+    expect(trust).toContain('Those reports cover the vendor, not RevealUI Studio.');
 
     const process = read('app/routes/ProcessPage.tsx');
     expect(process).toContain('hosting provider project');

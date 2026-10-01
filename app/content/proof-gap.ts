@@ -234,6 +234,5 @@ export const PROOF_GAP_NEXT_STEPS = [
 export const PROOF_GAP_REFUSALS = [
   'This checklist is a planning aid, not a certification or validated risk score.',
   'An action record does not establish that a business outcome was correct.',
-  'RevealUI Studio does not currently have an independent SOC 2 report or ISO 27001 certification.',
   'Your selected services, software licenses, and maintenance responsibilities still apply.',
 ] as const;
