@@ -7,9 +7,11 @@
 
 import {
   type ActionError,
+  consultationActions,
   runConsultationBook,
   runPaidConsultation,
 } from '../app/lib/consultation-actions';
+import type { ConsultationChangeRequest } from '../app/lib/consultation-booking';
 import {
   type Booking,
   bookInputFromNetwork,
@@ -434,6 +436,69 @@ async function webhook(
 
 let processThrottle: ConsultationThrottle | undefined;
 
+/** Owner-only assessment for the existing email-based change request process. */
+async function assessBookingChange(
+  request: Request,
+  env: ConsultationEnv,
+  calendar: CalendarPort,
+  now: Date,
+): Promise<Response> {
+  if (verifySession(request, env).role !== 'owner') return json(403, { error: 'owner-required' });
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return json(400, { error: 'invalid-body' });
+  }
+  if (!body || typeof body !== 'object' || Array.isArray(body))
+    return json(400, { error: 'invalid-body' });
+  const record = body as Record<string, unknown>;
+  const packStates = ['not_purchased', 'undelivered', 'delivered', 'unknown'];
+  if (
+    typeof record.booking !== 'string' ||
+    !record.booking ||
+    record.booking.length > 200 ||
+    typeof record.noticeReceivedAt !== 'string' ||
+    typeof record.noticeReference !== 'string' ||
+    !record.noticeReference.trim() ||
+    record.noticeReference.length > 200 ||
+    record.historyVerified !== true ||
+    (record.cancelledBy !== 'buyer' && record.cancelledBy !== 'studio') ||
+    typeof record.lateReschedulesUsed !== 'number' ||
+    typeof record.domainPackDelivery !== 'string' ||
+    !packStates.includes(record.domainPackDelivery)
+  ) {
+    return json(400, { error: 'verified-notice-and-history-required' });
+  }
+  let booking: Booking | null;
+  try {
+    booking = await calendar.get(record.booking);
+  } catch {
+    return json(502, { error: 'calendar' });
+  }
+  if (!booking) return json(404, { error: 'booking-missing' });
+  const result = await consultationActions.assess_booking_change.run(
+    {
+      booking,
+      noticeReceivedAt: record.noticeReceivedAt,
+      cancelledBy: record.cancelledBy,
+      lateReschedulesUsed: record.lateReschedulesUsed,
+      domainPackDelivery:
+        record.domainPackDelivery as ConsultationChangeRequest['domainPackDelivery'],
+    },
+    { now, calendar },
+  );
+  if (!result.ok) return json(400, { error: result.error });
+  if (!result.value.ok) return json(400, { error: result.value.error });
+  return json(200, {
+    status: 'assessment',
+    booking: booking.booking_id,
+    noticeReference: record.noticeReference.trim(),
+    decision: result.value,
+    fulfilled: false,
+  });
+}
+
 function throttleFor(deps: ConsultationDeps): ConsultationThrottle {
   if (deps.throttle) return deps.throttle;
   processThrottle ??= createConsultationThrottle();
@@ -455,11 +520,17 @@ export async function handleConsultationRequest(
     path === '/api/stripe/webhook';
   if (!known) return json(404, { error: 'not-found' });
   const getOnly =
-    path === '/api/consultation/availability' ||
-    path === '/api/consultation/booking' ||
-    path === '/api/consultation/network-status';
+    path === '/api/consultation/availability' || path === '/api/consultation/network-status';
+  if (
+    path === '/api/consultation/booking' &&
+    request.method !== 'GET' &&
+    request.method !== 'POST'
+  ) {
+    return json(405, { error: 'method' });
+  }
   if (getOnly && request.method !== 'GET') return json(405, { error: 'method' });
-  if (!getOnly && request.method !== 'POST') return json(405, { error: 'method' });
+  if (!getOnly && path !== '/api/consultation/booking' && request.method !== 'POST')
+    return json(405, { error: 'method' });
 
   const now = (deps.now ?? (() => new Date()))();
   const throttle = throttleFor(deps);
@@ -478,6 +549,13 @@ export async function handleConsultationRequest(
   if (path === '/api/consultation/network-status') return networkStatus(request, env, now);
   if (path === '/api/consultation/network-link') return networkLink(request, env, now);
 
+  if (
+    path === '/api/consultation/booking' &&
+    request.method === 'POST' &&
+    verifySession(request, env).role !== 'owner'
+  )
+    return json(403, { error: 'owner-required' });
+
   const calendar = deps.calendar ?? calendarFromEnv(env, fetchImpl);
   if (!calendar) return json(503, { error: 'calendar-unconfigured' });
 
@@ -485,6 +563,7 @@ export async function handleConsultationRequest(
     return availability(request, calendar, now, throttle);
   }
   if (path === '/api/consultation/booking') {
+    if (request.method === 'POST') return assessBookingChange(request, env, calendar, now);
     return bookingView(request, calendar);
   }
   if (path === '/api/stripe/webhook') {

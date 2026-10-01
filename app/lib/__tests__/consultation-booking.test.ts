@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   applyPaidSchedule,
+  assessConsultationChange,
+  type Booking,
   bookInputFromNetwork,
   buildConfirmationEmail,
   createHold,
@@ -40,6 +42,131 @@ describe('consultation receipt', () => {
     });
     expect(readConsultationReceipt('other')).toBeNull();
     sessionStorage.removeItem('consultation-receipt');
+  });
+});
+
+describe('approved Consultation change policy', () => {
+  const paid: Booking = {
+    ...createHold(
+      {
+        start,
+        end,
+        hours: 1,
+        name: 'Ada Buyer',
+        email: 'ada@example.com',
+        company: null,
+        stageB: false,
+        stageBFee: 'none',
+        networkJti: null,
+      },
+      new Date('2026-01-05T00:00:00Z'),
+      'book_policy',
+    ),
+    status: 'paid_scheduled',
+    stripe_session_id: 'cs_paid',
+  };
+  function assess(
+    hoursBefore: number,
+    extra: Partial<Parameters<typeof assessConsultationChange>[0]> = {},
+  ) {
+    const notice = new Date(Date.parse(start) - hoursBefore * 3600000);
+    return assessConsultationChange({
+      booking: paid,
+      noticeReceivedAt: notice.toISOString(),
+      now: new Date('2026-01-09T00:00:00Z'),
+      cancelledBy: 'buyer',
+      lateReschedulesUsed: 0,
+      domainPackDelivery: 'not_purchased',
+      ...extra,
+    });
+  }
+  it.each([
+    24, 48,
+  ])('allows full time refund or reschedule for %s-hour notice even when processed later', (hours) => {
+    expect(assess(hours)).toMatchObject({
+      ok: true,
+      consultationRefund: 'full',
+      freeReschedule: true,
+      consumesShortNoticeReschedule: false,
+      reason: 'at_least_24_hours',
+    });
+  });
+  it('allows one short-notice reschedule just below the 24-hour boundary', () => {
+    expect(assess(24 - 1 / 3600)).toMatchObject({
+      ok: true,
+      consultationRefund: 'owner_review',
+      freeReschedule: true,
+      consumesShortNoticeReschedule: true,
+      reason: 'first_short_notice',
+    });
+    expect(assess(1, { lateReschedulesUsed: 1 })).toMatchObject({
+      ok: true,
+      freeReschedule: false,
+      reason: 'short_notice_used',
+    });
+  });
+  it.each([
+    0, -1,
+  ])('does not promise an automatic refund or reschedule at %s hours before the start', (hours) => {
+    expect(assess(hours)).toMatchObject({
+      ok: true,
+      consultationRefund: 'owner_review',
+      freeReschedule: false,
+      reason: 'no_show',
+    });
+  });
+  it('permits a time refund or new date when Studio cancels', () => {
+    expect(assess(-1, { cancelledBy: 'studio', lateReschedulesUsed: 4 })).toMatchObject({
+      ok: true,
+      consultationRefund: 'full',
+      freeReschedule: true,
+      consumesShortNoticeReschedule: false,
+      reason: 'studio_cancellation',
+    });
+  });
+  it('keeps domain-pack delivery and its actual paid fee separate from Consultation notice', () => {
+    const pack = { ...paid, stage_b: true, stage_b_fee: 'paid_addon' as const };
+    expect(assess(1, { booking: pack, domainPackDelivery: 'undelivered' })).toMatchObject({
+      domainPackRefund: 'undelivered_work',
+    });
+    expect(assess(48, { booking: pack, domainPackDelivery: 'delivered' })).toMatchObject({
+      domainPackRefund: 'disclosed_scope',
+    });
+    expect(assess(48, { booking: pack, domainPackDelivery: 'unknown' })).toMatchObject({
+      domainPackRefund: 'owner_review',
+    });
+    expect(
+      assess(48, {
+        booking: { ...pack, stage_b_fee: 'waived_network' },
+        domainPackDelivery: 'undelivered',
+      }),
+    ).toMatchObject({ domainPackRefund: 'not_applicable' });
+  });
+  it('rejects unconfirmed bookings, future notice, invalid history and contradictory pack state', () => {
+    expect(assess(48, { booking: { ...paid, status: 'slot_held' } })).toEqual({
+      ok: false,
+      error: 'not-paid',
+    });
+    expect(assess(48, { noticeReceivedAt: 'invalid' })).toEqual({
+      ok: false,
+      error: 'invalid-notice',
+    });
+    expect(assess(48, { now: new Date('2026-01-01T00:00:00Z') })).toEqual({
+      ok: false,
+      error: 'invalid-notice',
+    });
+    expect(assess(48, { lateReschedulesUsed: -1 })).toEqual({
+      ok: false,
+      error: 'invalid-history',
+    });
+    expect(assess(48, { lateReschedulesUsed: 0.5 })).toEqual({
+      ok: false,
+      error: 'invalid-history',
+    });
+    expect(assess(48, { domainPackDelivery: 'undelivered' })).toEqual({
+      ok: false,
+      error: 'invalid-pack-status',
+    });
   });
 });
 

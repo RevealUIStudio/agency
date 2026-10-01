@@ -62,6 +62,103 @@ export interface ConfirmationEmail {
   readonly text: string;
 }
 
+/** The approved policy applies to notice received in the Studio inbox. */
+export const CONSULTATION_NOTICE_HOURS = 24;
+
+export interface ConsultationChangeRequest {
+  readonly booking: Booking;
+  readonly noticeReceivedAt: string;
+  readonly now: Date;
+  readonly cancelledBy: 'buyer' | 'studio';
+  /** Owner verifies prior short-notice reschedules from the booking's email history. */
+  readonly lateReschedulesUsed: number;
+  /** Owner verifies delivery against the scope agreed before domain-pack work starts. */
+  readonly domainPackDelivery: 'not_purchased' | 'undelivered' | 'delivered' | 'unknown';
+}
+
+export type ConsultationChangeDecision =
+  | {
+      readonly ok: false;
+      readonly error: 'not-paid' | 'invalid-notice' | 'invalid-history' | 'invalid-pack-status';
+    }
+  | {
+      readonly ok: true;
+      readonly consultationRefund: 'full' | 'owner_review';
+      readonly freeReschedule: boolean;
+      readonly consumesShortNoticeReschedule: boolean;
+      readonly domainPackRefund:
+        | 'undelivered_work'
+        | 'disclosed_scope'
+        | 'owner_review'
+        | 'not_applicable';
+      readonly noticeHours: number;
+      readonly reason:
+        | 'studio_cancellation'
+        | 'at_least_24_hours'
+        | 'first_short_notice'
+        | 'short_notice_used'
+        | 'no_show';
+    };
+
+/**
+ * Assess eligibility, not payment execution. Refunds and calendar changes are
+ * fulfilled by the owner using the existing Stripe and Calendar accounts.
+ * Delivery and prior reschedules must be checked; missing evidence stays unknown.
+ */
+export function assessConsultationChange(
+  input: ConsultationChangeRequest,
+): ConsultationChangeDecision {
+  if (input.booking.status !== 'paid_scheduled') return { ok: false, error: 'not-paid' };
+  const start = Date.parse(input.booking.start);
+  const notice = Date.parse(input.noticeReceivedAt);
+  const now = input.now.getTime();
+  if (
+    !Number.isFinite(start) ||
+    !Number.isFinite(notice) ||
+    !Number.isFinite(now) ||
+    notice > now
+  ) {
+    return { ok: false, error: 'invalid-notice' };
+  }
+  if (!Number.isSafeInteger(input.lateReschedulesUsed) || input.lateReschedulesUsed < 0) {
+    return { ok: false, error: 'invalid-history' };
+  }
+  if (
+    (input.booking.stage_b && input.domainPackDelivery === 'not_purchased') ||
+    (!input.booking.stage_b && input.domainPackDelivery !== 'not_purchased')
+  ) {
+    return { ok: false, error: 'invalid-pack-status' };
+  }
+  const noticeHours = (start - notice) / (60 * 60 * 1000);
+  const studioCancellation = input.cancelledBy === 'studio';
+  const longNotice = noticeHours >= CONSULTATION_NOTICE_HOURS;
+  const firstShortNotice = noticeHours > 0 && input.lateReschedulesUsed === 0;
+  return {
+    ok: true,
+    consultationRefund: studioCancellation || longNotice ? 'full' : 'owner_review',
+    freeReschedule: studioCancellation || longNotice || firstShortNotice,
+    consumesShortNoticeReschedule: !studioCancellation && !longNotice && firstShortNotice,
+    domainPackRefund:
+      input.booking.stage_b_fee !== 'paid_addon'
+        ? 'not_applicable'
+        : input.domainPackDelivery === 'undelivered'
+          ? 'undelivered_work'
+          : input.domainPackDelivery === 'delivered'
+            ? 'disclosed_scope'
+            : 'owner_review',
+    noticeHours,
+    reason: studioCancellation
+      ? 'studio_cancellation'
+      : longNotice
+        ? 'at_least_24_hours'
+        : noticeHours <= 0
+          ? 'no_show'
+          : firstShortNotice
+            ? 'first_short_notice'
+            : 'short_notice_used',
+  };
+}
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function asRecord(value: unknown): Record<string, unknown> | null {

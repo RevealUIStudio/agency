@@ -13,6 +13,7 @@ Order is load-bearing. `save_slot` runs before `create_checkout_session`. Checko
 | `write_calendar_meet_on_pay` | none | `payment_status` is `paid`. A second call returns `already_scheduled`. | Calendar event plus Google Meet. Desk transition stays `no-desk-writer`. |
 | `notify_owner_paid` | none | Booking status is `paid_scheduled`. A second delivery does not send again. | Email to founder@revealui.com with buyer name, buyer email, Eastern Time, amount, Google Meet link, booking id, Stage B, and network. Does not mail the buyer. Desk writer stays a stub. |
 | `send_confirm_email` | `draft_only` | Booking status is `paid_scheduled`. | Confirmation draft on the `onConfirmation` sink. Channel is `calendar_meet_invite`. No outbound buyer mail. |
+| `assess_booking_change` | `draft_only` | Owner checks the inbox notice, previous short-notice reschedules, and domain-pack delivery. Booking is `paid_scheduled`. | Policy assessment only. No refund, calendar change, or buyer message. |
 
 `POST /api/consultation/book` runs `save_slot`, then `create_checkout_session`. If Checkout fails, the hold is released.
 
@@ -21,6 +22,45 @@ A signed network Consultation link is single-use per `jti`. The book path keeps 
 `POST /api/stripe/webhook` still accepts `checkout.session.completed` only. After a paid session it runs `write_calendar_meet_on_pay`, then `notify_owner_paid`, then `send_confirm_email`. The production handler wires `notify_owner_paid` to Gmail for founder@revealui.com. It does not pass a buyer sender. An owner-mail failure or a draft failure does not fail the calendar write. A replay that is already scheduled does not send a second owner notice.
 
 `GET /api/consultation/booking?booking=` returns the paid time, Google Meet link, and Stage B flag for the success page. It does not return the buyer name or email.
+
+## Cancellation and rescheduling fulfillment
+
+The published policy uses email requests. The founder owns fulfillment in the
+existing Stripe and Google Calendar accounts; no automatic refund or new buyer
+portal is promised. Notice is measured from receipt in the Studio inbox, not
+from when the founder reads or processes it.
+
+`POST /api/consultation/booking` uses the existing owner session to assess a
+request. It requires the booking reference, `noticeReceivedAt`, an inbox
+`noticeReference`, `historyVerified: true`, `cancelledBy` (`buyer` or `studio`),
+`lateReschedulesUsed`, and `domainPackDelivery` (`not_purchased`, `undelivered`,
+`delivered`, or `unknown`). The owner must check those facts against the email
+thread and the scope agreed before work. The endpoint returns `status:
+assessment` and `fulfilled: false`; it does not claim money moved or a meeting
+changed. It never uses a guest-provided timestamp to authorize a refund.
+
+The booking primitive assesses the approved rules:
+
+- At least 24 hours before the start, including exactly 24 hours: full refund
+  of Consultation time or free reschedule.
+- Under 24 hours, before the start: one free short-notice reschedule. Count a
+  completed short-notice reschedule in the booking's existing email thread.
+  A repeated request does not reset that history.
+- At or after the start: no automatic no-show refund. Exceptional outcomes
+  require owner review rather than an invented entitlement.
+- Studio cancellation: full refund of Consultation time or new date.
+- Paid, undelivered domain-pack work: refundable. Delivered work follows its
+  disclosed scope; unknown delivery needs review. A waived pack has no paid
+  fee to refund.
+
+For an eligible refund, verify the matching Checkout payment and previous
+refunds in Stripe, refund the Consultation time and eligible undelivered work,
+and retain the provider refund receipt in the booking's email thread. For a
+reschedule, agree an available date with the buyer and update the existing
+Calendar event and invite. Record the completed change and any short-notice
+reschedule use in the same thread before assessing a later request. The original
+payment, inbox receipt, event, and provider receipt remain the evidence; the
+assessment alone never establishes fulfillment.
 
 ## Stage B and network credit
 
