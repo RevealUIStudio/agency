@@ -17,7 +17,7 @@ describe('submitContact', () => {
   it('POSTs JSON with source agency and returns null on success', async () => {
     fetchMock.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ success: true }),
+      json: async () => ({ success: true, receipt: 'received' }),
     });
 
     const err = await submitContact({
@@ -42,7 +42,7 @@ describe('submitContact', () => {
     });
   });
 
-  it('does not treat an unconfirmed 200 response as accepted delivery', async () => {
+  it('does not treat an unconfirmed 200 response as endpoint receipt', async () => {
     fetchMock.mockResolvedValueOnce({ ok: true, json: async () => ({ success: false }) });
     expect(
       await submitContact({
@@ -123,7 +123,10 @@ describe('submitContact', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
   it('normalizes shared fields and accepts their boundary lengths', async () => {
-    fetchMock.mockResolvedValueOnce({ ok: true, json: async () => ({ success: true }) });
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, receipt: 'received' }),
+    });
     expect(
       await submitContact({
         name: ` ${'x'.repeat(120)} `,

@@ -85,9 +85,9 @@ export function ContactForm() {
 
   if (status === 'success') {
     return (
-      <Callout variant="success" title="Inquiry accepted">
+      <Callout variant="success" title="Request received">
         <p className="text-sm">
-          We aim to respond within 1–2 business days. If it&apos;s urgent, email{' '}
+          We aim to respond within 1–2 business days. If you haven&apos;t heard back, email{' '}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
             className="font-semibold text-foreground hover:underline"

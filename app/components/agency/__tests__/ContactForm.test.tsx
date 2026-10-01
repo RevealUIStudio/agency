@@ -107,7 +107,7 @@ describe('ContactForm', () => {
       website: '',
     });
 
-    expect(await screen.findByText('Inquiry accepted')).toBeInTheDocument();
+    expect(await screen.findByText('Request received')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: CONTACT_EMAIL })).toHaveAttribute(
       'href',
       `mailto:${CONTACT_EMAIL}`,
@@ -123,7 +123,7 @@ describe('ContactForm', () => {
 
     expect(await screen.findByText('Inbox is temporarily unavailable.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
-    expect(screen.queryByText('Inquiry accepted')).not.toBeInTheDocument();
+    expect(screen.queryByText('Request received')).not.toBeInTheDocument();
   });
 
   it('sends the honeypot to the endpoint and waits for its acceptance', async () => {
@@ -136,7 +136,7 @@ describe('ContactForm', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
 
-    expect(await screen.findByText('Inquiry accepted')).toBeInTheDocument();
+    expect(await screen.findByText('Request received')).toBeInTheDocument();
     expect(mockSubmit).toHaveBeenCalledWith(
       expect.objectContaining({ website: 'https://spam.example' }),
     );
