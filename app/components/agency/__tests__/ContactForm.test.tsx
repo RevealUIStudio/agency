@@ -148,10 +148,15 @@ describe('ContactForm', () => {
   ])('blocks an oversized %s using the server contract', async (label, value) => {
     render(<ContactForm />);
     fillRequiredFields();
-    fireEvent.change(screen.getByLabelText(label), { target: { value } });
+    fireEvent.change(screen.getByRole('textbox', { name: new RegExp(`^${label}`) }), {
+      target: { value },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
     await waitFor(() =>
-      expect(screen.getByLabelText(label)).toHaveAttribute('aria-invalid', 'true'),
+      expect(screen.getByRole('textbox', { name: new RegExp(`^${label}`) })).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      ),
     );
     expect(mockSubmit).not.toHaveBeenCalled();
   });
