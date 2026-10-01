@@ -765,20 +765,14 @@ describe('public copy gates', () => {
     expect(who).not.toMatch(/SOC ?2 certified|SOC2 ready|\baudited\b|SOC 2 compliant/i);
     expect(who).not.toMatch(/Fortune 500|high-stakes|regulated|mission-driven/i);
 
-    expect(trust).toContain('RevealUI Studio is not SOC 2 or ISO 27001 certified today.');
-    expect(trust).toContain('We are building toward SOC 2\\u2013capable controls');
-    expect(trust).toContain('the database');
-    expect(trust).toContain('the hosting provider');
-    expect(trust).toContain('the payments processor');
-    expect(trust).toContain('error telemetry');
-    expect(trust).toContain('because a vendor is');
+    expect(trust).toContain('The delivered system lives on your accounts.');
+    expect(trust).toContain('Inspect RevealUI source and documentation');
+    expect(trust).toContain('does not currently have an independent SOC 2 report');
+    expect(trust).toContain('Those reports cover the vendor, not RevealUI Studio.');
+    expect(trust).toContain('An independent assessment is not scheduled.');
+    expect(trust).toContain('What is your SOC 2 journey?');
     expect(findBannedToolNames(trust)).toEqual([]);
-    expect(trust).toContain('Not claimed until a Studio report exists');
-    expect(trust).toContain('Are you SOC 2 certified?');
-    expect(trust).toContain('Not yet.');
-    expect(trust).not.toMatch(/We are SOC ?2 certified/i);
-    expect(trust).not.toMatch(/In audit/i);
-    expect(trust).toContain('That our stack is SOC 2 because a vendor is.');
+    expect(trust).not.toMatch(/We are SOC ?2 certified|SOC2 ready|In audit/i);
     expect(footer).not.toMatch(/SOC ?2/);
     expect(footer).not.toMatch(/Fortune 500/);
     expect(hero).not.toMatch(/SOC ?2|certified|ISO 27001/i);

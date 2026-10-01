@@ -1,50 +1,35 @@
 import '@testing-library/jest-dom/vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { TrustRoadmap } from '@/components/agency/TrustRoadmap';
-import { TRUST_FAQ, TRUST_ROADMAP, TRUST_SHORT, TRUST_TITLE } from '@/content/trust';
+import { TRUST_FAQ, TRUST_SHORT, TRUST_TITLE } from '@/content/trust';
 import { findBannedToolNames } from '@/lib/buyer-facing-names';
 
 describe('TrustRoadmap', () => {
-  it('prints the Auditor paste and does not claim a Studio certification', () => {
+  it('leads with ownership, inspectability and a defined scope', () => {
     const { container } = render(<TrustRoadmap />);
-    const text = container.textContent ?? '';
     expect(screen.getByRole('heading', { level: 2, name: TRUST_TITLE })).toBeInTheDocument();
-    expect(document.getElementById('trust')).not.toBeNull();
-    for (const para of TRUST_SHORT) {
-      expect(text).toContain(para);
-    }
-    expect(text).toContain('RevealUI Studio is not SOC 2 or ISO 27001 certified today.');
-    expect(text).toContain('We are building toward SOC 2\u2013capable controls');
-    expect(text).toContain('the database');
-    expect(text).toContain('the hosting provider');
-    expect(text).toContain('the host for long-running services');
-    expect(text).toContain('the payments processor');
-    expect(text).toContain('error telemetry');
+    for (const para of TRUST_SHORT) expect(screen.getByText(para)).toBeVisible();
+    expect(TRUST_SHORT.join(' ')).not.toMatch(/SOC ?2|ISO 27001|certif|audited/i);
+    const text = container.textContent ?? '';
     expect(findBannedToolNames(text)).toEqual([]);
-    expect(text).toContain('their attestation is not our certification');
-    expect(TRUST_ROADMAP.map((bucket) => bucket.label)).toEqual([
-      'Now',
-      'Next',
-      'Independent assessment (not scheduled)',
-      'Not claimed until a Studio report exists',
-    ]);
-    for (const bucket of TRUST_ROADMAP) {
-      expect(screen.getByRole('heading', { level: 3, name: bucket.label })).toBeInTheDocument();
-      for (const item of bucket.items) {
-        expect(text).toContain(item);
-      }
-    }
+    expect(text).not.toMatch(/We are SOC ?2 certified|SOC2 ready|In audit|Fortune 500/i);
+  });
+
+  it('keeps current status and an unscheduled journey inside closed, readable FAQs', () => {
+    render(<TrustRoadmap />);
+    const faq = document.getElementById('trust-faq');
+    expect(faq).not.toBeNull();
     for (const item of TRUST_FAQ) {
-      expect(screen.getByRole('heading', { level: 3, name: item.q })).toBeInTheDocument();
-      expect(text).toContain(item.a);
+      const summary = within(faq as HTMLElement).getByText(item.q);
+      expect(summary.tagName).toBe('SUMMARY');
+      const details = summary.closest('details');
+      expect(details).not.toHaveAttribute('open');
+      expect(within(details as HTMLElement).getByText(item.a)).toBeInTheDocument();
     }
-    expect(text).not.toMatch(/We are SOC ?2 certified/i);
-    expect(text).not.toMatch(/In audit/i);
-    expect(text).toContain('That our stack is SOC 2 because a vendor is.');
-    expect(text).not.toMatch(/SOC2 ready/i);
-    expect(text).not.toContain('\u2014');
-    expect(text).not.toMatch(/Fortune 500/);
-    expect(text).not.toMatch(/RevDev|RevForge|RevKit/);
+    expect(faq?.textContent).toContain('does not currently have an independent SOC 2 report');
+    expect(faq?.textContent).toContain('Those reports cover the vendor, not RevealUI Studio.');
+    expect(faq?.textContent).toContain('An independent assessment is not scheduled.');
+    expect(faq?.textContent).toContain('the roadmap is not an attestation');
   });
 });

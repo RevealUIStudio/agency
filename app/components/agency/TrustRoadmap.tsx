@@ -1,4 +1,4 @@
-import { TRUST_FAQ, TRUST_ROADMAP, TRUST_SHORT, TRUST_TITLE } from '@/content/trust';
+import { TRUST_FAQ, TRUST_SHORT, TRUST_TITLE } from '@/content/trust';
 
 export function TrustRoadmap() {
   return (
@@ -15,25 +15,15 @@ export function TrustRoadmap() {
           ))}
         </div>
 
-        <div className="mt-12 space-y-8">
-          {TRUST_ROADMAP.map((bucket) => (
-            <div key={bucket.label}>
-              <h3 className="text-lg font-semibold text-foreground">{bucket.label}</h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-7 text-muted-foreground">
-                {bucket.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-12 space-y-6">
+        <div id="trust-faq" className="mt-12 space-y-6">
+          <h3 className="text-xl font-semibold text-foreground">Security and compliance FAQ</h3>
           {TRUST_FAQ.map((item) => (
-            <div key={item.q}>
-              <h3 className="text-lg font-semibold text-foreground">{item.q}</h3>
+            <details key={item.q} className="border-b border-border pb-4">
+              <summary className="cursor-pointer text-lg font-semibold text-foreground">
+                {item.q}
+              </summary>
               <p className="mt-2 text-base leading-7 text-muted-foreground">{item.a}</p>
-            </div>
+            </details>
           ))}
         </div>
       </div>

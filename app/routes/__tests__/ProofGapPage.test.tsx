@@ -65,6 +65,10 @@ describe('ProofGapPage', () => {
       PROOF_GAP_PDF_HREF,
     );
     expect(mockSubmit).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole('link', { name: 'Read the security and compliance FAQ' }),
+    ).toHaveAttribute('href', '/#trust-faq');
+    expect(text).not.toContain('does not currently have an independent SOC 2 report');
   });
 
   it('delivers the checklist after a valid submit', async () => {

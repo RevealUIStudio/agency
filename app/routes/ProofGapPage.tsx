@@ -81,12 +81,18 @@ function ProofGapChecklist() {
         </div>
 
         <div>
-          <h3 className="text-xl font-semibold text-foreground">What we will not claim here</h3>
+          <h3 className="text-xl font-semibold text-foreground">Using the checklist</h3>
           <ul className="mt-4 space-y-2 text-base text-muted-foreground">
             {PROOF_GAP_REFUSALS.map((line) => (
               <li key={line}>{line}</li>
             ))}
           </ul>
+          <a
+            href="/#trust-faq"
+            className="mt-4 inline-block font-semibold text-primary hover:underline"
+          >
+            Read the security and compliance FAQ
+          </a>
           <p className="mt-6 text-sm text-muted-foreground">{PROOF_GAP_KNOWN_FOR}</p>
           <p className="mt-2 text-sm text-muted-foreground">{PROOF_GAP_LADDER}</p>
         </div>
