@@ -47,8 +47,8 @@ export async function submitContact(data: ContactFormData): Promise<string | nul
 
     const body: unknown = await res.json();
     if (body && typeof body === 'object' && 'success' in body && body.success === true) return null;
-    return `We could not confirm that receipt of your request. Email ${CONTACT_EMAIL} directly.`;
+    return `We could not confirm receipt of your request. Email ${CONTACT_EMAIL} directly.`;
   } catch {
-    return `We could not confirm that receipt of your request. Please try again or email ${CONTACT_EMAIL} directly.`;
+    return `We could not confirm receipt of your request. Please try again or email ${CONTACT_EMAIL} directly.`;
   }
 }
