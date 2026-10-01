@@ -17,7 +17,7 @@ describe('submitContact', () => {
   it('POSTs JSON with source agency and returns null on success', async () => {
     fetchMock.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ success: true }),
+      json: async () => ({ success: true, receipt: 'received' }),
     });
 
     const err = await submitContact({
@@ -42,7 +42,7 @@ describe('submitContact', () => {
     });
   });
 
-  it('does not treat an unconfirmed 200 response as accepted delivery', async () => {
+  it('does not treat an unconfirmed 200 response as endpoint receipt', async () => {
     fetchMock.mockResolvedValueOnce({ ok: true, json: async () => ({ success: false }) });
     expect(
       await submitContact({
@@ -101,6 +101,47 @@ describe('submitContact', () => {
       message: 'Need a production-lift plan for our agent stack.',
     });
 
-    expect(err).toBe(`Network error: Failed to fetch. Email ${CONTACT_EMAIL} directly.`);
+    expect(err).toContain('could not confirm');
+    expect(err).toContain(CONTACT_EMAIL);
+    expect(err).not.toContain('Failed to fetch');
+  });
+  it.each([
+    { name: 'x'.repeat(121) },
+    { company: 'x'.repeat(121) },
+    { topic: 'x'.repeat(41) },
+    { message: 'x'.repeat(5001) },
+    { email: `${'x'.repeat(244)}@example.com` },
+  ])('rejects shared field limits before sending %j', async (override) => {
+    const error = await submitContact({
+      name: 'Jane',
+      email: 'jane@example.com',
+      topic: 'general',
+      message: 'A question about setup.',
+      ...override,
+    });
+    expect(error).not.toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+  it('normalizes shared fields and accepts their boundary lengths', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, receipt: 'received' }),
+    });
+    expect(
+      await submitContact({
+        name: ` ${'x'.repeat(120)} `,
+        email: ' jane@example.com ',
+        company: 'x'.repeat(120),
+        topic: ' general ',
+        message: 'x'.repeat(5000),
+      }),
+    ).toBeNull();
+    expect(JSON.parse(fetchMock.mock.calls[0]?.[1].body)).toEqual(
+      expect.objectContaining({
+        name: 'x'.repeat(120),
+        email: 'jane@example.com',
+        topic: 'general',
+      }),
+    );
   });
 });

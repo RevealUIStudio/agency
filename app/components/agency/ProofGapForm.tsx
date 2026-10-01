@@ -1,7 +1,7 @@
+import { ContactInquirySchema } from '@revealui/contracts/public-inquiry';
 import { ButtonCVA as Button, Callout, FormField, Input, LinkButton } from '@revealui/presentation';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
-import { z } from 'zod';
 import {
   PROOF_GAP_CTA,
   PROOF_GAP_DOWNLOAD_LABEL,
@@ -23,16 +23,8 @@ interface FieldErrors {
 }
 
 function validateField(field: keyof FieldErrors, value: string): string | undefined {
-  switch (field) {
-    case 'name':
-      if (!value.trim()) return 'Name is required';
-      if (value.trim().length < 2) return 'Name must be at least 2 characters';
-      return undefined;
-    case 'email':
-      if (!value.trim()) return 'Email is required';
-      if (!z.email().safeParse(value).success) return 'Enter a valid email address';
-      return undefined;
-  }
+  const result = ContactInquirySchema.shape[field].safeParse(value);
+  return result.success ? undefined : result.error.issues[0]?.message;
 }
 
 export function ProofGapForm({ onSuccess }: { onSuccess?: () => void }) {
@@ -65,11 +57,6 @@ export function ProofGapForm({ onSuccess }: { onSuccess?: () => void }) {
     };
     setFieldErrors(errors);
     if (Object.values(errors).some(Boolean)) return;
-
-    if (formData.website) {
-      deliver();
-      return;
-    }
 
     setStatus('loading');
     const error = await submitContact({
@@ -127,6 +114,7 @@ export function ProofGapForm({ onSuccess }: { onSuccess?: () => void }) {
             type="text"
             required
             autoComplete="name"
+            maxLength={ContactInquirySchema.shape.name.maxLength ?? undefined}
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             onBlur={() => handleBlur('name')}
@@ -141,6 +129,7 @@ export function ProofGapForm({ onSuccess }: { onSuccess?: () => void }) {
             type="email"
             required
             autoComplete="email"
+            maxLength={ContactInquirySchema.shape.email.maxLength ?? undefined}
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             onBlur={() => handleBlur('email')}
