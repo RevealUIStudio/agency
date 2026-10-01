@@ -136,6 +136,59 @@ function request(path: string, body?: unknown, headers?: HeadersInit): Request {
 }
 
 describe('consultation http', () => {
+  it('keeps policy assessment owner-only and requires verified notice/history without mutating payment or calendar', async () => {
+    const booking: Booking = {
+      booking_id: 'book_changes',
+      ...SLOT,
+      hours: 1,
+      name: 'Ada Buyer',
+      email: 'ada@example.com',
+      company: null,
+      stage_b: false,
+      stage_b_fee: 'none',
+      network_jti: null,
+      status: 'paid_scheduled',
+      expires_at: SLOT.start,
+      event_id: 'evt_changes',
+      meet_link: 'https://meet.google.com/existing',
+      stripe_session_id: 'cs_existing',
+    };
+    const h = harness([booking], { ownerSession: 'owner_test_session' });
+    const body = {
+      booking: booking.booking_id,
+      noticeReceivedAt: '2026-01-06T14:00:00Z',
+      noticeReference: 'inbox_message_1',
+      historyVerified: true,
+      cancelledBy: 'buyer',
+      lateReschedulesUsed: 0,
+      domainPackDelivery: 'not_purchased',
+    };
+    const guest = await handleConsultationRequest(
+      request('/api/consultation/booking', body),
+      h.deps,
+    );
+    expect(guest.status).toBe(403);
+    const headers = { authorization: 'Bearer owner_test_session' };
+    const missing = await handleConsultationRequest(
+      request('/api/consultation/booking', { ...body, historyVerified: false }, headers),
+      h.deps,
+    );
+    expect(missing.status).toBe(400);
+    const result = await handleConsultationRequest(
+      request('/api/consultation/booking', body, headers),
+      h.deps,
+    );
+    expect(result.status).toBe(200);
+    expect(await result.json()).toMatchObject({
+      status: 'assessment',
+      fulfilled: false,
+      decision: { consultationRefund: 'full', freeReschedule: true, reason: 'at_least_24_hours' },
+    });
+    expect(await h.calendar.get(booking.booking_id)).toEqual(booking);
+    expect(h.checkouts).toHaveLength(0);
+    expect(h.emails).toHaveLength(0);
+    expect(h.owners).toHaveLength(0);
+  });
   it('omits a busy slot and returns the next open hour', async () => {
     const paid: Booking = {
       booking_id: 'busy_1',

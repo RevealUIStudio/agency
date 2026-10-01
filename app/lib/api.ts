@@ -10,20 +10,12 @@
  * Hono server (e.g. http://localhost:3004) during dev.
  */
 
+import { type ContactInquiry, ContactInquirySchema } from '@revealui/contracts/public-inquiry';
 import { CONTACT_EMAIL } from './site';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'https://api.revealui.com';
 
-export interface ContactFormData {
-  topic: string;
-  name: string;
-  email: string;
-  /** Optional company name. */
-  company?: string;
-  message: string;
-  /** Honeypot field — always empty for real users. */
-  website?: string;
-}
+export type ContactFormData = Omit<ContactInquiry, 'source'>;
 
 interface ContactResponseError {
   success?: false;
@@ -33,14 +25,16 @@ interface ContactResponseError {
 /**
  * Submits a contact-form inquiry to the public API.
  *
- * @returns `null` on success; a user-displayable error message on failure.
+ * @returns `null` on endpoint acknowledgment, not inbox delivery; a user-displayable error message on failure.
  */
 export async function submitContact(data: ContactFormData): Promise<string | null> {
+  const parsed = ContactInquirySchema.safeParse({ ...data, source: 'agency' });
+  if (!parsed.success) return parsed.error.issues[0]?.message ?? 'Please check the inquiry fields.';
   try {
     const res = await fetch(`${API_URL}/api/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, source: 'agency' }),
+      body: JSON.stringify(parsed.data),
     });
 
     if (!res.ok) {
@@ -53,10 +47,8 @@ export async function submitContact(data: ContactFormData): Promise<string | nul
 
     const body: unknown = await res.json();
     if (body && typeof body === 'object' && 'success' in body && body.success === true) return null;
-    return `We could not confirm that your message was accepted. Email ${CONTACT_EMAIL} directly.`;
-  } catch (err) {
-    return err instanceof Error
-      ? `Network error: ${err.message}. Email ${CONTACT_EMAIL} directly.`
-      : `Network error: please try again, or email ${CONTACT_EMAIL} directly.`;
+    return `We could not confirm receipt of your request. Email ${CONTACT_EMAIL} directly.`;
+  } catch {
+    return `We could not confirm receipt of your request. Please try again or email ${CONTACT_EMAIL} directly.`;
   }
 }

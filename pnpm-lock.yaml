@@ -27,8 +27,8 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8
       '@revealui/contracts':
-        specifier: ^0.12.0
-        version: 0.12.0(typescript@7.0.2)
+        specifier: ^0.13.2
+        version: 0.13.2(typescript@7.0.2)
       '@revealui/presentation':
         specifier: file:vendor/revealui-presentation-0.15.0.tgz
         version: file:vendor/revealui-presentation-0.15.0.tgz(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@7.0.2)
@@ -539,6 +539,16 @@ packages:
 
   '@revealui/contracts@0.12.0':
     resolution: {integrity: sha512-AOaeCJMEjvRhrWeG+Kwuy7mB4PY0AH6bkzwsZ6g4SDXrnzACtBJymhhwio1f31Rd0j6/Q18XRH3OSrC4/ub0iw==}
+    engines: {node: '>=24.13.0'}
+    peerDependencies:
+      drizzle-zod: ^0.8.3
+      typescript: 7.0.2
+    peerDependenciesMeta:
+      drizzle-zod:
+        optional: true
+
+  '@revealui/contracts@0.13.2':
+    resolution: {integrity: sha512-npngt53K0pdTuQ9R9zgCfD43Un22ma5E7632nKNgjwlmZJ5xflSKrqUJAVB3NKi0LmfvykDFRiKNWoItX7vlTQ==}
     engines: {node: '>=24.13.0'}
     peerDependencies:
       drizzle-zod: ^0.8.3
@@ -2338,6 +2348,11 @@ snapshots:
   '@oxc-project/types@0.143.0': {}
 
   '@revealui/contracts@0.12.0(typescript@7.0.2)':
+    dependencies:
+      typescript: 7.0.2
+      zod: 4.4.3
+
+  '@revealui/contracts@0.13.2(typescript@7.0.2)':
     dependencies:
       typescript: 7.0.2
       zod: 4.4.3

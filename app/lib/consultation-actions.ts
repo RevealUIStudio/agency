@@ -12,10 +12,13 @@
  */
 
 import {
+  assessConsultationChange,
   type BookInput,
   type Booking,
   buildConfirmationEmail,
   type ConfirmationEmail,
+  type ConsultationChangeDecision,
+  type ConsultationChangeRequest,
   createHold,
   deskScheduleTransition,
 } from './consultation-booking';
@@ -34,7 +37,8 @@ export type ConsultationActionId =
   | 'create_checkout_session'
   | 'write_calendar_meet_on_pay'
   | 'notify_owner_paid'
-  | 'send_confirm_email';
+  | 'send_confirm_email'
+  | 'assess_booking_change';
 
 export const CONSULTATION_ACTION_ORDER = [
   'save_slot',
@@ -422,12 +426,34 @@ const sendConfirmEmail: ConsultationAction<SendConfirmInput, ConfirmDraft> = {
   },
 };
 
+const assessBookingChange: ConsultationAction<
+  Omit<ConsultationChangeRequest, 'now'>,
+  ConsultationChangeDecision
+> = {
+  id: 'assess_booking_change',
+  description:
+    'Assess the approved notice policy after the owner checks inbox receipt, reschedule history, and domain-pack delivery. Does not issue a refund or change the calendar.',
+  humanGate: 'draft_only',
+  preconditions: [
+    'Owner verified the email notice and prior booking history.',
+    'Booking is paid_scheduled.',
+  ],
+  sideEffects: ['none; owner fulfills eligible changes through Stripe and Calendar'],
+  idempotencyKey(input) {
+    return `${input.booking.booking_id}:${input.noticeReceivedAt}`;
+  },
+  async run(input, deps) {
+    return { ok: true, value: assessConsultationChange({ ...input, now: deps.now }) };
+  },
+};
+
 export const consultationActions = {
   save_slot: saveSlot,
   create_checkout_session: createCheckoutSession,
   write_calendar_meet_on_pay: writeCalendarMeetOnPay,
   notify_owner_paid: notifyOwnerPaid,
   send_confirm_email: sendConfirmEmail,
+  assess_booking_change: assessBookingChange,
 } as const;
 
 function mapBookFailure(error: ActionError): ActionError {
