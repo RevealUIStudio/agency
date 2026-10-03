@@ -40,6 +40,13 @@ describe('ContactForm', () => {
     expect(screen.getByLabelText(/Message/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
     expect(
+      screen.getByRole('option', { name: "I'm not sure which engagement fits" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/Topic/)).toHaveValue('general');
+    expect(
+      screen.getByText(/leave out passwords, API keys, and sensitive customer data/i),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole('option', { name: `${CONSULTATION.name} (${CONSULTATION.price})` }),
     ).toBeInTheDocument();
     expect(

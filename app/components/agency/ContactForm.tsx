@@ -17,7 +17,7 @@ const topics = [
   { value: CONSULTATION.id, label: `${CONSULTATION.name} (${CONSULTATION.price})` },
   { value: PILOT.id, label: `${PILOT.name} (${PILOT.price}, includes 1 Adapter)` },
   { value: LAUNCH.id, label: `${LAUNCH.name} (${LAUNCH.price})` },
-  { value: 'general', label: 'General inquiry' },
+  { value: 'general', label: "I'm not sure which engagement fits" },
 ] as const;
 
 /** Allowed topic values — defends the payload if formData.topic is ever off-list. */
@@ -166,7 +166,13 @@ export function ContactForm() {
           ))}
         </Select>
       </FormField>
-      <FormField id="contact-message" label="Message" error={fieldErrors.message} required>
+      <FormField
+        id="contact-message"
+        label="Message"
+        description="Please leave out passwords, API keys, and sensitive customer data."
+        error={fieldErrors.message}
+        required
+      >
         <Textarea
           id="contact-message"
           required
@@ -177,7 +183,7 @@ export function ContactForm() {
           onBlur={() => handleBlur('message')}
           aria-invalid={fieldErrors.message ? true : undefined}
           invalid={!!fieldErrors.message}
-          placeholder="What do you need help with? Runtime, receipts, a stuck live flow, or systems that do not talk to each other."
+          placeholder="What do you want your workflow to do, and what is getting in the way?"
         />
       </FormField>
 

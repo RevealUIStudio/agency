@@ -151,17 +151,14 @@ describe('buildQuote', () => {
     );
   });
 
-  it('refuses Adapter on Consultation alone and allows it while on Care', () => {
-    const refused = buildQuote({
+  it('never adds Adapter lines to a Consultation, even with stale extra answers', () => {
+    const consultation = buildQuote({
       hoster: 'studio',
       outcome: 'consultation',
       places: 'one',
       adapterExtras: 1,
     });
-    expect(refused.lines.find((line) => line.id === 'adapter-refused')?.price).toBe(
-      'Not sold alone',
-    );
-    expect(refused.lines.some((line) => line.price === '$2,497')).toBe(false);
+    expect(consultation.lines.some((line) => line.id.startsWith('adapter'))).toBe(false);
 
     const quiet = buildQuote({
       hoster: 'studio',
@@ -169,18 +166,5 @@ describe('buildQuote', () => {
       places: 'one',
     });
     expect(quiet.lines.some((line) => line.id.startsWith('adapter'))).toBe(false);
-
-    const onCare = buildQuote({
-      hoster: 'studio',
-      outcome: 'consultation',
-      places: 'one',
-      onCare: true,
-      adapterExtras: 1,
-    });
-    expect(onCare.lines.find((line) => line.id === 'adapter-extra')?.price).toBe('$2,497');
-    expect(onCare.lines.find((line) => line.id === 'adapter-extra')?.detail).toContain(
-      'while on Care',
-    );
-    expect(onCare.lines.some((line) => line.id === 'adapter-refused')).toBe(false);
   });
 });

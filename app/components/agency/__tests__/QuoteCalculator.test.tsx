@@ -85,22 +85,22 @@ describe('QuoteCalculator', () => {
     );
     expect(container.textContent ?? '').not.toMatch(/\bHour\b/);
     expect(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' })).not.toBeChecked();
-    expect(
-      screen.getByRole('checkbox', { name: 'On Care (scoped Adapter add)' }),
-    ).not.toBeChecked();
-    expect(screen.getByLabelText('Extra Adapters')).toHaveValue('0');
+    expect(screen.queryByRole('checkbox', { name: /On Care/ })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Extra Adapters')).not.toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/waive/i);
   });
 
-  it('refuses an extra Adapter on Consultation alone and prices it while on Care', () => {
+  it('shows Adapter extras only for implementation offers', () => {
     render(<QuoteCalculator />);
     fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
-    fireEvent.change(screen.getByLabelText('Extra Adapters'), { target: { value: '1' } });
-    expect(screen.getByText('Not sold alone')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Extra Adapters')).not.toBeInTheDocument();
     expect(screen.queryByText('$2,497')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('checkbox', { name: 'On Care (scoped Adapter add)' }));
-    expect(screen.queryByText('Not sold alone')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[1].label }));
+    fireEvent.change(screen.getByLabelText('Extra Adapters'), { target: { value: '1' } });
     expect(screen.getByText('$2,497')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
+    expect(screen.queryByLabelText('Extra Adapters')).not.toBeInTheDocument();
+    expect(screen.queryByText('$2,497')).not.toBeInTheDocument();
   });
 
   it('keeps Stage B as a paid add-on with no public credit control', () => {
