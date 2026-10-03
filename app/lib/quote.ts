@@ -100,12 +100,7 @@ export const ADAPTER_EXTRA_MAX = 6 as const;
 export const ADAPTER_EXTRA_OPTIONS = [0, 1, 2, 3, 4, 5, 6] as const;
 
 export const ADAPTER_CALCULATOR_HELP =
-  `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT}. Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH}. This count is extras beyond that, at ${ADAPTER.price} each (one tool category). On Care, this count is the scoped add. Consultation alone cannot buy an Adapter.` as const;
-
-export const ON_CARE_CHECKBOX = 'On Care (scoped Adapter add)' as const;
-
-export const ADAPTER_REFUSAL =
-  'Adapter is not sold alone. Consultation can scope it. Then Pilot, Launch, or Care.' as const;
+  `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT}. Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH}. This count is extras beyond that, at ${ADAPTER.price} each (one tool category). Additional work is scoped before invoicing.` as const;
 
 export function adapterExtraCount(count: number | undefined): number {
   if (count === undefined) return ADAPTER_EXTRA_MIN;
@@ -152,14 +147,8 @@ export interface QuoteAnswers {
   readonly stageB?: boolean;
   readonly stageBWaive?: boolean;
   readonly viewerRole?: ViewerRole;
-  /**
-   * Adapter units beyond the included count (Pilot 1, Launch 3).
-   * On Care with Consultation, this count is the scoped add.
-   * Default 0. Never a standalone outcome.
-   */
+  /** Adapter units beyond the included count (Pilot 1, Launch 3). Default 0. */
   readonly adapterExtras?: number;
-  /** Buyer is already on Care, so a scoped Adapter add can attach. */
-  readonly onCare?: boolean;
 }
 
 export function consultationQuoteDetail(hours: number): string {
@@ -223,55 +212,33 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
 }
 
 function adapterLines(answers: QuoteAnswers): readonly QuoteLine[] {
+  if (answers.outcome === 'consultation') return [];
   const extras = adapterExtraCount(answers.adapterExtras);
   const category = `One tool category: ${ADAPTER_CATEGORIES}.`;
-  if (answers.outcome === 'plan' || answers.outcome === 'launch') {
-    const onPilot = answers.outcome === 'plan';
-    const lines: QuoteLine[] = [
-      {
-        id: 'adapter-included',
-        title: ADAPTER.name,
-        price: 'Included',
-        detail: onPilot
-          ? `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT} Adapter. ${category}`
-          : `Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH} Adapters. ${category}`,
-        highlighted: false,
-      },
-    ];
-    if (extras > 0) {
-      lines.push({
-        id: 'adapter-extra',
-        title: extras === 1 ? 'Extra Adapter' : `Extra Adapters (${extras})`,
-        price: formatUsdFromCents(ADAPTER_CENTS * extras),
-        detail: onPilot
-          ? `2nd and later Adapters are ${ADAPTER.price} each. One tool category per unit.`
-          : `4th and later Adapters are ${ADAPTER.price} each. One tool category per unit.`,
-        highlighted: true,
-      });
-    }
-    return lines;
-  }
-  if (extras <= 0) return [];
-  if (answers.onCare === true) {
-    return [
-      {
-        id: 'adapter-extra',
-        title: extras === 1 ? ADAPTER.name : `Adapters (${extras})`,
-        price: formatUsdFromCents(ADAPTER_CENTS * extras),
-        detail: `Scoped add while on Care. ${ADAPTER.price} each. One tool category per unit. Not a standalone engagement.`,
-        highlighted: true,
-      },
-    ];
-  }
-  return [
+  const onPilot = answers.outcome === 'plan';
+  const lines: QuoteLine[] = [
     {
-      id: 'adapter-refused',
+      id: 'adapter-included',
       title: ADAPTER.name,
-      price: 'Not sold alone',
-      detail: ADAPTER_REFUSAL,
+      price: 'Included',
+      detail: onPilot
+        ? `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT} Adapter. ${category}`
+        : `Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH} Adapters. ${category}`,
       highlighted: false,
     },
   ];
+  if (extras > 0) {
+    lines.push({
+      id: 'adapter-extra',
+      title: extras === 1 ? 'Extra Adapter' : `Extra Adapters (${extras})`,
+      price: formatUsdFromCents(ADAPTER_CENTS * extras),
+      detail: onPilot
+        ? `2nd and later Adapters are ${ADAPTER.price} each. One tool category per unit.`
+        : `4th and later Adapters are ${ADAPTER.price} each. One tool category per unit.`,
+      highlighted: true,
+    });
+  }
+  return lines;
 }
 
 function studioLines(answers: QuoteAnswers): readonly QuoteLine[] {
