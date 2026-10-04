@@ -37,7 +37,7 @@ export const SHARE_SEED: Readonly<Record<string, Readonly<Record<string, string>
     ]),
     ...domainPackFiles,
     'pack.txt': exampleNote('/pack', [
-      'Denser living pack for demo. The consultation leaves this pack on the studio host.',
+      'Example workspace only. This demo contains no completed Consultation or client material.',
     ]),
     'demo.txt': exampleNote('/demo', [
       'Demo slot for demo. Example only. The domain pack does not sell a demo.',
