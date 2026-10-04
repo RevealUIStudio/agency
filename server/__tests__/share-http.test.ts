@@ -162,7 +162,7 @@ describe('share server', () => {
       { host: 'demo.revealuistudio.com' },
     );
     expect(guest.response.status).toBe(200);
-    expect(guest.raw).toContain('Denser living pack');
+    expect(guest.raw).toContain('no completed Consultation or client material');
     expect(guest.response.headers.get('content-type')).toBe('text/plain; charset=utf-8');
 
     const crossed = await call(
@@ -180,7 +180,7 @@ describe('share server', () => {
       { host: 'demo.revealuistudio.com' },
     );
     expect(pathWins.response.status).toBe(200);
-    expect(pathWins.raw).toContain('Denser living pack');
+    expect(pathWins.raw).toContain('no completed Consultation or client material');
     expect(pathWins.raw).not.toContain('Stage A shell');
 
     const traversal = await call(

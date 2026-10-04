@@ -73,11 +73,7 @@ export const CONSULTATION = {
   tagline: 'Get a clear next step.',
   description:
     'Bring the system you want to review and the question you need answered. We will work through it in a focused session, with session notes and a recommended next step.',
-  includes: [
-    'A focused review of your system',
-    'Session notes and a next step',
-    'Session share URL',
-  ],
+  includes: ['A focused review of your system', 'Session notes and a next step'],
   notIncluded: [
     'A free Pilot',
     'An Adapter sold alone',
