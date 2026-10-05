@@ -31,10 +31,10 @@ export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 
 export const NETWORK_LINK_USED = 'This network Consultation link has already been used.';
 
 export const CONSULTATION_AFTER_PAY =
-  'After payment and scheduling are confirmed, the Meet link is on your calendar invite.';
+  'After payment and scheduling are confirmed, the Google Meet link is on your calendar invite.';
 
 export const CONSULTATION_SUCCESS =
-  'Payment and scheduling confirmed. Look for your calendar invite with the Meet link.';
+  'Payment and scheduling confirmed. Look for your calendar invite with the Google Meet link.';
 
 export const CONSULTATION_MEET_FALLBACK = 'The Google Meet link is on the calendar invite.';
 
