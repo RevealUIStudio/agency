@@ -84,7 +84,7 @@ describe('QuoteCalculator', () => {
       `${CONSULTATION_BOOK_PATH}?hours=4&stage_b=false`,
     );
     expect(container.textContent ?? '').not.toMatch(/\bHour\b/);
-    expect(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Domain add-on: $297' })).not.toBeChecked();
     expect(screen.queryByRole('checkbox', { name: /On Care/ })).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Extra Adapters')).not.toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/waive/i);
@@ -106,7 +106,7 @@ describe('QuoteCalculator', () => {
   it('keeps Stage B as a paid add-on with no public credit control', () => {
     const view = render(<QuoteCalculator />);
     fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Domain add-on: $297' }));
     expect(screen.queryByRole('checkbox', { name: /waive/i })).not.toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toMatch(/waive/i);
     expect(screen.getByText('$297')).toBeInTheDocument();

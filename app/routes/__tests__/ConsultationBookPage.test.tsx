@@ -4,10 +4,14 @@ import { resolve } from 'node:path';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+  CONSULTATION_AFTER_PAY,
+  CONSULTATION_CANCEL,
   CONSULTATION_CHANGE_POLICY,
   CONSULTATION_SUCCESS,
   NETWORK_LINK_USED,
   rememberConsultationReceipt,
+  STAGE_B_CHECKBOX,
+  STAGE_B_HELPER,
 } from '@/lib/consultation-buyer';
 import {
   ConsultationBookCancelPage,
@@ -36,6 +40,8 @@ describe('ConsultationBookPage', () => {
     expect(source).toContain('<Checkbox');
     expect(source).toContain('<Button');
     expect(source).toContain('<LinkButton');
+    expect(source).toContain('STAGE_B_HELPER');
+    expect(source).not.toContain('Add the domain pack');
     expect(source).not.toMatch(/<button\b/);
     expect(source).not.toMatch(/<select\b/);
     expect(source).not.toMatch(/<input\b/);
@@ -86,8 +92,16 @@ describe('ConsultationBookPage', () => {
     for (const policy of CONSULTATION_CHANGE_POLICY)
       expect(screen.getByText(policy)).toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toContain('calendar.google.com');
-    const stageB = await screen.findByRole('checkbox', { name: 'Add the domain pack ($297)' });
+    const stageB = await screen.findByRole('checkbox', { name: STAGE_B_CHECKBOX });
     expect(stageB).not.toBeChecked();
+    expect(screen.getByText(STAGE_B_HELPER)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_AFTER_PAY)).toBeInTheDocument();
+    expect(view.container.textContent ?? '').not.toContain('Add the domain pack');
+    expect(view.container.textContent ?? '').not.toMatch(/\bStage B\b/);
+    expect((view.container.textContent ?? '').replaceAll('Google Meet', '')).not.toMatch(
+      /\bMeet\b/,
+    );
+    expect(view.container.textContent ?? '').not.toContain('\u2014');
     fireEvent.click(await screen.findByRole('radio', { name: /9:00 AM/ }));
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Ada Buyer' } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ada@example.com' } });
@@ -159,7 +173,7 @@ describe('ConsultationBookPage', () => {
     const view = render(<ConsultationBookPage onCheckout={vi.fn()} />);
     expect(window.location.search).toBe('?hours=1');
     expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
-    expect(screen.queryByRole('checkbox', { name: 'Add the domain pack ($297)' })).toBeNull();
+    expect(screen.queryByRole('checkbox', { name: STAGE_B_CHECKBOX })).toBeNull();
     expect(screen.getByText('Due today $300.')).toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toMatch(
       /\bwaiv(e|ed)\b|\bfree Stage B\b|\bsometimes free\b/i,
@@ -227,9 +241,7 @@ describe('ConsultationBookPage', () => {
       );
     });
     render(<ConsultationBookPage />);
-    expect(
-      await screen.findByRole('checkbox', { name: 'Add the domain pack ($297)' }),
-    ).not.toBeChecked();
+    expect(await screen.findByRole('checkbox', { name: STAGE_B_CHECKBOX })).not.toBeChecked();
     expect(screen.queryByText('Domain pack is on this order.')).not.toBeInTheDocument();
     expect(screen.getByText('Due today $300.')).toBeInTheDocument();
     window.history.pushState({}, '', '/');
@@ -315,7 +327,7 @@ describe('ConsultationBookPage', () => {
     const name = screen.getByLabelText('Name');
     expect(name.className).toContain('w-full');
     expect(name.className).toContain('text-base');
-    const stageB = screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' });
+    const stageB = screen.getByRole('checkbox', { name: STAGE_B_CHECKBOX });
     expect(stageB).not.toBeChecked();
     fireEvent.click(stageB);
     expect(stageB).toBeChecked();
@@ -417,6 +429,8 @@ describe('ConsultationBookPage', () => {
 describe('ConsultationBookCancelPage', () => {
   it('offers a full-width return to the book page', () => {
     render(<ConsultationBookCancelPage />);
+    expect(screen.getByRole('heading', { name: 'Checkout canceled' })).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_CANCEL)).toBeInTheDocument();
     const again = screen.getByRole('link', { name: 'Pick another time' });
     expect(again).toHaveAttribute('href', '/consultation/book');
     expect(again.className).toContain('w-full');
