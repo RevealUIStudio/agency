@@ -63,6 +63,10 @@ function harness(
     putHold: (booking, now) => calendar.putHold(booking, now),
     release: (bookingId) => calendar.release(bookingId),
     get: (bookingId) => calendar.get(bookingId),
+    recordRefund: (bookingId, stripeSessionId, evidence) =>
+      calendar.recordRefund(bookingId, stripeSessionId, evidence),
+    resolveDomainPackRefund: (bookingId, chargeId, amountRefunded, decision) =>
+      calendar.resolveDomainPackRefund(bookingId, chargeId, amountRefunded, decision),
     schedulePaid: async (booking, sessionId) => {
       schedules += 1;
       const result = await calendar.schedulePaid(booking, sessionId);

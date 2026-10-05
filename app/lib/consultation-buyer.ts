@@ -8,7 +8,7 @@
 
 import { consultationDueCents, consultationHourCount } from './consultation-hours';
 import { formatConsultationRange } from './consultation-slots';
-import { STAGE_B_PRICE } from './engagements';
+import { CONSULTATION_DELIVERABLE, STAGE_B_PRICE } from './engagements';
 import { CONTACT_EMAIL } from './site';
 import { STAGE_B_CENTS } from './stage-b-invoice';
 
@@ -192,6 +192,7 @@ export function confirmationText(booking: {
   if (booking.company) lines.push(`Company: ${booking.company}`);
   lines.push(
     consultationStageLine(booking.stage_b),
+    `Your session includes: ${CONSULTATION_DELIVERABLE}`,
     '',
     `Prep: ${CONSULTATION_PREP_BODY}`,
     'Changes:',
@@ -213,6 +214,7 @@ export function calendarInviteDescription(booking: {
   if (booking.company) lines.push(`Company: ${booking.company}`);
   lines.push(
     consultationStageLine(booking.stage_b),
+    `Your session includes: ${CONSULTATION_DELIVERABLE}`,
     `Prep: ${CONSULTATION_PREP_BODY}`,
     'Changes:',
     ...CONSULTATION_CHANGE_POLICY,

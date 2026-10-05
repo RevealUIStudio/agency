@@ -3,6 +3,7 @@ import { ShareFrame } from '@/components/share/ShareFrame';
 import { STAGE_B_ADDON, STAGE_B_DETAIL } from '@/lib/consultation-buyer';
 import { type DomainPackPageId, domainPackLines } from '@/lib/domain-pack';
 import { STAGE_B_PRICE } from '@/lib/engagements';
+import { isShareSeed } from '@/lib/share-host';
 
 function Frame({ slug, title, children }: { slug: string; title: string; children: ReactNode }) {
   return (
@@ -89,6 +90,34 @@ const SHARE_META = {
 } as const;
 
 export function shareRouteTable(slug: string) {
+  if (!isShareSeed(slug)) {
+    function PrivateConsultation() {
+      return (
+        <main className="mx-auto max-w-3xl px-6 py-12">
+          <h1 className="text-3xl font-bold">Private consultation material</h1>
+          <p className="mt-6">
+            Sign in with the verified account that received access to your published session
+            material.
+          </p>
+          <a
+            className="mt-6 inline-block underline"
+            href="https://admin.revealui.com/client-shares"
+          >
+            Open your client shares
+          </a>
+        </main>
+      );
+    }
+    const meta = {
+      title: 'Private consultation material | RevealUI Studio',
+      description: 'Sign in to access your published consultation material.',
+      ...SHARE_META,
+    };
+    return [
+      { path: '/', component: PrivateConsultation, meta },
+      { path: '/*notfound', component: PrivateConsultation, meta },
+    ];
+  }
   const host = `${slug}.revealuistudio.com`;
   return [
     {

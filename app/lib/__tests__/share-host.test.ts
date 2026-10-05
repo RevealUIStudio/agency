@@ -1,7 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import { clientSlugFromHost, RESERVED_SHARE_LABELS, SHARE_SEED_SLUG } from '@/lib/share-host';
+import {
+  clientSlugFromHost,
+  isConsultationDomainHost,
+  RESERVED_SHARE_LABELS,
+  SHARE_SEED_SLUG,
+} from '@/lib/share-host';
 
 describe('clientSlugFromHost', () => {
+  it('separates client aliases from Studio, example, preview, and local hosts', () => {
+    for (const host of ['share.example.com', 'SHARE.EXAMPLE.COM.'])
+      expect(isConsultationDomainHost(host)).toBe(true);
+    for (const host of [
+      '',
+      'revealuistudio.com',
+      'demo.revealuistudio.com',
+      'localhost',
+      'demo.localhost',
+      '127.0.0.1',
+      '[::1]',
+      'agency.vercel.app',
+    ])
+      expect(isConsultationDomainHost(host)).toBe(false);
+  });
   it('keeps the studio apex and www on the public site', () => {
     expect(clientSlugFromHost('revealuistudio.com')).toBeNull();
     expect(clientSlugFromHost('www.revealuistudio.com')).toBeNull();
@@ -22,5 +42,7 @@ describe('clientSlugFromHost', () => {
     expect(clientSlugFromHost('localhost')).toBeNull();
     expect(clientSlugFromHost('agency-git-feat.vercel.app')).toBeNull();
     expect(clientSlugFromHost('not a host')).toBeNull();
+    expect(clientSlugFromHost('demo.preview.revealuistudio.com')).toBeNull();
+    expect(clientSlugFromHost('acme.demo.localhost')).toBeNull();
   });
 });

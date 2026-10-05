@@ -46,6 +46,8 @@ export interface PublicOffer {
 }
 
 export const CONSULTATION_PRICE = '$300' as const;
+/** Advertised session scope. A share URL or domain pack is not part of this promise. */
+export const CONSULTATION_DELIVERABLE = 'Session notes and a recommended next step.' as const;
 export const PILOT_PRICE = '$3,997' as const;
 
 /** Published Launch list from `@revealui/contracts/pricing` (0.12.0 is $14,500). */
@@ -71,9 +73,8 @@ export const CONSULTATION = {
   name: 'Consultation',
   price: CONSULTATION_PRICE,
   tagline: 'Get a clear next step.',
-  description:
-    'Bring the system you want to review and the question you need answered. We will work through it in a focused session, with session notes and a recommended next step.',
-  includes: ['A focused review of your system', 'Session notes and a next step'],
+  description: `Bring the system you want to review and the question you need answered. We will work through it in a focused session. ${CONSULTATION_DELIVERABLE}`,
+  includes: ['A focused review of your system', CONSULTATION_DELIVERABLE],
   notIncluded: [
     'A free Pilot',
     'An Adapter sold alone',

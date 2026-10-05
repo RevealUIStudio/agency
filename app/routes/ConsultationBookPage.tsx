@@ -47,6 +47,7 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
+import { CONSULTATION_DELIVERABLE } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL } from '@/lib/site';
 
@@ -335,6 +336,7 @@ export function ConsultationBookPage({
       <div className={frameClass}>
         <h1 className={headingClass}>Book a Consultation</h1>
         <p className="mt-6 break-words text-lg text-muted-foreground">{CONSULTATION_BOOK_INTRO}</p>
+        <p className="mt-3 text-base text-muted-foreground">{CONSULTATION_DELIVERABLE}</p>
 
         <form
           className="mt-4 space-y-5 pb-[calc(var(--consultation-paybar-height,12rem)+1rem)] sm:mt-10 sm:space-y-8"
@@ -591,6 +593,9 @@ export function ConsultationBookSuccessPage() {
             </p>
             <p className="mt-2 break-words text-base text-muted-foreground">
               {consultationStageLine(detail.stageB)}
+            </p>
+            <p className="mt-4 break-words text-base text-muted-foreground">
+              {CONSULTATION_DELIVERABLE}
             </p>
             <p className="mt-4 break-words text-base text-muted-foreground">
               {CONSULTATION_PREP_BODY}

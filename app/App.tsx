@@ -18,7 +18,7 @@ import {
   CONSULTATION_SUCCESS,
   STAGE_B_ADDON,
 } from './lib/consultation-buyer';
-import { listSharePacks, resolveShareViewer } from './lib/share-stage-b';
+import { clientSlugFromHost } from './lib/share-host';
 import { AboutPage } from './routes/AboutPage';
 import { BlogPage } from './routes/BlogPage';
 import { BlogPostPage } from './routes/BlogPostPage';
@@ -48,9 +48,7 @@ export function App() {
   const registered = useRef(false);
 
   const shareSlug =
-    typeof window === 'undefined'
-      ? null
-      : (resolveShareViewer(window.location.hostname, listSharePacks())?.slug ?? null);
+    typeof window === 'undefined' ? null : clientSlugFromHost(window.location.hostname);
 
   if (!registered.current && router.getRoutes().length === 0) {
     if (shareSlug) {

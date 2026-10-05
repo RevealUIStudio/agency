@@ -26,6 +26,7 @@
  */
 
 import { type ConsultationEnv, googleAccessToken } from './consultation-calendar';
+import { providerFetch } from './provider-http';
 
 const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar';
 const KIND = 'studio-network-redeem';
@@ -328,7 +329,7 @@ export function createGoogleNetworkLedger(
     const headers = new Headers(init.headers);
     headers.set('authorization', `Bearer ${token}`);
     if (init.body) headers.set('content-type', 'application/json');
-    return fetchImpl(url, { ...init, headers });
+    return providerFetch(url, { ...init, headers }, fetchImpl);
   }
 
   function rowFromPayload(payload: unknown): CalendarRow | null {

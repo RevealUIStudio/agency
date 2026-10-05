@@ -17,7 +17,7 @@ import {
 } from '@/content/proof-gap';
 import { engagementLabels } from '@/data/cases';
 import { findBannedToolNames } from '@/lib/buyer-facing-names';
-import { PUBLIC_OFFERS } from '@/lib/engagements';
+import { CONSULTATION_DELIVERABLE, PUBLIC_OFFERS } from '@/lib/engagements';
 import {
   OG_CARD_BOOKING_LINE,
   OG_CARD_HEADLINE,
@@ -203,6 +203,8 @@ describe('public copy gates', () => {
     expect(PROOF_GAP_CHECK_COUNT).toBe(count);
     expect(PROOF_GAP_SCORE_PROMPT).toContain(`/ ${count} checks`);
     const pdf = pdfPageText(readFileSync(path.join(repoRoot, 'public/proof-gap-checklist.pdf')));
+    expect(pdf).toContain(CONSULTATION_DELIVERABLE);
+    expect(pdf).not.toMatch(/living pack|session share URL|one business day/i);
     expect(pdf).toContain(`/ ${count} checks`);
     for (const section of PROOF_GAP_SECTIONS) {
       for (const check of section.checks) expect(pdf).toContain(`${check.id} `);

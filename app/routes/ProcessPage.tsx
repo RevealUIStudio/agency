@@ -1,6 +1,13 @@
 import { LinkButton } from '@revealui/presentation';
 import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
-import { ADAPTER, ADAPTER_ROLE, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
+import {
+  ADAPTER,
+  ADAPTER_ROLE,
+  CONSULTATION,
+  CONSULTATION_DELIVERABLE,
+  LAUNCH,
+  PILOT,
+} from '@/lib/engagements';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL, INTRO_CALL_URL, STUDIO_CITY } from '@/lib/site';
 
 export function ProcessPage() {
@@ -63,8 +70,8 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  Session notes and a recommended next step. Implementation and ongoing support are
-                  separate engagements.
+                  {CONSULTATION_DELIVERABLE} Implementation and ongoing support are separate
+                  engagements.
                 </p>
               </div>
               <div>

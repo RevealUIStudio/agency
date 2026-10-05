@@ -1,6 +1,6 @@
 export interface AuditEvent {
   readonly at: string;
-  readonly action: 'share.read' | 'invoice.issue' | 'session.read';
+  readonly action: 'share.read' | 'invoice.issue' | 'session.read' | 'consultation.fulfill';
   readonly tenant: string;
   readonly actor: 'guest' | 'owner';
   readonly decision: 'allow' | 'deny';
