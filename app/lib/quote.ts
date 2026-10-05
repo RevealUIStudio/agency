@@ -16,21 +16,21 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
-import {
-  DOMAIN_PACK_CREDIT_LABEL,
-  DOMAIN_PACK_DUE_LABEL,
-  DOMAIN_PACK_LIST_LABEL,
-} from '@/lib/domain-pack';
+import { DOMAIN_PACK_CREDIT_LABEL, DOMAIN_PACK_DUE_LABEL } from '@/lib/domain-pack';
 import {
   ADAPTER,
+  ADAPTER_CALC_LABEL,
+  ADAPTER_CARE_HELP,
   ADAPTER_CATEGORIES,
   ADAPTER_CENTS,
   ADAPTER_INCLUDED_ON_LAUNCH,
   ADAPTER_INCLUDED_ON_PILOT,
   ADAPTER_ROLE,
+  CARE,
   CONSULTATION,
   LAUNCH,
   PILOT,
+  STAGE_B_PRICE,
 } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { PRODUCT_SITE_URL } from '@/lib/site';
@@ -53,9 +53,15 @@ export const HOSTER_OPTIONS = [
 ] as const satisfies readonly { value: Hoster; label: string }[];
 
 export const OUTCOME_OPTIONS = [
-  { value: 'consultation', label: 'Consultation: review my system ($300 per hour)' },
-  { value: 'plan', label: 'Pilot: run one action on one site' },
-  { value: 'launch', label: 'Launch: put one business flow into production' },
+  { value: 'consultation', label: 'Consultation: $300/hr' },
+  {
+    value: 'plan',
+    label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)',
+  },
+  {
+    value: 'launch',
+    label: 'Launch: money path live on your accounts (includes up to 3 Adapters)',
+  },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
@@ -66,7 +72,7 @@ export const PLACES_OPTIONS = [
 export const QUOTE_CALCULATOR_HEADING = 'Find your starting point.' as const;
 
 export const QUOTE_CALCULATOR_LEAD =
-  'Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. Product licenses are separate.' as const;
+  `Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. ${ADAPTER.name} ${ADAPTER.price}. ${CARE.name} ${CARE.price}. Domain add-on ${STAGE_B_PRICE}. Product licenses are separate.` as const;
 
 export const CONSULTATION_QUOTE_DETAIL =
   'A focused review of your system. You receive session notes and a recommended next step. Pay $300 when you book the hour. Implementation and ongoing support are separate.' as const;
@@ -100,7 +106,13 @@ export const ADAPTER_EXTRA_MAX = 6 as const;
 export const ADAPTER_EXTRA_OPTIONS = [0, 1, 2, 3, 4, 5, 6] as const;
 
 export const ADAPTER_CALCULATOR_HELP =
-  `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT}. Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH}. This count is extras beyond that, at ${ADAPTER.price} each (one tool category). Additional work is scoped before invoicing.` as const;
+  `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT}. Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH}. This count is extras beyond that, at ${ADAPTER.price} each (one tool category). ${ADAPTER_CARE_HELP} Additional work is scoped before invoicing.` as const;
+
+/** Buyer name for the $297 custom-domain line on the calculator. SKU id stays stage-b. */
+export const DOMAIN_ADD_ON_LABEL = 'Domain add-on' as const;
+
+/** Calculator checkbox. Book page keeps its own label. */
+export const CALCULATOR_DOMAIN_ADD_ON = `${DOMAIN_ADD_ON_LABEL}: ${STAGE_B_PRICE}` as const;
 
 export function adapterExtraCount(count: number | undefined): number {
   if (count === undefined) return ADAPTER_EXTRA_MIN;
@@ -143,7 +155,10 @@ export interface QuoteAnswers {
   readonly places: Places;
   /** Count of Consultation units at $300. Default 1. */
   readonly consultationHours?: number;
-  /** Optional Stage B add-on. Default off. Included offers do not add a second charge. */
+  /**
+   * Optional Domain add-on. Default off. Included offers do not add a second charge.
+   * SKU id stays stage-b.
+   */
   readonly stageB?: boolean;
   readonly stageBWaive?: boolean;
   readonly viewerRole?: ViewerRole;
@@ -167,7 +182,7 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
     return [
       {
         id: 'stage-b',
-        title: DOMAIN_PACK_LIST_LABEL,
+        title: DOMAIN_ADD_ON_LABEL,
         price: 'Included',
         detail: 'Included with this offer.',
         highlighted: false,
@@ -184,9 +199,9 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
   const lines: QuoteLine[] = [
     {
       id: 'stage-b-list',
-      title: DOMAIN_PACK_LIST_LABEL,
+      title: DOMAIN_ADD_ON_LABEL,
       price: formatUsdFromCents(invoice.listCents),
-      detail: 'List price. Optional domain pack.',
+      detail: 'List price. Optional Domain add-on.',
       highlighted: true,
     },
   ];
@@ -219,7 +234,7 @@ function adapterLines(answers: QuoteAnswers): readonly QuoteLine[] {
   const lines: QuoteLine[] = [
     {
       id: 'adapter-included',
-      title: ADAPTER.name,
+      title: ADAPTER_CALC_LABEL,
       price: 'Included',
       detail: onPilot
         ? `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT} Adapter. ${category}`
@@ -230,7 +245,7 @@ function adapterLines(answers: QuoteAnswers): readonly QuoteLine[] {
   if (extras > 0) {
     lines.push({
       id: 'adapter-extra',
-      title: extras === 1 ? 'Extra Adapter' : `Extra Adapters (${extras})`,
+      title: extras === 1 ? 'Adapter (extra)' : `Adapter (extra) (${extras})`,
       price: formatUsdFromCents(ADAPTER_CENTS * extras),
       detail: onPilot
         ? `2nd and later Adapters are ${ADAPTER.price} each. One tool category per unit.`

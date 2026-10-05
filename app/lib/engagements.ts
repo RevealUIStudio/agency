@@ -56,7 +56,7 @@ export const STAGE_B_PRICE = '$297' as const;
 
 export const CARE_PRICE = '$1,997/mo' as const;
 
-/** One tool category. Extras, or a scoped add while on Care. Not sold alone. */
+/** One tool category. Extras, or a scoped Adapter while on Care. Not sold alone. */
 export const ADAPTER_PRICE = '$2,497' as const;
 export const ADAPTER_CENTS = 249_700 as const;
 export const ADAPTER_INCLUDED_ON_PILOT = 1 as const;
@@ -124,7 +124,7 @@ export const LAUNCH = {
     '30-day async stabilization',
   ],
   notIncluded: [
-    'Care, which is optional',
+    `Care (${CARE_PRICE}), which is optional`,
     'A fourth Adapter at list price',
     'A multi-month platform',
     'An “AI” headline',
@@ -137,14 +137,20 @@ export const PUBLIC_OFFERS = [CONSULTATION, PILOT, LAUNCH] as const;
 
 /**
  * Public add-on. Not in PUBLIC_OFFERS. Pilot includes 1. Launch includes up to 3.
- * $2,497 buys an extra, or a scoped add while on Care. Refuse Adapter-only.
+ * $2,497 buys an extra, or a scoped Adapter while on Care ($1,997/mo). Refuse Adapter-only.
  */
+export const ADAPTER_CARE_HELP =
+  `Scoped Adapter while on Care (${CARE_PRICE}). ${ADAPTER_PRICE}. One tool category.` as const;
+
+/** Preferred calculator label. One tool category, one custom integration. */
+export const ADAPTER_CALC_LABEL = 'Adapter: one tool category, one custom integration' as const;
+
 export const ADAPTER = {
   id: 'adapter',
   name: 'Adapter',
   price: ADAPTER_PRICE,
   tagline: 'How the leak fix sticks. One tool category.',
-  description: `One custom integration to one tool category (${ADAPTER_CATEGORIES}). Governed read/write where scoped, the agent can act on it, a receipt proves the action, and a short runbook. Pilot includes 1. Launch includes up to 3. List price is for extras, or a scoped add while on Care. Not sold alone.`,
+  description: `One custom integration to one tool category (${ADAPTER_CATEGORIES}). Governed read/write where scoped, the agent can act on it, a receipt proves the action, and a short runbook. Pilot includes 1. Launch includes up to 3. List price is for extras. ${ADAPTER_CARE_HELP} Not sold alone.`,
 } as const;
 
 /** Pilot and Launch are the leak fix. Adapter is how one tool category stays on it. */
