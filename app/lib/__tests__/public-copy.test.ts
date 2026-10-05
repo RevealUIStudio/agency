@@ -646,9 +646,13 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain('"price": "14500"');
     expect(jsonLd).not.toContain('"price": "3500"');
     expect(quote).toContain("DEFAULT_OUTCOME: Outcome = 'plan'");
-    expect(quote).toContain("label: 'Consultation: review my system ($300 per hour)'");
-    expect(quote).toContain("label: 'Pilot: run one action on one site'");
-    expect(quote).toContain("label: 'Launch: put one business flow into production'");
+    expect(quote).toContain("label: 'Consultation: $300/hr'");
+    expect(quote).toContain(
+      "label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)'",
+    );
+    expect(quote).toContain(
+      "label: 'Launch: money path live on your accounts (includes up to 3 Adapters)'",
+    );
     expect(quote).toContain('Product licenses are separate');
     expect(quote).not.toContain('outcome validation or proof of work. Licenses');
     expect(quote).not.toMatch(/free website/i);
@@ -838,9 +842,13 @@ describe('public copy gates', () => {
     expect(offers).not.toMatch(/name: 'Knowledge Graph'/);
     expect(offers).toContain('30 days of async stabilization');
     expect(PUBLIC_OFFERS).toHaveLength(3);
-    expect(quote).toContain("label: 'Consultation: review my system ($300 per hour)'");
-    expect(quote).toContain("label: 'Pilot: run one action on one site'");
-    expect(quote).toContain("label: 'Launch: put one business flow into production'");
+    expect(quote).toContain("label: 'Consultation: $300/hr'");
+    expect(quote).toContain(
+      "label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)'",
+    );
+    expect(quote).toContain(
+      "label: 'Launch: money path live on your accounts (includes up to 3 Adapters)'",
+    );
     expect(quote).not.toMatch(/Knowledge Graph/);
     expect(quote).not.toMatch(/RevMind/);
     expect(jsonLd).not.toContain('"name": "Knowledge Graph"');

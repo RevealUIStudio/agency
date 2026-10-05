@@ -14,7 +14,7 @@ export function ServiceTeasers() {
             Review the problem, test one action, or launch one business flow. Each engagement has a
             defined deliverable and payment terms. Consultation is paid when booking. Pilot and
             Launch are invoiced after we agree on scope.
-            {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. The domain pack is
+            {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. Domain add-on is{' '}
             {STAGE_B_PRICE} after Consultation alone, and included at Pilot and Launch.
           </p>
         </div>

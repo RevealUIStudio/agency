@@ -1,11 +1,11 @@
 import { LinkButton } from '@revealui/presentation';
 import { useState } from 'react';
-import { STAGE_B_CHECKBOX } from '@/lib/consultation-buyer';
 import {
   ADAPTER_CALCULATOR_HELP,
   ADAPTER_EXTRA_OPTIONS,
   adapterExtraLabel,
   buildQuote,
+  CALCULATOR_DOMAIN_ADD_ON,
   CONSULTATION_HOUR_OPTIONS,
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
@@ -174,7 +174,9 @@ export function QuoteCalculator() {
                       onChange={(event) => setStageB(event.target.checked)}
                       className="mt-1 size-4 accent-primary"
                     />
-                    <span className="text-sm font-medium text-foreground">{STAGE_B_CHECKBOX}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      {CALCULATOR_DOMAIN_ADD_ON}
+                    </span>
                   </label>
                 ) : null}
               </>

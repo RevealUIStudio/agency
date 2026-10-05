@@ -43,6 +43,9 @@ import { ServicesPage } from './routes/ServicesPage';
 import { shareRouteTable } from './routes/share/SharePages';
 import { TermsPage } from './routes/TermsPage';
 
+const STUDIO_QUOTE_DESCRIPTION =
+  'Studio quote. Consultation $300/hr. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. Domain add-on $297. Licenses live on revealui.com.';
+
 export function App() {
   const router = useRouter();
   const registered = useRef(false);
@@ -71,7 +74,7 @@ export function App() {
           meta: {
             title: 'Offers | RevealUI Studio',
             description:
-              'Consultation $300 per hour when you book the slot. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Domain add-on $297. Pilot and Launch are invoiced after we agree.',
+              'Consultation $300 per hour when you book the slot. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. Domain add-on $297. Pilot and Launch are invoiced after we agree.',
           },
         },
         {
@@ -79,8 +82,7 @@ export function App() {
           component: RedirectToCalculator,
           meta: {
             title: 'Quote | RevealUI Studio',
-            description:
-              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Domain add-on $297. Licenses live on revealui.com.',
+            description: STUDIO_QUOTE_DESCRIPTION,
             robots: 'noindex,follow',
           },
         },
@@ -89,8 +91,7 @@ export function App() {
           component: RedirectToCalculator,
           meta: {
             title: 'Quote | RevealUI Studio',
-            description:
-              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Domain add-on $297. Licenses live on revealui.com.',
+            description: STUDIO_QUOTE_DESCRIPTION,
             robots: 'noindex,follow',
           },
         },
@@ -99,8 +100,7 @@ export function App() {
           component: RedirectToCalculator,
           meta: {
             title: 'Quote | RevealUI Studio',
-            description:
-              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Domain add-on $297. Licenses live on revealui.com.',
+            description: STUDIO_QUOTE_DESCRIPTION,
             robots: 'noindex,follow',
           },
         },
@@ -110,7 +110,7 @@ export function App() {
           meta: {
             title: 'How we work | RevealUI Studio',
             description:
-              'How a RevealUI Studio engagement runs. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Domain add-on $297. Book a 30-minute intro on Google Calendar.',
+              'How a RevealUI Studio engagement runs. Consultation $300/hr. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. Domain add-on $297. Book a 30-minute intro on Google Calendar.',
           },
         },
         {

@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
+import { ADAPTER_CALC_LABEL, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import {
   buildQuote,
   DEFAULT_HOSTER,
   DEFAULT_OUTCOME,
   DEFAULT_PLACES,
+  DOMAIN_ADD_ON_LABEL,
   INTRO_BODY,
   INTRO_HEADING,
+  QUOTE_CALCULATOR_LEAD,
   SELF_HOST_HANDOFF,
 } from '@/lib/quote';
 
@@ -92,6 +94,7 @@ describe('buildQuote', () => {
       viewerRole: 'guest',
     });
     expect(on.lines.find((line) => line.id === 'stage-b-list')?.price).toBe('$297');
+    expect(on.lines.find((line) => line.id === 'stage-b-list')?.title).toBe('Domain add-on');
     expect(on.lines.some((line) => line.id === 'stage-b-credit')).toBe(false);
   });
 
@@ -119,6 +122,7 @@ describe('buildQuote', () => {
       viewerRole: 'owner',
     });
     expect(quote.lines.find((line) => line.id === 'stage-b')?.price).toBe('Included');
+    expect(quote.lines.find((line) => line.id === 'stage-b')?.title).toBe(DOMAIN_ADD_ON_LABEL);
     expect(quote.lines.some((line) => line.id === 'stage-b-credit')).toBe(false);
   });
 
@@ -130,6 +134,12 @@ describe('buildQuote', () => {
       adapterExtras: 2,
     });
     expect(quote.lines.find((line) => line.id === 'adapter-included')?.price).toBe('Included');
+    expect(quote.lines.find((line) => line.id === 'adapter-included')?.title).toBe(
+      ADAPTER_CALC_LABEL,
+    );
+    expect(quote.lines.find((line) => line.id === 'adapter-extra')?.title).toBe(
+      'Adapter (extra) (2)',
+    );
     expect(quote.lines.find((line) => line.id === 'adapter-extra')?.price).toBe('$4,994');
     expect(quote.lines.find((line) => line.id === 'adapter-extra')?.detail).toContain(
       '2nd and later',
@@ -145,10 +155,19 @@ describe('buildQuote', () => {
       adapterExtras: 1,
     });
     expect(quote.lines.find((line) => line.id === 'adapter-included')?.detail).toContain('up to 3');
+    expect(quote.lines.find((line) => line.id === 'adapter-extra')?.title).toBe('Adapter (extra)');
     expect(quote.lines.find((line) => line.id === 'adapter-extra')?.price).toBe('$2,497');
     expect(quote.lines.find((line) => line.id === 'adapter-extra')?.detail).toContain(
       '4th and later',
     );
+  });
+
+  it('names Care and the Domain add-on on the calculator lead', () => {
+    expect(QUOTE_CALCULATOR_LEAD).toContain('Adapter $2,497');
+    expect(QUOTE_CALCULATOR_LEAD).toContain('Care $1,997/mo');
+    expect(QUOTE_CALCULATOR_LEAD).toContain('Domain add-on $297');
+    expect(QUOTE_CALCULATOR_LEAD).not.toMatch(/Stage B/);
+    expect(QUOTE_CALCULATOR_LEAD).not.toContain('\u2014');
   });
 
   it('never adds Adapter lines to a Consultation, even with stale extra answers', () => {

@@ -1,6 +1,6 @@
 import { Link } from '@revealui/router';
 import { ServiceTeasers } from '@/components/agency/ServiceTeasers';
-import { ADAPTER, LAUNCH, PILOT, STAGE_B_PRICE } from '@/lib/engagements';
+import { ADAPTER, ADAPTER_CARE_HELP, LAUNCH, PILOT, STAGE_B_PRICE } from '@/lib/engagements';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 
 export function ServicesPage() {
@@ -14,9 +14,9 @@ export function ServicesPage() {
             already run agents. You run it, or I ship it with you. Use the homepage calculator, book
             a Consultation, or book a 30-minute intro first. Consultation is paid when you book the
             slot. {PILOT.name} and {LAUNCH.name} are invoiced after we agree. {PILOT.name} includes
-            1 Adapter. {LAUNCH.name} includes up to 3. An extra {ADAPTER.name} is {ADAPTER.price},
-            or a scoped add while on Care. Not sold alone. Domain add-on is {STAGE_B_PRICE} after
-            Consultation alone, and included at {PILOT.name} and {LAUNCH.name}.{' '}
+            1 Adapter. {LAUNCH.name} includes up to 3. An extra {ADAPTER.name} is {ADAPTER.price}.{' '}
+            {ADAPTER_CARE_HELP} Not sold alone. Domain add-on is {STAGE_B_PRICE} after Consultation
+            alone, and included at {PILOT.name} and {LAUNCH.name}.{' '}
             <Link to="/process" className="font-semibold text-foreground hover:underline">
               How each offer runs
             </Link>
