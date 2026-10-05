@@ -13,6 +13,7 @@ import {
   ADAPTER_ROLE,
   CARE_PRICE,
   CONSULTATION,
+  CONSULTATION_DELIVERABLE,
   CUSTOM_BUILD,
   FLEET_STAMP,
   LAUNCH,
@@ -34,7 +35,7 @@ describe('public studio offers', () => {
     expect(CONSULTATION.price).toBe('$300');
     expect(CONSULTATION.includes).toEqual([
       'A focused review of your system',
-      'Session notes and a next step',
+      CONSULTATION_DELIVERABLE,
     ]);
     expect(PILOT.name).toBe('Pilot');
     expect(PILOT.price).toBe('$3,997');

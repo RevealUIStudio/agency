@@ -48,11 +48,7 @@ const SHARE_PARENTS = ['.revealuistudio.com', '.localhost'] as const;
 function firstLabel(host: string, parent: (typeof SHARE_PARENTS)[number]): string | null {
   if (!host.endsWith(parent)) return null;
   const head = host.slice(0, -parent.length);
-  if (!head || head.includes('.')) {
-    // Nested names still use the left-most label (`demo.preview.revealuistudio.com`).
-    const label = head.split('.')[0] ?? '';
-    return label || null;
-  }
+  if (!head || head.includes('.')) return null;
   return head;
 }
 
@@ -74,4 +70,19 @@ export function clientSlugFromHost(hostname: string): string | null {
 
 export function isShareSeed(slug: string): boolean {
   return slug === SHARE_SEED_SLUG;
+}
+
+/** Public Studio/demo/development hosts stay on the SPA; other hosts require persisted mapping. */
+export function isConsultationDomainHost(hostname: string): boolean {
+  const host = hostname.toLowerCase().replace(/\.$/, '');
+  return (
+    Boolean(host) &&
+    host !== STUDIO_APEX_HOST &&
+    !host.endsWith(`.${STUDIO_APEX_HOST}`) &&
+    host !== 'localhost' &&
+    !host.endsWith('.localhost') &&
+    host !== '127.0.0.1' &&
+    host !== '[::1]' &&
+    !host.endsWith('.vercel.app')
+  );
 }

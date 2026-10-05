@@ -31,6 +31,13 @@ export interface Booking {
   readonly event_id: string | null;
   readonly meet_link: string | null;
   readonly stripe_session_id: string | null;
+  /** Verified provider evidence, persisted by the owning Calendar ledger. */
+  readonly refund?: {
+    readonly chargeId: string;
+    readonly amountRefunded: number;
+    readonly full: boolean;
+    readonly domainPackReview: 'not_applicable' | 'review_required' | 'retained' | 'revoked';
+  };
 }
 
 export interface BookInput {

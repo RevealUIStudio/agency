@@ -13,6 +13,7 @@ import {
   STAGE_B_CHECKBOX,
   STAGE_B_HELPER,
 } from '@/lib/consultation-buyer';
+import { CONSULTATION_DELIVERABLE } from '@/lib/engagements';
 import {
   ConsultationBookCancelPage,
   ConsultationBookPage,
@@ -88,6 +89,7 @@ describe('ConsultationBookPage', () => {
     const onCheckout = vi.fn();
     const view = render(<ConsultationBookPage onCheckout={onCheckout} />);
     expect(view.container.querySelector('[data-slot="booking-calendar"]')).toBeTruthy();
+    expect(screen.getByText(CONSULTATION_DELIVERABLE)).toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toMatch(/waive/i);
     for (const policy of CONSULTATION_CHANGE_POLICY)
       expect(screen.getByText(policy)).toBeInTheDocument();
@@ -280,6 +282,7 @@ describe('ConsultationBookPage', () => {
     render(<ConsultationBookSuccessPage />);
     expect(await screen.findByRole('heading', { name: 'Consultation booked' })).toBeInTheDocument();
     expect(screen.getByText(CONSULTATION_SUCCESS)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_DELIVERABLE)).toBeInTheDocument();
     expect(window.location.search).not.toContain('cs_test_1');
     window.history.pushState({}, '', '/');
   });
@@ -297,6 +300,7 @@ describe('ConsultationBookPage', () => {
     const pending = render(<ConsultationBookSuccessPage />);
     expect(await screen.findByText(/Your booking is not confirmed yet/)).toBeInTheDocument();
     expect(screen.queryByText(CONSULTATION_SUCCESS)).not.toBeInTheDocument();
+    expect(screen.queryByText(CONSULTATION_DELIVERABLE)).not.toBeInTheDocument();
     pending.unmount();
     window.history.pushState(
       {},
