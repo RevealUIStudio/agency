@@ -93,6 +93,10 @@ EXCLUDE_DIRS=(node_modules .git dist build .next .turbo .pnpm coverage target .d
 EXCLUDE_FILES=(
   pnpm-lock.yaml package-lock.json yarn.lock Cargo.lock
   check-no-private-leaks.sh
+  # Companion client-name scanner. By design it carries the same names
+  # as detection keywords; this scanner must not count those keywords as
+  # violations of the other scanner. Scanner-self-pattern.
+  check-client-leaks.sh
   .git
   '*.png' '*.jpg' '*.jpeg' '*.gif' '*.webp' '*.pdf' '*.zip' '*.tar.gz' '*.tgz'
   '*.ico' '*.woff' '*.woff2' '*.ttf' '*.otf'
