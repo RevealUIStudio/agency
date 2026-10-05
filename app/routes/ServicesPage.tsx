@@ -15,7 +15,7 @@ export function ServicesPage() {
             a Consultation, or book a 30-minute intro first. Consultation is paid when you book the
             slot. {PILOT.name} and {LAUNCH.name} are invoiced after we agree. {PILOT.name} includes
             1 Adapter. {LAUNCH.name} includes up to 3. An extra {ADAPTER.name} is {ADAPTER.price},
-            or a scoped add while on Care. Not sold alone. Stage B is {STAGE_B_PRICE} after
+            or a scoped add while on Care. Not sold alone. Domain add-on is {STAGE_B_PRICE} after
             Consultation alone, and included at {PILOT.name} and {LAUNCH.name}.{' '}
             <Link to="/process" className="font-semibold text-foreground hover:underline">
               How each offer runs

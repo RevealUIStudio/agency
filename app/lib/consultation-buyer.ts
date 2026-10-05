@@ -2,7 +2,8 @@
  * Buyer-facing Consultation copy. The book page, the confirmation draft,
  * and the calendar invite share these sentences.
  *
- * Do not describe the domain pack as free, included, waived, or credited.
+ * Do not describe the domain pack as waived, free, or credited.
+ * The book helper may say the Domain add-on is included with Pilot or Launch.
  * The Stripe SKU stays stage-b. The buyer invite is the calendar event.
  */
 
@@ -17,7 +18,11 @@ export const CONSULTATION_BOOK_INTRO =
 
 export const STAGE_B_ADDON = `The domain pack is an optional ${STAGE_B_PRICE} add-on.`;
 
-export const STAGE_B_CHECKBOX = `Add the domain pack (${STAGE_B_PRICE})`;
+export const STAGE_B_CHECKBOX = `Domain add-on: ${STAGE_B_PRICE}`;
+
+/** Book-page checkbox helper. Included with Pilot or Launch. Not a waiver. */
+export const STAGE_B_HELPER =
+  'Attach your own domain to the share host. Optional at Consultation; included with Pilot or Launch.';
 
 /** Network book link. The pack is on the order. Do not say the fee was removed. */
 export const STAGE_B_ON_ORDER = 'Domain pack is on this order.';
@@ -31,18 +36,17 @@ export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 
 export const NETWORK_LINK_USED = 'This network Consultation link has already been used.';
 
 export const CONSULTATION_AFTER_PAY =
-  'After payment and scheduling are confirmed, the Google Meet link is on your calendar invite.';
+  'After payment, the Google Meet link is in the confirmation email and on the calendar invite.';
 
 export const CONSULTATION_SUCCESS =
-  'Payment and scheduling confirmed. Look for your calendar invite with the Google Meet link.';
+  'Payment received. The Google Meet link is in your confirmation email and on the calendar invite.';
 
 export const CONSULTATION_MEET_FALLBACK = 'The Google Meet link is on the calendar invite.';
 
 export const CONSULTATION_PREP_BODY =
   'Send the system you want to look at and the question you want answered. A link is usually enough.';
 
-export const CONSULTATION_CANCEL =
-  'Checkout was canceled. Your temporary slot hold expires within 20 minutes.';
+export const CONSULTATION_CANCEL = 'No charge. The hold ends within 20 minutes.';
 
 export const CONSULTATION_CHANGE_POLICY = [
   'At least 24 hours before the scheduled start: choose a full refund of Consultation time or a free reschedule.',

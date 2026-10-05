@@ -37,7 +37,7 @@ import {
   NETWORK_LINK_USED,
   rememberConsultationReceipt,
   STAGE_B_CHECKBOX,
-  STAGE_B_DETAIL,
+  STAGE_B_HELPER,
   STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
 import {
@@ -443,7 +443,7 @@ export function ConsultationBookPage({
                 <Label id="consultation-stage-b-label">{STAGE_B_CHECKBOX}</Label>
               </CheckboxField>
               <Description className="mt-2" id="consultation-stage-b">
-                {STAGE_B_DETAIL}
+                {STAGE_B_HELPER}
               </Description>
             </div>
           )}

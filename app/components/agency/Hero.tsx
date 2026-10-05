@@ -34,7 +34,7 @@ export const HERO_RESULT =
   'Work directly with Joshua Vaughn, the founder and builder of RevealUI. We agree on scope, deliverables, and maintenance responsibilities before work starts.' as const;
 
 export const HERO_MENU =
-  `${CONSULTATION.name} ${CONSULTATION.price} · ${PILOT.name} ${PILOT.price} (includes 1 Adapter) · ${LAUNCH.name} ${LAUNCH.price} (up to 3 Adapters) · ${ADAPTER.name} ${ADAPTER.price} · Stage B ${STAGE_B_PRICE}.` as const;
+  `${CONSULTATION.name} ${CONSULTATION.price} · ${PILOT.name} ${PILOT.price} (includes 1 Adapter) · ${LAUNCH.name} ${LAUNCH.price} (up to 3 Adapters) · ${ADAPTER.name} ${ADAPTER.price} · Domain add-on ${STAGE_B_PRICE}.` as const;
 
 export const HERO_PROOF = RECEIPT_HERO_CAPTION.text;
 

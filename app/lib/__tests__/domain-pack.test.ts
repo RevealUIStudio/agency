@@ -28,7 +28,7 @@ const BUYER_COPY = [
 
 describe('domain pack offer', () => {
   it('names the add-on Domain pack and keeps the public book copy free of a credit', () => {
-    expect(STAGE_B_CHECKBOX).toBe('Add the domain pack ($297)');
+    expect(STAGE_B_CHECKBOX).toBe('Domain add-on: $297');
     expect(STAGE_B_DETAIL).toContain('path note');
     expect(STAGE_B_DETAIL).toContain('proof-gap map');
     expect(STAGE_B_DETAIL).toContain('stack sketch');
