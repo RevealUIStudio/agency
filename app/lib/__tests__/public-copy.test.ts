@@ -744,8 +744,10 @@ describe('public copy gates', () => {
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
 
     expect(app).not.toMatch(/what-is-a-startup/);
-    expect(app).toContain('HOME_DOCUMENT_TITLE');
-    expect(app).toContain('HOME_META_DESCRIPTION');
+    const heads = readFileSync(path.join(repoRoot, 'app/lib/route-documents.ts'), 'utf8');
+    expect(heads).toContain('HOME_DOCUMENT_TITLE');
+    expect(heads).toContain('HOME_META_DESCRIPTION');
+    expect(app).toContain("routeMeta('/')");
     expect(HOME_DOCUMENT_TITLE).toBe(
       'RevealUI Studio | Build a business workflow your team can operate',
     );
@@ -901,8 +903,10 @@ describe('public copy gates', () => {
     };
 
     expect(app).toContain('PROOF_GAP_PATH');
-    expect(app).toContain('PROOF_GAP_DOCUMENT_TITLE');
     expect(app).toContain('ProofGapPage');
+    const heads = readFileSync(path.join(repoRoot, 'app/lib/route-documents.ts'), 'utf8');
+    expect(heads).toContain('PROOF_GAP_DOCUMENT_TITLE');
+    expect(heads).toContain('PROOF_GAP_META_DESCRIPTION');
     expect(copy).toContain("PROOF_GAP_H1 = 'Can you prove what your agents did last week?'");
     expect(copy).toContain("PROOF_GAP_DOCUMENT_TITLE = 'Proof-gap checklist | RevealUI Studio'");
     expect(copy).toContain("PROOF_GAP_CTA = 'Ask about a checklist review'");

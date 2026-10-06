@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import { STUDIO_BLOG_FEED_PATH } from './app/lib/blog-copy';
+import { writeStudioRouteHtml } from './app/lib/route-html';
 import { RSS_CONTENT_TYPE, renderStudioRss } from './app/lib/rss';
 import { isConsultationDomainHost } from './app/lib/share-host';
 import { handleConsultationRequest } from './server/consultation-http';
@@ -94,6 +95,19 @@ function shareServer(): Plugin {
   };
 }
 
+function routeHtml(): Plugin {
+  return {
+    name: 'studio-route-html',
+    apply: 'build',
+    writeBundle(options) {
+      if (!options.dir) {
+        throw new Error('Route HTML build is missing an output directory');
+      }
+      writeStudioRouteHtml(options.dir);
+    },
+  };
+}
+
 function rssFeed(): Plugin {
   const attach: Plugin['configureServer'] = (server) => {
     server.middlewares.use((req, res, next) => {
@@ -134,7 +148,7 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
     'process.env.LOG_LEVEL': 'undefined',
   },
-  plugins: [tailwindcss(), react(), shareServer(), rssFeed()],
+  plugins: [tailwindcss(), react(), shareServer(), rssFeed(), routeHtml()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './app'),

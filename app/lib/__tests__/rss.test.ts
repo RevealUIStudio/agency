@@ -16,7 +16,11 @@ type Redirect = {
   permanent?: boolean;
   statusCode?: number;
 };
-type Rewrite = { source: string; destination: string };
+type Rewrite = {
+  source: string;
+  destination: string;
+  has?: { type: string; value: string }[];
+};
 type HostConfig = {
   headers: { source: string; headers: Header[] }[];
   redirects: Redirect[];
@@ -144,18 +148,26 @@ describe('studio blog rss', () => {
     expect(vercel.rewrites.some((rule) => rule.source === '/feed.xml')).toBe(false);
 
     const rssRewrite = vercel.rewrites.findIndex((rule) => rule.source === '/rss.xml');
-    const catchAll = vercel.rewrites.findIndex((rule) => rule.source === '/(.*)');
+    const spaFallback = vercel.rewrites.findIndex(
+      (rule) => rule.source === '/(.*)' && rule.destination === '/index.html',
+    );
     expect(vercel.rewrites[rssRewrite]).toEqual({
       source: '/rss.xml',
       destination: '/rss.xml',
     });
     expect(rssRewrite).toBeGreaterThanOrEqual(0);
-    expect(catchAll).toBeGreaterThan(rssRewrite);
-    expect(vercel.rewrites[catchAll]).toEqual({
+    expect(spaFallback).toBeGreaterThan(rssRewrite);
+    expect(vercel.rewrites[spaFallback]).toEqual({
       source: '/(.*)',
       destination: '/index.html',
+      has: [{ type: 'host', value: '.+\\.revealuistudio\\.com' }],
     });
     expect(vercel.rewrites.at(-1)?.source).toBe('/(.*)');
+    expect(
+      vercel.rewrites.some(
+        (rule) => rule.source === '/(.*)' && rule.destination === '/index.html' && !rule.has,
+      ),
+    ).toBe(false);
 
     for (const source of ['/', '/blog', '/services', '/about', '/contact', '/process']) {
       expect(vercel.rewrites.find((rule) => rule.source === source)).toBeUndefined();
