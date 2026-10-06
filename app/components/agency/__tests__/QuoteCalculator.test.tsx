@@ -114,7 +114,7 @@ describe('QuoteCalculator', () => {
       'href',
       `${CONSULTATION_BOOK_PATH}?hours=1&stage_b=true`,
     );
-    expect(screen.queryByText('Domain pack credit')).not.toBeInTheDocument();
+    expect(screen.queryByText('Domain add-on credit')).not.toBeInTheDocument();
     expect(screen.queryByText('$0')).not.toBeInTheDocument();
   });
 });

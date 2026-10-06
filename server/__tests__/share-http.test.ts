@@ -466,7 +466,12 @@ describe('share server', () => {
     const tampered: StageBInvoice = {
       sku: 'stage-b',
       lines: [
-        { kind: 'credit', sku: 'stage-b', label: 'Domain pack credit', amountCents: STAGE_B_CENTS },
+        {
+          kind: 'credit',
+          sku: 'stage-b',
+          label: 'Domain add-on credit',
+          amountCents: STAGE_B_CENTS,
+        },
       ],
       listCents: 0,
       creditCents: STAGE_B_CENTS,

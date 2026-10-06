@@ -1,5 +1,5 @@
-import { DOMAIN_PACK_LIST_LABEL } from './domain-pack';
-import { STAGE_B_CENTS } from './engagements';
+import { DOMAIN_PACK_CREDIT_LABEL } from './domain-pack';
+import { DOMAIN_ADD_ON_LINE_ITEM, STAGE_B_CENTS } from './engagements';
 import { formatUsdFromCents } from './money';
 
 /**
@@ -9,10 +9,7 @@ import { formatUsdFromCents } from './money';
  * The HTTP layer decides `authorized` from STUDIO_DOMAIN_WAIVE_SECRET.
  */
 
-export const DOMAIN_PACK_CREDIT_LABEL = 'Domain pack credit' as const;
-export const DOMAIN_PACK_DUE_LABEL = 'Domain pack due' as const;
-
-export { STAGE_B_CENTS };
+export { DOMAIN_ADD_ON_LINE_ITEM, STAGE_B_CENTS };
 
 export type InvoiceRejectReason = 'guest-waive' | 'integrity';
 
@@ -96,7 +93,7 @@ export function buildStageBInvoice(input: {
 
   const waived = input.waive && input.authorized;
   const lines: InvoiceLine[] = [
-    { kind: 'list', sku: 'stage-b', label: DOMAIN_PACK_LIST_LABEL, amountCents: STAGE_B_CENTS },
+    { kind: 'list', sku: 'stage-b', label: DOMAIN_ADD_ON_LINE_ITEM, amountCents: STAGE_B_CENTS },
   ];
   if (waived) {
     lines.push({

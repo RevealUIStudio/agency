@@ -504,7 +504,7 @@ describe('consultation http', () => {
     expect(owners[0]?.text).toContain('Amount: $300');
     expect(owners[0]?.text).toContain(`Google Meet: ${paid?.meet_link}`);
     expect(owners[0]?.text).toContain(`Booking: ${saved.booking_id}`);
-    expect(owners[0]?.text).toContain('Stage B: no');
+    expect(owners[0]?.text).toContain('Domain add-on: no');
     expect(owners[0]?.text).toContain('Network: no');
     expect(owners[0]?.text).not.toContain('\u2014');
 
@@ -679,7 +679,7 @@ describe('consultation http', () => {
     expect(message).toContain('Amount: $300');
     expect(message).toContain('Google Meet: https://meet.google.com/lookup/book_1');
     expect(message).toContain(`Booking: ${saved.booking_id}`);
-    expect(message).toContain('Stage B: no');
+    expect(message).toContain('Domain add-on: no');
     expect(message).toContain('Network: no');
     expect(message).not.toContain('\u2014');
     expect(calls.some((call) => call.url.includes('api.resend.com'))).toBe(false);

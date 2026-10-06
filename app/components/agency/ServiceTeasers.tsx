@@ -1,4 +1,5 @@
 import { IconCheck, LinkButton } from '@revealui/presentation';
+import { DOMAIN_ADD_ON_LABEL } from '@/lib/domain-pack';
 import { ADAPTER, ADAPTER_ROLE, PUBLIC_OFFERS, STAGE_B_PRICE } from '@/lib/engagements';
 import { CONSULTATION_BOOK_PATH, INTRO_CALL_URL } from '@/lib/site';
 
@@ -14,7 +15,7 @@ export function ServiceTeasers() {
             Review the problem, test one action, or launch one business flow. Each engagement has a
             defined deliverable and payment terms. Consultation is paid when booking. Pilot and
             Launch are invoiced after we agree on scope.
-            {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. Domain add-on is{' '}
+            {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. {DOMAIN_ADD_ON_LABEL} is{' '}
             {STAGE_B_PRICE} after Consultation alone, and included at Pilot and Launch.
           </p>
         </div>

@@ -8,13 +8,8 @@
 
 import type { StageBFee } from './consultation-booking';
 import { CONSULTATION_UNIT_CENTS, consultationDueCents } from './consultation-hours';
-import {
-  CONSULTATION,
-  CONSULTATION_PRICE,
-  DOMAIN_ADD_ON_NAME,
-  STAGE_B_CENTS,
-  STAGE_B_PRICE,
-} from './engagements';
+import { DOMAIN_ADD_ON_LABEL } from './domain-pack';
+import { CONSULTATION, CONSULTATION_PRICE, STAGE_B_CENTS, STAGE_B_PRICE } from './engagements';
 
 /** Live Consultation price. $300 per hour. Override with STRIPE_CONSULTATION_PRICE_ID. */
 export const DEFAULT_CONSULTATION_PRICE_ID = 'price_1TxpQTJz64n6uEibitNE5eJP' as const;
@@ -117,7 +112,7 @@ export function domainAddOnPriceDataLine(): CheckoutPriceDataLine {
       currency: 'usd',
       unitAmount: STAGE_B_CENTS,
       productData: {
-        name: DOMAIN_ADD_ON_NAME,
+        name: DOMAIN_ADD_ON_LABEL,
         description: domainAddOnCheckoutDescription(),
       },
     },

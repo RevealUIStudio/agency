@@ -7,18 +7,15 @@ import {
   STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
 import {
-  DOMAIN_PACK_LIST_LABEL,
+  DOMAIN_PACK_CREDIT_LABEL,
+  DOMAIN_PACK_DUE_LABEL,
   DOMAIN_PACK_PAGES,
   domainPackLines,
   SHARE_NAV,
 } from '@/lib/domain-pack';
 import { SHARE_PATHS } from '@/lib/share-host';
 import { CUSTOM_DOMAIN_CNAME_TARGET } from '@/lib/share-stage-b';
-import {
-  buildStageBInvoice,
-  DOMAIN_PACK_CREDIT_LABEL,
-  DOMAIN_PACK_DUE_LABEL,
-} from '@/lib/stage-b-invoice';
+import { buildStageBInvoice, DOMAIN_ADD_ON_LINE_ITEM } from '@/lib/stage-b-invoice';
 
 const BUYER_COPY = [
   STAGE_B_ADDON,
@@ -28,9 +25,10 @@ const BUYER_COPY = [
   consultationStageLine(true),
 ];
 
-describe('domain pack offer', () => {
-  it('names the add-on Domain pack and keeps the public book copy free of a credit', () => {
-    expect(STAGE_B_CHECKBOX).toBe('Domain add-on: $297');
+describe('domain add-on offer', () => {
+  it('names the add-on Domain add-on and keeps the public book copy free of a credit', () => {
+    expect(STAGE_B_CHECKBOX).toBe(DOMAIN_ADD_ON_LINE_ITEM);
+    expect(DOMAIN_ADD_ON_LINE_ITEM).toBe('Domain add-on: $297');
     expect(STAGE_B_DETAIL).toContain('path note');
     expect(STAGE_B_DETAIL).toContain('proof-gap map');
     expect(STAGE_B_DETAIL).toContain('stack sketch');
@@ -69,15 +67,16 @@ describe('domain pack offer', () => {
     expect(domainPackLines('walkthrough', 'demo').join('\n')).toContain('one written walk');
   });
 
-  it('keeps the invoice list label and the owner credit label on the domain pack', () => {
+  it('keeps the invoice line and the owner credit label on the Domain add-on', () => {
     const quoted = buildStageBInvoice({ attached: true, waive: false, authorized: false });
-    expect(quoted.lines.map((line) => line.label)).toEqual([DOMAIN_PACK_LIST_LABEL]);
+    expect(quoted.lines.map((line) => line.label)).toEqual([DOMAIN_ADD_ON_LINE_ITEM]);
     const waived = buildStageBInvoice({ attached: true, waive: true, authorized: true });
     expect(waived.lines.map((line) => line.label)).toEqual([
-      DOMAIN_PACK_LIST_LABEL,
+      DOMAIN_ADD_ON_LINE_ITEM,
       DOMAIN_PACK_CREDIT_LABEL,
     ]);
-    expect(DOMAIN_PACK_DUE_LABEL).toBe('Domain pack due');
+    expect(DOMAIN_PACK_CREDIT_LABEL).toBe('Domain add-on credit');
+    expect(DOMAIN_PACK_DUE_LABEL).toBe('Domain add-on due');
     expect(waived.dueCents).toBe(0);
     expect(waived.listCents).toBe(29_700);
   });

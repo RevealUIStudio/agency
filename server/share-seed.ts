@@ -4,7 +4,12 @@
  */
 
 import { STAGE_B_ADDON, STAGE_B_DETAIL } from '../app/lib/consultation-buyer';
-import { DOMAIN_PACK_PAGES, type DomainPackPageId, domainPackLines } from '../app/lib/domain-pack';
+import {
+  DOMAIN_ADD_ON_LABEL,
+  DOMAIN_PACK_PAGES,
+  type DomainPackPageId,
+  domainPackLines,
+} from '../app/lib/domain-pack';
 import { STAGE_B_PRICE } from '../app/lib/engagements';
 
 function exampleNote(route: string, lines: readonly string[]): string {
@@ -32,7 +37,7 @@ export const SHARE_SEED: Readonly<Record<string, Readonly<Record<string, string>
     'home.txt': exampleNote('/', [
       'Stage A shell for demo.revealuistudio.com.',
       `${STAGE_B_ADDON} ${STAGE_B_DETAIL}`,
-      `The domain pack is ${STAGE_B_PRICE} on its own after Consultation, or included with Pilot and Launch.`,
+      `The ${DOMAIN_ADD_ON_LABEL} is ${STAGE_B_PRICE} on its own after Consultation, or included with Pilot and Launch.`,
       'The studio attaches the DNS.',
     ]),
     ...domainPackFiles,
@@ -40,7 +45,7 @@ export const SHARE_SEED: Readonly<Record<string, Readonly<Record<string, string>
       'Example workspace only. This demo contains no completed Consultation or client material.',
     ]),
     'demo.txt': exampleNote('/demo', [
-      'Demo slot for demo. Example only. The domain pack does not sell a demo.',
+      `Demo slot for demo. Example only. The ${DOMAIN_ADD_ON_LABEL} does not sell a demo.`,
     ]),
   },
 };

@@ -18,6 +18,7 @@
  */
 
 import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
+import { DOMAIN_ADD_ON_LABEL } from './domain-pack';
 
 /**
  * Monorepo counts for public proof points. Source: MARKETING_METRICS.md §1
@@ -46,19 +47,19 @@ export interface PublicOffer {
 }
 
 export const CONSULTATION_PRICE = '$300' as const;
-/** Advertised session scope. A share URL or domain pack is not part of this promise. */
+/** Advertised session scope. A share URL or the Domain add-on is not part of this promise. */
 export const CONSULTATION_DELIVERABLE = 'Session notes and a recommended next step.' as const;
 export const PILOT_PRICE = '$3,997' as const;
 
 /** Published Launch list from `@revealui/contracts/pricing` (0.12.0 is $14,500). */
 export const LAUNCH_PRICE = LAUNCH_PACKAGE_PRICE;
 
-/** Domain pack. $297 after Consultation alone. Included at Pilot and Launch. Not a homepage SKU. SKU id stays stage-b. */
+/** Domain add-on. $297 after Consultation alone. Included at Pilot and Launch. Not a homepage SKU. SKU id stays stage-b. */
 export const STAGE_B_PRICE = '$297' as const;
-/** Buyer name for the $297 custom-domain line. SKU id stays stage-b. */
-export const DOMAIN_ADD_ON_NAME = 'Domain add-on' as const;
 /** List price in cents. Matches STAGE_B_PRICE. */
 export const STAGE_B_CENTS = 29_700 as const;
+/** Buyer line. The public name is DOMAIN_ADD_ON_LABEL. */
+export const DOMAIN_ADD_ON_LINE_ITEM = `${DOMAIN_ADD_ON_LABEL}: ${STAGE_B_PRICE}` as const;
 
 export const CARE_PRICE = '$1,997/mo' as const;
 
@@ -94,13 +95,12 @@ export const PILOT = {
   name: 'Pilot',
   price: PILOT_PRICE,
   tagline: 'One site. One receipted action you operate.',
-  description:
-    'One site. One receipted action you operate. Includes 1 Adapter (one tool category). The domain pack is included. Credits 100% to Launch if you start Launch within 45 days.',
+  description: `One site. One receipted action you operate. Includes 1 Adapter (one tool category). The ${DOMAIN_ADD_ON_LABEL} is included. Credits 100% to Launch if you start Launch within 45 days.`,
   includes: [
     'One site',
     'One receipted action you operate',
     '1 Adapter (one tool category)',
-    'Domain pack included',
+    `${DOMAIN_ADD_ON_LABEL} included`,
     '100% credit toward Launch within 45 days',
   ],
   notIncluded: [
@@ -118,13 +118,12 @@ export const LAUNCH = {
   name: 'Launch',
   price: LAUNCH_PRICE,
   tagline: 'Put one business flow into production.',
-  description:
-    'I design and implement one agreed business flow on your accounts. Includes up to 3 Adapters (one tool category each). Architecture work happens inside this offer. The domain pack is included. You receive a runbook and 30 days of async stabilization.',
+  description: `I design and implement one agreed business flow on your accounts. Includes up to 3 Adapters (one tool category each). Architecture work happens inside this offer. The ${DOMAIN_ADD_ON_LABEL} is included. You receive a runbook and 30 days of async stabilization.`,
   includes: [
     'One live flow on your accounts',
     'Up to 3 Adapters (one tool category each)',
     'Architecture work inside this offer',
-    'Domain pack included',
+    `${DOMAIN_ADD_ON_LABEL} included`,
     'Runbook',
     '30-day async stabilization',
   ],

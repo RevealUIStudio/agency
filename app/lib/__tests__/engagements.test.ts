@@ -76,7 +76,9 @@ describe('public studio offers', () => {
     expect(PILOT.tagline).toBe('One site. One receipted action you operate.');
     expect(PILOT.description).toMatch(/one receipted action you operate/i);
     expect(PILOT.description).toMatch(/Includes 1 Adapter/i);
-    expect(PILOT.description).toMatch(/The domain pack is included/i);
+    expect(PILOT.description).toMatch(/The Domain add-on is included/);
+    expect(PILOT.description).not.toMatch(/\bdomain pack\b/i);
+    expect(PILOT.includes).toContain('Domain add-on included');
     expect(PILOT.description).toMatch(/45 days/i);
     expect(PILOT.description).not.toMatch(/written plan/i);
     expect(PILOT.description).not.toMatch(/\bdemo\b/i);

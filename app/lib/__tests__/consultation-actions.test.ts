@@ -328,7 +328,7 @@ describe('consultation action registry', () => {
     expect(notice?.text).toContain('Amount: $300');
     expect(notice?.text).toContain('Google Meet: https://meet.google.com/lookup/book_pay');
     expect(notice?.text).toContain('Booking: book_pay');
-    expect(notice?.text).toContain('Stage B: no');
+    expect(notice?.text).toContain('Domain add-on: no');
     expect(notice?.text).toContain('Network: no');
     expect(notice?.text).not.toMatch(/(^|\n)Meet:/);
     expect(notice?.text).not.toContain('\u2014');
@@ -383,7 +383,7 @@ describe('consultation action registry', () => {
     expect(paid.value.owner?.notice.network).toBe(true);
     expect(paid.value.owner?.notice.stageB).toBe(true);
     expect(paid.value.owner?.notice.amountCents).toBe(30_000);
-    expect(paid.value.owner?.notice.text).toContain('Stage B: yes');
+    expect(paid.value.owner?.notice.text).toContain('Domain add-on: yes');
     expect(paid.value.owner?.notice.text).toContain('Network: yes');
     expect(paid.value.owner?.notice.text).toContain('Amount: $300');
     expect(paid.value.owner?.notice.to).toBe('founder@revealui.com');

@@ -4,6 +4,7 @@
  * PROOF = receipted action. Studio ladder stays Consultation / Pilot / Launch.
  */
 
+import { DOMAIN_ADD_ON_LABEL } from '../lib/domain-pack.ts';
 import { CONSULTATION_DELIVERABLE } from '../lib/engagements.ts';
 
 export const PROOF_GAP_PATH = '/proof-gap' as const;
@@ -230,7 +231,7 @@ export const PROOF_GAP_ONE_GAP_PROMPT = 'The one gap I’d fix this week:' as co
 export const PROOF_GAP_NEXT_STEPS = [
   'DIY: Fix that one gap on your stack. Re-run §3 until you can show one receipted action.',
   `Review with Studio: Consultation is $300 per hour. Bring your system. ${CONSULTATION_DELIVERABLE}`,
-  'Operate a slice: Pilot. $3,997. One site. One receipted action you operate. The domain pack is included.',
+  `Operate a slice: Pilot. $3,997. One site. One receipted action you operate. The ${DOMAIN_ADD_ON_LABEL} is included.`,
 ] as const;
 
 export const PROOF_GAP_REFUSALS = [

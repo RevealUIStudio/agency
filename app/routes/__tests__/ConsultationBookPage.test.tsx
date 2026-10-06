@@ -12,6 +12,7 @@ import {
   rememberConsultationReceipt,
   STAGE_B_CHECKBOX,
   STAGE_B_HELPER,
+  STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
 import { CONSULTATION_DELIVERABLE } from '@/lib/engagements';
 import {
@@ -217,7 +218,7 @@ describe('ConsultationBookPage', () => {
 
     const view = render(<ConsultationBookPage onCheckout={vi.fn()} />);
     expect(window.location.search).toBe('?hours=1');
-    expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
+    expect(await screen.findByText(STAGE_B_ON_ORDER)).toBeInTheDocument();
     expect(screen.queryByRole('checkbox', { name: STAGE_B_CHECKBOX })).toBeNull();
     expect(screen.getByText('Due today $300.')).toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toMatch(
@@ -254,12 +255,12 @@ describe('ConsultationBookPage', () => {
       );
     });
     const first = render(<ConsultationBookPage />);
-    expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
+    expect(await screen.findByText(STAGE_B_ON_ORDER)).toBeInTheDocument();
     expect(window.location.search).toBe('?hours=2');
     first.unmount();
 
     render(<ConsultationBookPage />);
-    expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
+    expect(await screen.findByText(STAGE_B_ON_ORDER)).toBeInTheDocument();
     expect(statusRequests).toEqual([
       '/api/consultation/network-status?nw=signed-token',
       '/api/consultation/network-status?nw=signed-token',
@@ -287,7 +288,7 @@ describe('ConsultationBookPage', () => {
     });
     render(<ConsultationBookPage />);
     expect(await screen.findByRole('checkbox', { name: STAGE_B_CHECKBOX })).not.toBeChecked();
-    expect(screen.queryByText('Domain pack is on this order.')).not.toBeInTheDocument();
+    expect(screen.queryByText(STAGE_B_ON_ORDER)).not.toBeInTheDocument();
     expect(screen.getByText('Due today $300.')).toBeInTheDocument();
     window.history.pushState({}, '', '/');
   });

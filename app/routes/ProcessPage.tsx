@@ -1,5 +1,6 @@
 import { LinkButton } from '@revealui/presentation';
 import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
+import { DOMAIN_ADD_ON_LABEL } from '@/lib/domain-pack';
 import {
   ADAPTER,
   ADAPTER_ROLE,
@@ -118,9 +119,9 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  One site. One receipted action you operate. The domain pack is included. Your
-                  hosting provider, your AI model provider key. Not hosted chatbot SaaS. Product
-                  licenses live on revealui.com.
+                  One site. One receipted action you operate. The {DOMAIN_ADD_ON_LABEL} is included.
+                  Your hosting provider, your AI model provider key. Not hosted chatbot SaaS.
+                  Product licenses live on revealui.com.
                 </p>
               </div>
               <div>
@@ -159,9 +160,9 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What you get</h3>
                 <p className="mt-2 text-muted-foreground">
-                  A live flow on your accounts, with the domain pack, a runbook, and 30 days of
-                  async stabilization. You keep the code, accounts, and data. Work outside the
-                  agreed flow is scoped separately.
+                  A live flow on your accounts, with the {DOMAIN_ADD_ON_LABEL}, a runbook, and 30
+                  days of async stabilization. You keep the code, accounts, and data. Work outside
+                  the agreed flow is scoped separately.
                 </p>
               </div>
               <div>

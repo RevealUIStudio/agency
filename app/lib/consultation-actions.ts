@@ -29,6 +29,7 @@ import {
 } from './consultation-checkout';
 import { buildOwnerPaidNotice, type OwnerPaidNotice } from './consultation-owner';
 import { generateConsultationSlots, type TimeInterval } from './consultation-slots';
+import { DOMAIN_ADD_ON_LABEL } from './domain-pack';
 
 export type HumanGate = 'none' | 'draft_only' | 'owner_send' | 'owner_secrets';
 
@@ -247,8 +248,7 @@ const saveSlot: ConsultationAction<SaveSlotInput, SaveSlotValue> = {
 
 const createCheckoutSession: ConsultationAction<CreateCheckoutInput, CheckoutSessionValue> = {
   id: 'create_checkout_session',
-  description:
-    'Open Stripe Checkout for a live slot hold. Stage B is an optional paid add-on. Network credit is a server coupon only.',
+  description: `Open Stripe Checkout for a live slot hold. The ${DOMAIN_ADD_ON_LABEL} is an optional paid add-on. Network credit is a server coupon only.`,
   humanGate: 'none',
   preconditions: [
     'A slot_held booking exists and has not expired.',
