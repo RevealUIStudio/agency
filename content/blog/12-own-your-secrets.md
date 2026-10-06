@@ -57,4 +57,4 @@ The trade you are making is real surface area, your own key and your own store, 
 
 ---
 
-*RevealUI is the open runtime for businesses that run their own AI. RevVault is part of the RevealFleet family; read the source and get started in [the repository](https://github.com/RevealUIStudio/revvault).*
+*RevealUI is the open runtime for businesses that run their own AI. RevVault is part of the RevealFleet family; read the source and get started in [the repository](https://github.com/revealui-studio/revvault).*
