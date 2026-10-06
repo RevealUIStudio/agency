@@ -31,9 +31,11 @@ import {
   ADAPTER_INCLUDED_ON_PILOT,
   ADAPTER_ROLE,
   CARE,
+  CARE_PUBLIC_LABEL,
   CONSULTATION,
   LAUNCH,
   PILOT,
+  PILOT_CREDIT_LINE,
   STAGE_B_PRICE,
 } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
@@ -45,7 +47,7 @@ import {
 } from '@/lib/stage-b-invoice';
 
 export type Hoster = 'self-host' | 'studio';
-export type Outcome = 'consultation' | 'plan' | 'launch';
+export type Outcome = 'consultation' | 'plan' | 'launch' | 'care';
 export type Places = 'one' | 'many';
 
 export type { ViewerRole };
@@ -70,6 +72,7 @@ export const OUTCOME_OPTIONS = [
     value: 'launch',
     label: 'Launch: money path live on your accounts (includes up to 3 Adapters)',
   },
+  { value: 'care', label: CARE_PUBLIC_LABEL },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
@@ -86,7 +89,9 @@ export const CONSULTATION_QUOTE_DETAIL =
   'A focused review of your system. You receive session notes and a recommended next step. Pay $300 when you book the hour. Implementation and ongoing support are separate.' as const;
 
 export const PROOF_QUOTE_DETAIL =
-  `One supported action on one site, with a record you can inspect. Includes 1 Adapter (one tool category). The ${DOMAIN_ADD_ON_LABEL} is included. Invoice $3,997 before work starts. Credit toward Launch follows the agreed 45-day terms.` as const;
+  `One supported action on one site, with a record you can inspect. Includes 1 Adapter (one tool category). The ${DOMAIN_ADD_ON_LABEL} is included. Invoice $3,997 before work starts. ${PILOT_CREDIT_LINE}` as const;
+
+export const CARE_QUOTE_DETAIL = CARE.description;
 
 export const LAUNCH_QUOTE_DETAIL =
   'One agreed business flow on your accounts, with up to 3 Adapters (one tool category each), architecture, a runbook, and 30 days of async stabilization. Half before work starts, half on delivery.' as const;
@@ -115,6 +120,9 @@ export const ADAPTER_EXTRA_OPTIONS = [0, 1, 2, 3, 4, 5, 6] as const;
 
 export const ADAPTER_CALCULATOR_HELP =
   `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT}. Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH}. This count is extras beyond that, at ${ADAPTER.price} each (one tool category). ${ADAPTER_CARE_HELP} Additional work is scoped before invoicing.` as const;
+
+export const CARE_ADAPTER_CALCULATOR_HELP =
+  `Add ${ADAPTER.name} lines at ${ADAPTER.price} each. One tool category. Not included in ${CARE.price}.` as const;
 
 export { DOMAIN_ADD_ON_LABEL };
 
@@ -184,6 +192,7 @@ export function consultationQuoteDetail(hours: number): string {
 }
 
 function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
+  if (answers.outcome === 'care') return [];
   const included = answers.outcome === 'plan' || answers.outcome === 'launch';
   if (included) {
     return [
@@ -236,6 +245,18 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
 function adapterLines(answers: QuoteAnswers): readonly QuoteLine[] {
   if (answers.outcome === 'consultation') return [];
   const extras = adapterExtraCount(answers.adapterExtras);
+  if (answers.outcome === 'care') {
+    if (extras === 0) return [];
+    return [
+      {
+        id: 'adapter-extra',
+        title: extras === 1 ? ADAPTER.name : `${ADAPTER.name} (${extras})`,
+        price: formatUsdFromCents(ADAPTER_CENTS * extras),
+        detail: `${ADAPTER_CARE_HELP} One tool category per unit.`,
+        highlighted: true,
+      },
+    ];
+  }
   const category = `One tool category: ${ADAPTER_CATEGORIES}.`;
   const onPilot = answers.outcome === 'plan';
   const lines: QuoteLine[] = [
@@ -287,6 +308,13 @@ function studioLines(answers: QuoteAnswers): readonly QuoteLine[] {
       detail: LAUNCH_QUOTE_DETAIL,
       highlighted: answers.outcome === 'launch',
     },
+    {
+      id: CARE.id,
+      title: CARE.name,
+      price: CARE.price,
+      detail: CARE_QUOTE_DETAIL,
+      highlighted: answers.outcome === 'care',
+    },
   ];
   return [
     ...offers.filter((line) => line.highlighted),
@@ -324,7 +352,9 @@ export function buildQuote(answers: QuoteAnswers): Quote {
         ? CONSULTATION.name
         : answers.outcome === 'plan'
           ? PILOT.name
-          : LAUNCH.name,
+          : answers.outcome === 'launch'
+            ? LAUNCH.name
+            : CARE.name,
     body: STUDIO_QUOTE_BODY,
     lines: studioLines(answers),
     stopQuoting: false,

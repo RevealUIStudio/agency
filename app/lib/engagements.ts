@@ -86,18 +86,22 @@ export const CONSULTATION = {
   payment: 'Pay $300 per hour when you book the slot. Tax $0. No holdback.',
 } as const satisfies PublicOffer;
 
+/** Locked Pilot credit sentence. Use this wherever the credit is described. */
+export const PILOT_CREDIT_LINE =
+  'Credits 100% to Launch if you start Launch within 45 days.' as const;
+
 export const PILOT = {
   id: 'pilot',
   name: 'Pilot',
   price: PILOT_PRICE,
   tagline: 'One site. One receipted action you operate.',
-  description: `One site. One receipted action you operate. Includes 1 Adapter (one tool category). The ${DOMAIN_ADD_ON_LABEL} is included. Credits 100% to Launch if you start Launch within 45 days.`,
+  description: `One site. One receipted action you operate. Includes 1 Adapter (one tool category). The ${DOMAIN_ADD_ON_LABEL} is included. ${PILOT_CREDIT_LINE}`,
   includes: [
     'One site',
     'One receipted action you operate',
     '1 Adapter (one tool category)',
     `${DOMAIN_ADD_ON_LABEL} included`,
-    '100% credit toward Launch within 45 days',
+    PILOT_CREDIT_LINE,
   ],
   notIncluded: [
     'A second site',
@@ -105,8 +109,7 @@ export const PILOT = {
     'Hosted chatbot SaaS',
     'Product licenses',
   ],
-  payment:
-    'Invoice $3,997 before we start. You keep the site if you walk. Credits 100% to Launch if you start Launch within 45 days.',
+  payment: `Invoice $3,997 before we start. You keep the site if you walk. ${PILOT_CREDIT_LINE}`,
 } as const satisfies PublicOffer;
 
 export const LAUNCH = {
@@ -149,13 +152,13 @@ export const ADAPTER = {
   id: 'adapter',
   name: 'Adapter',
   price: ADAPTER_PRICE,
-  tagline: 'How the leak fix sticks. One tool category.',
+  tagline: 'One tool category on Pilot, Launch, or Care.',
   description: `One custom integration to one tool category (${ADAPTER_CATEGORIES}). Governed read/write where scoped, the agent can act on it, a receipt proves the action, and a short runbook. Pilot includes 1. Launch includes up to 3. List price is for extras. ${ADAPTER_CARE_HELP} Not sold alone.`,
 } as const;
 
-/** Pilot and Launch are the leak fix. Adapter is how one tool category stays on it. */
+/** Adapter is how one tool category stays on Pilot, Launch, or Care. */
 export const ADAPTER_ROLE =
-  'Pilot and Launch fix the leak on the lead desk: find, pay, and deliver. An Adapter is how that fix stays on one tool category. It is not sold alone.' as const;
+  'An Adapter keeps one tool category on Pilot, Launch, or Care. It is not sold alone.' as const;
 
 /**
  * Optional monthly care. Export is allowed. Do not add this to PUBLIC_OFFERS
@@ -166,8 +169,13 @@ export const CARE = {
   name: 'Care',
   price: CARE_PRICE,
   optional: true,
+  tagline: 'Optional monthly support after Pilot or Launch.',
+  description: `Optional monthly support after ${PILOT.name} or ${LAUNCH.name}. You can export and leave. Not required.`,
   note: 'Optional monthly care. You can export and leave. Not required.',
 } as const;
+
+/** Contact topic and calculator option. Price comes from CARE_PRICE. */
+export const CARE_PUBLIC_LABEL = `${CARE.name} ${CARE.price}` as const;
 
 /**
  * Internal product lanes. Do not import from homepage, nav, or pricing.

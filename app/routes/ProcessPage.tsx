@@ -4,6 +4,7 @@ import { DOMAIN_ADD_ON_LABEL } from '@/lib/domain-pack';
 import {
   ADAPTER,
   ADAPTER_ROLE,
+  CARE,
   CONSULTATION,
   CONSULTATION_DELIVERABLE,
   LAUNCH,
@@ -176,6 +177,43 @@ export function ProcessPage() {
               <div>
                 <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
                 <p className="mt-2 text-muted-foreground">{LAUNCH.payment}</p>
+              </div>
+            </div>
+          </article>
+
+          <article id={CARE.id}>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+              {CARE.tagline}
+            </p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              {CARE.name}. {CARE.price}.
+            </h2>
+            <p className="mt-4 text-base text-muted-foreground">{CARE.description}</p>
+            <div className="mt-8 space-y-6 text-base leading-7 text-foreground">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">What you send</h3>
+                <p className="mt-2 text-muted-foreground">
+                  The site from {PILOT.name} or {LAUNCH.name}, and what you want watched each month.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">What you get</h3>
+                <p className="mt-2 text-muted-foreground">
+                  Optional monthly support. You can export and leave. {ADAPTER.name} lines can be
+                  added at {ADAPTER.price}. One tool category.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">How long</h3>
+                <p className="mt-2 text-muted-foreground">
+                  Month to month at {CARE.price}. Not required after {PILOT.name} or {LAUNCH.name}.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">What happens next</h3>
+                <p className="mt-2 text-muted-foreground">
+                  Stop when you want. The site stays yours.
+                </p>
               </div>
             </div>
           </article>

@@ -122,7 +122,10 @@ describe('public studio offers', () => {
     );
     expect(ADAPTER_CALC_LABEL).toBe('Adapter: one tool category, one custom integration');
     expect(LAUNCH.notIncluded).toContain(`Care (${CARE_PRICE}), which is optional`);
-    expect(ADAPTER_ROLE).toMatch(/leak/);
+    expect(ADAPTER_ROLE).toBe(
+      'An Adapter keeps one tool category on Pilot, Launch, or Care. It is not sold alone.',
+    );
+    expect(ADAPTER_ROLE).not.toMatch(/leak|lead desk/);
     expect(ADAPTER_ROLE).not.toMatch(/\u2014/);
     expect(ADAPTER_CATEGORIES).toBe(
       'field-service CRM / estimating / dispatch, gallery / proofing, shopping cart, phone / SMS, calendar, payments / wallets, or labs / fulfillment',
@@ -130,7 +133,7 @@ describe('public studio offers', () => {
     expect(ADAPTER.description).toBe(
       `One custom integration to one tool category (${ADAPTER_CATEGORIES}). Governed read/write where scoped, the agent can act on it, a receipt proves the action, and a short runbook. Pilot includes 1. Launch includes up to 3. List price is for extras. ${ADAPTER_CARE_HELP} Not sold alone.`,
     );
-    expect(ADAPTER.tagline).toBe('How the leak fix sticks. One tool category.');
+    expect(ADAPTER.tagline).toBe('One tool category on Pilot, Launch, or Care.');
   });
 
   it('pins monorepo metrics to MARKETING_METRICS §1 (2026-09-29)', () => {

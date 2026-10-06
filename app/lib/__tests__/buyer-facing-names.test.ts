@@ -5,7 +5,10 @@ import { Router, RouterProvider } from '@revealui/router';
 import { render } from '@testing-library/react';
 import { type ComponentType, createElement, type ReactNode } from 'react';
 import { describe, expect, it } from 'vitest';
+import { ContactForm } from '@/components/agency/ContactForm';
+import { BlogDocsBoundary } from '@/components/BlogDocsBoundary';
 import { PROOF_GAP_NEXT_STEPS } from '@/content/proof-gap';
+import { BLOG_DOCS_BOUNDARY } from '@/lib/blog-copy';
 import { consultationActions } from '@/lib/consultation-actions';
 import {
   calendarInviteDescription,
@@ -18,11 +21,20 @@ import {
   STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
 import { DOMAIN_PACK_PAGES, domainPackLines } from '@/lib/domain-pack';
-import { ADAPTER_CATEGORIES, LAUNCH, PILOT } from '@/lib/engagements';
-import { buildQuote } from '@/lib/quote';
+import {
+  ADAPTER_CATEGORIES,
+  CARE,
+  CARE_PUBLIC_LABEL,
+  LAUNCH,
+  PILOT,
+  PILOT_CREDIT_LINE,
+  STAGE_B_PRICE,
+} from '@/lib/engagements';
+import { buildQuote, PROOF_QUOTE_DETAIL } from '@/lib/quote';
 import { buildStageBInvoice, DOMAIN_ADD_ON_LINE_ITEM } from '@/lib/stage-b-invoice';
 import { HomePage } from '@/routes/HomePage';
 import { ProcessPage } from '@/routes/ProcessPage';
+import { ServicesPage } from '@/routes/ServicesPage';
 import { shareRouteTable } from '@/routes/share/SharePages';
 import { SHARE_SEED } from '../../../server/share-seed';
 import { findBannedToolNames, TOOL_CATEGORIES } from '../buyer-facing-names';
@@ -143,7 +155,7 @@ describe('buyer-facing tool names', () => {
       DOMAIN_ADD_ON_LINE_ITEM,
     ];
 
-    for (const outcome of ['consultation', 'plan', 'launch'] as const) {
+    for (const outcome of ['consultation', 'plan', 'launch', 'care'] as const) {
       for (const stageB of [false, true]) {
         chunks.push(
           JSON.stringify(
@@ -208,7 +220,8 @@ describe('buyer-facing tool names', () => {
     router.registerRoutes([{ path: '/', component: HomePage }]);
     window.history.pushState({}, '', '/');
     const home = render(renderInRouter(router, HomePage));
-    chunks.push(home.container.textContent ?? '');
+    const homeText = home.container.textContent ?? '';
+    chunks.push(homeText);
     home.unmount();
 
     const process = render(createElement(ProcessPage));
@@ -227,10 +240,59 @@ describe('buyer-facing tool names', () => {
       view.unmount();
     }
 
+    const servicesRouter = new Router();
+    servicesRouter.registerRoutes([{ path: '/services', component: ServicesPage }]);
+    window.history.pushState({}, '', '/services');
+    const services = render(renderInRouter(servicesRouter, ServicesPage));
+    const servicesText = services.container.textContent ?? '';
+    chunks.push(servicesText);
+    services.unmount();
+
+    const contact = render(createElement(ContactForm));
+    const contactText = contact.container.textContent ?? '';
+    chunks.push(contactText);
+    contact.unmount();
+
+    const boundary = render(createElement(BlogDocsBoundary));
+    chunks.push(boundary.container.textContent ?? '');
+    boundary.unmount();
+
+    const essay = read('content/blog/18-open-runtime-for-fde-work.md');
+    chunks.push(essay, read('index.html'), BLOG_DOCS_BOUNDARY);
+
     const hits = chunks.flatMap((text, index) => {
       const match = text.match(retired);
       return match ? [`${index}: ${match[0]}`] : [];
     });
     expect(hits).toEqual([]);
+
+    expect(servicesText).toContain('Four paid offers');
+    expect(servicesText).toContain(CARE.name);
+    expect(servicesText).toContain(CARE.price);
+    expect(contactText).toContain(CARE_PUBLIC_LABEL);
+    expect(homeText).toContain(CARE_PUBLIC_LABEL);
+    expect(homeText).toContain(PILOT_CREDIT_LINE);
+    const processText = chunks.find((text) =>
+      text.includes('Know what happens before the work starts.'),
+    );
+    expect(processText).toContain(CARE.price);
+    expect(processText).toContain(PILOT_CREDIT_LINE);
+    expect(PROOF_QUOTE_DETAIL).toContain(PILOT_CREDIT_LINE);
+    expect(PROOF_QUOTE_DETAIL).not.toContain(
+      'Credit toward Launch follows the agreed 45-day terms.',
+    );
+    const jsonLd = read('index.html');
+    expect(jsonLd).toContain(`"name": "${CARE.name}"`);
+    expect(jsonLd).toContain(`"price": "${CARE.price.replace(/[^0-9]/g, '')}"`);
+    expect(jsonLd).toContain('"name": "Domain add-on"');
+    expect(jsonLd).toContain(`"price": "${STAGE_B_PRICE.replace(/[^0-9]/g, '')}"`);
+    expect(jsonLd).toContain(PILOT_CREDIT_LINE);
+
+    const bareMeet = /(?<!Google )\bMeet link\b/;
+    const meetHits = chunks.flatMap((text, index) =>
+      bareMeet.test(text) ? [`${index}: Meet link`] : [],
+    );
+    expect(meetHits).toEqual([]);
+    expect(chunks.join('\n')).not.toMatch(/Blog is on Studio|product noun stays|lead desk/);
   });
 });
