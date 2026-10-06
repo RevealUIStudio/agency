@@ -28,6 +28,9 @@ pnpm-debug.log*
 .env.*.local
 .env.worktree
 
+# Local client-name watchlist. Never commit. CI uses CLIENT_LEAK_PATTERNS.
+.client-name-watchlist.local
+
 # Coverage
 coverage/
 
