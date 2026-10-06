@@ -1,6 +1,7 @@
 /**
  * Buyer-facing Domain add-on. The Stripe SKU stays `stage-b`.
- * Public book copy must not say free, included, waived, or credited.
+ * $297 after Consultation alone. Included with Pilot and Launch.
+ * Public copy must not describe a waiver.
  */
 
 import { CUSTOM_DOMAIN_CNAME_TARGET } from './share-stage-b';

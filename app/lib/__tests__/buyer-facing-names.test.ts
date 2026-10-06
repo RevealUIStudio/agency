@@ -20,6 +20,7 @@ import {
   STAGE_B_HELPER,
   STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
+import { consultationHourLabel } from '@/lib/consultation-hours';
 import { DOMAIN_PACK_PAGES, domainPackLines } from '@/lib/domain-pack';
 import {
   ADAPTER_CATEGORIES,
@@ -294,5 +295,17 @@ describe('buyer-facing tool names', () => {
     );
     expect(meetHits).toEqual([]);
     expect(chunks.join('\n')).not.toMatch(/Blog is on Studio|product noun stays|lead desk/);
+
+    const hourChoice = consultationHourLabel(5);
+    const offerCopy = (text: string) =>
+      text.replaceAll(hourChoice, '').replaceAll('Pay $1,500 when you book the hours', '');
+    const retiredOffers = /Proof Sprint|\$1,500|\$3,500|\$7,500/;
+    const offerHits = [...chunks, hourChoice].flatMap((text, index) => {
+      const match = offerCopy(text).match(retiredOffers);
+      return match ? [`${index}: ${match[0]}`] : [];
+    });
+    expect(hourChoice).toBe('5 hours · $1,500');
+    expect(offerCopy(hourChoice)).not.toMatch(retiredOffers);
+    expect(offerHits).toEqual([]);
   });
 });

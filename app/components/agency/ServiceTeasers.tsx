@@ -14,9 +14,9 @@ export function ServiceTeasers() {
           <p className="mt-4 text-base text-muted-foreground">
             Review the problem, test one action, or launch one business flow. Each engagement has a
             defined deliverable and payment terms. Consultation is paid when booking. Pilot and
-            Launch are invoiced after we agree on scope.
-            {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. {DOMAIN_ADD_ON_LABEL} is{' '}
-            {STAGE_B_PRICE} after Consultation alone, and included at Pilot and Launch.
+            Launch are invoiced after we agree on scope. {ADAPTER_ROLE} An extra {ADAPTER.name} is{' '}
+            {ADAPTER.price}. {DOMAIN_ADD_ON_LABEL} is {STAGE_B_PRICE} after Consultation alone, and
+            included at Pilot and Launch.
           </p>
         </div>
         <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2">

@@ -158,7 +158,7 @@ export const ADAPTER = {
 
 /** Adapter is how one tool category stays on Pilot, Launch, or Care. */
 export const ADAPTER_ROLE =
-  'An Adapter keeps one tool category on Pilot, Launch, or Care. It is not sold alone.' as const;
+  'Pilot and Launch connect how leads find you, pay you, and get delivered to. An Adapter keeps one tool category on that work. It is not sold alone.' as const;
 
 /**
  * Optional monthly care. Export is allowed. Do not add this to PUBLIC_OFFERS

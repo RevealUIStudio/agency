@@ -27,6 +27,8 @@ const BUYER_COPY = [
 
 describe('domain add-on offer', () => {
   it('names the add-on Domain add-on and keeps the public book copy free of a credit', () => {
+    expect(STAGE_B_ADDON).toBe('Domain add-on: optional, $297 after a Consultation alone.');
+    expect(STAGE_B_ADDON.match(/add-on/gi)).toHaveLength(1);
     expect(STAGE_B_CHECKBOX).toBe(DOMAIN_ADD_ON_LINE_ITEM);
     expect(DOMAIN_ADD_ON_LINE_ITEM).toBe('Domain add-on: $297');
     expect(STAGE_B_DETAIL).toContain('path note');

@@ -47,7 +47,7 @@ Who this is not for: six-month enterprise POCs that need a certification stamp b
 
 ## What Studio ships into the field
 
-RevealUI Studio productizes the motion on the runtime: Consultation, Pilot, and Launch. The homepage is for owner-operators who run their own business on it. Forward-deployed delivery is how field work enters.
+RevealUI Studio productizes the motion on the runtime: Consultation, Pilot, and Launch. The homepage is for owner-operators who run their own business on it.
 
 You can read the runtime, run it, and check the claims against code. Used in production by the team that maintains it. That is the only production claim this post makes.
 

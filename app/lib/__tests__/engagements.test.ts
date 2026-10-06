@@ -123,7 +123,7 @@ describe('public studio offers', () => {
     expect(ADAPTER_CALC_LABEL).toBe('Adapter: one tool category, one custom integration');
     expect(LAUNCH.notIncluded).toContain(`Care (${CARE_PRICE}), which is optional`);
     expect(ADAPTER_ROLE).toBe(
-      'An Adapter keeps one tool category on Pilot, Launch, or Care. It is not sold alone.',
+      'Pilot and Launch connect how leads find you, pay you, and get delivered to. An Adapter keeps one tool category on that work. It is not sold alone.',
     );
     expect(ADAPTER_ROLE).not.toMatch(/leak|lead desk/);
     expect(ADAPTER_ROLE).not.toMatch(/\u2014/);

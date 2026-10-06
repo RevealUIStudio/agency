@@ -17,7 +17,7 @@ import { DOMAIN_ADD_ON_LINE_ITEM, STAGE_B_CENTS } from './stage-b-invoice';
 export const CONSULTATION_BOOK_INTRO =
   'Weekday slots in Eastern Time, 9:00 AM to 5:00 PM. $300 per hour. The 30-minute intro stays a separate booking.';
 
-export const STAGE_B_ADDON = `The ${DOMAIN_ADD_ON_LABEL} is an optional ${STAGE_B_PRICE} add-on.`;
+export const STAGE_B_ADDON = `${DOMAIN_ADD_ON_LABEL}: optional, ${STAGE_B_PRICE} after a Consultation alone.`;
 
 export const STAGE_B_CHECKBOX = DOMAIN_ADD_ON_LINE_ITEM;
 

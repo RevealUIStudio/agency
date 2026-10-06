@@ -12,12 +12,20 @@ import {
 } from '@/components/agency/Hero';
 import {
   PROOF_GAP_CHECK_COUNT,
+  PROOF_GAP_LADDER,
   PROOF_GAP_SCORE_PROMPT,
   PROOF_GAP_SECTIONS,
 } from '@/content/proof-gap';
 import { engagementLabels } from '@/data/cases';
 import { findBannedToolNames } from '@/lib/buyer-facing-names';
-import { CONSULTATION_DELIVERABLE, PUBLIC_OFFERS } from '@/lib/engagements';
+import {
+  CARE,
+  CONSULTATION_DELIVERABLE,
+  LAUNCH,
+  PILOT,
+  PUBLIC_OFFERS,
+  STAGE_B_PRICE,
+} from '@/lib/engagements';
 import {
   OG_CARD_BOOKING_LINE,
   OG_CARD_HEADLINE,
@@ -911,8 +919,13 @@ describe('public copy gates', () => {
     expect(copy).toContain("PROOF_GAP_DOCUMENT_TITLE = 'Proof-gap checklist | RevealUI Studio'");
     expect(copy).toContain("PROOF_GAP_CTA = 'Ask about a checklist review'");
     expect(copy).toContain('An action record names who acted');
-    expect(copy).toContain('Pilot $3,997');
-    expect(copy).toContain('Launch $14,500');
+    expect(PROOF_GAP_LADDER).toContain(`${PILOT.name} ${PILOT.price}`);
+    expect(PROOF_GAP_LADDER).toContain(`${LAUNCH.name} ${LAUNCH.price}`);
+    expect(PROOF_GAP_LADDER).toContain(`${CARE.name} ${CARE.price}`);
+    expect(PROOF_GAP_LADDER).toContain(STAGE_B_PRICE);
+    expect(copy).toContain('PILOT.price');
+    expect(copy).toContain('CARE.price');
+    expect(copy).toContain('Pilot. $3,997');
     expect(copy).toContain(
       'This checklist is a planning aid, not a certification or validated risk score.',
     );
