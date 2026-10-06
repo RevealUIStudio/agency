@@ -40,6 +40,8 @@ describe('ConsultationBookPage', () => {
     expect(source).toContain('<Input');
     expect(source).toContain('<Checkbox');
     expect(source).toContain('<Button');
+    expect(source).toContain('<Card');
+    expect(source).toContain('<CardFooter');
     expect(source).toContain('<LinkButton');
     expect(source).toContain('STAGE_B_HELPER');
     expect(source).not.toContain('Add the domain pack');
@@ -120,6 +122,47 @@ describe('ConsultationBookPage', () => {
       stage_b: false,
     });
     expect(sessionStorage.getItem('consultation-receipt')).toBeNull();
+  });
+
+  it('keeps the pay summary in document flow below the sm breakpoint', async () => {
+    vi.stubGlobal('fetch', (input: RequestInfo | URL) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      if (url.includes('/api/consultation/availability')) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              timezone: 'America/New_York',
+              hours: 1,
+              slots: [
+                {
+                  start: '2026-10-25T13:00:00.000Z',
+                  end: '2026-10-25T14:00:00.000Z',
+                  label: 'Sun, Oct 25 · 9:00 AM–10:00 AM ET',
+                },
+              ],
+            }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          ),
+        );
+      }
+      return Promise.resolve(new Response('no', { status: 500 }));
+    });
+    const view = render(<ConsultationBookPage />);
+    const calendar = view.container.querySelector('[data-slot="booking-calendar"]');
+    const paybar = view.container.querySelector('[data-consultation-paybar]');
+    if (!calendar || !paybar) throw new Error('paybar');
+    expect(paybar.className.split(/\s+/)).toContain('static');
+    expect(paybar.className.split(/\s+/)).toContain('sm:fixed');
+    expect(paybar.className.split(/\s+/)).not.toContain('fixed');
+    expect(
+      calendar.compareDocumentPosition(paybar) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    const form = paybar?.closest('form');
+    expect(form?.className).toContain('sm:pb-[calc(var(--consultation-paybar-height,12rem)+1rem)]');
+    expect(form?.className ?? '').not.toMatch(
+      /(^|\s)pb-\[calc\(var\(--consultation-paybar-height,12rem\)\+1rem\)\]/,
+    );
+    expect(await screen.findByRole('button', { name: 'Continue to payment' })).toBeInTheDocument();
   });
 
   it('forces the domain pack on a signed link and keeps due at the consultation', async () => {
@@ -326,7 +369,11 @@ describe('ConsultationBookPage', () => {
     const pay = await screen.findByRole('button', { name: 'Continue to payment' });
     expect(pay.className).toContain('w-full');
     expect(pay.className).toContain('min-h-12');
-    expect(pay.closest('.fixed')?.className).toContain('bottom-[var(--cookie-banner-height,0px)]');
+    const dock = pay.closest('[data-consultation-paybar]');
+    expect(dock?.className.split(/\s+/)).toContain('static');
+    expect(dock?.className.split(/\s+/)).not.toContain('fixed');
+    expect(dock?.className).toContain('sm:fixed');
+    expect(dock?.className).toContain('sm:bottom-[var(--cookie-banner-height,0px)]');
     expect(screen.getByLabelText('Company (optional)')).toBeInTheDocument();
     const name = screen.getByLabelText('Name');
     expect(name.className).toContain('w-full');

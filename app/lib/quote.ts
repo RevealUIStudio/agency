@@ -16,7 +16,6 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
-import { DOMAIN_PACK_CREDIT_LABEL, DOMAIN_PACK_DUE_LABEL } from '@/lib/domain-pack';
 import {
   ADAPTER,
   ADAPTER_CALC_LABEL,
@@ -28,19 +27,18 @@ import {
   ADAPTER_ROLE,
   CARE,
   CONSULTATION,
+  DOMAIN_ADD_ON_NAME,
   LAUNCH,
   PILOT,
   STAGE_B_PRICE,
 } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { PRODUCT_SITE_URL } from '@/lib/site';
-import { buildStageBInvoice, type ViewerRole } from '@/lib/stage-b-invoice';
 
 export type Hoster = 'self-host' | 'studio';
 export type Outcome = 'consultation' | 'plan' | 'launch';
 export type Places = 'one' | 'many';
 
-export type { ViewerRole };
 export { CONSULTATION_HOUR_OPTIONS, consultationHourLabel, DEFAULT_CONSULTATION_HOURS };
 
 export const DEFAULT_HOSTER: Hoster = 'studio';
@@ -109,7 +107,7 @@ export const ADAPTER_CALCULATOR_HELP =
   `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT}. Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH}. This count is extras beyond that, at ${ADAPTER.price} each (one tool category). ${ADAPTER_CARE_HELP} Additional work is scoped before invoicing.` as const;
 
 /** Buyer name for the $297 custom-domain line on the calculator. SKU id stays stage-b. */
-export const DOMAIN_ADD_ON_LABEL = 'Domain add-on' as const;
+export const DOMAIN_ADD_ON_LABEL = DOMAIN_ADD_ON_NAME;
 
 /** Calculator checkbox. Book page keeps its own label. */
 export const CALCULATOR_DOMAIN_ADD_ON = `${DOMAIN_ADD_ON_LABEL}: ${STAGE_B_PRICE}` as const;
@@ -160,8 +158,6 @@ export interface QuoteAnswers {
    * SKU id stays stage-b.
    */
   readonly stageB?: boolean;
-  readonly stageBWaive?: boolean;
-  readonly viewerRole?: ViewerRole;
   /** Adapter units beyond the included count (Pilot 1, Launch 3). Default 0. */
   readonly adapterExtras?: number;
 }
@@ -190,40 +186,15 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
     ];
   }
   if (answers.stageB !== true) return [];
-  const role = answers.viewerRole === 'owner' ? 'owner' : 'guest';
-  const invoice = buildStageBInvoice({
-    attached: true,
-    waive: role === 'owner' && answers.stageBWaive === true,
-    role,
-  });
-  const lines: QuoteLine[] = [
+  return [
     {
       id: 'stage-b-list',
       title: DOMAIN_ADD_ON_LABEL,
-      price: formatUsdFromCents(invoice.listCents),
+      price: STAGE_B_PRICE,
       detail: 'List price. Optional Domain add-on.',
       highlighted: true,
     },
   ];
-  if (invoice.creditCents > 0) {
-    lines.push(
-      {
-        id: 'stage-b-credit',
-        title: DOMAIN_PACK_CREDIT_LABEL,
-        price: formatUsdFromCents(invoice.creditCents),
-        detail: 'Owner credit against the list price.',
-        highlighted: false,
-      },
-      {
-        id: 'stage-b-due',
-        title: DOMAIN_PACK_DUE_LABEL,
-        price: formatUsdFromCents(invoice.dueCents),
-        detail: 'List price minus the credit.',
-        highlighted: false,
-      },
-    );
-  }
-  return lines;
 }
 
 function adapterLines(answers: QuoteAnswers): readonly QuoteLine[] {

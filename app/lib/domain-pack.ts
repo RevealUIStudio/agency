@@ -6,8 +6,6 @@
 import { CUSTOM_DOMAIN_CNAME_TARGET } from './share-stage-b';
 
 export const DOMAIN_PACK_LIST_LABEL = 'Domain pack' as const;
-export const DOMAIN_PACK_CREDIT_LABEL = 'Domain pack credit' as const;
-export const DOMAIN_PACK_DUE_LABEL = 'Domain pack due' as const;
 
 export const DOMAIN_PACK_PAGES = [
   { id: 'dns', path: '/dns', file: 'dns.txt', title: 'DNS card' },

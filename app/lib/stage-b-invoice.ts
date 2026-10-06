@@ -1,10 +1,18 @@
-import { DOMAIN_PACK_CREDIT_LABEL, DOMAIN_PACK_LIST_LABEL } from './domain-pack';
+import { DOMAIN_PACK_LIST_LABEL } from './domain-pack';
+import { STAGE_B_CENTS } from './engagements';
 import { formatUsdFromCents } from './money';
 
-/** Domain pack list price is $297. A waive is a credit against that list, not a rewritten price. */
-export const STAGE_B_CENTS = 29_700 as const;
+/**
+ * Server invoice for the domain add-on.
+ * Do not import this module from client routes or components.
+ * A waive is a credit against the list price, not a rewritten price.
+ * The HTTP layer decides `authorized` from STUDIO_DOMAIN_WAIVE_SECRET.
+ */
 
-export type ViewerRole = 'guest' | 'owner';
+export const DOMAIN_PACK_CREDIT_LABEL = 'Domain pack credit' as const;
+export const DOMAIN_PACK_DUE_LABEL = 'Domain pack due' as const;
+
+export { STAGE_B_CENTS };
 
 export type InvoiceRejectReason = 'guest-waive' | 'integrity';
 
@@ -62,14 +70,14 @@ export function assertInvoiceIntegrity(invoice: StageBInvoice): void {
 
 /**
  * `attached` is the optional add-on. Default is off (attached false): no list line.
- * A guest who sets waive is rejected. An owner waive keeps the list line and adds a matching credit.
+ * `authorized` is the server secret check. A waive without it is rejected.
  */
 export function buildStageBInvoice(input: {
   readonly attached: boolean;
   readonly waive: boolean;
-  readonly role: ViewerRole;
+  readonly authorized: boolean;
 }): StageBInvoice {
-  if (input.waive && input.role !== 'owner') {
+  if (input.waive && !input.authorized) {
     throw new InvoiceRejected('guest-waive');
   }
 
@@ -86,7 +94,7 @@ export function buildStageBInvoice(input: {
     return empty;
   }
 
-  const waived = input.waive && input.role === 'owner';
+  const waived = input.waive && input.authorized;
   const lines: InvoiceLine[] = [
     { kind: 'list', sku: 'stage-b', label: DOMAIN_PACK_LIST_LABEL, amountCents: STAGE_B_CENTS },
   ];

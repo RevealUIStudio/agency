@@ -106,7 +106,6 @@ describe('stage B share pack', () => {
       outcome: 'consultation',
       places: 'one',
       stageB: true,
-      viewerRole: 'guest',
     });
     expect(on.lines.find((line) => line.id === 'stage-b-list')?.price).toBe('$297');
     expect(on.lines.some((line) => line.id === 'stage-b')).toBe(false);
@@ -117,7 +116,6 @@ describe('stage B share pack', () => {
         outcome,
         places: 'one',
         stageB: true,
-        viewerRole: 'guest',
       });
       const stage = quote.lines.filter((line) => line.id.startsWith('stage-b'));
       expect(stage.map((line) => line.price)).toEqual(['Included']);
@@ -155,7 +153,6 @@ describe('stage B share pack', () => {
           outcome,
           places: 'one',
           stageB,
-          viewerRole: 'guest',
         });
         const stage = quote.lines.filter((line) => line.id.startsWith('stage-b'));
         const blob = JSON.stringify(stage);

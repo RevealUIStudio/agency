@@ -11,8 +11,10 @@ import {
 } from '@/lib/consultation-actions';
 import type { BookInput, Booking } from '@/lib/consultation-booking';
 import {
-  DEFAULT_CONSULTATION_PRICE_ID,
+  type CheckoutLine,
+  consultationPriceDataLine,
   DEFAULT_STAGE_B_PRICE_ID,
+  domainAddOnPriceDataLine,
 } from '@/lib/consultation-checkout';
 import type { OwnerPaidNotice } from '@/lib/consultation-owner';
 import {
@@ -66,7 +68,7 @@ function heldBooking(extra: Partial<Booking> = {}): Booking {
 function harness(seed: readonly Booking[] = []) {
   const calendar = createMemoryCalendar(seed);
   const checkouts: Array<{
-    lines: readonly { price: string; quantity: number }[];
+    lines: readonly CheckoutLine[];
     couponId?: string;
     stageBFee: string;
   }> = [];
@@ -176,9 +178,7 @@ describe('consultation action registry', () => {
     expect(saved.ok).toBe(true);
     if (!saved.ok) return;
     expect(saved.value.checkoutUrl).toBe('https://checkout.stripe.com/c/pay/cs_test_1');
-    expect(plain.checkouts[0]?.lines).toEqual([
-      { price: DEFAULT_CONSULTATION_PRICE_ID, quantity: 1 },
-    ]);
+    expect(plain.checkouts[0]?.lines).toEqual([consultationPriceDataLine(1)]);
     expect(plain.checkouts[0]?.couponId).toBeUndefined();
     expect((await plain.calendar.get('book_1'))?.status).toBe('slot_held');
 
@@ -195,8 +195,8 @@ describe('consultation action registry', () => {
     );
     expect(packed.ok).toBe(true);
     expect(withPack.checkouts[0]?.lines).toEqual([
-      { price: DEFAULT_CONSULTATION_PRICE_ID, quantity: 3 },
-      { price: DEFAULT_STAGE_B_PRICE_ID, quantity: 1 },
+      consultationPriceDataLine(3),
+      domainAddOnPriceDataLine(),
     ]);
     expect(withPack.checkouts[0]?.stageBFee).toBe('paid_addon');
     expect(withPack.checkouts[0]?.couponId).toBeUndefined();
@@ -226,7 +226,11 @@ describe('consultation action registry', () => {
     );
     expect(booked.ok).toBe(true);
     const params = new URLSearchParams(forms[0]);
-    expect(params.get('line_items[1][price]')).toBe(DEFAULT_STAGE_B_PRICE_ID);
+    expect(params.get('line_items[1][price]')).toBeNull();
+    expect(params.get('line_items[1][price_data][product_data][name]')).toBe('Domain add-on');
+    expect(params.get('line_items[1][price_data][product_data][description]')).toBe(
+      'Custom domain setup, $297. Included at Pilot and Launch.',
+    );
     expect(params.get('metadata[stage_b_fee]')).toBe('paid_addon');
     expect([...params.keys()].some((key) => key.startsWith('discounts'))).toBe(false);
   });
@@ -250,7 +254,7 @@ describe('consultation action registry', () => {
     });
     expect(booked.ok).toBe(true);
     expect(allowed.checkouts[0]?.lines).toEqual([
-      { price: DEFAULT_CONSULTATION_PRICE_ID, quantity: 1 },
+      consultationPriceDataLine(1),
       { price: DEFAULT_STAGE_B_PRICE_ID, quantity: 1 },
     ]);
     expect(allowed.checkouts[0]?.couponId).toBe('stage_b_network_credit');
