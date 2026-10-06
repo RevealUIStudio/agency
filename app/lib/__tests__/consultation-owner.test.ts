@@ -43,7 +43,7 @@ describe('consultation mail copy', () => {
         expect(text).toContain(`Your session includes: ${CONSULTATION_DELIVERABLE}`);
         expect(text).toContain(
           stage_b
-            ? 'The domain pack ($297) is on this payment.'
+            ? 'The Domain add-on ($297) is on this payment.'
             : 'This payment is the consultation only.',
         );
         expect(text).not.toMatch(/living pack|session share URL|one business day/i);

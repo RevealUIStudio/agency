@@ -1,7 +1,7 @@
 /**
  * Owner-signed Consultation book links.
  *
- * A valid token forces the domain pack onto the Checkout Session and marks
+ * A valid token forces the Domain add-on onto the Checkout Session and marks
  * the fee waived_network. The client cannot set that fee by itself.
  * The signing secret stays in CONSULTATION_NETWORK_WAIVE_SECRET.
  */

@@ -16,7 +16,11 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
-import { DOMAIN_PACK_CREDIT_LABEL, DOMAIN_PACK_DUE_LABEL } from '@/lib/domain-pack';
+import {
+  DOMAIN_ADD_ON_LABEL,
+  DOMAIN_PACK_CREDIT_LABEL,
+  DOMAIN_PACK_DUE_LABEL,
+} from '@/lib/domain-pack';
 import {
   ADAPTER,
   ADAPTER_CALC_LABEL,
@@ -34,7 +38,11 @@ import {
 } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { PRODUCT_SITE_URL } from '@/lib/site';
-import { buildStageBInvoice, type ViewerRole } from '@/lib/stage-b-invoice';
+import {
+  buildStageBInvoice,
+  DOMAIN_ADD_ON_LINE_ITEM,
+  type ViewerRole,
+} from '@/lib/stage-b-invoice';
 
 export type Hoster = 'self-host' | 'studio';
 export type Outcome = 'consultation' | 'plan' | 'launch';
@@ -72,13 +80,13 @@ export const PLACES_OPTIONS = [
 export const QUOTE_CALCULATOR_HEADING = 'Find your starting point.' as const;
 
 export const QUOTE_CALCULATOR_LEAD =
-  `Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. ${ADAPTER.name} ${ADAPTER.price}. ${CARE.name} ${CARE.price}. Domain add-on ${STAGE_B_PRICE}. Product licenses are separate.` as const;
+  `Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. ${ADAPTER.name} ${ADAPTER.price}. ${CARE.name} ${CARE.price}. ${DOMAIN_ADD_ON_LABEL} ${STAGE_B_PRICE}. Product licenses are separate.` as const;
 
 export const CONSULTATION_QUOTE_DETAIL =
   'A focused review of your system. You receive session notes and a recommended next step. Pay $300 when you book the hour. Implementation and ongoing support are separate.' as const;
 
 export const PROOF_QUOTE_DETAIL =
-  'One supported action on one site, with a record you can inspect. Includes 1 Adapter (one tool category). The domain pack is included. Invoice $3,997 before work starts. Credit toward Launch follows the agreed 45-day terms.' as const;
+  `One supported action on one site, with a record you can inspect. Includes 1 Adapter (one tool category). The ${DOMAIN_ADD_ON_LABEL} is included. Invoice $3,997 before work starts. Credit toward Launch follows the agreed 45-day terms.` as const;
 
 export const LAUNCH_QUOTE_DETAIL =
   'One agreed business flow on your accounts, with up to 3 Adapters (one tool category each), architecture, a runbook, and 30 days of async stabilization. Half before work starts, half on delivery.' as const;
@@ -108,11 +116,10 @@ export const ADAPTER_EXTRA_OPTIONS = [0, 1, 2, 3, 4, 5, 6] as const;
 export const ADAPTER_CALCULATOR_HELP =
   `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT}. Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH}. This count is extras beyond that, at ${ADAPTER.price} each (one tool category). ${ADAPTER_CARE_HELP} Additional work is scoped before invoicing.` as const;
 
-/** Buyer name for the $297 custom-domain line on the calculator. SKU id stays stage-b. */
-export const DOMAIN_ADD_ON_LABEL = 'Domain add-on' as const;
+export { DOMAIN_ADD_ON_LABEL };
 
-/** Calculator checkbox. Book page keeps its own label. */
-export const CALCULATOR_DOMAIN_ADD_ON = `${DOMAIN_ADD_ON_LABEL}: ${STAGE_B_PRICE}` as const;
+/** Calculator checkbox. Book page uses the same line item. */
+export const CALCULATOR_DOMAIN_ADD_ON = DOMAIN_ADD_ON_LINE_ITEM;
 
 export function adapterExtraCount(count: number | undefined): number {
   if (count === undefined) return ADAPTER_EXTRA_MIN;
@@ -201,7 +208,7 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
       id: 'stage-b-list',
       title: DOMAIN_ADD_ON_LABEL,
       price: formatUsdFromCents(invoice.listCents),
-      detail: 'List price. Optional Domain add-on.',
+      detail: `List price. Optional ${DOMAIN_ADD_ON_LABEL}.`,
       highlighted: true,
     },
   ];

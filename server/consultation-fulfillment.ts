@@ -1,6 +1,7 @@
 /** Consultation delivery adapts the maintained Calendar and content owners. */
 import { z } from 'zod';
 import type { Booking } from '../app/lib/consultation-booking';
+import { DOMAIN_ADD_ON_LABEL } from '../app/lib/domain-pack';
 import type { CalendarPort } from './consultation-calendar';
 import { refundedCheckoutFromStripe } from './consultation-stripe';
 import { providerFetch } from './provider-http';
@@ -658,7 +659,7 @@ export async function fulfillConsultation(
       'recommended-next-step': { title: 'Recommended next step', content: body.nextStep },
     };
     for (const [slug, content] of Object.entries(body.domainPack ?? {})) {
-      material[slug] = { title: `Domain pack: ${slug}`, content };
+      material[slug] = { title: `${DOMAIN_ADD_ON_LABEL}: ${slug}`, content };
     }
     for (const [slug, item] of Object.entries(material)) {
       let page = pages.find((candidate) => candidate.slug === slug);

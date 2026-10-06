@@ -299,9 +299,9 @@ describe('buildConfirmationEmail', () => {
       stage_b: true,
     });
     expect(invite).toContain('When: Wed, Jan 7 · 9:00 AM–10:00 AM ET');
-    expect(invite).toContain('The domain pack ($297) is on this payment.');
+    expect(invite).toContain('The Domain add-on ($297) is on this payment.');
     expect(invite).not.toMatch(/sheet writer/i);
-    expect(invite).not.toMatch(/domain pack.*(?:included|waived|free)/i);
+    expect(invite).not.toMatch(/\bdomain pack\b/i);
     expect(invite).toContain('full refund of Consultation time or a free reschedule');
   });
 

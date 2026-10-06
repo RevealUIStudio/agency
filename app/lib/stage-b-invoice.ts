@@ -1,7 +1,11 @@
-import { DOMAIN_PACK_CREDIT_LABEL, DOMAIN_PACK_LIST_LABEL } from './domain-pack';
+import { DOMAIN_ADD_ON_LABEL, DOMAIN_PACK_CREDIT_LABEL } from './domain-pack';
+import { STAGE_B_PRICE } from './engagements';
 import { formatUsdFromCents } from './money';
 
-/** Domain pack list price is $297. A waive is a credit against that list, not a rewritten price. */
+/** Buyer line item. The list price stays on the label. */
+export const DOMAIN_ADD_ON_LINE_ITEM = `${DOMAIN_ADD_ON_LABEL}: ${STAGE_B_PRICE}` as const;
+
+/** List price is $297. An owner credit is against that list, not a rewritten price. */
 export const STAGE_B_CENTS = 29_700 as const;
 
 export type ViewerRole = 'guest' | 'owner';
@@ -88,7 +92,7 @@ export function buildStageBInvoice(input: {
 
   const waived = input.waive && input.role === 'owner';
   const lines: InvoiceLine[] = [
-    { kind: 'list', sku: 'stage-b', label: DOMAIN_PACK_LIST_LABEL, amountCents: STAGE_B_CENTS },
+    { kind: 'list', sku: 'stage-b', label: DOMAIN_ADD_ON_LINE_ITEM, amountCents: STAGE_B_CENTS },
   ];
   if (waived) {
     lines.push({
