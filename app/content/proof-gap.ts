@@ -1,6 +1,6 @@
 /**
  * Proof-gap checklist lead magnet. Soft ask. not a quote form.
- * H1 and gate copy locked 2026-09-18 (Joshua OK publish).
+ * H1 and gate copy locked 2026-09-18.
  * PROOF = receipted action. The price line includes Care and the Domain add-on.
  */
 

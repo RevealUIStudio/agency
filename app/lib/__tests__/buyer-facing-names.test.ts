@@ -117,7 +117,7 @@ describe('buyer-facing tool names', () => {
     const kit = read(launchKit);
     expect(kit).toContain('Pilot is $3,997');
     expect(kit).toContain('Launch is $14,500');
-    expect(kit).not.toContain('Proof Sprint');
+    expect(kit).not.toMatch(/proof sprint/i);
     expect(kit).not.toMatch(/alternative to/i);
     expect(ADAPTER_CATEGORIES).toBe(
       'field-service CRM / estimating / dispatch, gallery / proofing, shopping cart, phone / SMS, calendar, payments / wallets, or labs / fulfillment',
@@ -139,6 +139,8 @@ describe('buyer-facing tool names', () => {
 
   it('forbids Domain pack and Stage B in rendered buyer copy', () => {
     const retired = /\bdomain pack\b|\bstage b\b/i;
+    expect('Domain Pack').toMatch(retired);
+    expect('STAGE B').toMatch(retired);
     const chunks: string[] = [
       STAGE_B_ADDON,
       STAGE_B_CHECKBOX,
@@ -285,6 +287,11 @@ describe('buyer-facing tool names', () => {
     const jsonLd = read('index.html');
     expect(jsonLd).toContain(`"name": "${CARE.name}"`);
     expect(jsonLd).toContain(`"price": "${CARE.price.replace(/[^0-9]/g, '')}"`);
+    const careOffer = jsonLd.slice(jsonLd.indexOf(`"name": "${CARE.name}"`));
+    const carePrice = careOffer.slice(0, careOffer.indexOf('"name": "Domain add-on"'));
+    expect(carePrice).toContain('"@type": "UnitPriceSpecification"');
+    expect(carePrice).toContain('"unitCode": "MON"');
+    expect(carePrice).not.toContain('"@type": "PriceSpecification"');
     expect(jsonLd).toContain('"name": "Domain add-on"');
     expect(jsonLd).toContain(`"price": "${STAGE_B_PRICE.replace(/[^0-9]/g, '')}"`);
     expect(jsonLd).toContain(PILOT_CREDIT_LINE);
@@ -299,7 +306,9 @@ describe('buyer-facing tool names', () => {
     const hourChoice = consultationHourLabel(5);
     const offerCopy = (text: string) =>
       text.replaceAll(hourChoice, '').replaceAll('Pay $1,500 when you book the hours', '');
-    const retiredOffers = /Proof Sprint|\$1,500|\$3,500|\$7,500/;
+    const retiredOffers = /proof sprint|\$1,500|\$3,500|\$7,500/i;
+    expect('proof sprint').toMatch(retiredOffers);
+    expect('PROOF SPRINT').toMatch(retiredOffers);
     const offerHits = [...chunks, hourChoice].flatMap((text, index) => {
       const match = offerCopy(text).match(retiredOffers);
       return match ? [`${index}: ${match[0]}`] : [];
