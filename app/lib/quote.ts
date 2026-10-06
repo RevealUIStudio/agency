@@ -16,11 +16,7 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
-import {
-  DOMAIN_ADD_ON_LABEL,
-  DOMAIN_PACK_CREDIT_LABEL,
-  DOMAIN_PACK_DUE_LABEL,
-} from '@/lib/domain-pack';
+import { DOMAIN_ADD_ON_LABEL } from '@/lib/domain-pack';
 import {
   ADAPTER,
   ADAPTER_CALC_LABEL,
@@ -33,6 +29,7 @@ import {
   CARE,
   CARE_PUBLIC_LABEL,
   CONSULTATION,
+  DOMAIN_ADD_ON_LINE_ITEM,
   LAUNCH,
   PILOT,
   PILOT_CREDIT_LINE,
@@ -40,17 +37,11 @@ import {
 } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { PRODUCT_SITE_URL } from '@/lib/site';
-import {
-  buildStageBInvoice,
-  DOMAIN_ADD_ON_LINE_ITEM,
-  type ViewerRole,
-} from '@/lib/stage-b-invoice';
 
 export type Hoster = 'self-host' | 'studio';
 export type Outcome = 'consultation' | 'plan' | 'launch' | 'care';
 export type Places = 'one' | 'many';
 
-export type { ViewerRole };
 export { CONSULTATION_HOUR_OPTIONS, consultationHourLabel, DEFAULT_CONSULTATION_HOURS };
 
 export const DEFAULT_HOSTER: Hoster = 'studio';
@@ -175,8 +166,6 @@ export interface QuoteAnswers {
    * SKU id stays stage-b.
    */
   readonly stageB?: boolean;
-  readonly stageBWaive?: boolean;
-  readonly viewerRole?: ViewerRole;
   /** Adapter units beyond the included count (Pilot 1, Launch 3). Default 0. */
   readonly adapterExtras?: number;
 }
@@ -206,40 +195,15 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
     ];
   }
   if (answers.stageB !== true) return [];
-  const role = answers.viewerRole === 'owner' ? 'owner' : 'guest';
-  const invoice = buildStageBInvoice({
-    attached: true,
-    waive: role === 'owner' && answers.stageBWaive === true,
-    role,
-  });
-  const lines: QuoteLine[] = [
+  return [
     {
       id: 'stage-b-list',
       title: DOMAIN_ADD_ON_LABEL,
-      price: formatUsdFromCents(invoice.listCents),
+      price: STAGE_B_PRICE,
       detail: `List price. Optional ${DOMAIN_ADD_ON_LABEL}.`,
       highlighted: true,
     },
   ];
-  if (invoice.creditCents > 0) {
-    lines.push(
-      {
-        id: 'stage-b-credit',
-        title: DOMAIN_PACK_CREDIT_LABEL,
-        price: formatUsdFromCents(invoice.creditCents),
-        detail: 'Owner credit against the list price.',
-        highlighted: false,
-      },
-      {
-        id: 'stage-b-due',
-        title: DOMAIN_PACK_DUE_LABEL,
-        price: formatUsdFromCents(invoice.dueCents),
-        detail: 'List price minus the credit.',
-        highlighted: false,
-      },
-    );
-  }
-  return lines;
 }
 
 function adapterLines(answers: QuoteAnswers): readonly QuoteLine[] {

@@ -83,13 +83,11 @@ describe('buildQuote', () => {
     expect(quote.lines.map((line) => line.title)).not.toContain('Domain pack');
   });
 
-  it('keeps Stage B off unless asked, and ignores a guest waive', () => {
+  it('prices the domain add-on at list and does not add a credit line', () => {
     const off = buildQuote({
       hoster: 'studio',
       outcome: 'consultation',
       places: 'one',
-      stageBWaive: true,
-      viewerRole: 'guest',
     });
     expect(off.lines.some((line) => line.id.startsWith('stage-b'))).toBe(false);
 
@@ -98,26 +96,11 @@ describe('buildQuote', () => {
       outcome: 'consultation',
       places: 'one',
       stageB: true,
-      stageBWaive: true,
-      viewerRole: 'guest',
     });
     expect(on.lines.find((line) => line.id === 'stage-b-list')?.price).toBe('$297');
     expect(on.lines.find((line) => line.id === 'stage-b-list')?.title).toBe('Domain add-on');
     expect(on.lines.some((line) => line.id === 'stage-b-credit')).toBe(false);
-  });
-
-  it('shows an owner waive as the list price plus a credit', () => {
-    const quote = buildQuote({
-      hoster: 'studio',
-      outcome: 'consultation',
-      places: 'one',
-      stageB: true,
-      stageBWaive: true,
-      viewerRole: 'owner',
-    });
-    expect(quote.lines.find((line) => line.id === 'stage-b-list')?.price).toBe('$297');
-    expect(quote.lines.find((line) => line.id === 'stage-b-credit')?.price).toBe('$297');
-    expect(quote.lines.find((line) => line.id === 'stage-b-due')?.price).toBe('$0');
+    expect(JSON.stringify(on)).not.toMatch(/Domain pack credit|waivedBy|guest-waive/);
   });
 
   it('does not add a second Stage B charge when the offer already includes it', () => {
@@ -126,8 +109,6 @@ describe('buildQuote', () => {
       outcome: 'plan',
       places: 'one',
       stageB: true,
-      stageBWaive: true,
-      viewerRole: 'owner',
     });
     expect(quote.lines.find((line) => line.id === 'stage-b')?.price).toBe('Included');
     expect(quote.lines.find((line) => line.id === 'stage-b')?.title).toBe(DOMAIN_ADD_ON_LABEL);

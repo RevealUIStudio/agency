@@ -70,9 +70,9 @@ describe('domain add-on offer', () => {
   });
 
   it('keeps the invoice line and the owner credit label on the Domain add-on', () => {
-    const quoted = buildStageBInvoice({ attached: true, waive: false, role: 'guest' });
+    const quoted = buildStageBInvoice({ attached: true, waive: false, authorized: false });
     expect(quoted.lines.map((line) => line.label)).toEqual([DOMAIN_ADD_ON_LINE_ITEM]);
-    const waived = buildStageBInvoice({ attached: true, waive: true, role: 'owner' });
+    const waived = buildStageBInvoice({ attached: true, waive: true, authorized: true });
     expect(waived.lines.map((line) => line.label)).toEqual([
       DOMAIN_ADD_ON_LINE_ITEM,
       DOMAIN_PACK_CREDIT_LABEL,

@@ -56,6 +56,10 @@ export const LAUNCH_PRICE = LAUNCH_PACKAGE_PRICE;
 
 /** Domain add-on. $297 after Consultation alone. Included at Pilot and Launch. Not a homepage SKU. SKU id stays stage-b. */
 export const STAGE_B_PRICE = '$297' as const;
+/** List price in cents. Matches STAGE_B_PRICE. */
+export const STAGE_B_CENTS = 29_700 as const;
+/** Buyer line. The public name is DOMAIN_ADD_ON_LABEL. */
+export const DOMAIN_ADD_ON_LINE_ITEM = `${DOMAIN_ADD_ON_LABEL}: ${STAGE_B_PRICE}` as const;
 
 export const CARE_PRICE = '$1,997/mo' as const;
 

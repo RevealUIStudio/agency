@@ -10,9 +10,13 @@
 import { consultationDueCents, consultationHourCount } from './consultation-hours';
 import { formatConsultationRange } from './consultation-slots';
 import { DOMAIN_ADD_ON_LABEL } from './domain-pack';
-import { CONSULTATION_DELIVERABLE, STAGE_B_PRICE } from './engagements';
+import {
+  CONSULTATION_DELIVERABLE,
+  DOMAIN_ADD_ON_LINE_ITEM,
+  STAGE_B_CENTS,
+  STAGE_B_PRICE,
+} from './engagements';
 import { CONTACT_EMAIL } from './site';
-import { DOMAIN_ADD_ON_LINE_ITEM, STAGE_B_CENTS } from './stage-b-invoice';
 
 export const CONSULTATION_BOOK_INTRO =
   'Weekday slots in Eastern Time, 9:00 AM to 5:00 PM. $300 per hour. The 30-minute intro stays a separate booking.';

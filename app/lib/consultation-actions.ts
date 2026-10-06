@@ -285,13 +285,20 @@ const createCheckoutSession: ConsultationAction<CreateCheckoutInput, CheckoutSes
       lines = consultationCheckoutLines({
         hours: stored.hours,
         stageB: stored.stage_b,
+        stageBFee: stored.stage_b_fee,
         consultationPriceId: deps.consultationPriceId,
         stageBPriceId: deps.stageBPriceId,
       });
     } catch {
       return fail('checkout');
     }
-    if (lines.some((line) => line.quantity < 1 || line.price.trim() === '')) {
+    if (
+      lines.some((line) => {
+        if (line.quantity < 1) return true;
+        if ('priceData' in line) return line.priceData.unitAmount < 1;
+        return line.price.trim() === '';
+      })
+    ) {
       return fail('checkout');
     }
 

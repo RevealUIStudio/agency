@@ -167,7 +167,6 @@ describe('buyer-facing tool names', () => {
               outcome,
               places: 'one',
               stageB,
-              viewerRole: 'guest',
             }),
           ),
         );
@@ -180,14 +179,12 @@ describe('buyer-facing tool names', () => {
           outcome: 'consultation',
           places: 'one',
           stageB: true,
-          stageBWaive: true,
-          viewerRole: 'owner',
         }),
       ),
     );
 
-    const guestInvoice = buildStageBInvoice({ attached: true, waive: false, role: 'guest' });
-    const ownerInvoice = buildStageBInvoice({ attached: true, waive: true, role: 'owner' });
+    const guestInvoice = buildStageBInvoice({ attached: true, waive: false, authorized: false });
+    const ownerInvoice = buildStageBInvoice({ attached: true, waive: true, authorized: true });
     chunks.push(
       ...guestInvoice.lines.map((line) => line.label),
       ...ownerInvoice.lines.map((line) => line.label),

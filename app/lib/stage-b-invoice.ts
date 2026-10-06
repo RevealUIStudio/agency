@@ -1,14 +1,15 @@
-import { DOMAIN_ADD_ON_LABEL, DOMAIN_PACK_CREDIT_LABEL } from './domain-pack';
-import { STAGE_B_PRICE } from './engagements';
+import { DOMAIN_PACK_CREDIT_LABEL } from './domain-pack';
+import { DOMAIN_ADD_ON_LINE_ITEM, STAGE_B_CENTS } from './engagements';
 import { formatUsdFromCents } from './money';
 
-/** Buyer line item. The list price stays on the label. */
-export const DOMAIN_ADD_ON_LINE_ITEM = `${DOMAIN_ADD_ON_LABEL}: ${STAGE_B_PRICE}` as const;
+/**
+ * Server invoice for the domain add-on.
+ * Do not import this module from client routes or components.
+ * A waive is a credit against the list price, not a rewritten price.
+ * The HTTP layer decides `authorized` from STUDIO_DOMAIN_WAIVE_SECRET.
+ */
 
-/** List price is $297. An owner credit is against that list, not a rewritten price. */
-export const STAGE_B_CENTS = 29_700 as const;
-
-export type ViewerRole = 'guest' | 'owner';
+export { DOMAIN_ADD_ON_LINE_ITEM, STAGE_B_CENTS };
 
 export type InvoiceRejectReason = 'guest-waive' | 'integrity';
 
@@ -66,14 +67,14 @@ export function assertInvoiceIntegrity(invoice: StageBInvoice): void {
 
 /**
  * `attached` is the optional add-on. Default is off (attached false): no list line.
- * A guest who sets waive is rejected. An owner waive keeps the list line and adds a matching credit.
+ * `authorized` is the server secret check. A waive without it is rejected.
  */
 export function buildStageBInvoice(input: {
   readonly attached: boolean;
   readonly waive: boolean;
-  readonly role: ViewerRole;
+  readonly authorized: boolean;
 }): StageBInvoice {
-  if (input.waive && input.role !== 'owner') {
+  if (input.waive && !input.authorized) {
     throw new InvoiceRejected('guest-waive');
   }
 
@@ -90,7 +91,7 @@ export function buildStageBInvoice(input: {
     return empty;
   }
 
-  const waived = input.waive && input.role === 'owner';
+  const waived = input.waive && input.authorized;
   const lines: InvoiceLine[] = [
     { kind: 'list', sku: 'stage-b', label: DOMAIN_ADD_ON_LINE_ITEM, amountCents: STAGE_B_CENTS },
   ];
