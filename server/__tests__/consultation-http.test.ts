@@ -358,7 +358,7 @@ describe('consultation http', () => {
     const minted = await mintNetworkToken({
       secret,
       now: NOW,
-      email: 'kayla@example.com',
+      email: 'network_buyer@example.com',
       jti: 'jti-bound',
     });
     const tampered = `${minted.token.slice(0, -1)}${minted.token.endsWith('a') ? 'b' : 'a'}`;
