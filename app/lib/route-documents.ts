@@ -23,6 +23,8 @@ import {
   CONSULTATION_SUCCESS,
   STAGE_B_ADDON,
 } from './consultation-buyer';
+import { DOMAIN_ADD_ON_LABEL } from './domain-pack';
+import { STAGE_B_PRICE } from './engagements';
 import { HOME_DOCUMENT_TITLE, HOME_META_DESCRIPTION } from './home-document';
 
 export const STUDIO_ORIGIN = 'https://revealuistudio.com';
@@ -31,8 +33,7 @@ const NOT_FOUND_TITLE = '404 | RevealUI Studio';
 const NOT_FOUND_DESCRIPTION = 'The page you are looking for does not exist or has moved.';
 
 const QUOTE_TITLE = 'Quote | RevealUI Studio';
-const QUOTE_DESCRIPTION =
-  'Studio quote. Consultation $300/hr. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. Domain add-on $297. Licenses live on revealui.com.';
+const QUOTE_DESCRIPTION = `Studio quote. Consultation $300/hr. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. ${DOMAIN_ADD_ON_LABEL} ${STAGE_B_PRICE}. Licenses live on revealui.com.`;
 
 export interface StudioHead {
   readonly path: string;
@@ -87,14 +88,12 @@ const ROUTE_SPECS: readonly RouteSpec[] = [
   {
     path: '/services',
     title: 'Offers | RevealUI Studio',
-    description:
-      'Consultation $300 per hour when you book the slot. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. Domain add-on $297. Pilot and Launch are invoiced after we agree.',
+    description: `Consultation $300 per hour when you book the slot. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. ${DOMAIN_ADD_ON_LABEL} ${STAGE_B_PRICE}. Pilot and Launch are invoiced after we agree.`,
   },
   {
     path: '/process',
     title: 'How we work | RevealUI Studio',
-    description:
-      'How a RevealUI Studio engagement runs. Consultation $300/hr. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. Domain add-on $297. Book a 30-minute intro on Google Calendar.',
+    description: `How a RevealUI Studio engagement runs. Consultation $300/hr. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Care $1,997/mo. ${DOMAIN_ADD_ON_LABEL} ${STAGE_B_PRICE}. Book a 30-minute intro on Google Calendar.`,
   },
   {
     path: '/blog',

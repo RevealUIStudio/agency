@@ -1,19 +1,19 @@
 import { DOCS_URL } from '@/lib/site';
 
-/** boundary-blog-studio-docs-ref-2026-09-26. Visible text is the locked sentence. */
+/** Visible pointer to product setup steps. */
 export function BlogDocsBoundary() {
   return (
     <>
-      Blog is on Studio.{' '}
+      Need setup steps? Read the{' '}
       <a
         href={DOCS_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="font-semibold text-foreground hover:underline"
       >
-        Docs
-      </a>{' '}
-      are product reference.
+        RevealUI docs
+      </a>
+      .
     </>
   );
 }

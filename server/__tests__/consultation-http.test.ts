@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import type { Booking, ConfirmationEmail } from '../../app/lib/consultation-booking';
 import { NETWORK_LINK_USED } from '../../app/lib/consultation-buyer';
 import {
-  DEFAULT_CONSULTATION_PRICE_ID,
+  type CheckoutLine,
+  consultationPriceDataLine,
   DEFAULT_STAGE_B_PRICE_ID,
+  domainAddOnPriceDataLine,
 } from '../../app/lib/consultation-checkout';
 import { mintNetworkToken } from '../../app/lib/consultation-network-waive';
 import type { OwnerPaidNotice } from '../../app/lib/consultation-owner';
@@ -45,7 +47,7 @@ function harness(
 ) {
   const calendar = createMemoryCalendar(seed);
   const checkouts: Array<{
-    lines: readonly { price: string; quantity: number }[];
+    lines: readonly CheckoutLine[];
     successUrl: string;
     cancelUrl: string;
     stageBFee: string;
@@ -228,7 +230,7 @@ describe('consultation http', () => {
     const saved = (await first.json()) as { booking_id: string; checkout_url: string };
     expect(saved.booking_id).toBe('book_1');
     expect(saved.checkout_url).toBe('https://checkout.stripe.com/c/pay/cs_test_1');
-    expect(checkouts[0]?.lines).toEqual([{ price: DEFAULT_CONSULTATION_PRICE_ID, quantity: 1 }]);
+    expect(checkouts[0]?.lines).toEqual([consultationPriceDataLine(1)]);
     expect(checkouts[0]?.successUrl).toBe(
       'https://revealuistudio.com/consultation/book/success?booking=book_1&session_id={CHECKOUT_SESSION_ID}',
     );
@@ -247,10 +249,7 @@ describe('consultation http', () => {
       deps,
     );
     expect(response.status).toBe(200);
-    expect(checkouts[0]?.lines).toEqual([
-      { price: DEFAULT_CONSULTATION_PRICE_ID, quantity: 1 },
-      { price: DEFAULT_STAGE_B_PRICE_ID, quantity: 1 },
-    ]);
+    expect(checkouts[0]?.lines).toEqual([consultationPriceDataLine(1), domainAddOnPriceDataLine()]);
     expect(checkouts[0]?.stageBFee).toBe('paid_addon');
     expect(checkouts[0]?.networkJti).toBeNull();
     expect(checkouts[0]?.couponId).toBeUndefined();
@@ -325,7 +324,8 @@ describe('consultation http', () => {
     );
     expect(response.status).toBe(200);
     const params = new URLSearchParams(forms[0]);
-    expect(params.get('line_items[0][price]')).toBe(DEFAULT_CONSULTATION_PRICE_ID);
+    expect(params.get('line_items[0][price]')).toBeNull();
+    expect(params.get('line_items[0][price_data][product_data][name]')).toBe('Consultation');
     expect(params.get('line_items[0][quantity]')).toBe('1');
     expect(params.get('line_items[1][price]')).toBe(DEFAULT_STAGE_B_PRICE_ID);
     expect(params.get('line_items[1][quantity]')).toBe('1');
@@ -504,7 +504,7 @@ describe('consultation http', () => {
     expect(owners[0]?.text).toContain('Amount: $300');
     expect(owners[0]?.text).toContain(`Google Meet: ${paid?.meet_link}`);
     expect(owners[0]?.text).toContain(`Booking: ${saved.booking_id}`);
-    expect(owners[0]?.text).toContain('Stage B: no');
+    expect(owners[0]?.text).toContain('Domain add-on: no');
     expect(owners[0]?.text).toContain('Network: no');
     expect(owners[0]?.text).not.toContain('\u2014');
 
@@ -679,7 +679,7 @@ describe('consultation http', () => {
     expect(message).toContain('Amount: $300');
     expect(message).toContain('Google Meet: https://meet.google.com/lookup/book_1');
     expect(message).toContain(`Booking: ${saved.booking_id}`);
-    expect(message).toContain('Stage B: no');
+    expect(message).toContain('Domain add-on: no');
     expect(message).toContain('Network: no');
     expect(message).not.toContain('\u2014');
     expect(calls.some((call) => call.url.includes('api.resend.com'))).toBe(false);

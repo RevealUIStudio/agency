@@ -1,13 +1,17 @@
 /**
- * Buyer-facing domain pack. The Stripe SKU stays `stage-b`.
- * Public book copy must not say free, included, waived, or credited.
+ * Buyer-facing Domain add-on. The Stripe SKU stays `stage-b`.
+ * $297 after Consultation alone. Included with Pilot and Launch.
+ * Public copy must not describe a waiver.
  */
 
 import { CUSTOM_DOMAIN_CNAME_TARGET } from './share-stage-b';
 
-export const DOMAIN_PACK_LIST_LABEL = 'Domain pack' as const;
-export const DOMAIN_PACK_CREDIT_LABEL = 'Domain pack credit' as const;
-export const DOMAIN_PACK_DUE_LABEL = 'Domain pack due' as const;
+/** Public name for the $297 custom-domain line. SKU id stays stage-b. */
+export const DOMAIN_ADD_ON_LABEL = 'Domain add-on' as const;
+
+/** Owner ledger lines. Not shown on the public book page. */
+export const DOMAIN_PACK_CREDIT_LABEL = `${DOMAIN_ADD_ON_LABEL} credit` as const;
+export const DOMAIN_PACK_DUE_LABEL = `${DOMAIN_ADD_ON_LABEL} due` as const;
 
 export const DOMAIN_PACK_PAGES = [
   { id: 'dns', path: '/dns', file: 'dns.txt', title: 'DNS card' },
@@ -47,7 +51,7 @@ export function domainPackLines(id: DomainPackPageId, slug: string): readonly st
       return [
         'This page records the recommended next step from the consultation.',
         'Any alternative discussed in the session is recorded alongside it.',
-        'This page is the path note for the domain pack.',
+        `This page is the path note for the ${DOMAIN_ADD_ON_LABEL}.`,
       ];
     case 'proof-gap':
       return [

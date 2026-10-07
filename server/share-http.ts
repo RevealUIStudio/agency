@@ -14,7 +14,7 @@ import {
   FulfillmentError,
   fulfillConsultation,
 } from './consultation-fulfillment';
-import { type SessionEnv, verifySession } from './session';
+import { bearerMatchesSecret, type SessionEnv, verifySession } from './session';
 import { readShareSeed, SHARE_SEED_FILES } from './share-seed';
 
 const processAudit = createAuditLog();
@@ -121,7 +121,10 @@ function parseSharePath(url: URL): { slug: string; file: string } | null {
 function depsOf(deps?: ShareDeps): { audit: AuditLog; env: SessionEnv } {
   return {
     audit: deps?.audit ?? processAudit,
-    env: deps?.env ?? { ownerSession: process.env.STUDIO_OWNER_SESSION },
+    env: deps?.env ?? {
+      ownerSession: process.env.STUDIO_OWNER_SESSION,
+      domainWaiveSecret: process.env.STUDIO_DOMAIN_WAIVE_SECRET,
+    },
   };
 }
 
@@ -276,7 +279,8 @@ export async function handleShareRequest(request: Request, deps?: ShareDeps): Pr
       return json(400, { error: 'body' }, event);
     }
 
-    // Body `role` is ignored. The session established above is the only actor.
+    // Body `role` is ignored. A waive is authorized only when the bearer
+    // matches STUDIO_DOMAIN_WAIVE_SECRET. An unset secret fails closed above.
     const hours = body.consultationHours === undefined ? 1 : body.consultationHours;
     let consultationList = 0;
     try {
@@ -295,11 +299,22 @@ export async function handleShareRequest(request: Request, deps?: ShareDeps): Pr
 
     const attached = body.attached === true;
     const waive = body.waive === true;
+    if (waive && !env.domainWaiveSecret?.trim()) {
+      const event = audit.append({
+        action: 'invoice.issue',
+        tenant,
+        actor: session.role,
+        decision: 'deny',
+        reason: 'waive-unconfigured',
+      });
+      return json(503, { error: 'waive-unconfigured' }, event);
+    }
+    const authorized = waive && bearerMatchesSecret(request, env.domainWaiveSecret);
     try {
       const stageB: StageBInvoice = buildStageBInvoice({
         attached,
         waive,
-        role: session.role,
+        authorized,
       });
       const event = audit.append({
         action: 'invoice.issue',

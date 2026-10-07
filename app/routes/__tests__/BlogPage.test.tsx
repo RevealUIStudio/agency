@@ -33,7 +33,7 @@ describe('Studio blog routes', () => {
       screen.getByRole('heading', { level: 1, name: STUDIO_BLOG_HOME_H1 }),
     ).toBeInTheDocument();
     expect(screen.getByText(STUDIO_BLOG_HOME_SUB)).toBeInTheDocument();
-    const docs = screen.getByRole('link', { name: 'Docs' });
+    const docs = screen.getByRole('link', { name: 'RevealUI docs' });
     expect(docs).toHaveAttribute('href', 'https://docs.revealui.com');
     expect(docs.parentElement?.textContent).toBe(BLOG_DOCS_BOUNDARY);
     const essay = screen.getByRole('link', {
@@ -62,7 +62,7 @@ describe('Studio blog routes', () => {
     );
     const back = screen.getByRole('link', { name: 'Back to Blog' });
     expect(back).toHaveAttribute('href', '/blog');
-    const docs = screen.getByRole('link', { name: 'Docs' });
+    const docs = screen.getByRole('link', { name: 'RevealUI docs' });
     expect(docs).toHaveAttribute('href', 'https://docs.revealui.com');
     expect(docs.parentElement?.textContent).toContain(BLOG_DOCS_BOUNDARY);
   });

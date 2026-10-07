@@ -43,7 +43,7 @@ describe('consultation mail copy', () => {
         expect(text).toContain(`Your session includes: ${CONSULTATION_DELIVERABLE}`);
         expect(text).toContain(
           stage_b
-            ? 'The domain pack ($297) is on this payment.'
+            ? 'The Domain add-on ($297) is on this payment.'
             : 'This payment is the consultation only.',
         );
         expect(text).not.toMatch(/living pack|session share URL|one business day/i);
@@ -61,8 +61,13 @@ describe('consultation mail copy', () => {
     const notice = buildOwnerPaidNotice(booking, null);
     expect(notice.subject).toContain('RevealUI Studio');
     expect(notice.text).toContain(`Google Meet: ${CONSULTATION_MEET_FALLBACK}`);
+    expect(notice.text).toContain('Domain add-on: no');
+    expect(notice.text).not.toContain('Stage B:');
     expect(notice.text).not.toContain('\u2014');
     expect(notice.to).toBe('founder@revealui.com');
+    const withAddOn = buildOwnerPaidNotice({ ...booking, stage_b: true }, null);
+    expect(withAddOn.text).toContain('Domain add-on: yes');
+    expect(withAddOn.text).not.toContain('Stage B:');
   });
 
   it('does not mount the product wordmark on Studio consultation mail', () => {

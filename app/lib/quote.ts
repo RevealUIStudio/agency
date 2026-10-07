@@ -16,7 +16,7 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
-import { DOMAIN_PACK_CREDIT_LABEL, DOMAIN_PACK_DUE_LABEL } from '@/lib/domain-pack';
+import { DOMAIN_ADD_ON_LABEL } from '@/lib/domain-pack';
 import {
   ADAPTER,
   ADAPTER_CALC_LABEL,
@@ -27,20 +27,21 @@ import {
   ADAPTER_INCLUDED_ON_PILOT,
   ADAPTER_ROLE,
   CARE,
+  CARE_PUBLIC_LABEL,
   CONSULTATION,
+  DOMAIN_ADD_ON_LINE_ITEM,
   LAUNCH,
   PILOT,
+  PILOT_CREDIT_LINE,
   STAGE_B_PRICE,
 } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { PRODUCT_SITE_URL } from '@/lib/site';
-import { buildStageBInvoice, type ViewerRole } from '@/lib/stage-b-invoice';
 
 export type Hoster = 'self-host' | 'studio';
-export type Outcome = 'consultation' | 'plan' | 'launch';
+export type Outcome = 'consultation' | 'plan' | 'launch' | 'care';
 export type Places = 'one' | 'many';
 
-export type { ViewerRole };
 export { CONSULTATION_HOUR_OPTIONS, consultationHourLabel, DEFAULT_CONSULTATION_HOURS };
 
 export const DEFAULT_HOSTER: Hoster = 'studio';
@@ -62,6 +63,7 @@ export const OUTCOME_OPTIONS = [
     value: 'launch',
     label: 'Launch: money path live on your accounts (includes up to 3 Adapters)',
   },
+  { value: 'care', label: CARE_PUBLIC_LABEL },
 ] as const satisfies readonly { value: Outcome; label: string }[];
 
 export const PLACES_OPTIONS = [
@@ -72,13 +74,15 @@ export const PLACES_OPTIONS = [
 export const QUOTE_CALCULATOR_HEADING = 'Find your starting point.' as const;
 
 export const QUOTE_CALCULATOR_LEAD =
-  `Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. ${ADAPTER.name} ${ADAPTER.price}. ${CARE.name} ${CARE.price}. Domain add-on ${STAGE_B_PRICE}. Product licenses are separate.` as const;
+  `Choose who will implement the system, the outcome you need, and the number of sites. The result shows the relevant engagement and listed price. ${ADAPTER.name} ${ADAPTER.price}. ${CARE.name} ${CARE.price}. ${DOMAIN_ADD_ON_LABEL} ${STAGE_B_PRICE}. Product licenses are separate.` as const;
 
 export const CONSULTATION_QUOTE_DETAIL =
   'A focused review of your system. You receive session notes and a recommended next step. Pay $300 when you book the hour. Implementation and ongoing support are separate.' as const;
 
 export const PROOF_QUOTE_DETAIL =
-  'One supported action on one site, with a record you can inspect. Includes 1 Adapter (one tool category). The domain pack is included. Invoice $3,997 before work starts. Credit toward Launch follows the agreed 45-day terms.' as const;
+  `One supported action on one site, with a record you can inspect. Includes 1 Adapter (one tool category). The ${DOMAIN_ADD_ON_LABEL} is included. Invoice $3,997 before work starts. ${PILOT_CREDIT_LINE}` as const;
+
+export const CARE_QUOTE_DETAIL = CARE.description;
 
 export const LAUNCH_QUOTE_DETAIL =
   'One agreed business flow on your accounts, with up to 3 Adapters (one tool category each), architecture, a runbook, and 30 days of async stabilization. Half before work starts, half on delivery.' as const;
@@ -108,11 +112,13 @@ export const ADAPTER_EXTRA_OPTIONS = [0, 1, 2, 3, 4, 5, 6] as const;
 export const ADAPTER_CALCULATOR_HELP =
   `Pilot includes ${ADAPTER_INCLUDED_ON_PILOT}. Launch includes up to ${ADAPTER_INCLUDED_ON_LAUNCH}. This count is extras beyond that, at ${ADAPTER.price} each (one tool category). ${ADAPTER_CARE_HELP} Additional work is scoped before invoicing.` as const;
 
-/** Buyer name for the $297 custom-domain line on the calculator. SKU id stays stage-b. */
-export const DOMAIN_ADD_ON_LABEL = 'Domain add-on' as const;
+export const CARE_ADAPTER_CALCULATOR_HELP =
+  `Add ${ADAPTER.name} lines at ${ADAPTER.price} each. One tool category. Not included in ${CARE.price}.` as const;
 
-/** Calculator checkbox. Book page keeps its own label. */
-export const CALCULATOR_DOMAIN_ADD_ON = `${DOMAIN_ADD_ON_LABEL}: ${STAGE_B_PRICE}` as const;
+export { DOMAIN_ADD_ON_LABEL };
+
+/** Calculator checkbox. Book page uses the same line item. */
+export const CALCULATOR_DOMAIN_ADD_ON = DOMAIN_ADD_ON_LINE_ITEM;
 
 export function adapterExtraCount(count: number | undefined): number {
   if (count === undefined) return ADAPTER_EXTRA_MIN;
@@ -160,8 +166,6 @@ export interface QuoteAnswers {
    * SKU id stays stage-b.
    */
   readonly stageB?: boolean;
-  readonly stageBWaive?: boolean;
-  readonly viewerRole?: ViewerRole;
   /** Adapter units beyond the included count (Pilot 1, Launch 3). Default 0. */
   readonly adapterExtras?: number;
 }
@@ -177,6 +181,7 @@ export function consultationQuoteDetail(hours: number): string {
 }
 
 function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
+  if (answers.outcome === 'care') return [];
   const included = answers.outcome === 'plan' || answers.outcome === 'launch';
   if (included) {
     return [
@@ -190,45 +195,32 @@ function stageBLines(answers: QuoteAnswers): readonly QuoteLine[] {
     ];
   }
   if (answers.stageB !== true) return [];
-  const role = answers.viewerRole === 'owner' ? 'owner' : 'guest';
-  const invoice = buildStageBInvoice({
-    attached: true,
-    waive: role === 'owner' && answers.stageBWaive === true,
-    role,
-  });
-  const lines: QuoteLine[] = [
+  return [
     {
       id: 'stage-b-list',
       title: DOMAIN_ADD_ON_LABEL,
-      price: formatUsdFromCents(invoice.listCents),
-      detail: 'List price. Optional Domain add-on.',
+      price: STAGE_B_PRICE,
+      detail: `List price. Optional ${DOMAIN_ADD_ON_LABEL}.`,
       highlighted: true,
     },
   ];
-  if (invoice.creditCents > 0) {
-    lines.push(
-      {
-        id: 'stage-b-credit',
-        title: DOMAIN_PACK_CREDIT_LABEL,
-        price: formatUsdFromCents(invoice.creditCents),
-        detail: 'Owner credit against the list price.',
-        highlighted: false,
-      },
-      {
-        id: 'stage-b-due',
-        title: DOMAIN_PACK_DUE_LABEL,
-        price: formatUsdFromCents(invoice.dueCents),
-        detail: 'List price minus the credit.',
-        highlighted: false,
-      },
-    );
-  }
-  return lines;
 }
 
 function adapterLines(answers: QuoteAnswers): readonly QuoteLine[] {
   if (answers.outcome === 'consultation') return [];
   const extras = adapterExtraCount(answers.adapterExtras);
+  if (answers.outcome === 'care') {
+    if (extras === 0) return [];
+    return [
+      {
+        id: 'adapter-extra',
+        title: extras === 1 ? ADAPTER.name : `${ADAPTER.name} (${extras})`,
+        price: formatUsdFromCents(ADAPTER_CENTS * extras),
+        detail: `${ADAPTER_CARE_HELP} One tool category per unit.`,
+        highlighted: true,
+      },
+    ];
+  }
   const category = `One tool category: ${ADAPTER_CATEGORIES}.`;
   const onPilot = answers.outcome === 'plan';
   const lines: QuoteLine[] = [
@@ -280,6 +272,13 @@ function studioLines(answers: QuoteAnswers): readonly QuoteLine[] {
       detail: LAUNCH_QUOTE_DETAIL,
       highlighted: answers.outcome === 'launch',
     },
+    {
+      id: CARE.id,
+      title: CARE.name,
+      price: CARE.price,
+      detail: CARE_QUOTE_DETAIL,
+      highlighted: answers.outcome === 'care',
+    },
   ];
   return [
     ...offers.filter((line) => line.highlighted),
@@ -317,7 +316,9 @@ export function buildQuote(answers: QuoteAnswers): Quote {
         ? CONSULTATION.name
         : answers.outcome === 'plan'
           ? PILOT.name
-          : LAUNCH.name,
+          : answers.outcome === 'launch'
+            ? LAUNCH.name
+            : CARE.name,
     body: STUDIO_QUOTE_BODY,
     lines: studioLines(answers),
     stopQuoting: false,

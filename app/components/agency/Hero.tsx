@@ -5,6 +5,7 @@ import {
   RECEIPT_HERO_LINES,
   RECEIPT_HERO_TITLE,
 } from '@/content/receipt';
+import { DOMAIN_ADD_ON_LABEL } from '@/lib/domain-pack';
 import { ADAPTER, CARE, CONSULTATION, LAUNCH, PILOT, STAGE_B_PRICE } from '@/lib/engagements';
 import { HOME_DOCUMENT_TITLE, HOME_META_DESCRIPTION } from '@/lib/home-document';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
@@ -26,7 +27,7 @@ export const HERO_RESULT =
   'Work directly with Joshua Vaughn, the founder and builder of RevealUI. We agree on scope, deliverables, and maintenance responsibilities before work starts.' as const;
 
 export const HERO_MENU =
-  `${CONSULTATION.name} ${CONSULTATION.price}/hr · ${PILOT.name} ${PILOT.price} (includes 1 Adapter) · ${LAUNCH.name} ${LAUNCH.price} (up to 3 Adapters) · ${ADAPTER.name} ${ADAPTER.price} · ${CARE.name} ${CARE.price} · Domain add-on ${STAGE_B_PRICE}.` as const;
+  `${CONSULTATION.name} ${CONSULTATION.price}/hr · ${PILOT.name} ${PILOT.price} (includes 1 Adapter) · ${LAUNCH.name} ${LAUNCH.price} (up to 3 Adapters) · ${ADAPTER.name} ${ADAPTER.price} · ${CARE.name} ${CARE.price} · ${DOMAIN_ADD_ON_LABEL} ${STAGE_B_PRICE}.` as const;
 
 export const HERO_PROOF = RECEIPT_HERO_CAPTION.text;
 
