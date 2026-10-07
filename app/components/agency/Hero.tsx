@@ -7,21 +7,13 @@ import {
 } from '@/content/receipt';
 import { DOMAIN_ADD_ON_LABEL } from '@/lib/domain-pack';
 import { ADAPTER, CARE, CONSULTATION, LAUNCH, PILOT, STAGE_B_PRICE } from '@/lib/engagements';
+import { HOME_DOCUMENT_TITLE, HOME_META_DESCRIPTION } from '@/lib/home-document';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
+
+export { HOME_DOCUMENT_TITLE, HOME_META_DESCRIPTION };
 
 /** Visible H1. Known-for lock: agentic business runtime they operate on their domain. */
 export const HERO_HEADLINE = 'Build a business workflow your team can operate.' as const;
-
-/** Document title / OG title. Same known-for sentence as the H1, without the period. */
-export const HOME_DOCUMENT_TITLE =
-  'RevealUI Studio | Build a business workflow your team can operate' as const;
-
-/**
- * Home meta / OG / Twitter description. Known-for H1 + proof subline + ladder.
- * Pain is not the document title. Proof stays out of the H1.
- */
-export const HOME_META_DESCRIPTION =
-  'Work with Joshua Vaughn to review, test, or launch a RevealUI business flow on your accounts. Book a free 30-minute intro with RevealUI Studio.' as const;
 
 /** Meta-only known-for proof line. Visible hero breath is pain → result → menu → PROOF. */
 export const HERO_SUBLINE =

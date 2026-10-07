@@ -3,6 +3,7 @@
   "framework": "vite",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
+  "trailingSlash": false,
   "ignoreCommand": "node scripts/vercel-ignored-build-step.mjs",
   "headers": [
     {
@@ -109,7 +110,17 @@
       "permanent": true
     },
     {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/pricing",
+      "destination": "/#calculator",
+      "permanent": true
+    },
+    {
+      "source": "/pricing/",
       "destination": "/#calculator",
       "permanent": true
     },
@@ -119,7 +130,17 @@
       "permanent": true
     },
     {
+      "source": "/products/",
+      "destination": "/#calculator",
+      "permanent": true
+    },
+    {
       "source": "/catalog",
+      "destination": "/#calculator",
+      "permanent": true
+    },
+    {
+      "source": "/catalog/",
       "destination": "/#calculator",
       "permanent": true
     },
@@ -268,6 +289,12 @@
     },
     {
       "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": ".+\\.revealuistudio\\.com"
+        }
+      ],
       "destination": "/index.html"
     }
   ]
