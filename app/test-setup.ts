@@ -5,8 +5,8 @@ import { vi } from 'vitest';
 // "Not implemented: Window's scrollTo() method".
 vi.stubGlobal('scrollTo', vi.fn());
 
-// The quote calculator asks the server who is viewing. Tests stay guests
-// unless a case passes viewerRole="owner". A live fetch would wait on localhost.
+// Some pages ask the server who is viewing. Tests stay guests.
+// A live fetch would wait on localhost.
 const nativeFetch = globalThis.fetch.bind(globalThis);
 vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) => {
   const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;

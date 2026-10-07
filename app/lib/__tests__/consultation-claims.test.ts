@@ -109,6 +109,6 @@ describe('consultation public claims', () => {
       NETWORK_LINK_USED,
     ];
     for (const line of lines) expect(line).not.toMatch(leak);
-    expect(STAGE_B_ON_ORDER).toBe('Domain pack is on this order.');
+    expect(STAGE_B_ON_ORDER).toBe('Domain add-on is on this order.');
   });
 });

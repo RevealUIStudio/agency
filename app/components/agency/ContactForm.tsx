@@ -10,13 +10,14 @@ import {
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { submitContact } from '@/lib/api';
-import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
+import { CARE, CARE_PUBLIC_LABEL, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 const topics = [
   { value: CONSULTATION.id, label: `${CONSULTATION.name} (${CONSULTATION.price})` },
   { value: PILOT.id, label: `${PILOT.name} (${PILOT.price}, includes 1 Adapter)` },
   { value: LAUNCH.id, label: `${LAUNCH.name} (${LAUNCH.price})` },
+  { value: CARE.id, label: CARE_PUBLIC_LABEL },
   { value: 'general', label: "I'm not sure which engagement fits" },
 ] as const;
 

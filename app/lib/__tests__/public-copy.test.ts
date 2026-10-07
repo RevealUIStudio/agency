@@ -12,12 +12,20 @@ import {
 } from '@/components/agency/Hero';
 import {
   PROOF_GAP_CHECK_COUNT,
+  PROOF_GAP_LADDER,
   PROOF_GAP_SCORE_PROMPT,
   PROOF_GAP_SECTIONS,
 } from '@/content/proof-gap';
 import { engagementLabels } from '@/data/cases';
 import { findBannedToolNames } from '@/lib/buyer-facing-names';
-import { CONSULTATION_DELIVERABLE, PUBLIC_OFFERS } from '@/lib/engagements';
+import {
+  CARE,
+  CONSULTATION_DELIVERABLE,
+  LAUNCH,
+  PILOT,
+  PUBLIC_OFFERS,
+  STAGE_B_PRICE,
+} from '@/lib/engagements';
 import {
   OG_CARD_BOOKING_LINE,
   OG_CARD_HEADLINE,
@@ -379,15 +387,18 @@ describe('public copy gates', () => {
     expect(createHash('sha256').update(mark).digest('hex')).toBe(
       'a94031503236900c7711cc3c9b766e584fc1079ff820a05a969e8cc1d7acfa33',
     );
-    expect(nav).toContain('/revealui-mark.svg');
-    expect(nav).toContain('CIRCUIT_R_NAV_PX = 48');
-    expect(nav).toContain('overflow-hidden');
+    expect(nav).toContain('RevealUIWordmark');
+    expect(nav).toContain('aria-label="RevealUI Studio home"');
+    expect(nav).not.toContain('/revealui-mark.svg');
+    expect(nav).not.toContain('CIRCUIT_R_NAV_PX');
+    expect(nav).not.toContain('data-circuit-r-chrome');
     expect(nav).not.toContain('h-9 w-auto');
     expect(nav).not.toContain('w-9');
     expect(nav).not.toContain('width={36}');
     expect(nav).not.toContain('/favicon.svg');
     expect(nav).not.toContain('/icon-mark.svg');
-    expect(nav).not.toContain('wordmark');
+    expect(nav).not.toContain('wordmark-light');
+    expect(nav).not.toContain('wordmark-dark');
     expect(readFileSync(path.join(repoRoot, 'index.html'), 'utf8')).toContain(
       '"logo": "https://revealuistudio.com/favicon.svg"',
     );
@@ -514,16 +525,17 @@ describe('public copy gates', () => {
     expect(pngLatin1).not.toContain('Architecture artifact bundle and review');
   });
 
-  it('keeps chrome free of a nav wordmark, a repeated email, and a raw docs host', () => {
+  it('keeps chrome on the presentation wordmark, without a repeated email or a raw docs host', () => {
     const nav = readFileSync(path.join(repoRoot, 'app/components/NavBar.tsx'), 'utf8');
     const footer = readFileSync(path.join(repoRoot, 'app/components/Footer.tsx'), 'utf8');
-    expect(nav).not.toMatch(/RevealUI/);
-    expect(nav).not.toMatch(/Studio/);
+    expect(nav).toContain('RevealUIWordmark');
+    expect(nav).toContain('RevealUI Studio home');
     expect(nav).not.toContain('CONTACT_EMAIL');
     const blogCopy = readFileSync(path.join(repoRoot, 'app/lib/blog-copy.ts'), 'utf8');
     expect(blogCopy).toContain("export const DOCS_NAV_LABEL = 'Docs'");
     expect(blogCopy).toContain("export const BLOG_NAV_LABEL = 'Blog'");
-    expect(blogCopy).toContain('Blog is on Studio. Docs are product reference.');
+    expect(blogCopy).toContain('Need setup steps? Read the RevealUI docs.');
+    expect(blogCopy).not.toContain('Blog is on Studio. Docs are product reference.');
     expect(footer).toContain('DOCS_NAV_LABEL');
     expect(footer).not.toContain('Documentation');
     expect(footer).not.toMatch(/docs\.revealui\.com/);
@@ -907,8 +919,13 @@ describe('public copy gates', () => {
     expect(copy).toContain("PROOF_GAP_DOCUMENT_TITLE = 'Proof-gap checklist | RevealUI Studio'");
     expect(copy).toContain("PROOF_GAP_CTA = 'Ask about a checklist review'");
     expect(copy).toContain('An action record names who acted');
-    expect(copy).toContain('Pilot $3,997');
-    expect(copy).toContain('Launch $14,500');
+    expect(PROOF_GAP_LADDER).toContain(`${PILOT.name} ${PILOT.price}`);
+    expect(PROOF_GAP_LADDER).toContain(`${LAUNCH.name} ${LAUNCH.price}`);
+    expect(PROOF_GAP_LADDER).toContain(`${CARE.name} ${CARE.price}`);
+    expect(PROOF_GAP_LADDER).toContain(STAGE_B_PRICE);
+    expect(copy).toContain('PILOT.price');
+    expect(copy).toContain('CARE.price');
+    expect(copy).toContain('Pilot. $3,997');
     expect(copy).toContain(
       'This checklist is a planning aid, not a certification or validated risk score.',
     );

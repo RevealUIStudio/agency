@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { ADAPTER_CALC_LABEL, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
+import {
+  ADAPTER_CALC_LABEL,
+  CARE,
+  CARE_PUBLIC_LABEL,
+  CONSULTATION,
+  LAUNCH,
+  PILOT,
+  PILOT_CREDIT_LINE,
+} from '@/lib/engagements';
 import {
   buildQuote,
   DEFAULT_HOSTER,
@@ -75,13 +83,11 @@ describe('buildQuote', () => {
     expect(quote.lines.map((line) => line.title)).not.toContain('Domain pack');
   });
 
-  it('keeps Stage B off unless asked, and ignores a guest waive', () => {
+  it('prices the domain add-on at list and does not add a credit line', () => {
     const off = buildQuote({
       hoster: 'studio',
       outcome: 'consultation',
       places: 'one',
-      stageBWaive: true,
-      viewerRole: 'guest',
     });
     expect(off.lines.some((line) => line.id.startsWith('stage-b'))).toBe(false);
 
@@ -90,26 +96,11 @@ describe('buildQuote', () => {
       outcome: 'consultation',
       places: 'one',
       stageB: true,
-      stageBWaive: true,
-      viewerRole: 'guest',
     });
     expect(on.lines.find((line) => line.id === 'stage-b-list')?.price).toBe('$297');
     expect(on.lines.find((line) => line.id === 'stage-b-list')?.title).toBe('Domain add-on');
     expect(on.lines.some((line) => line.id === 'stage-b-credit')).toBe(false);
-  });
-
-  it('shows an owner waive as the list price plus a credit', () => {
-    const quote = buildQuote({
-      hoster: 'studio',
-      outcome: 'consultation',
-      places: 'one',
-      stageB: true,
-      stageBWaive: true,
-      viewerRole: 'owner',
-    });
-    expect(quote.lines.find((line) => line.id === 'stage-b-list')?.price).toBe('$297');
-    expect(quote.lines.find((line) => line.id === 'stage-b-credit')?.price).toBe('$297');
-    expect(quote.lines.find((line) => line.id === 'stage-b-due')?.price).toBe('$0');
+    expect(JSON.stringify(on)).not.toMatch(/Domain pack credit|waivedBy|guest-waive/);
   });
 
   it('does not add a second Stage B charge when the offer already includes it', () => {
@@ -118,8 +109,6 @@ describe('buildQuote', () => {
       outcome: 'plan',
       places: 'one',
       stageB: true,
-      stageBWaive: true,
-      viewerRole: 'owner',
     });
     expect(quote.lines.find((line) => line.id === 'stage-b')?.price).toBe('Included');
     expect(quote.lines.find((line) => line.id === 'stage-b')?.title).toBe(DOMAIN_ADD_ON_LABEL);
@@ -168,6 +157,32 @@ describe('buildQuote', () => {
     expect(QUOTE_CALCULATOR_LEAD).toContain('Domain add-on $297');
     expect(QUOTE_CALCULATOR_LEAD).not.toMatch(/Stage B/);
     expect(QUOTE_CALCULATOR_LEAD).not.toContain('\u2014');
+  });
+
+  it('quotes Care as optional monthly support and prices added Adapters', () => {
+    const quiet = buildQuote({ hoster: 'studio', outcome: 'care', places: 'one' });
+    expect(quiet.heading).toBe(CARE.name);
+    expect(quiet.lines.map((line) => line.price)).toEqual([CARE.price]);
+    expect(quiet.lines.some((line) => line.id.startsWith('stage-b'))).toBe(false);
+    expect(quiet.lines.some((line) => line.id.startsWith('adapter'))).toBe(false);
+
+    const withAdapter = buildQuote({
+      hoster: 'studio',
+      outcome: 'care',
+      places: 'one',
+      adapterExtras: 1,
+      stageB: true,
+    });
+    expect(withAdapter.lines.map((line) => line.title)).toEqual([CARE.name, 'Adapter']);
+    expect(withAdapter.lines.map((line) => line.price)).toEqual([CARE.price, '$2,497']);
+    expect(withAdapter.lines.some((line) => line.id.startsWith('stage-b'))).toBe(false);
+    expect(CARE_PUBLIC_LABEL).toBe(`${CARE.name} ${CARE.price}`);
+  });
+
+  it('uses the locked Pilot credit sentence', () => {
+    const pilot = buildQuote({ hoster: 'studio', outcome: 'plan', places: 'one' });
+    expect(pilot.lines[0]?.detail).toContain(PILOT_CREDIT_LINE);
+    expect(pilot.lines[0]?.detail).not.toContain('agreed 45-day terms');
   });
 
   it('never adds Adapter lines to a Consultation, even with stale extra answers', () => {

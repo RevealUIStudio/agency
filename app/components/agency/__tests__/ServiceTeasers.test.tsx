@@ -2,11 +2,11 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { ServiceTeasers } from '@/components/agency/ServiceTeasers';
-import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
+import { CARE, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { CONSULTATION_BOOK_PATH, INTRO_CALL_URL } from '@/lib/site';
 
 describe('ServiceTeasers', () => {
-  it('renders only the three locked studio offers', () => {
+  it('renders the three homepage offers plus Care', () => {
     const { container } = render(<ServiceTeasers />);
     expect(screen.getByText(CONSULTATION.name)).toBeInTheDocument();
     expect(screen.getByText(PILOT.name)).toBeInTheDocument();
@@ -14,6 +14,9 @@ describe('ServiceTeasers', () => {
     expect(screen.getByText(CONSULTATION.price)).toBeInTheDocument();
     expect(screen.getByText(PILOT.price)).toBeInTheDocument();
     expect(screen.getByText(LAUNCH.price)).toBeInTheDocument();
+    expect(screen.getByText(CARE.name)).toBeInTheDocument();
+    expect(screen.getByText(CARE.price)).toBeInTheDocument();
+    expect(document.getElementById(CARE.id)).not.toBeNull();
     expect(screen.queryByText('Fleet Stamp')).not.toBeInTheDocument();
     expect(screen.queryByText('Custom Build')).not.toBeInTheDocument();
     expect(screen.queryByText('AI Integration')).not.toBeInTheDocument();

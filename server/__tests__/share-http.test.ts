@@ -34,12 +34,13 @@ async function call(
     host?: string;
     fetch?: typeof fetch;
     apiUrl?: string;
+    domainWaiveSecret?: string;
   },
 ) {
   const audit = createAuditLog(() => '2026-09-23T00:00:00.000Z');
   const response = await handleShareRequest(request(url, init), {
     audit,
-    env: { ownerSession: OWNER },
+    env: { ownerSession: OWNER, domainWaiveSecret: init?.domainWaiveSecret },
     fetch: init?.fetch,
     contentConfig: { apiUrl: init?.apiUrl },
   });
@@ -395,9 +396,20 @@ describe('share server', () => {
     expect(quotedBody.stageB.lines.map((line) => line.kind)).toEqual(['list']);
     assertInvoiceIntegrity(quotedBody.stageB);
 
+    const unconfigured = await call('https://revealuistudio.com/api/invoice/stage-b', {
+      method: 'POST',
+      host: 'revealuistudio.com',
+      token: OWNER,
+      body: { attached: true, waive: true, consultationHours: 1 },
+    });
+    expect(unconfigured.response.status).toBe(503);
+    expect(JSON.parse(unconfigured.raw)).toEqual({ error: 'waive-unconfigured' });
+    expect(unconfigured.raw).not.toContain('"creditCents":29700');
+
     const waived = await call('https://revealuistudio.com/api/invoice/stage-b', {
       method: 'POST',
       host: 'revealuistudio.com',
+      domainWaiveSecret: 'domain-waive-test',
       body: { attached: true, waive: true, consultationHours: 1 },
     });
     expect(waived.response.status).toBe(403);
@@ -416,6 +428,7 @@ describe('share server', () => {
       method: 'POST',
       host: 'demo.revealuistudio.com',
       token: OWNER,
+      domainWaiveSecret: OWNER,
       body: { attached: true, waive: true, consultationHours: 2 },
     });
     expect(waived.response.status).toBe(200);
@@ -453,7 +466,12 @@ describe('share server', () => {
     const tampered: StageBInvoice = {
       sku: 'stage-b',
       lines: [
-        { kind: 'credit', sku: 'stage-b', label: 'Domain pack credit', amountCents: STAGE_B_CENTS },
+        {
+          kind: 'credit',
+          sku: 'stage-b',
+          label: 'Domain add-on credit',
+          amountCents: STAGE_B_CENTS,
+        },
       ],
       listCents: 0,
       creditCents: STAGE_B_CENTS,

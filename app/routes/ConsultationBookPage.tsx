@@ -3,6 +3,8 @@ import {
   type BookingCalendarStatus,
   type BookingSlot,
   Button,
+  Card,
+  CardFooter,
   Checkbox,
   CheckboxField,
   Description,
@@ -339,7 +341,7 @@ export function ConsultationBookPage({
         <p className="mt-3 text-base text-muted-foreground">{CONSULTATION_DELIVERABLE}</p>
 
         <form
-          className="mt-4 space-y-5 pb-[calc(var(--consultation-paybar-height,12rem)+1rem)] sm:mt-10 sm:space-y-8"
+          className="mt-4 space-y-5 sm:mt-10 sm:space-y-8 sm:pb-[calc(var(--consultation-paybar-height,12rem)+1rem)]"
           onSubmit={onSubmit}
         >
           <FormField id="consultation-book-hours" label="Consultation length">
@@ -455,11 +457,12 @@ export function ConsultationBookPage({
             <p className="mt-1 text-sm text-muted-foreground">{CONSULTATION_AFTER_PAY}</p>
           </div>
 
-          <div
+          <Card
             ref={payBarRef}
-            className="fixed inset-x-0 z-30 border-t border-border bg-background px-4 pt-2 bottom-[var(--cookie-banner-height,0px)] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 sm:pt-3"
+            data-consultation-paybar=""
+            className="static rounded-none border-x-0 border-b-0 shadow-none hover:shadow-none sm:fixed sm:inset-x-0 sm:z-30 sm:bottom-[var(--cookie-banner-height,0px)]"
           >
-            <div className="mx-auto w-full min-w-0 max-w-3xl">
+            <CardFooter className="mx-auto w-full min-w-0 max-w-3xl flex-col items-stretch px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 sm:pt-3">
               {selectedSlot ? (
                 <p className="break-words text-base font-semibold text-foreground">
                   {selectedSlot.label}
@@ -485,8 +488,8 @@ export function ConsultationBookPage({
               >
                 {submitting ? 'Starting checkout' : 'Continue to payment'}
               </Button>
-            </div>
-          </div>
+            </CardFooter>
+          </Card>
           <section
             className="mt-8 rounded-xl border border-border p-5"
             aria-labelledby="consultation-change-policy"

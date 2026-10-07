@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { ShareFrame } from '@/components/share/ShareFrame';
 import { STAGE_B_ADDON, STAGE_B_DETAIL } from '@/lib/consultation-buyer';
-import { type DomainPackPageId, domainPackLines } from '@/lib/domain-pack';
+import { DOMAIN_ADD_ON_LABEL, type DomainPackPageId, domainPackLines } from '@/lib/domain-pack';
 import { STAGE_B_PRICE } from '@/lib/engagements';
 import { isShareSeed } from '@/lib/share-host';
 
@@ -29,8 +29,8 @@ export function shareHome(slug: string) {
           {STAGE_B_ADDON} {STAGE_B_DETAIL}
         </p>
         <p>
-          The domain pack is {STAGE_B_PRICE} on its own after Consultation, or included with Pilot
-          and Launch. The studio attaches the DNS.
+          The {DOMAIN_ADD_ON_LABEL} is {STAGE_B_PRICE} on its own after Consultation, or included
+          with Pilot and Launch. The studio attaches the DNS.
         </p>
       </Frame>
     );
@@ -134,7 +134,7 @@ export function shareRouteTable(slug: string) {
       component: domainPackPage(slug, 'dns', 'DNS card'),
       meta: {
         title: `DNS card | ${slug}`,
-        description: `DNS card for the domain pack on ${host}.`,
+        description: `DNS card for the ${DOMAIN_ADD_ON_LABEL} on ${host}.`,
         ...SHARE_META,
       },
     },
@@ -143,7 +143,7 @@ export function shareRouteTable(slug: string) {
       component: domainPackPage(slug, 'path', 'Path note'),
       meta: {
         title: `Path note | ${slug}`,
-        description: `Path note for the domain pack on ${host}.`,
+        description: `Path note for the ${DOMAIN_ADD_ON_LABEL} on ${host}.`,
         ...SHARE_META,
       },
     },
@@ -152,7 +152,7 @@ export function shareRouteTable(slug: string) {
       component: domainPackPage(slug, 'proof-gap', 'Proof-gap map'),
       meta: {
         title: `Proof-gap map | ${slug}`,
-        description: `Proof-gap map for the domain pack on ${host}.`,
+        description: `Proof-gap map for the ${DOMAIN_ADD_ON_LABEL} on ${host}.`,
         ...SHARE_META,
       },
     },
@@ -161,7 +161,7 @@ export function shareRouteTable(slug: string) {
       component: domainPackPage(slug, 'stack', 'Stack sketch'),
       meta: {
         title: `Stack sketch | ${slug}`,
-        description: `Stack sketch for the domain pack on ${host}.`,
+        description: `Stack sketch for the ${DOMAIN_ADD_ON_LABEL} on ${host}.`,
         ...SHARE_META,
       },
     },
@@ -170,7 +170,7 @@ export function shareRouteTable(slug: string) {
       component: domainPackPage(slug, 'walkthrough', 'Walkthrough'),
       meta: {
         title: `Walkthrough | ${slug}`,
-        description: `Walkthrough for the domain pack on ${host}.`,
+        description: `Walkthrough for the ${DOMAIN_ADD_ON_LABEL} on ${host}.`,
         ...SHARE_META,
       },
     },
@@ -188,7 +188,7 @@ export function shareRouteTable(slug: string) {
       component: domainPackPage(slug, 'onboarding', 'Onboarding'),
       meta: {
         title: `Onboarding | ${slug}`,
-        description: `Onboarding for the domain pack on ${host}.`,
+        description: `Onboarding for the ${DOMAIN_ADD_ON_LABEL} on ${host}.`,
         ...SHARE_META,
       },
     },
