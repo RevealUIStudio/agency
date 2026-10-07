@@ -28,7 +28,7 @@ Each layer independently solves a real problem. Together, they give you somethin
 
 ## RevVault: secrets that don't travel
 
-RevealUI uses [RevVault](https://github.com/RevealUIStudio/revvault) for credential management. RevVault is an age-encrypted local secret store  -  a Git-friendly vault that keeps secrets on your filesystem, encrypted, and never phones home.
+RevealUI uses [RevVault](https://github.com/revealui-studio/revvault) for credential management. RevVault is an age-encrypted local secret store  -  a Git-friendly vault that keeps secrets on your filesystem, encrypted, and never phones home.
 
 ```bash
 # Store a secret

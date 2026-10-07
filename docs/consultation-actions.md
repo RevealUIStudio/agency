@@ -82,7 +82,7 @@ and lifecycle state. Agency adds no domain-provider configuration; the shared
 server owns its supported Vercel configuration and verification.
 
 The remaining provider and fulfillment lifecycle work is tracked in the fleet
-content-truth work under [agency #281](https://github.com/RevealUIStudio/agency/issues/281).
+content-truth work under [agency #281](https://github.com/revealui-studio/agency/issues/281).
 The affected one-off inventory and removal targets are:
 
 | Location | Current behavior | Durable destination and removal evidence |
