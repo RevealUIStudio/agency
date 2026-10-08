@@ -1,10 +1,9 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { CONSULTATION_UNIT_CENTS } from '@/lib/consultation-hours';
 import { STAGE_B_PRICE } from '@/lib/engagements';
-import { clearSharePacks, createSharePack, type SharePack } from '@/lib/share-stage-b';
 import { assertInvoiceIntegrity, STAGE_B_CENTS, type StageBInvoice } from '@/lib/stage-b-invoice';
 import { createAuditLog } from '../audit-log';
 import { handleShareRequest } from '../share-http';
@@ -33,24 +32,23 @@ async function call(
     token?: string;
     body?: unknown;
     host?: string;
-    packs?: readonly SharePack[];
+    fetch?: typeof fetch;
+    apiUrl?: string;
+    domainWaiveSecret?: string;
   },
 ) {
   const audit = createAuditLog(() => '2026-09-23T00:00:00.000Z');
   const response = await handleShareRequest(request(url, init), {
     audit,
-    env: { ownerSession: OWNER },
-    packs: init?.packs,
+    env: { ownerSession: OWNER, domainWaiveSecret: init?.domainWaiveSecret },
+    fetch: init?.fetch,
+    contentConfig: { apiUrl: init?.apiUrl },
   });
   const raw = await response.text();
   return { response, raw, audit };
 }
 
 describe('share server', () => {
-  beforeEach(() => {
-    clearSharePacks();
-  });
-
   it('serves the demo seed only on the demo host', async () => {
     const allowed = await call('https://demo.revealuistudio.com/share/demo/pack.txt', {
       host: 'demo.revealuistudio.com',
@@ -96,29 +94,152 @@ describe('share server', () => {
     expect(apex.raw).not.toContain('pack');
   });
 
-  it('serves the same demo pack on a verified custom domain and refuses an unverified one', async () => {
-    const live = createSharePack('demo', {
-      customDomain: 'share.example.com',
-      customDomainStatus: 'live',
+  it.each([
+    '/',
+    '/share/demo/pack.txt',
+    '/api/share?slug=demo&file=pack.txt',
+  ])('resolves a persisted custom host at %s and redirects to the authenticated viewer', async (pathname) => {
+    const transport = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ success: true, data: { siteId: 'site-client' } })),
+      );
+    const audit = createAuditLog();
+    const response = await handleShareRequest(
+      new Request(`https://share.example.com${pathname}`, {
+        headers: {
+          host: 'share.example.com',
+          authorization: `Bearer ${OWNER}`,
+          cookie: 'revealui-session=client-secret',
+        },
+      }),
+      {
+        audit,
+        env: { ownerSession: OWNER },
+        contentConfig: { apiUrl: 'https://api.revealui.com', deviceToken: 'never-forward' },
+        fetch: transport,
+      },
+    );
+    expect(response.status).toBe(303);
+    expect(response.headers.get('location')).toBe(
+      'https://admin.revealui.com/client-shares/site-client',
+    );
+    expect(response.headers.get('cache-control')).toBe('private, no-store');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow');
+    expect(response.headers.has('set-cookie')).toBe(false);
+    expect(await response.text()).toBe('');
+    expect(transport).toHaveBeenCalledOnce();
+    const [url, options] = transport.mock.calls[0] ?? [];
+    expect(url).toBe(
+      'https://api.revealui.com/api/content/consultation-domain?hostname=share.example.com',
+    );
+    expect(options).toMatchObject({
+      method: 'GET',
+      credentials: 'omit',
+      cache: 'no-store',
+      redirect: 'error',
     });
-    const allowed = await call('https://share.example.com/share/demo/pack.txt', {
-      host: 'share.example.com',
-      packs: [live],
+    expect(new Headers(options?.headers).has('authorization')).toBe(false);
+    expect(new Headers(options?.headers).has('cookie')).toBe(false);
+    expect(options?.signal).toBeDefined();
+    expect(audit.entries()[0]).toMatchObject({
+      tenant: '-',
+      actor: 'guest',
+      decision: 'allow',
+      reason: 'private-viewer',
     });
-    expect(allowed.response.status).toBe(200);
-    expect(allowed.raw).toContain('Client slug: demo');
-    expect(allowed.audit.entries()[0]).toMatchObject({ tenant: 'demo', decision: 'allow' });
+  });
 
-    const pending = createSharePack('demo', {
-      customDomain: 'share.example.com',
-      customDomainStatus: 'pending_dns',
-    });
+  it.each([
+    404, 403, 500,
+  ])('denies a missing, revoked, or unavailable mapping (%s) without seed material', async (status) => {
     const denied = await call('https://share.example.com/share/demo/pack.txt', {
       host: 'share.example.com',
-      packs: [pending],
+      apiUrl: 'https://api.revealui.com',
+      fetch: async () => new Response('denied', { status }),
     });
-    expect(denied.response.status).toBe(403);
-    expect(denied.raw).not.toContain('Client slug: demo');
+    expect(denied.response.status).toBe(status === 404 ? 404 : 502);
+    expect(denied.response.headers.has('location')).toBe(false);
+    expect(denied.raw).toBe('denied');
+    expect(denied.audit.entries()[0]?.decision).toBe('deny');
+  });
+
+  it.each([
+    { success: true, data: { siteId: 'site-client', notes: 'private' } },
+    { success: true, data: { siteId: '../other' } },
+    { success: false, data: { siteId: 'site-client' } },
+  ])('rejects an invalid lookup contract rather than trusting host labels or returned content', async (body) => {
+    const denied = await call('https://share.example.com/', {
+      host: 'share.example.com',
+      apiUrl: 'https://api.revealui.com',
+      fetch: async () => new Response(JSON.stringify(body)),
+    });
+    expect(denied.response.status).toBe(409);
+    expect(denied.raw).toBe('denied');
+  });
+
+  it('denies unconfigured hosts, mismatched request hosts, and custom-host writes before lookup', async () => {
+    const transport = vi.fn<typeof fetch>();
+    const unconfigured = await call('https://share.example.com/', {
+      host: 'share.example.com',
+      fetch: transport,
+    });
+    expect(unconfigured.response.status).toBe(503);
+    const spoofed = await call('https://share.example.com/', {
+      host: 'other.example.com',
+      apiUrl: 'https://api.revealui.com',
+      fetch: transport,
+    });
+    expect(spoofed.response.status).toBe(403);
+    const mutation = await call('https://share.example.com/api/share', {
+      method: 'POST',
+      token: OWNER,
+      host: 'share.example.com',
+      apiUrl: 'https://api.revealui.com',
+      fetch: transport,
+    });
+    expect(mutation.response.status).toBe(405);
+    expect(transport).not.toHaveBeenCalled();
+  });
+
+  it('rechecks the persisted mapping on each request so revocation cannot reuse a prior redirect', async () => {
+    const transport = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ success: true, data: { siteId: 'site-client' } })),
+      )
+      .mockResolvedValueOnce(new Response('denied', { status: 404 }));
+    const options = {
+      host: 'share.example.com',
+      apiUrl: 'https://api.revealui.com',
+      fetch: transport,
+    };
+    expect((await call('https://share.example.com/', options)).response.status).toBe(303);
+    const revoked = await call('https://share.example.com/', options);
+    expect(revoked.response.status).toBe(404);
+    expect(revoked.response.headers.has('location')).toBe(false);
+    expect(transport).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps transport failures and HEAD requests private', async () => {
+    const failed = await call('https://share.example.com/', {
+      host: 'share.example.com',
+      apiUrl: 'https://api.revealui.com',
+      fetch: async () => {
+        throw new Error('provider unavailable');
+      },
+    });
+    expect(failed.response.status).toBe(502);
+    expect(failed.raw).toBe('denied');
+    const head = await call('https://share.example.com/', {
+      method: 'HEAD',
+      host: 'share.example.com',
+      apiUrl: 'https://api.revealui.com',
+      fetch: async () =>
+        new Response(JSON.stringify({ success: true, data: { siteId: 'site-client' } })),
+    });
+    expect(head.response.status).toBe(303);
+    expect(head.raw).toBe('');
   });
 
   it('does not publish tenant seeds as static public files', () => {
@@ -213,6 +334,33 @@ describe('share server', () => {
     expect(existsSync(path.join(repoRoot, 'api/share/[slug]/[file].ts'))).toBe(false);
   });
 
+  it('routes client domain roots and nested paths through the maintained share function', () => {
+    const vercel = JSON.parse(readFileSync(path.join(repoRoot, 'vercel.json'), 'utf8')) as {
+      rewrites: {
+        source: string;
+        destination: string;
+        missing?: { type: string; value: string }[];
+      }[];
+    };
+    const alias = vercel.rewrites[0];
+    expect(alias).toMatchObject({ source: '/:path*', destination: '/api/share' });
+    expect(alias?.missing).toHaveLength(2);
+    for (const host of ['share.example.com', 'client.co']) {
+      expect(
+        alias?.missing?.every((condition) => !new RegExp(`^${condition.value}$`).test(host)),
+      ).toBe(true);
+    }
+    for (const host of [
+      'revealuistudio.com',
+      'demo.revealuistudio.com',
+      'agency-git-main.vercel.app',
+    ]) {
+      expect(
+        alias?.missing?.every((condition) => !new RegExp(`^${condition.value}$`).test(host)),
+      ).toBe(false);
+    }
+  });
+
   it('lets the owner session read a tenant seed and records the actor', async () => {
     const owner = await call('https://revealuistudio.com/api/share/demo/home.txt', {
       host: 'revealuistudio.com',
@@ -248,9 +396,20 @@ describe('share server', () => {
     expect(quotedBody.stageB.lines.map((line) => line.kind)).toEqual(['list']);
     assertInvoiceIntegrity(quotedBody.stageB);
 
+    const unconfigured = await call('https://revealuistudio.com/api/invoice/stage-b', {
+      method: 'POST',
+      host: 'revealuistudio.com',
+      token: OWNER,
+      body: { attached: true, waive: true, consultationHours: 1 },
+    });
+    expect(unconfigured.response.status).toBe(503);
+    expect(JSON.parse(unconfigured.raw)).toEqual({ error: 'waive-unconfigured' });
+    expect(unconfigured.raw).not.toContain('"creditCents":29700');
+
     const waived = await call('https://revealuistudio.com/api/invoice/stage-b', {
       method: 'POST',
       host: 'revealuistudio.com',
+      domainWaiveSecret: 'domain-waive-test',
       body: { attached: true, waive: true, consultationHours: 1 },
     });
     expect(waived.response.status).toBe(403);
@@ -269,6 +428,7 @@ describe('share server', () => {
       method: 'POST',
       host: 'demo.revealuistudio.com',
       token: OWNER,
+      domainWaiveSecret: OWNER,
       body: { attached: true, waive: true, consultationHours: 2 },
     });
     expect(waived.response.status).toBe(200);
@@ -306,7 +466,12 @@ describe('share server', () => {
     const tampered: StageBInvoice = {
       sku: 'stage-b',
       lines: [
-        { kind: 'credit', sku: 'stage-b', label: 'Domain pack credit', amountCents: STAGE_B_CENTS },
+        {
+          kind: 'credit',
+          sku: 'stage-b',
+          label: 'Domain add-on credit',
+          amountCents: STAGE_B_CENTS,
+        },
       ],
       listCents: 0,
       creditCents: STAGE_B_CENTS,

@@ -48,7 +48,7 @@ Open-source packages are MIT. Pro packages are Fair Source (FSL-1.1-MIT) and con
 | Offer | List price |
 |---|---|
 | Consultation | **$300** (tax $0). Default 1 hour. Multi-hour is $300 × hours. |
-| Pilot | **$3,997**. Includes 1 Adapter. One site, one receipted action they operate. 100% credits to Launch if Launch starts within 45 days of Pilot start. |
+| Pilot | **$3,997**. Includes 1 Adapter. One site, one receipted action they operate. Credits 100% to Launch if you start Launch within 45 days. |
 | Launch | **$14,500**. Architecture stays inside this offer. Runbook. 30-day async stabilization. |
 
 Do not put these prices in the opening post. The opening post stays on the product.

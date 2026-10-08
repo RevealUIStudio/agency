@@ -1,13 +1,20 @@
 import { consultationDueCents } from '../app/lib/consultation-hours';
-import { clientSlugFromHost } from '../app/lib/share-host';
-import { listSharePacks, resolveShareViewer, type SharePack } from '../app/lib/share-stage-b';
+import { clientSlugFromHost, isConsultationDomainHost } from '../app/lib/share-host';
 import {
   buildStageBInvoice,
   InvoiceRejected,
   type StageBInvoice,
 } from '../app/lib/stage-b-invoice';
 import { type AuditEvent, type AuditLog, createAuditLog } from './audit-log';
-import { type SessionEnv, verifySession } from './session';
+import { calendarFromEnv, consultationEnvFromProcess } from './consultation-calendar';
+import {
+  consultationSiteFromHost,
+  type FulfillmentConfig,
+  type FulfillmentDeps,
+  FulfillmentError,
+  fulfillConsultation,
+} from './consultation-fulfillment';
+import { bearerMatchesSecret, type SessionEnv, verifySession } from './session';
 import { readShareSeed, SHARE_SEED_FILES } from './share-seed';
 
 const processAudit = createAuditLog();
@@ -16,7 +23,9 @@ export interface ShareDeps {
   readonly audit?: AuditLog;
   readonly env?: SessionEnv;
   readonly now?: () => string;
-  readonly packs?: readonly SharePack[];
+  readonly fulfillment?: FulfillmentDeps;
+  readonly contentConfig?: FulfillmentConfig;
+  readonly fetch?: typeof fetch;
 }
 
 interface InvoiceBody {
@@ -48,9 +57,9 @@ function text(status: number, body: string, audit: AuditEvent, contentType: stri
   });
 }
 
-function tenantFromHost(request: Request, packs: readonly SharePack[]): string {
+function tenantFromHost(request: Request): string {
   const host = request.headers.get('host') ?? '';
-  return resolveShareViewer(host, packs)?.slug ?? '-';
+  return clientSlugFromHost(host) ?? '-';
 }
 
 function isSeedFile(file: string): boolean {
@@ -112,7 +121,10 @@ function parseSharePath(url: URL): { slug: string; file: string } | null {
 function depsOf(deps?: ShareDeps): { audit: AuditLog; env: SessionEnv } {
   return {
     audit: deps?.audit ?? processAudit,
-    env: deps?.env ?? { ownerSession: process.env.STUDIO_OWNER_SESSION },
+    env: deps?.env ?? {
+      ownerSession: process.env.STUDIO_OWNER_SESSION,
+      domainWaiveSecret: process.env.STUDIO_DOMAIN_WAIVE_SECRET,
+    },
   };
 }
 
@@ -130,8 +142,107 @@ export async function handleShareRequest(request: Request, deps?: ShareDeps): Pr
   const { audit, env } = depsOf(deps);
   const session = verifySession(request, env);
   const url = new URL(request.url);
-  const packs = deps?.packs ?? listSharePacks();
-  const tenant = tenantFromHost(request, packs);
+  const tenant = tenantFromHost(request);
+
+  if (isConsultationDomainHost(url.hostname)) {
+    const event = (status: number, reason: string) =>
+      audit.append({
+        action: 'share.read',
+        tenant: '-',
+        actor: 'guest',
+        decision: status < 400 ? 'allow' : 'deny',
+        reason,
+      });
+    if (request.headers.get('host') && request.headers.get('host') !== url.host)
+      return text(403, 'denied', event(403, 'domain-host'), 'text/plain; charset=utf-8');
+    if (request.method !== 'GET' && request.method !== 'HEAD')
+      return text(405, 'denied', event(405, 'method'), 'text/plain; charset=utf-8');
+    const configured = consultationEnvFromProcess();
+    try {
+      const siteId = await consultationSiteFromHost(
+        url.hostname,
+        deps?.contentConfig ?? deps?.fulfillment?.config ?? { apiUrl: configured.contentApiUrl },
+        deps?.fetch ?? deps?.fulfillment?.fetch,
+      );
+      if (!siteId)
+        return text(404, 'denied', event(404, 'domain-missing'), 'text/plain; charset=utf-8');
+      const recorded = event(303, 'private-viewer');
+      return new Response(null, {
+        status: 303,
+        headers: {
+          location: `https://admin.revealui.com/client-shares/${encodeURIComponent(siteId)}`,
+          'cache-control': 'private, no-store',
+          'x-robots-tag': 'noindex, nofollow',
+          'x-studio-audit': JSON.stringify(recorded),
+        },
+      });
+    } catch (error) {
+      const status = error instanceof FulfillmentError ? error.status : 502;
+      const reason = error instanceof FulfillmentError ? error.reason : 'content-unavailable';
+      return text(status, 'denied', event(status, reason), 'text/plain; charset=utf-8');
+    }
+  }
+
+  // This existing function owns operator share mutations. Clients read private
+  // publications through central RevealUI auth; Studio never clones its cookies.
+  if (url.pathname === '/api/share' && request.method === 'POST') {
+    const respond = (status: number, body: unknown, reason: string) =>
+      json(
+        status,
+        body,
+        audit.append({
+          action: 'consultation.fulfill',
+          tenant: '-',
+          actor: session.role,
+          decision: status < 400 ? 'allow' : 'deny',
+          reason,
+        }),
+      );
+    if (session.role !== 'owner')
+      return respond(403, { error: 'owner-required' }, 'owner-required');
+    const configured = consultationEnvFromProcess();
+    try {
+      const studioOrigin = new URL(configured.publicSiteUrl ?? 'https://revealuistudio.com').origin;
+      if (
+        url.origin !== studioOrigin ||
+        (request.headers.get('host') && request.headers.get('host') !== url.host)
+      ) {
+        return respond(403, { error: 'fulfillment-host' }, 'fulfillment-host');
+      }
+      const content = await request.text();
+      if (content.length > 250000)
+        return respond(413, { error: 'fulfillment-body' }, 'fulfillment-body');
+      let body: unknown;
+      try {
+        body = JSON.parse(content);
+      } catch {
+        return respond(400, { error: 'fulfillment-body' }, 'fulfillment-body');
+      }
+      const calendar = deps?.fulfillment?.calendar ?? calendarFromEnv(configured);
+      if (!calendar)
+        return respond(503, { error: 'calendar-not-configured' }, 'calendar-not-configured');
+      const result = await fulfillConsultation(
+        body,
+        deps?.fulfillment ?? {
+          calendar,
+          config: {
+            apiUrl: configured.contentApiUrl,
+            deviceToken: configured.contentDeviceToken,
+            stripeSecretKey: configured.stripeSecretKey,
+          },
+        },
+      );
+      return respond(
+        result.status === 'domain-pending-verification' ? 202 : 200,
+        result,
+        result.status,
+      );
+    } catch (error) {
+      const status = error instanceof FulfillmentError ? error.status : 502;
+      const reason = error instanceof FulfillmentError ? error.reason : 'fulfillment-unavailable';
+      return respond(status, { error: reason, delivered: false }, reason);
+    }
+  }
 
   if (url.pathname === '/api/session' && request.method === 'GET') {
     const event = audit.append({
@@ -168,7 +279,8 @@ export async function handleShareRequest(request: Request, deps?: ShareDeps): Pr
       return json(400, { error: 'body' }, event);
     }
 
-    // Body `role` is ignored. The session established above is the only actor.
+    // Body `role` is ignored. A waive is authorized only when the bearer
+    // matches STUDIO_DOMAIN_WAIVE_SECRET. An unset secret fails closed above.
     const hours = body.consultationHours === undefined ? 1 : body.consultationHours;
     let consultationList = 0;
     try {
@@ -187,11 +299,22 @@ export async function handleShareRequest(request: Request, deps?: ShareDeps): Pr
 
     const attached = body.attached === true;
     const waive = body.waive === true;
+    if (waive && !env.domainWaiveSecret?.trim()) {
+      const event = audit.append({
+        action: 'invoice.issue',
+        tenant,
+        actor: session.role,
+        decision: 'deny',
+        reason: 'waive-unconfigured',
+      });
+      return json(503, { error: 'waive-unconfigured' }, event);
+    }
+    const authorized = waive && bearerMatchesSecret(request, env.domainWaiveSecret);
     try {
       const stageB: StageBInvoice = buildStageBInvoice({
         attached,
         waive,
-        role: session.role,
+        authorized,
       });
       const event = audit.append({
         action: 'invoice.issue',

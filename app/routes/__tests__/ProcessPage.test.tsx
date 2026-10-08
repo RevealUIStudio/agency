@@ -2,7 +2,16 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { GUARDRAIL_BODY, GUARDRAIL_HEADING } from '@/content/guardrail';
-import { ADAPTER, CONSULTATION, LAUNCH, PILOT, PUBLIC_OFFERS } from '@/lib/engagements';
+import {
+  ADAPTER,
+  CARE,
+  CONSULTATION,
+  CONSULTATION_DELIVERABLE,
+  LAUNCH,
+  PILOT,
+  PILOT_CREDIT_LINE,
+  PUBLIC_OFFERS,
+} from '@/lib/engagements';
 import { CONTACT_EMAIL, INTRO_CALL_URL } from '@/lib/site';
 import { ProcessPage } from '@/routes/ProcessPage';
 
@@ -25,15 +34,17 @@ describe('ProcessPage', () => {
     expect(document.getElementById(PILOT.id)).not.toBeNull();
     expect(document.getElementById(LAUNCH.id)).not.toBeNull();
 
-    expect(screen.getAllByRole('heading', { name: 'What you send' })).toHaveLength(3);
-    expect(screen.getAllByRole('heading', { name: 'What you get' })).toHaveLength(3);
-    expect(screen.getAllByRole('heading', { name: 'How long' })).toHaveLength(3);
-    expect(screen.getAllByRole('heading', { name: 'What happens next' })).toHaveLength(3);
+    expect(screen.getAllByRole('heading', { name: 'What you send' })).toHaveLength(4);
+    expect(screen.getAllByRole('heading', { name: 'What you get' })).toHaveLength(4);
+    expect(screen.getAllByRole('heading', { name: 'How long' })).toHaveLength(4);
+    expect(screen.getAllByRole('heading', { name: 'What happens next' })).toHaveLength(4);
 
-    expect(text).toContain('Session notes and a recommended next step');
+    expect(text).toContain(CONSULTATION_DELIVERABLE);
     expect(text).toContain('Implementation and ongoing support are separate engagements');
     expect(text).toContain('One receipted action you operate');
-    expect(text).toContain('Credits 100% to Launch');
+    expect(text).toContain(PILOT_CREDIT_LINE);
+    expect(text).toContain(CARE.price);
+    expect(document.getElementById(CARE.id)).not.toBeNull();
     expect(text).toContain('Architecture work');
     expect(text).toContain(PILOT.payment);
     expect(text).toContain(LAUNCH.payment);
@@ -96,7 +107,7 @@ describe('ProcessPage', () => {
     expect(text).not.toMatch(/RevDev|RevForge/i);
     expect(text).not.toMatch(/SOC ?2 certified/i);
     expect(text).not.toMatch(/Maryville shop/i);
-    expect(container.querySelectorAll('article')).toHaveLength(3);
+    expect(container.querySelectorAll('article')).toHaveLength(4);
     expect(text).not.toMatch(/Guardrail agent \(template\)\. \$/);
   });
 });

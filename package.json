@@ -7,7 +7,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/RevealUIStudio/agency.git"
+    "url": "git+ssh://git@github.com/revealui-studio/agency.git"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",

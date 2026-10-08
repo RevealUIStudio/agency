@@ -3,15 +3,28 @@
   "framework": "vite",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
+  "trailingSlash": false,
   "ignoreCommand": "node scripts/vercel-ignored-build-step.mjs",
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=()"
+        },
         {
           "key": "Strict-Transport-Security",
           "value": "max-age=31536000; includeSubDomains; preload"
@@ -24,46 +37,90 @@
     },
     {
       "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
       "source": "/sitemap.xml",
       "headers": [
-        { "key": "Content-Type", "value": "application/xml; charset=utf-8" },
-        { "key": "Cache-Control", "value": "public, max-age=3600" }
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
       ]
     },
     {
       "source": "/rss.xml",
       "headers": [
-        { "key": "Content-Type", "value": "application/rss+xml; charset=utf-8" },
-        { "key": "Cache-Control", "value": "public, max-age=3600" }
+        {
+          "key": "Content-Type",
+          "value": "application/rss+xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
       ]
     },
     {
       "source": "/.well-known/security.txt",
       "headers": [
-        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
       ]
     },
     {
       "source": "/proof-gap-checklist.pdf",
       "headers": [
-        { "key": "Content-Type", "value": "application/pdf" },
-        { "key": "Cache-Control", "value": "public, max-age=3600" }
+        {
+          "key": "Content-Type",
+          "value": "application/pdf"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
       ]
     }
   ],
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.revealuistudio.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.revealuistudio.com"
+        }
+      ],
       "destination": "https://revealuistudio.com/:path*",
       "permanent": true
     },
     {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/pricing",
+      "destination": "/#calculator",
+      "permanent": true
+    },
+    {
+      "source": "/pricing/",
       "destination": "/#calculator",
       "permanent": true
     },
@@ -73,7 +130,17 @@
       "permanent": true
     },
     {
+      "source": "/products/",
+      "destination": "/#calculator",
+      "permanent": true
+    },
+    {
       "source": "/catalog",
+      "destination": "/#calculator",
+      "permanent": true
+    },
+    {
+      "source": "/catalog/",
       "destination": "/#calculator",
       "permanent": true
     },
@@ -174,14 +241,61 @@
     }
   ],
   "rewrites": [
-    { "source": "/robots.txt", "destination": "/robots.txt" },
-    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
-    { "source": "/rss.xml", "destination": "/rss.xml" },
-    { "source": "/og-card.png", "destination": "/og-card.png" },
-    { "source": "/proof-gap-checklist.pdf", "destination": "/proof-gap-checklist.pdf" },
-    { "source": "/.well-known/(.*)", "destination": "/.well-known/$1" },
-    { "source": "/api/share/:slug/:file", "destination": "/api/share?slug=:slug&file=:file" },
-    { "source": "/share/:slug/:file", "destination": "/api/share?slug=:slug&file=:file" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/:path*",
+      "missing": [
+        {
+          "type": "host",
+          "value": "(.+\\.)?revealuistudio\\.com"
+        },
+        {
+          "type": "host",
+          "value": ".+\\.vercel\\.app"
+        }
+      ],
+      "destination": "/api/share"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/robots.txt"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/rss.xml",
+      "destination": "/rss.xml"
+    },
+    {
+      "source": "/og-card.png",
+      "destination": "/og-card.png"
+    },
+    {
+      "source": "/proof-gap-checklist.pdf",
+      "destination": "/proof-gap-checklist.pdf"
+    },
+    {
+      "source": "/.well-known/(.*)",
+      "destination": "/.well-known/$1"
+    },
+    {
+      "source": "/api/share/:slug/:file",
+      "destination": "/api/share?slug=:slug&file=:file"
+    },
+    {
+      "source": "/share/:slug/:file",
+      "destination": "/api/share?slug=:slug&file=:file"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": ".+\\.revealuistudio\\.com"
+        }
+      ],
+      "destination": "/index.html"
+    }
   ]
 }

@@ -7,6 +7,7 @@
 
 import { OWNER_NOTIFY_EMAIL, type OwnerPaidNotice } from '../app/lib/consultation-owner';
 import { type ConsultationEnv, googleAccessToken } from './consultation-calendar';
+import { providerFetch } from './provider-http';
 
 const GMAIL_SEND_SCOPE = 'https://www.googleapis.com/auth/gmail.send';
 const GMAIL_COMPOSE_SCOPE = 'https://www.googleapis.com/auth/gmail.compose';
@@ -55,14 +56,18 @@ async function postJson(
   body: unknown,
   fetchImpl: typeof fetch,
 ): Promise<PostResult> {
-  const response = await fetchImpl(url, {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${token}`,
-      'content-type': 'application/json',
+  const response = await providerFetch(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(body),
     },
-    body: JSON.stringify(body),
-  });
+    fetchImpl,
+  );
   if (response.ok) return 'ok';
   if (response.status === 401 || response.status === 403) return 'denied';
   return 'failed';

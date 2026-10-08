@@ -30,26 +30,16 @@ function renderNavBar() {
 const openMenu = () => fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
 describe('NavBar (agency)', () => {
-  it('uses a Circuit-R-only home mark and does not print RevealUI or RevealUI Studio', () => {
+  it('uses the presentation wordmark and names the logo link RevealUI Studio home', () => {
     renderNavBar();
-    const home = screen.getByRole('link', { name: 'Home' });
-    const mark = home.querySelector('img');
-    expect(mark).not.toBeNull();
-    expect(mark).toHaveAttribute('src', '/revealui-mark.svg');
-    expect(mark).toHaveAttribute('width', '48');
-    expect(mark).toHaveAttribute('height', '48');
-    expect(mark).toHaveClass('size-full', 'max-w-none');
-    expect(mark).not.toHaveClass('h-9', 'w-auto', 'w-9');
-    expect(mark?.getAttribute('src')).not.toBe('/favicon.svg');
-    const chrome = home.querySelector('[data-circuit-r-chrome]');
-    expect(chrome).toBeTruthy();
-    expect(chrome?.getAttribute('class') ?? '').toContain('overflow-hidden');
-    expect(chrome).toHaveStyle({ width: '48px', height: '48px' });
+    const home = screen.getByRole('link', { name: 'RevealUI Studio home' });
+    expect(home.querySelector('img')).toBeNull();
+    expect(home.querySelector('[data-circuit-r-chrome]')).toBeNull();
+    expect(home.textContent ?? '').toContain('Reveal');
+    expect(home.textContent ?? '').toContain('UI');
     const nav = screen.getByRole('navigation');
     expect(nav.className).toContain('h-16');
     expect(home).toHaveAttribute('href', '/');
-    expect(nav.textContent ?? '').not.toMatch(/RevealUI/);
-    expect(nav.textContent ?? '').not.toMatch(/Studio/);
     expect(screen.queryByRole('link', { name: /founder@revealui\.com/i })).not.toBeInTheDocument();
     const process = screen.getByRole('link', { name: 'Process' });
     expect(process).toHaveAttribute('href', '/process');

@@ -2,6 +2,8 @@ export type Session = { readonly role: 'guest' } | { readonly role: 'owner' };
 
 export interface SessionEnv {
   readonly ownerSession?: string;
+  /** Server-only. STUDIO_DOMAIN_WAIVE_SECRET. Unset fails closed. */
+  readonly domainWaiveSecret?: string;
 }
 
 function tokenMatches(presented: string, expected: string): boolean {
@@ -20,11 +22,26 @@ function tokenMatches(presented: string, expected: string): boolean {
  * Query params, a JSON `role` field, and a missing token are guests.
  * An empty expected token never matches (fail closed).
  */
-export function verifySession(request: Request, env: SessionEnv): Session {
-  const expected = env.ownerSession ?? '';
+export function presentedBearer(request: Request): string {
   const header = request.headers.get('authorization') ?? '';
   const match = /^Bearer\s+(\S+)\s*$/i.exec(header);
-  const presented = match?.[1] ?? '';
+  return match?.[1] ?? '';
+}
+
+/**
+ * True only when the bearer matches a non-empty server secret.
+ * An unset or blank secret never matches.
+ */
+export function bearerMatchesSecret(request: Request, secret: string | undefined): boolean {
+  const expected = secret?.trim() ?? '';
+  const presented = presentedBearer(request);
+  if (!expected || !presented) return false;
+  return tokenMatches(presented, expected);
+}
+
+export function verifySession(request: Request, env: SessionEnv): Session {
+  const expected = env.ownerSession ?? '';
+  const presented = presentedBearer(request);
   if (!expected || !presented) return { role: 'guest' };
   if (!tokenMatches(presented, expected)) return { role: 'guest' };
   return { role: 'owner' };

@@ -1,8 +1,18 @@
 /**
  * Proof-gap checklist lead magnet. Soft ask. not a quote form.
- * H1 and gate copy locked 2026-09-18 (Joshua OK publish).
- * PROOF = receipted action. Studio ladder stays Consultation / Pilot / Launch.
+ * H1 and gate copy locked 2026-09-18.
+ * PROOF = receipted action. The price line includes Care and the Domain add-on.
  */
+
+import { DOMAIN_ADD_ON_LABEL } from '../lib/domain-pack.ts';
+import {
+  CARE,
+  CONSULTATION,
+  CONSULTATION_DELIVERABLE,
+  LAUNCH,
+  PILOT,
+  STAGE_B_PRICE,
+} from '../lib/engagements.ts';
 
 export const PROOF_GAP_PATH = '/proof-gap' as const;
 
@@ -53,7 +63,8 @@ export const PROOF_GAP_THANKS_INTRO =
 
 export const PROOF_GAP_DOWNLOAD_LABEL = 'Download the PDF' as const;
 
-export const PROOF_GAP_LADDER = 'Consultation $300 · Pilot $3,997 · Launch $14,500' as const;
+export const PROOF_GAP_LADDER =
+  `${CONSULTATION.name} ${CONSULTATION.price} · ${PILOT.name} ${PILOT.price} · ${LAUNCH.name} ${LAUNCH.price} · ${CARE.name} ${CARE.price} · ${DOMAIN_ADD_ON_LABEL} ${STAGE_B_PRICE}` as const;
 
 export const PROOF_GAP_REQUEST_TOPIC = 'general' as const;
 
@@ -227,8 +238,8 @@ export const PROOF_GAP_ONE_GAP_PROMPT = 'The one gap I’d fix this week:' as co
 
 export const PROOF_GAP_NEXT_STEPS = [
   'DIY: Fix that one gap on your stack. Re-run §3 until you can show one receipted action.',
-  'Review with Studio: Consultation is $300 per hour. Bring your system and receive session notes and a next step.',
-  'Operate a slice: Pilot. $3,997. One site. One receipted action you operate. The domain pack is included.',
+  `Review with Studio: Consultation is $300 per hour. Bring your system. ${CONSULTATION_DELIVERABLE}`,
+  `Operate a slice: Pilot. $3,997. One site. One receipted action you operate. The ${DOMAIN_ADD_ON_LABEL} is included.`,
 ] as const;
 
 export const PROOF_GAP_REFUSALS = [

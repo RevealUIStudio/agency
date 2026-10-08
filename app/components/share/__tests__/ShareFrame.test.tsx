@@ -23,6 +23,18 @@ function renderShare(path: string) {
 }
 
 describe('demo share shell', () => {
+  it('routes client hosts to central authenticated shares without exposing the demo pack', () => {
+    const route = shareRouteTable('acme')[0];
+    const Page = route?.component;
+    if (!Page) throw new Error('missing private share gateway');
+    render(<Page />);
+    expect(screen.getByRole('link', { name: 'Open your client shares' })).toHaveAttribute(
+      'href',
+      'https://admin.revealui.com/client-shares',
+    );
+    expect(screen.queryByText(/Seeded notes/)).not.toBeInTheDocument();
+    expect(screen.queryByText('EXAMPLE')).not.toBeInTheDocument();
+  });
   it('shows Circuit-R, Studio, Demo, and the EXAMPLE watermark on home', () => {
     renderShare('/');
     expect(screen.getByRole('heading', { level: 1, name: 'demo share' })).toBeInTheDocument();

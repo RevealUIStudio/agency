@@ -14,6 +14,7 @@ import {
 } from '../app/lib/consultation-booking';
 import { calendarInviteDescription } from '../app/lib/consultation-buyer';
 import type { TimeInterval } from '../app/lib/consultation-slots';
+import { providerFetch } from './provider-http';
 
 const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar';
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
@@ -39,6 +40,17 @@ export interface CalendarPort {
   release(bookingId: string): Promise<void>;
   get(bookingId: string): Promise<Booking | null>;
   schedulePaid(booking: Booking, stripeSessionId: string): Promise<SchedulePaidResult>;
+  recordRefund(
+    bookingId: string,
+    stripeSessionId: string,
+    evidence: { chargeId: string; amountRefunded: number; full: boolean },
+  ): Promise<Booking>;
+  resolveDomainPackRefund(
+    bookingId: string,
+    chargeId: string,
+    amountRefunded: number,
+    decision: 'retained' | 'revoked',
+  ): Promise<Booking>;
 }
 
 export interface ConsultationEnv {
@@ -61,6 +73,9 @@ export interface ConsultationEnv {
   readonly networkWaiveSecret?: string;
   /** Stripe coupon id applied only when stage_b_fee is waived_network. */
   readonly stageBNetworkCouponId?: string;
+  /** Maintained content API origin and canonical Studio operator device token. */
+  readonly contentApiUrl?: string;
+  readonly contentDeviceToken?: string;
 }
 
 function readEnv(env: Record<string, string | undefined>, name: string): string | undefined {
@@ -91,6 +106,8 @@ export function consultationEnvFromProcess(
     ownerSession: readEnv(env, 'STUDIO_OWNER_SESSION'),
     networkWaiveSecret: readEnv(env, 'CONSULTATION_NETWORK_WAIVE_SECRET'),
     stageBNetworkCouponId: readEnv(env, 'STRIPE_STAGE_B_NETWORK_COUPON_ID'),
+    contentApiUrl: readEnv(env, 'STUDIO_CONTENT_API_URL'),
+    contentDeviceToken: readEnv(env, 'STUDIO_CONTENT_DEVICE_TOKEN'),
   };
 }
 
@@ -105,6 +122,54 @@ function overlaps(row: Booking, start: string, end: string, now: Date, ignoreId?
   if (ignoreId && row.booking_id === ignoreId) return false;
   if (row.status === 'slot_held' && Date.parse(row.expires_at) <= now.getTime()) return false;
   return Date.parse(row.start) < Date.parse(end) && Date.parse(start) < Date.parse(row.end);
+}
+
+function applyRefundEvidence(
+  booking: Booking | null,
+  stripeSessionId: string,
+  evidence: { chargeId: string; amountRefunded: number; full: boolean },
+): Booking {
+  if (
+    booking?.status !== 'paid_scheduled' ||
+    booking.stripe_session_id !== stripeSessionId ||
+    !/^ch_[a-zA-Z0-9]+$/.test(evidence.chargeId) ||
+    !Number.isSafeInteger(evidence.amountRefunded) ||
+    evidence.amountRefunded <= 0
+  ) {
+    throw new Error('refund-binding');
+  }
+  if (booking.refund && booking.refund.chargeId !== evidence.chargeId)
+    throw new Error('refund-binding');
+  if (
+    booking.refund &&
+    (booking.refund.full || booking.refund.amountRefunded >= evidence.amountRefunded)
+  )
+    return booking;
+  return {
+    ...booking,
+    refund: {
+      ...evidence,
+      domainPackReview: evidence.full || !booking.stage_b ? 'not_applicable' : 'review_required',
+    },
+  };
+}
+
+function applyDomainPackReview(
+  booking: Booking | null,
+  chargeId: string,
+  amountRefunded: number,
+  decision: 'retained' | 'revoked',
+): Booking {
+  if (
+    !booking?.refund ||
+    booking.refund.full ||
+    !booking.stage_b ||
+    booking.refund.chargeId !== chargeId ||
+    booking.refund.amountRefunded !== amountRefunded ||
+    (booking.refund.domainPackReview === 'revoked' && decision === 'retained')
+  )
+    throw new Error('refund-review-binding');
+  return { ...booking, refund: { ...booking.refund, domainPackReview: decision } };
 }
 
 export function createMemoryCalendar(seed: readonly Booking[] = []): CalendarPort {
@@ -146,6 +211,21 @@ export function createMemoryCalendar(seed: readonly Booking[] = []): CalendarPor
     },
     async get(bookingId) {
       return rows.get(bookingId) ?? null;
+    },
+    async recordRefund(bookingId, stripeSessionId, evidence) {
+      const updated = applyRefundEvidence(rows.get(bookingId) ?? null, stripeSessionId, evidence);
+      rows.set(bookingId, updated);
+      return updated;
+    },
+    async resolveDomainPackRefund(bookingId, chargeId, amountRefunded, decision) {
+      const updated = applyDomainPackReview(
+        rows.get(bookingId) ?? null,
+        chargeId,
+        amountRefunded,
+        decision,
+      );
+      rows.set(bookingId, updated);
+      return updated;
     },
     async schedulePaid(booking, stripeSessionId) {
       const existing = rows.get(booking.booking_id);
@@ -267,11 +347,15 @@ async function accessToken(
   } else {
     throw new Error('google-auth');
   }
-  const response = await fetchImpl(TOKEN_URL, {
-    method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body,
-  });
+  const response = await providerFetch(
+    TOKEN_URL,
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body,
+    },
+    fetchImpl,
+  );
   if (!response.ok) throw new Error('google-auth');
   const payload = asRecord(await response.json());
   const token = payload && typeof payload.access_token === 'string' ? payload.access_token : '';
@@ -299,7 +383,7 @@ async function googleSend(
   const headers = new Headers(init.headers);
   headers.set('authorization', `Bearer ${token}`);
   if (init.body) headers.set('content-type', 'application/json');
-  const response = await fetchImpl(url, { ...init, headers });
+  const response = await providerFetch(url, { ...init, headers }, fetchImpl);
   if (!response.ok) throw new Error(`google-calendar:${response.status}`);
   if (response.status === 204) return null;
   const text = await response.text();
@@ -323,6 +407,10 @@ function propsOf(booking: Booking): Record<string, string> {
     network_jti: booking.network_jti ?? '',
     meet_link: booking.meet_link ?? '',
     stripe_session_id: booking.stripe_session_id ?? '',
+    refund_charge_id: booking.refund?.chargeId ?? '',
+    refund_amount: String(booking.refund?.amountRefunded ?? 0),
+    refund_full: booking.refund?.full ? 'true' : 'false',
+    domain_pack_refund_review: booking.refund?.domainPackReview ?? 'not_applicable',
   };
 }
 
@@ -372,6 +460,18 @@ function bookingFromEvent(event: Record<string, unknown>): Booking | null {
   if (props.status !== 'slot_held' && props.status !== 'paid_scheduled') return null;
   const hours = Number(props.hours);
   if (!Number.isInteger(hours)) return null;
+  if (
+    props.refund_charge_id &&
+    (typeof props.refund_charge_id !== 'string' ||
+      !/^ch_[a-zA-Z0-9]+$/.test(props.refund_charge_id) ||
+      !Number.isSafeInteger(Number(props.refund_amount)) ||
+      Number(props.refund_amount) <= 0 ||
+      (props.refund_full !== 'true' && props.refund_full !== 'false') ||
+      !['not_applicable', 'review_required', 'retained', 'revoked'].includes(
+        String(props.domain_pack_refund_review),
+      ))
+  )
+    throw new Error('calendar-refund-integrity');
   const eventId = typeof event.id === 'string' ? event.id : null;
   return {
     booking_id: props.booking_id,
@@ -402,6 +502,21 @@ function bookingFromEvent(event: Record<string, unknown>): Booking | null {
       typeof props.stripe_session_id === 'string' && props.stripe_session_id.length > 0
         ? props.stripe_session_id
         : null,
+    ...(typeof props.refund_charge_id === 'string' && props.refund_charge_id
+      ? {
+          refund: {
+            chargeId: props.refund_charge_id,
+            amountRefunded: Number(props.refund_amount),
+            full: props.refund_full === 'true',
+            domainPackReview:
+              props.domain_pack_refund_review === 'retained' ||
+              props.domain_pack_refund_review === 'revoked' ||
+              props.domain_pack_refund_review === 'review_required'
+                ? props.domain_pack_refund_review
+                : 'not_applicable',
+          },
+        }
+      : {}),
   };
 }
 
@@ -425,6 +540,7 @@ export function createGoogleCalendar(
     const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
     const events: Record<string, unknown>[] = [];
     let pageToken = '';
+    const seenTokens = new Set<string>();
     for (let page = 0; page < 10; page += 1) {
       const url = new URL(collection);
       for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
@@ -432,15 +548,28 @@ export function createGoogleCalendar(
       const payload = asRecord(
         await googleSend(url.toString(), token, { method: 'GET' }, fetchImpl),
       );
-      const items = payload && Array.isArray(payload.items) ? payload.items : [];
+      if (
+        !payload ||
+        (payload.items === undefined && payload.kind !== 'calendar#events') ||
+        (payload.items !== undefined && !Array.isArray(payload.items)) ||
+        (payload.nextPageToken !== undefined &&
+          (typeof payload.nextPageToken !== 'string' || !payload.nextPageToken))
+      )
+        throw new Error('calendar-list-integrity');
+      const items = (payload.items ?? []) as unknown[];
       for (const item of items) {
         const record = asRecord(item);
-        if (record) events.push(record);
+        if (!record || typeof record.id !== 'string' || !record.id) {
+          throw new Error('calendar-list-integrity');
+        }
+        events.push(record);
       }
-      pageToken = payload && typeof payload.nextPageToken === 'string' ? payload.nextPageToken : '';
-      if (!pageToken) break;
+      pageToken = typeof payload.nextPageToken === 'string' ? payload.nextPageToken : '';
+      if (!pageToken) return events;
+      if (seenTokens.has(pageToken)) throw new Error('calendar-list-pagination');
+      seenTokens.add(pageToken);
     }
-    return events;
+    throw new Error('calendar-list-pagination');
   }
 
   async function findByBooking(bookingId: string): Promise<Record<string, unknown> | null> {
@@ -449,7 +578,39 @@ export function createGoogleCalendar(
       singleEvents: 'true',
       maxResults: '5',
     });
-    return events.find((event) => event.status !== 'cancelled') ?? null;
+    const active = events.filter((event) => event.status !== 'cancelled');
+    if (active.length > 1) throw new Error('calendar-booking-ambiguous');
+    const event = active[0];
+    if (!event) return null;
+    const booking = bookingFromEvent(event);
+    if (!booking || booking.booking_id !== bookingId) {
+      throw new Error('calendar-booking-integrity');
+    }
+    return event;
+  }
+
+  async function updateRefund(
+    bookingId: string,
+    update: (booking: Booking | null) => Booking,
+  ): Promise<Booking> {
+    const event = await findByBooking(bookingId);
+    const next = update(event ? bookingFromEvent(event) : null);
+    if (!event || !next.event_id) throw new Error('booking-missing');
+    const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
+    const headers = new Headers();
+    if (typeof event.etag !== 'string' || !event.etag) throw new Error('calendar-refund-integrity');
+    headers.set('if-match', event.etag);
+    await googleSend(
+      `${collection}/${encodeURIComponent(next.event_id)}?sendUpdates=none`,
+      token,
+      {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ extendedProperties: { private: propsOf(next) } }),
+      },
+      fetchImpl,
+    );
+    return next;
   }
 
   return {
@@ -488,13 +649,28 @@ export function createGoogleCalendar(
       );
       const calendars = asRecord(payload?.calendars);
       const mine = asRecord(calendars?.[calendarId]);
-      const busy = mine && Array.isArray(mine.busy) ? mine.busy : [];
+      if (
+        !mine ||
+        !Array.isArray(mine.busy) ||
+        (mine.errors !== undefined && (!Array.isArray(mine.errors) || mine.errors.length > 0))
+      ) {
+        throw new Error('calendar-busy-integrity');
+      }
+      const busy = mine.busy;
       const intervals: TimeInterval[] = [];
       for (const item of busy) {
         const record = asRecord(item);
-        if (record && typeof record.start === 'string' && typeof record.end === 'string') {
-          intervals.push({ start: record.start, end: record.end });
+        if (
+          !record ||
+          typeof record.start !== 'string' ||
+          typeof record.end !== 'string' ||
+          !Number.isFinite(Date.parse(record.start)) ||
+          !Number.isFinite(Date.parse(record.end)) ||
+          Date.parse(record.end) <= Date.parse(record.start)
+        ) {
+          throw new Error('calendar-busy-integrity');
         }
+        intervals.push({ start: record.start, end: record.end });
       }
       return intervals;
     },
@@ -552,6 +728,16 @@ export function createGoogleCalendar(
     async get(bookingId) {
       const event = await findByBooking(bookingId);
       return event ? bookingFromEvent(event) : null;
+    },
+    recordRefund(bookingId, stripeSessionId, evidence) {
+      return updateRefund(bookingId, (booking) =>
+        applyRefundEvidence(booking, stripeSessionId, evidence),
+      );
+    },
+    resolveDomainPackRefund(bookingId, chargeId, amountRefunded, decision) {
+      return updateRefund(bookingId, (booking) =>
+        applyDomainPackReview(booking, chargeId, amountRefunded, decision),
+      );
     },
     async schedulePaid(booking, stripeSessionId) {
       const existingEvent = await findByBooking(booking.booking_id);

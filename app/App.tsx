@@ -1,24 +1,11 @@
 import { LinkBehaviorProvider } from '@revealui/presentation';
 import { Link, Routes, useRouter } from '@revealui/router';
 import { useRef } from 'react';
-import { HOME_DOCUMENT_TITLE, HOME_META_DESCRIPTION } from './components/agency/Hero';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import {
-  PROOF_GAP_DOCUMENT_TITLE,
-  PROOF_GAP_META_DESCRIPTION,
-  PROOF_GAP_PATH,
-} from './content/proof-gap';
-import { publishedCases } from './data/cases';
-import { publishedPress } from './data/press';
+import { PROOF_GAP_PATH } from './content/proof-gap';
 import { RootLayout } from './layouts/RootLayout';
-import { STUDIO_BLOG_HOME_H1, STUDIO_BLOG_HOME_SUB } from './lib/blog-copy';
-import {
-  CONSULTATION_BOOK_INTRO,
-  CONSULTATION_CANCEL,
-  CONSULTATION_SUCCESS,
-  STAGE_B_ADDON,
-} from './lib/consultation-buyer';
-import { listSharePacks, resolveShareViewer } from './lib/share-stage-b';
+import { routeMeta } from './lib/route-documents';
+import { clientSlugFromHost } from './lib/share-host';
 import { AboutPage } from './routes/AboutPage';
 import { BlogPage } from './routes/BlogPage';
 import { BlogPostPage } from './routes/BlogPostPage';
@@ -48,210 +35,47 @@ export function App() {
   const registered = useRef(false);
 
   const shareSlug =
-    typeof window === 'undefined'
-      ? null
-      : (resolveShareViewer(window.location.hostname, listSharePacks())?.slug ?? null);
+    typeof window === 'undefined' ? null : clientSlugFromHost(window.location.hostname);
 
   if (!registered.current && router.getRoutes().length === 0) {
     if (shareSlug) {
       router.registerRoutes(shareRouteTable(shareSlug));
     } else
       router.registerRoutes([
-        {
-          path: '/',
-          component: HomePage,
-          meta: {
-            title: HOME_DOCUMENT_TITLE,
-            description: HOME_META_DESCRIPTION,
-          },
-        },
-        {
-          path: '/services',
-          component: ServicesPage,
-          meta: {
-            title: 'Offers | RevealUI Studio',
-            description:
-              'Consultation $300 per hour when you book the slot. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Pilot and Launch are invoiced after we agree.',
-          },
-        },
-        {
-          path: '/pricing',
-          component: RedirectToCalculator,
-          meta: {
-            title: 'Quote | RevealUI Studio',
-            description:
-              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Licenses live on revealui.com.',
-            robots: 'noindex,follow',
-          },
-        },
-        {
-          path: '/products',
-          component: RedirectToCalculator,
-          meta: {
-            title: 'Quote | RevealUI Studio',
-            description:
-              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Licenses live on revealui.com.',
-            robots: 'noindex,follow',
-          },
-        },
-        {
-          path: '/catalog',
-          component: RedirectToCalculator,
-          meta: {
-            title: 'Quote | RevealUI Studio',
-            description:
-              'Studio quote. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Licenses live on revealui.com.',
-            robots: 'noindex,follow',
-          },
-        },
-        {
-          path: '/process',
-          component: ProcessPage,
-          meta: {
-            title: 'How we work | RevealUI Studio',
-            description:
-              'How a RevealUI Studio engagement runs. Consultation $300. Pilot $3,997 (includes 1 Adapter). Launch $14,500 (up to 3 Adapters). Adapter $2,497. Stage B $297. Book a 30-minute intro on Google Calendar.',
-          },
-        },
-        {
-          path: '/blog',
-          component: BlogPage,
-          meta: {
-            title: `${STUDIO_BLOG_HOME_H1} | RevealUI Studio`,
-            description: STUDIO_BLOG_HOME_SUB,
-          },
-        },
-        {
-          path: '/blog/:slug',
-          component: BlogPostPage,
-          meta: {
-            title: `${STUDIO_BLOG_HOME_H1} | RevealUI Studio`,
-            description: STUDIO_BLOG_HOME_SUB,
-          },
-        },
-        {
-          path: '/about',
-          component: AboutPage,
-          meta: {
-            title: 'About | RevealUI Studio',
-            description:
-              'RevealUI Studio is for startups, and for technical founders and small agencies who already run agents. Joshua Vaughn runs it. Consultation, Pilot, and Launch. Adapter is an add-on and is not sold alone. Remote first. Consultation is paid when you book the slot.',
-          },
-        },
+        { path: '/', component: HomePage, meta: routeMeta('/') },
+        { path: '/services', component: ServicesPage, meta: routeMeta('/services') },
+        { path: '/pricing', component: RedirectToCalculator, meta: routeMeta('/pricing') },
+        { path: '/products', component: RedirectToCalculator, meta: routeMeta('/products') },
+        { path: '/catalog', component: RedirectToCalculator, meta: routeMeta('/catalog') },
+        { path: '/process', component: ProcessPage, meta: routeMeta('/process') },
+        { path: '/blog', component: BlogPage, meta: routeMeta('/blog') },
+        { path: '/blog/:slug', component: BlogPostPage, meta: routeMeta('/blog') },
+        { path: '/about', component: AboutPage, meta: routeMeta('/about') },
         {
           path: '/consultation/book',
           component: ConsultationBookPage,
-          meta: {
-            title: 'Book a Consultation | RevealUI Studio',
-            description: `${CONSULTATION_BOOK_INTRO} ${STAGE_B_ADDON}`,
-          },
+          meta: routeMeta('/consultation/book'),
         },
         {
           path: '/consultation/book/success',
           component: ConsultationBookSuccessPage,
-          meta: {
-            title: 'Consultation payment received | RevealUI Studio',
-            description: CONSULTATION_SUCCESS,
-            robots: 'noindex,nofollow',
-          },
+          meta: routeMeta('/consultation/book/success'),
         },
         {
           path: '/consultation/book/cancel',
           component: ConsultationBookCancelPage,
-          meta: {
-            title: 'Consultation checkout canceled | RevealUI Studio',
-            description: CONSULTATION_CANCEL,
-            robots: 'noindex,nofollow',
-          },
+          meta: routeMeta('/consultation/book/cancel'),
         },
-        {
-          path: '/contact',
-          component: ContactPage,
-          meta: {
-            title: 'Contact | RevealUI Studio',
-            description:
-              'Book a Consultation or a 30-minute intro, or email founder@revealui.com. No payment to book the intro.',
-          },
-        },
-        {
-          path: PROOF_GAP_PATH,
-          component: ProofGapPage,
-          meta: {
-            title: PROOF_GAP_DOCUMENT_TITLE,
-            description: PROOF_GAP_META_DESCRIPTION,
-          },
-        },
-        {
-          path: '/cookies',
-          component: CookiesPage,
-          meta: {
-            title: 'Cookies | RevealUI Studio',
-            description:
-              'How revealuistudio.com uses cookies, performance telemetry, pageview analytics, and error telemetry.',
-          },
-        },
-        {
-          path: '/privacy',
-          component: PrivacyPage,
-          meta: {
-            title: 'Privacy | RevealUI Studio',
-            description:
-              'How RevealUI Studio collects, uses, and protects the information you share with us.',
-          },
-        },
-        {
-          path: '/terms',
-          component: TermsPage,
-          meta: {
-            title: 'Terms | RevealUI Studio',
-            description:
-              'The terms that govern your use of revealuistudio.com and our engagement process.',
-          },
-        },
-        {
-          path: '/cases',
-          component: CasesPage,
-          meta: {
-            title: 'Engagements | RevealUI Studio',
-            description: 'Published only with explicit customer permission.',
-            robots: publishedCases.length === 0 ? 'noindex,nofollow' : 'index,follow',
-          },
-        },
-        {
-          path: '/cases/:slug',
-          component: CaseStudyPage,
-          meta: {
-            title: 'Engagements | RevealUI Studio',
-            description: 'Published only with explicit customer permission.',
-            robots: publishedCases.length === 0 ? 'noindex,nofollow' : 'index,follow',
-          },
-        },
-        {
-          path: '/press',
-          component: PressPage,
-          meta: {
-            title: 'Press | RevealUI Studio',
-            description: 'Public talks and mentions, when they exist.',
-            robots: publishedPress.length === 0 ? 'noindex,nofollow' : 'index,follow',
-          },
-        },
-        {
-          path: '/press/:slug',
-          component: PressItemPage,
-          meta: {
-            title: 'Press | RevealUI Studio',
-            description: 'Public talks and mentions, when they exist.',
-            robots: publishedPress.length === 0 ? 'noindex,nofollow' : 'index,follow',
-          },
-        },
-        {
-          path: '/*notfound',
-          component: NotFoundPage,
-          meta: {
-            title: '404 | RevealUI Studio',
-            description: 'The page you are looking for does not exist or has moved.',
-          },
-        },
+        { path: '/contact', component: ContactPage, meta: routeMeta('/contact') },
+        { path: PROOF_GAP_PATH, component: ProofGapPage, meta: routeMeta(PROOF_GAP_PATH) },
+        { path: '/cookies', component: CookiesPage, meta: routeMeta('/cookies') },
+        { path: '/privacy', component: PrivacyPage, meta: routeMeta('/privacy') },
+        { path: '/terms', component: TermsPage, meta: routeMeta('/terms') },
+        { path: '/cases', component: CasesPage, meta: routeMeta('/cases') },
+        { path: '/cases/:slug', component: CaseStudyPage, meta: routeMeta('/cases') },
+        { path: '/press', component: PressPage, meta: routeMeta('/press') },
+        { path: '/press/:slug', component: PressItemPage, meta: routeMeta('/press') },
+        { path: '/*notfound', component: NotFoundPage, meta: routeMeta('/__not-found__') },
       ]);
     registered.current = true;
   }

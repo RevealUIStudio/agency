@@ -5,29 +5,50 @@ import {
   STUDIO_BLOG_FEED_TITLE,
   STUDIO_BLOG_FEED_TYPE,
 } from '@/lib/blog-copy';
+import { headForPathname, normalizePathname, type StudioHead } from '@/lib/route-documents';
+import { clientSlugFromHost } from '@/lib/share-host';
 
 /**
- * Applies the active route's metadata to the document head on client-side
- * navigation.
+ * Keeps the document head aligned with the active route after client navigation.
  *
- * @revealui/router stores `meta.title` / `meta.description` per route (see
- * App.tsx) but does not itself write them to the document, and this site is a
- * client-rendered SPA with no SSR. Without this, every route would keep the
- * single static <title> from index.html. We set `document.title` directly
- * (rather than rendering a hoistable <title>) so it deterministically overrides
- * the static index.html title instead of competing with it.
- *
- * Renders nothing.
- *
- * Blog paths also keep the RSS alternate link. The shell document carries the
- * same tag so the first HTML response for a blog URL includes it.
+ * Known routes are also stamped into the built HTML, so a scraper that does not
+ * run JavaScript already sees the same title, description, canonical, and social
+ * tags. This effect covers in-app navigations, including a missing blog slug.
  */
-function isStudioBlogPath(pathname: string): boolean {
-  return pathname === '/blog' || pathname.startsWith('/blog/');
+
+function upsertMeta(attr: 'name' | 'property', key: string, content: string | null): void {
+  const existing = document.querySelector(`meta[${attr}="${key}"]`);
+  if (!content) {
+    existing?.remove();
+    return;
+  }
+  const tag = existing ?? document.createElement('meta');
+  tag.setAttribute(attr, key);
+  tag.setAttribute('content', content);
+  if (!existing) document.head.appendChild(tag);
 }
 
-function ensureBlogFeedLink(pathname: string): void {
-  if (!isStudioBlogPath(pathname)) return;
+function upsertCanonical(href: string | null): void {
+  const existing = document.querySelector('link[rel="canonical"]');
+  if (!href) {
+    existing?.remove();
+    return;
+  }
+  const link = existing ?? document.createElement('link');
+  link.setAttribute('rel', 'canonical');
+  link.setAttribute('href', href);
+  if (!existing) document.head.appendChild(link);
+}
+
+function removeFeedLink(): void {
+  for (const node of document.querySelectorAll(
+    `link[rel="alternate"][type="${STUDIO_BLOG_FEED_TYPE}"]`,
+  )) {
+    node.remove();
+  }
+}
+
+function ensureBlogFeedLink(): void {
   let link = document.querySelector<HTMLLinkElement>(
     `link[rel="alternate"][type="${STUDIO_BLOG_FEED_TYPE}"]`,
   );
@@ -41,28 +62,54 @@ function ensureBlogFeedLink(pathname: string): void {
   link.setAttribute('href', STUDIO_BLOG_FEED_PATH);
 }
 
+function applyHead(head: StudioHead): void {
+  document.title = head.title;
+  upsertMeta('name', 'description', head.description);
+  upsertMeta('name', 'robots', head.robots);
+  upsertMeta('property', 'og:type', head.ogType);
+  upsertMeta('property', 'og:title', head.title);
+  upsertMeta('property', 'og:description', head.description);
+  upsertMeta('property', 'og:image:alt', head.title);
+  upsertMeta('name', 'twitter:title', head.title);
+  upsertMeta('name', 'twitter:description', head.description);
+  upsertCanonical(head.canonicalHref);
+  upsertMeta('property', 'og:url', head.canonicalHref);
+  upsertMeta('name', 'twitter:url', head.canonicalHref);
+  if (head.feed) ensureBlogFeedLink();
+  else removeFeedLink();
+}
+
+function shareCanonical(pathname: string): string {
+  const path = normalizePathname(pathname);
+  return `https://${window.location.hostname}${path === '/' ? '/' : path}`;
+}
+
 export function RouteHead() {
   const router = useRouter();
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const meta = router.match(pathname)?.route.meta;
-    if (meta?.title) {
-      document.title = meta.title;
+    const shareSlug = clientSlugFromHost(window.location.hostname);
+    if (shareSlug) {
+      const meta = router.match(pathname)?.route.meta;
+      const title = typeof meta?.title === 'string' ? meta.title : document.title;
+      const description = typeof meta?.description === 'string' ? meta.description : '';
+      const robots = typeof meta?.robots === 'string' ? meta.robots : 'noindex,nofollow';
+      const href = shareCanonical(pathname);
+      document.title = title;
+      upsertMeta('name', 'description', description);
+      upsertMeta('name', 'robots', robots);
+      upsertMeta('property', 'og:title', title);
+      upsertMeta('property', 'og:description', description);
+      upsertMeta('name', 'twitter:title', title);
+      upsertMeta('name', 'twitter:description', description);
+      upsertCanonical(href);
+      upsertMeta('property', 'og:url', href);
+      upsertMeta('name', 'twitter:url', href);
+      removeFeedLink();
+      return;
     }
-    if (meta?.description) {
-      const tag = document.querySelector('meta[name="description"]');
-      tag?.setAttribute('content', meta.description);
-    }
-    const robots = typeof meta?.robots === 'string' ? meta.robots : 'index,follow';
-    let robotsTag = document.querySelector('meta[name="robots"]');
-    if (!robotsTag) {
-      robotsTag = document.createElement('meta');
-      robotsTag.setAttribute('name', 'robots');
-      document.head.appendChild(robotsTag);
-    }
-    robotsTag.setAttribute('content', robots);
-    ensureBlogFeedLink(pathname);
+    applyHead(headForPathname(pathname));
   }, [router, pathname]);
 
   return null;

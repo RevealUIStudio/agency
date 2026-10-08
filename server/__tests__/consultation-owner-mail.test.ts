@@ -46,7 +46,7 @@ describe('owner paid mail', () => {
     expect(message).toContain('Subject: RevealUI Studio Consultation paid');
     expect(message).toContain('Amount: $597');
     expect(message).toContain('Google Meet: https://meet.google.com/lookup/book_owner');
-    expect(message).toContain('Stage B: yes');
+    expect(message).toContain('Domain add-on: yes');
     expect(message).toContain('Network: no');
     expect(message).not.toContain('RevealUIWordmark');
     expect(message).not.toContain('\u2014');

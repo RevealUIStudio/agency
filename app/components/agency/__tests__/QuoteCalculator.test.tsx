@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { QuoteCalculator } from '@/components/agency/QuoteCalculator';
-import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
+import { CARE, CARE_PUBLIC_LABEL, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import {
   HOSTER_OPTIONS,
   INTRO_HEADING,
@@ -84,7 +84,7 @@ describe('QuoteCalculator', () => {
       `${CONSULTATION_BOOK_PATH}?hours=4&stage_b=false`,
     );
     expect(container.textContent ?? '').not.toMatch(/\bHour\b/);
-    expect(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Domain add-on: $297' })).not.toBeChecked();
     expect(screen.queryByRole('checkbox', { name: /On Care/ })).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Extra Adapters')).not.toBeInTheDocument();
     expect(container.textContent ?? '').not.toMatch(/waive/i);
@@ -103,10 +103,20 @@ describe('QuoteCalculator', () => {
     expect(screen.queryByText('$2,497')).not.toBeInTheDocument();
   });
 
+  it('offers Care and prices an added Adapter without a Domain add-on charge', () => {
+    render(<QuoteCalculator />);
+    fireEvent.click(screen.getByRole('radio', { name: CARE_PUBLIC_LABEL }));
+    expect(screen.getByRole('heading', { name: CARE.name })).toBeInTheDocument();
+    expect(screen.getByLabelText('Adapters')).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Adapters'), { target: { value: '1' } });
+    expect(screen.getByText('$2,497')).toBeInTheDocument();
+    expect(screen.queryByRole('checkbox', { name: 'Domain add-on: $297' })).not.toBeInTheDocument();
+  });
+
   it('keeps Stage B as a paid add-on with no public credit control', () => {
     const view = render(<QuoteCalculator />);
     fireEvent.click(screen.getByRole('radio', { name: OUTCOME_OPTIONS[0].label }));
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Domain add-on: $297' }));
     expect(screen.queryByRole('checkbox', { name: /waive/i })).not.toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toMatch(/waive/i);
     expect(screen.getByText('$297')).toBeInTheDocument();
@@ -114,7 +124,7 @@ describe('QuoteCalculator', () => {
       'href',
       `${CONSULTATION_BOOK_PATH}?hours=1&stage_b=true`,
     );
-    expect(screen.queryByText('Domain pack credit')).not.toBeInTheDocument();
+    expect(screen.queryByText('Domain add-on credit')).not.toBeInTheDocument();
     expect(screen.queryByText('$0')).not.toBeInTheDocument();
   });
 });

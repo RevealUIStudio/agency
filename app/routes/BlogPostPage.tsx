@@ -1,7 +1,6 @@
 import { Link, useParams } from '@revealui/router';
-import { useEffect } from 'react';
 import { BlogDocsBoundary } from '@/components/BlogDocsBoundary';
-import { blogPostUrl, findPublishedBlogPost, formatBlogDate } from '@/data/blog';
+import { findPublishedBlogPost, formatBlogDate } from '@/data/blog';
 import { BlogMarkdown } from '@/lib/blog-markdown';
 import { INTRO_CALL_URL } from '@/lib/site';
 import { NotFoundPage } from './NotFoundPage';
@@ -9,27 +8,6 @@ import { NotFoundPage } from './NotFoundPage';
 export function BlogPostPage() {
   const { slug } = useParams<{ slug?: string }>();
   const post = slug ? findPublishedBlogPost(slug) : undefined;
-
-  useEffect(() => {
-    if (!post) return;
-    const previousTitle = document.title;
-    document.title = `${post.title} | RevealUI Studio`;
-    const description = document.querySelector('meta[name="description"]');
-    const previousDescription = description?.getAttribute('content') ?? null;
-    description?.setAttribute('content', post.excerpt);
-    const canonical = document.querySelector('link[rel="canonical"]');
-    const previousCanonical = canonical?.getAttribute('href') ?? null;
-    canonical?.setAttribute('href', blogPostUrl(post.slug));
-    return () => {
-      document.title = previousTitle;
-      if (description && previousDescription !== null) {
-        description.setAttribute('content', previousDescription);
-      }
-      if (canonical && previousCanonical !== null) {
-        canonical.setAttribute('href', previousCanonical);
-      }
-    };
-  }, [post]);
 
   if (!post) return <NotFoundPage />;
 

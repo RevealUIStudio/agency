@@ -17,6 +17,7 @@ Company: {company, when present}
 The domain pack ($297) is on this payment.
 OR
 This payment is the consultation only.
+Your session includes: Session notes and a recommended next step.
 
 Prep: send the system you want to look at and the question you want answered. A link is usually enough.
 Questions: founder@revealui.com

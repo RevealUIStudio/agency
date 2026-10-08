@@ -1,11 +1,12 @@
 import { LinkButton } from '@revealui/presentation';
 import { useState } from 'react';
-import { STAGE_B_CHECKBOX } from '@/lib/consultation-buyer';
 import {
   ADAPTER_CALCULATOR_HELP,
   ADAPTER_EXTRA_OPTIONS,
   adapterExtraLabel,
   buildQuote,
+  CALCULATOR_DOMAIN_ADD_ON,
+  CARE_ADAPTER_CALCULATOR_HELP,
   CONSULTATION_HOUR_OPTIONS,
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
@@ -149,7 +150,7 @@ export function QuoteCalculator() {
                       htmlFor="adapter-extras"
                       className="text-base font-semibold text-foreground"
                     >
-                      Extra Adapters
+                      {outcome === 'care' ? 'Adapters' : 'Extra Adapters'}
                     </label>
                     <select
                       id="adapter-extras"
@@ -163,7 +164,9 @@ export function QuoteCalculator() {
                         </option>
                       ))}
                     </select>
-                    <p className="mt-3 text-sm text-muted-foreground">{ADAPTER_CALCULATOR_HELP}</p>
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      {outcome === 'care' ? CARE_ADAPTER_CALCULATOR_HELP : ADAPTER_CALCULATOR_HELP}
+                    </p>
                   </div>
                 ) : null}
                 {outcome === 'consultation' ? (
@@ -174,7 +177,9 @@ export function QuoteCalculator() {
                       onChange={(event) => setStageB(event.target.checked)}
                       className="mt-1 size-4 accent-primary"
                     />
-                    <span className="text-sm font-medium text-foreground">{STAGE_B_CHECKBOX}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      {CALCULATOR_DOMAIN_ADD_ON}
+                    </span>
                   </label>
                 ) : null}
               </>
