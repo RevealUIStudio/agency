@@ -3,6 +3,8 @@ import {
   type BookingCalendarStatus,
   type BookingSlot,
   Button,
+  Card,
+  CardFooter,
   Checkbox,
   CheckboxField,
   Description,
@@ -37,7 +39,7 @@ import {
   NETWORK_LINK_USED,
   rememberConsultationReceipt,
   STAGE_B_CHECKBOX,
-  STAGE_B_DETAIL,
+  STAGE_B_HELPER,
   STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
 import {
@@ -47,6 +49,7 @@ import {
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
 } from '@/lib/consultation-hours';
+import { CONSULTATION_DELIVERABLE } from '@/lib/engagements';
 import { formatUsdFromCents } from '@/lib/money';
 import { CONSULTATION_BOOK_PATH, CONTACT_EMAIL } from '@/lib/site';
 
@@ -335,9 +338,10 @@ export function ConsultationBookPage({
       <div className={frameClass}>
         <h1 className={headingClass}>Book a Consultation</h1>
         <p className="mt-6 break-words text-lg text-muted-foreground">{CONSULTATION_BOOK_INTRO}</p>
+        <p className="mt-3 text-base text-muted-foreground">{CONSULTATION_DELIVERABLE}</p>
 
         <form
-          className="mt-4 space-y-5 pb-[calc(var(--consultation-paybar-height,12rem)+1rem)] sm:mt-10 sm:space-y-8"
+          className="mt-4 space-y-5 sm:mt-10 sm:space-y-8 sm:pb-[calc(var(--consultation-paybar-height,12rem)+1rem)]"
           onSubmit={onSubmit}
         >
           <FormField id="consultation-book-hours" label="Consultation length">
@@ -443,7 +447,7 @@ export function ConsultationBookPage({
                 <Label id="consultation-stage-b-label">{STAGE_B_CHECKBOX}</Label>
               </CheckboxField>
               <Description className="mt-2" id="consultation-stage-b">
-                {STAGE_B_DETAIL}
+                {STAGE_B_HELPER}
               </Description>
             </div>
           )}
@@ -453,11 +457,12 @@ export function ConsultationBookPage({
             <p className="mt-1 text-sm text-muted-foreground">{CONSULTATION_AFTER_PAY}</p>
           </div>
 
-          <div
+          <Card
             ref={payBarRef}
-            className="fixed inset-x-0 z-30 border-t border-border bg-background px-4 pt-2 bottom-[var(--cookie-banner-height,0px)] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 sm:pt-3"
+            data-consultation-paybar=""
+            className="static rounded-none border-x-0 border-b-0 shadow-none hover:shadow-none sm:fixed sm:inset-x-0 sm:z-30 sm:bottom-[var(--cookie-banner-height,0px)]"
           >
-            <div className="mx-auto w-full min-w-0 max-w-3xl">
+            <CardFooter className="mx-auto w-full min-w-0 max-w-3xl flex-col items-stretch px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 sm:pt-3">
               {selectedSlot ? (
                 <p className="break-words text-base font-semibold text-foreground">
                   {selectedSlot.label}
@@ -483,8 +488,8 @@ export function ConsultationBookPage({
               >
                 {submitting ? 'Starting checkout' : 'Continue to payment'}
               </Button>
-            </div>
-          </div>
+            </CardFooter>
+          </Card>
           <section
             className="mt-8 rounded-xl border border-border p-5"
             aria-labelledby="consultation-change-policy"
@@ -591,6 +596,9 @@ export function ConsultationBookSuccessPage() {
             </p>
             <p className="mt-2 break-words text-base text-muted-foreground">
               {consultationStageLine(detail.stageB)}
+            </p>
+            <p className="mt-4 break-words text-base text-muted-foreground">
+              {CONSULTATION_DELIVERABLE}
             </p>
             <p className="mt-4 break-words text-base text-muted-foreground">
               {CONSULTATION_PREP_BODY}

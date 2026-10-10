@@ -15,7 +15,7 @@
 # Uses POSIX grep -rE so it runs anywhere (CI, pre-push, bare shells).
 # Safe to rerun; read-only.
 #
-# Ported from RevealUIStudio/revskills/scripts/check-no-private-leaks.sh
+# Ported from revealui-studio/revskills/scripts/check-no-private-leaks.sh
 # 2026-05-16. Adds patterns for customer/prospect leakage and Vercel-
 # operator-catalog disclosure that the revskills canonical scanner does
 # not need to enforce (revskills has no Vercel link and no customer

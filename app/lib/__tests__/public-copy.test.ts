@@ -12,12 +12,21 @@ import {
 } from '@/components/agency/Hero';
 import {
   PROOF_GAP_CHECK_COUNT,
+  PROOF_GAP_LADDER,
   PROOF_GAP_SCORE_PROMPT,
   PROOF_GAP_SECTIONS,
 } from '@/content/proof-gap';
 import { engagementLabels } from '@/data/cases';
 import { findBannedToolNames } from '@/lib/buyer-facing-names';
-import { PUBLIC_OFFERS } from '@/lib/engagements';
+import {
+  CARE,
+  CONSULTATION_DELIVERABLE,
+  LAUNCH,
+  PILOT,
+  PILOT_CREDIT_LINE,
+  PUBLIC_OFFERS,
+  STAGE_B_PRICE,
+} from '@/lib/engagements';
 import {
   OG_CARD_BOOKING_LINE,
   OG_CARD_HEADLINE,
@@ -203,6 +212,8 @@ describe('public copy gates', () => {
     expect(PROOF_GAP_CHECK_COUNT).toBe(count);
     expect(PROOF_GAP_SCORE_PROMPT).toContain(`/ ${count} checks`);
     const pdf = pdfPageText(readFileSync(path.join(repoRoot, 'public/proof-gap-checklist.pdf')));
+    expect(pdf).toContain(CONSULTATION_DELIVERABLE);
+    expect(pdf).not.toMatch(/living pack|session share URL|one business day/i);
     expect(pdf).toContain(`/ ${count} checks`);
     for (const section of PROOF_GAP_SECTIONS) {
       for (const check of section.checks) expect(pdf).toContain(`${check.id} `);
@@ -377,15 +388,18 @@ describe('public copy gates', () => {
     expect(createHash('sha256').update(mark).digest('hex')).toBe(
       'a94031503236900c7711cc3c9b766e584fc1079ff820a05a969e8cc1d7acfa33',
     );
-    expect(nav).toContain('/revealui-mark.svg');
-    expect(nav).toContain('CIRCUIT_R_NAV_PX = 48');
-    expect(nav).toContain('overflow-hidden');
+    expect(nav).toContain('RevealUIWordmark');
+    expect(nav).toContain('aria-label="RevealUI Studio home"');
+    expect(nav).not.toContain('/revealui-mark.svg');
+    expect(nav).not.toContain('CIRCUIT_R_NAV_PX');
+    expect(nav).not.toContain('data-circuit-r-chrome');
     expect(nav).not.toContain('h-9 w-auto');
     expect(nav).not.toContain('w-9');
     expect(nav).not.toContain('width={36}');
     expect(nav).not.toContain('/favicon.svg');
     expect(nav).not.toContain('/icon-mark.svg');
-    expect(nav).not.toContain('wordmark');
+    expect(nav).not.toContain('wordmark-light');
+    expect(nav).not.toContain('wordmark-dark');
     expect(readFileSync(path.join(repoRoot, 'index.html'), 'utf8')).toContain(
       '"logo": "https://revealuistudio.com/favicon.svg"',
     );
@@ -512,16 +526,17 @@ describe('public copy gates', () => {
     expect(pngLatin1).not.toContain('Architecture artifact bundle and review');
   });
 
-  it('keeps chrome free of a nav wordmark, a repeated email, and a raw docs host', () => {
+  it('keeps chrome on the presentation wordmark, without a repeated email or a raw docs host', () => {
     const nav = readFileSync(path.join(repoRoot, 'app/components/NavBar.tsx'), 'utf8');
     const footer = readFileSync(path.join(repoRoot, 'app/components/Footer.tsx'), 'utf8');
-    expect(nav).not.toMatch(/RevealUI/);
-    expect(nav).not.toMatch(/Studio/);
+    expect(nav).toContain('RevealUIWordmark');
+    expect(nav).toContain('RevealUI Studio home');
     expect(nav).not.toContain('CONTACT_EMAIL');
     const blogCopy = readFileSync(path.join(repoRoot, 'app/lib/blog-copy.ts'), 'utf8');
     expect(blogCopy).toContain("export const DOCS_NAV_LABEL = 'Docs'");
     expect(blogCopy).toContain("export const BLOG_NAV_LABEL = 'Blog'");
-    expect(blogCopy).toContain('Blog is on Studio. Docs are product reference.');
+    expect(blogCopy).toContain('Need setup steps? Read the RevealUI docs.');
+    expect(blogCopy).not.toContain('Blog is on Studio. Docs are product reference.');
     expect(footer).toContain('DOCS_NAV_LABEL');
     expect(footer).not.toContain('Documentation');
     expect(footer).not.toMatch(/docs\.revealui\.com/);
@@ -645,10 +660,37 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain('"price": "3997"');
     expect(jsonLd).toContain('"price": "14500"');
     expect(jsonLd).not.toContain('"price": "3500"');
+    expect(jsonLd).not.toMatch(/Click-to-call|leftover site|One agent you run/);
+    const consultationOffer = jsonLd.slice(
+      jsonLd.indexOf('"name": "Consultation"'),
+      jsonLd.indexOf('"name": "Pilot"'),
+    );
+    expect(consultationOffer).toContain('"@type": "UnitPriceSpecification"');
+    expect(consultationOffer).toContain('"unitCode": "HUR"');
+    expect(consultationOffer).toContain('"unitText": "hour"');
+    expect(consultationOffer).toContain(CONSULTATION_DELIVERABLE);
+    expect(consultationOffer).toContain('$300 per hour');
+    const pilotOffer = jsonLd.slice(
+      jsonLd.indexOf('"name": "Pilot"'),
+      jsonLd.indexOf('"name": "Launch"'),
+    );
+    expect(pilotOffer).toContain('One receipted action you operate.');
+    expect(pilotOffer).toContain('The Domain add-on is included.');
+    expect(pilotOffer).toContain(PILOT_CREDIT_LINE);
+    const launchOffer = jsonLd.slice(
+      jsonLd.indexOf('"name": "Launch"'),
+      jsonLd.indexOf('"name": "Adapter"'),
+    );
+    expect(launchOffer).toContain('The Domain add-on is included.');
+    expect(launchOffer).toContain('30 days of async stabilization');
     expect(quote).toContain("DEFAULT_OUTCOME: Outcome = 'plan'");
-    expect(quote).toContain("label: 'Consultation: review my system ($300 per hour)'");
-    expect(quote).toContain("label: 'Pilot: run one action on one site'");
-    expect(quote).toContain("label: 'Launch: put one business flow into production'");
+    expect(quote).toContain("label: 'Consultation: $300/hr'");
+    expect(quote).toContain(
+      "label: 'Pilot: one site, one receipted action you operate (includes 1 Adapter)'",
+    );
+    expect(quote).toContain(
+      "label: 'Launch: money path live on your accounts (includes up to 3 Adapters)'",
+    );
     expect(quote).toContain('Product licenses are separate');
     expect(quote).not.toContain('outcome validation or proof of work. Licenses');
     expect(quote).not.toMatch(/free website/i);
@@ -738,8 +780,10 @@ describe('public copy gates', () => {
     const offers = readFileSync(path.join(repoRoot, 'app/lib/engagements.ts'), 'utf8');
 
     expect(app).not.toMatch(/what-is-a-startup/);
-    expect(app).toContain('HOME_DOCUMENT_TITLE');
-    expect(app).toContain('HOME_META_DESCRIPTION');
+    const heads = readFileSync(path.join(repoRoot, 'app/lib/route-documents.ts'), 'utf8');
+    expect(heads).toContain('HOME_DOCUMENT_TITLE');
+    expect(heads).toContain('HOME_META_DESCRIPTION');
+    expect(app).toContain("routeMeta('/')");
     expect(HOME_DOCUMENT_TITLE).toBe(
       'RevealUI Studio | Build a business workflow your team can operate',
     );
@@ -838,9 +882,13 @@ describe('public copy gates', () => {
     expect(offers).not.toMatch(/name: 'Knowledge Graph'/);
     expect(offers).toContain('30 days of async stabilization');
     expect(PUBLIC_OFFERS).toHaveLength(3);
-    expect(quote).toContain("label: 'Consultation: review my system ($300 per hour)'");
-    expect(quote).toContain("label: 'Pilot: run one action on one site'");
-    expect(quote).toContain("label: 'Launch: put one business flow into production'");
+    expect(quote).toContain("label: 'Consultation: $300/hr'");
+    expect(quote).toContain(
+      "label: 'Pilot: one site, one receipted action you operate (includes 1 Adapter)'",
+    );
+    expect(quote).toContain(
+      "label: 'Launch: money path live on your accounts (includes up to 3 Adapters)'",
+    );
     expect(quote).not.toMatch(/Knowledge Graph/);
     expect(quote).not.toMatch(/RevMind/);
     expect(jsonLd).not.toContain('"name": "Knowledge Graph"');
@@ -891,14 +939,21 @@ describe('public copy gates', () => {
     };
 
     expect(app).toContain('PROOF_GAP_PATH');
-    expect(app).toContain('PROOF_GAP_DOCUMENT_TITLE');
     expect(app).toContain('ProofGapPage');
+    const heads = readFileSync(path.join(repoRoot, 'app/lib/route-documents.ts'), 'utf8');
+    expect(heads).toContain('PROOF_GAP_DOCUMENT_TITLE');
+    expect(heads).toContain('PROOF_GAP_META_DESCRIPTION');
     expect(copy).toContain("PROOF_GAP_H1 = 'Can you prove what your agents did last week?'");
     expect(copy).toContain("PROOF_GAP_DOCUMENT_TITLE = 'Proof-gap checklist | RevealUI Studio'");
     expect(copy).toContain("PROOF_GAP_CTA = 'Ask about a checklist review'");
     expect(copy).toContain('An action record names who acted');
-    expect(copy).toContain('Pilot $3,997');
-    expect(copy).toContain('Launch $14,500');
+    expect(PROOF_GAP_LADDER).toContain(`${PILOT.name} ${PILOT.price}`);
+    expect(PROOF_GAP_LADDER).toContain(`${LAUNCH.name} ${LAUNCH.price}`);
+    expect(PROOF_GAP_LADDER).toContain(`${CARE.name} ${CARE.price}`);
+    expect(PROOF_GAP_LADDER).toContain(STAGE_B_PRICE);
+    expect(copy).toContain('PILOT.price');
+    expect(copy).toContain('CARE.price');
+    expect(copy).toContain('Pilot. $3,997');
     expect(copy).toContain(
       'This checklist is a planning aid, not a certification or validated risk score.',
     );

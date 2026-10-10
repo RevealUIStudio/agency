@@ -63,6 +63,8 @@ for title, checks, red_flag in SECTIONS:
 line(COPY["PROOF_GAP_SCORE_PROMPT"], 8)
 line("One gap I will fix this week: ________________________________________________________", 8, gap=16)
 line("Next: Review one gap yourself or book a Consultation at $300 per hour.", 9)
+for part in wrap(COPY["PROOF_GAP_NEXT_STEPS"][1], width=125):
+    line(part, 8)
 line(COPY["PROOF_GAP_LADDER"], 8)
 line("Book a free 30-minute intro on revealuistudio.com.", 8, gap=16)
 line("RevealUI Studio \u00b7 Proof-gap checklist", 8)

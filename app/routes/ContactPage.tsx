@@ -53,7 +53,9 @@ export function ContactPage() {
 
         <div className="mt-16">
           <h2 className="text-xl font-bold text-foreground">Or send a note</h2>
-          <p className="mt-2 text-sm text-muted-foreground">I respond within 1-2 business days.</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            I aim to respond within 1–2 business days.
+          </p>
           <div className="mt-8">
             <ContactForm />
           </div>

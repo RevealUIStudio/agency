@@ -4,11 +4,17 @@ import { resolve } from 'node:path';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+  CONSULTATION_AFTER_PAY,
+  CONSULTATION_CANCEL,
   CONSULTATION_CHANGE_POLICY,
   CONSULTATION_SUCCESS,
   NETWORK_LINK_USED,
   rememberConsultationReceipt,
+  STAGE_B_CHECKBOX,
+  STAGE_B_HELPER,
+  STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
+import { CONSULTATION_DELIVERABLE } from '@/lib/engagements';
 import {
   ConsultationBookCancelPage,
   ConsultationBookPage,
@@ -35,7 +41,11 @@ describe('ConsultationBookPage', () => {
     expect(source).toContain('<Input');
     expect(source).toContain('<Checkbox');
     expect(source).toContain('<Button');
+    expect(source).toContain('<Card');
+    expect(source).toContain('<CardFooter');
     expect(source).toContain('<LinkButton');
+    expect(source).toContain('STAGE_B_HELPER');
+    expect(source).not.toContain('Add the domain pack');
     expect(source).not.toMatch(/<button\b/);
     expect(source).not.toMatch(/<select\b/);
     expect(source).not.toMatch(/<input\b/);
@@ -82,12 +92,21 @@ describe('ConsultationBookPage', () => {
     const onCheckout = vi.fn();
     const view = render(<ConsultationBookPage onCheckout={onCheckout} />);
     expect(view.container.querySelector('[data-slot="booking-calendar"]')).toBeTruthy();
+    expect(screen.getByText(CONSULTATION_DELIVERABLE)).toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toMatch(/waive/i);
     for (const policy of CONSULTATION_CHANGE_POLICY)
       expect(screen.getByText(policy)).toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toContain('calendar.google.com');
-    const stageB = await screen.findByRole('checkbox', { name: 'Add the domain pack ($297)' });
+    const stageB = await screen.findByRole('checkbox', { name: STAGE_B_CHECKBOX });
     expect(stageB).not.toBeChecked();
+    expect(screen.getByText(STAGE_B_HELPER)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_AFTER_PAY)).toBeInTheDocument();
+    expect(view.container.textContent ?? '').not.toContain('Add the domain pack');
+    expect(view.container.textContent ?? '').not.toMatch(/\bStage B\b/);
+    expect((view.container.textContent ?? '').replaceAll('Google Meet', '')).not.toMatch(
+      /\bMeet\b/,
+    );
+    expect(view.container.textContent ?? '').not.toContain('\u2014');
     fireEvent.click(await screen.findByRole('radio', { name: /9:00 AM/ }));
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Ada Buyer' } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ada@example.com' } });
@@ -104,6 +123,47 @@ describe('ConsultationBookPage', () => {
       stage_b: false,
     });
     expect(sessionStorage.getItem('consultation-receipt')).toBeNull();
+  });
+
+  it('keeps the pay summary in document flow below the sm breakpoint', async () => {
+    vi.stubGlobal('fetch', (input: RequestInfo | URL) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      if (url.includes('/api/consultation/availability')) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              timezone: 'America/New_York',
+              hours: 1,
+              slots: [
+                {
+                  start: '2026-10-25T13:00:00.000Z',
+                  end: '2026-10-25T14:00:00.000Z',
+                  label: 'Sun, Oct 25 · 9:00 AM–10:00 AM ET',
+                },
+              ],
+            }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          ),
+        );
+      }
+      return Promise.resolve(new Response('no', { status: 500 }));
+    });
+    const view = render(<ConsultationBookPage />);
+    const calendar = view.container.querySelector('[data-slot="booking-calendar"]');
+    const paybar = view.container.querySelector('[data-consultation-paybar]');
+    if (!calendar || !paybar) throw new Error('paybar');
+    expect(paybar.className.split(/\s+/)).toContain('static');
+    expect(paybar.className.split(/\s+/)).toContain('sm:fixed');
+    expect(paybar.className.split(/\s+/)).not.toContain('fixed');
+    expect(
+      calendar.compareDocumentPosition(paybar) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    const form = paybar?.closest('form');
+    expect(form?.className).toContain('sm:pb-[calc(var(--consultation-paybar-height,12rem)+1rem)]');
+    expect(form?.className ?? '').not.toMatch(
+      /(^|\s)pb-\[calc\(var\(--consultation-paybar-height,12rem\)\+1rem\)\]/,
+    );
+    expect(await screen.findByRole('button', { name: 'Continue to payment' })).toBeInTheDocument();
   });
 
   it('forces the domain pack on a signed link and keeps due at the consultation', async () => {
@@ -158,8 +218,8 @@ describe('ConsultationBookPage', () => {
 
     const view = render(<ConsultationBookPage onCheckout={vi.fn()} />);
     expect(window.location.search).toBe('?hours=1');
-    expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
-    expect(screen.queryByRole('checkbox', { name: 'Add the domain pack ($297)' })).toBeNull();
+    expect(await screen.findByText(STAGE_B_ON_ORDER)).toBeInTheDocument();
+    expect(screen.queryByRole('checkbox', { name: STAGE_B_CHECKBOX })).toBeNull();
     expect(screen.getByText('Due today $300.')).toBeInTheDocument();
     expect(view.container.textContent ?? '').not.toMatch(
       /\bwaiv(e|ed)\b|\bfree Stage B\b|\bsometimes free\b/i,
@@ -195,12 +255,12 @@ describe('ConsultationBookPage', () => {
       );
     });
     const first = render(<ConsultationBookPage />);
-    expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
+    expect(await screen.findByText(STAGE_B_ON_ORDER)).toBeInTheDocument();
     expect(window.location.search).toBe('?hours=2');
     first.unmount();
 
     render(<ConsultationBookPage />);
-    expect(await screen.findByText('Domain pack is on this order.')).toBeInTheDocument();
+    expect(await screen.findByText(STAGE_B_ON_ORDER)).toBeInTheDocument();
     expect(statusRequests).toEqual([
       '/api/consultation/network-status?nw=signed-token',
       '/api/consultation/network-status?nw=signed-token',
@@ -227,10 +287,8 @@ describe('ConsultationBookPage', () => {
       );
     });
     render(<ConsultationBookPage />);
-    expect(
-      await screen.findByRole('checkbox', { name: 'Add the domain pack ($297)' }),
-    ).not.toBeChecked();
-    expect(screen.queryByText('Domain pack is on this order.')).not.toBeInTheDocument();
+    expect(await screen.findByRole('checkbox', { name: STAGE_B_CHECKBOX })).not.toBeChecked();
+    expect(screen.queryByText(STAGE_B_ON_ORDER)).not.toBeInTheDocument();
     expect(screen.getByText('Due today $300.')).toBeInTheDocument();
     window.history.pushState({}, '', '/');
   });
@@ -268,6 +326,7 @@ describe('ConsultationBookPage', () => {
     render(<ConsultationBookSuccessPage />);
     expect(await screen.findByRole('heading', { name: 'Consultation booked' })).toBeInTheDocument();
     expect(screen.getByText(CONSULTATION_SUCCESS)).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_DELIVERABLE)).toBeInTheDocument();
     expect(window.location.search).not.toContain('cs_test_1');
     window.history.pushState({}, '', '/');
   });
@@ -285,6 +344,7 @@ describe('ConsultationBookPage', () => {
     const pending = render(<ConsultationBookSuccessPage />);
     expect(await screen.findByText(/Your booking is not confirmed yet/)).toBeInTheDocument();
     expect(screen.queryByText(CONSULTATION_SUCCESS)).not.toBeInTheDocument();
+    expect(screen.queryByText(CONSULTATION_DELIVERABLE)).not.toBeInTheDocument();
     pending.unmount();
     window.history.pushState(
       {},
@@ -310,12 +370,16 @@ describe('ConsultationBookPage', () => {
     const pay = await screen.findByRole('button', { name: 'Continue to payment' });
     expect(pay.className).toContain('w-full');
     expect(pay.className).toContain('min-h-12');
-    expect(pay.closest('.fixed')?.className).toContain('bottom-[var(--cookie-banner-height,0px)]');
+    const dock = pay.closest('[data-consultation-paybar]');
+    expect(dock?.className.split(/\s+/)).toContain('static');
+    expect(dock?.className.split(/\s+/)).not.toContain('fixed');
+    expect(dock?.className).toContain('sm:fixed');
+    expect(dock?.className).toContain('sm:bottom-[var(--cookie-banner-height,0px)]');
     expect(screen.getByLabelText('Company (optional)')).toBeInTheDocument();
     const name = screen.getByLabelText('Name');
     expect(name.className).toContain('w-full');
     expect(name.className).toContain('text-base');
-    const stageB = screen.getByRole('checkbox', { name: 'Add the domain pack ($297)' });
+    const stageB = screen.getByRole('checkbox', { name: STAGE_B_CHECKBOX });
     expect(stageB).not.toBeChecked();
     fireEvent.click(stageB);
     expect(stageB).toBeChecked();
@@ -417,6 +481,8 @@ describe('ConsultationBookPage', () => {
 describe('ConsultationBookCancelPage', () => {
   it('offers a full-width return to the book page', () => {
     render(<ConsultationBookCancelPage />);
+    expect(screen.getByRole('heading', { name: 'Checkout canceled' })).toBeInTheDocument();
+    expect(screen.getByText(CONSULTATION_CANCEL)).toBeInTheDocument();
     const again = screen.getByRole('link', { name: 'Pick another time' });
     expect(again).toHaveAttribute('href', '/consultation/book');
     expect(again.className).toContain('w-full');

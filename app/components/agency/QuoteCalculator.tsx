@@ -1,11 +1,12 @@
 import { LinkButton } from '@revealui/presentation';
 import { useState } from 'react';
-import { STAGE_B_CHECKBOX } from '@/lib/consultation-buyer';
 import {
   ADAPTER_CALCULATOR_HELP,
   ADAPTER_EXTRA_OPTIONS,
   adapterExtraLabel,
   buildQuote,
+  CALCULATOR_DOMAIN_ADD_ON,
+  CARE_ADAPTER_CALCULATOR_HELP,
   CONSULTATION_HOUR_OPTIONS,
   consultationHourLabel,
   DEFAULT_CONSULTATION_HOURS,
@@ -14,7 +15,6 @@ import {
   DEFAULT_PLACES,
   HOSTER_OPTIONS,
   type Hoster,
-  ON_CARE_CHECKBOX,
   OUTCOME_OPTIONS,
   type Outcome,
   PLACES_OPTIONS,
@@ -76,7 +76,6 @@ export function QuoteCalculator() {
   const [consultationHours, setConsultationHours] = useState<number>(DEFAULT_CONSULTATION_HOURS);
   const [stageB, setStageB] = useState(false);
   const [adapterExtras, setAdapterExtras] = useState(0);
-  const [onCare, setOnCare] = useState(false);
 
   const quote = buildQuote({
     hoster,
@@ -85,7 +84,6 @@ export function QuoteCalculator() {
     consultationHours,
     stageB,
     adapterExtras,
-    onCare,
   });
 
   return (
@@ -125,75 +123,64 @@ export function QuoteCalculator() {
                   onChange={setPlaces}
                 />
                 {places === 'one' && outcome === 'consultation' ? (
-                  <>
-                    <div>
-                      <label
-                        htmlFor="consultation-hours"
-                        className="text-base font-semibold text-foreground"
-                      >
-                        Consultation hours
-                      </label>
-                      <select
-                        id="consultation-hours"
-                        value={consultationHours}
-                        onChange={(event) => setConsultationHours(Number(event.target.value))}
-                        className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
-                      >
-                        {CONSULTATION_HOUR_OPTIONS.map((count) => (
-                          <option key={count} value={count}>
-                            {consultationHourLabel(count)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </>
+                  <div>
+                    <label
+                      htmlFor="consultation-hours"
+                      className="text-base font-semibold text-foreground"
+                    >
+                      Consultation hours
+                    </label>
+                    <select
+                      id="consultation-hours"
+                      value={consultationHours}
+                      onChange={(event) => setConsultationHours(Number(event.target.value))}
+                      className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
+                    >
+                      {CONSULTATION_HOUR_OPTIONS.map((count) => (
+                        <option key={count} value={count}>
+                          {consultationHourLabel(count)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 ) : null}
-                <div>
-                  <label
-                    htmlFor="adapter-extras"
-                    className="text-base font-semibold text-foreground"
-                  >
-                    Extra Adapters
-                  </label>
-                  <select
-                    id="adapter-extras"
-                    value={adapterExtras}
-                    onChange={(event) => setAdapterExtras(Number(event.target.value))}
-                    className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
-                  >
-                    {ADAPTER_EXTRA_OPTIONS.map((count) => (
-                      <option key={count} value={count}>
-                        {adapterExtraLabel(count)}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="mt-3 text-sm text-muted-foreground">{ADAPTER_CALCULATOR_HELP}</p>
-                </div>
+                {outcome !== 'consultation' ? (
+                  <div>
+                    <label
+                      htmlFor="adapter-extras"
+                      className="text-base font-semibold text-foreground"
+                    >
+                      {outcome === 'care' ? 'Adapters' : 'Extra Adapters'}
+                    </label>
+                    <select
+                      id="adapter-extras"
+                      value={adapterExtras}
+                      onChange={(event) => setAdapterExtras(Number(event.target.value))}
+                      className="mt-4 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground"
+                    >
+                      {ADAPTER_EXTRA_OPTIONS.map((count) => (
+                        <option key={count} value={count}>
+                          {adapterExtraLabel(count)}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      {outcome === 'care' ? CARE_ADAPTER_CALCULATOR_HELP : ADAPTER_CALCULATOR_HELP}
+                    </p>
+                  </div>
+                ) : null}
                 {outcome === 'consultation' ? (
-                  <>
-                    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                      <input
-                        type="checkbox"
-                        checked={onCare}
-                        onChange={(event) => setOnCare(event.target.checked)}
-                        className="mt-1 size-4 accent-primary"
-                      />
-                      <span className="text-sm font-medium text-foreground">
-                        {ON_CARE_CHECKBOX}
-                      </span>
-                    </label>
-                    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                      <input
-                        type="checkbox"
-                        checked={stageB}
-                        onChange={(event) => setStageB(event.target.checked)}
-                        className="mt-1 size-4 accent-primary"
-                      />
-                      <span className="text-sm font-medium text-foreground">
-                        {STAGE_B_CHECKBOX}
-                      </span>
-                    </label>
-                  </>
+                  <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                    <input
+                      type="checkbox"
+                      checked={stageB}
+                      onChange={(event) => setStageB(event.target.checked)}
+                      className="mt-1 size-4 accent-primary"
+                    />
+                    <span className="text-sm font-medium text-foreground">
+                      {CALCULATOR_DOMAIN_ADD_ON}
+                    </span>
+                  </label>
                 ) : null}
               </>
             ) : null}

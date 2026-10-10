@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ContactForm } from '@/components/agency/ContactForm';
 import { submitContact } from '@/lib/api';
-import { CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
+import { CARE_PUBLIC_LABEL, CONSULTATION, LAUNCH, PILOT } from '@/lib/engagements';
 import { CONTACT_EMAIL } from '@/lib/site';
 
 vi.mock('@/lib/api', () => ({
@@ -31,7 +31,7 @@ describe('ContactForm', () => {
     mockSubmit.mockReset();
   });
 
-  it('renders required fields, the three offer topics, and submit control', () => {
+  it('renders required fields, the paid offer topics, and submit control', () => {
     render(<ContactForm />);
     expect(screen.getByLabelText(/Name/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Email/)).toBeInTheDocument();
@@ -39,6 +39,13 @@ describe('ContactForm', () => {
     expect(screen.getByLabelText(/Topic/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Message/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: "I'm not sure which engagement fits" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/Topic/)).toHaveValue('general');
+    expect(
+      screen.getByText(/leave out passwords, API keys, and sensitive customer data/i),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('option', { name: `${CONSULTATION.name} (${CONSULTATION.price})` }),
     ).toBeInTheDocument();
@@ -50,6 +57,7 @@ describe('ContactForm', () => {
     expect(
       screen.getByRole('option', { name: `${LAUNCH.name} (${LAUNCH.price})` }),
     ).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: CARE_PUBLIC_LABEL })).toBeInTheDocument();
     expect(screen.queryByRole('option', { name: /Fleet Stamp/ })).not.toBeInTheDocument();
   });
 

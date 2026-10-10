@@ -2,25 +2,35 @@
  * Buyer-facing Consultation copy. The book page, the confirmation draft,
  * and the calendar invite share these sentences.
  *
- * Do not describe the domain pack as free, included, waived, or credited.
+ * Do not describe the Domain add-on as waived, free, or credited.
+ * The book helper may say the Domain add-on is included with Pilot or Launch.
  * The Stripe SKU stays stage-b. The buyer invite is the calendar event.
  */
 
 import { consultationDueCents, consultationHourCount } from './consultation-hours';
 import { formatConsultationRange } from './consultation-slots';
-import { STAGE_B_PRICE } from './engagements';
+import { DOMAIN_ADD_ON_LABEL } from './domain-pack';
+import {
+  CONSULTATION_DELIVERABLE,
+  DOMAIN_ADD_ON_LINE_ITEM,
+  STAGE_B_CENTS,
+  STAGE_B_PRICE,
+} from './engagements';
 import { CONTACT_EMAIL } from './site';
-import { STAGE_B_CENTS } from './stage-b-invoice';
 
 export const CONSULTATION_BOOK_INTRO =
   'Weekday slots in Eastern Time, 9:00 AM to 5:00 PM. $300 per hour. The 30-minute intro stays a separate booking.';
 
-export const STAGE_B_ADDON = `The domain pack is an optional ${STAGE_B_PRICE} add-on.`;
+export const STAGE_B_ADDON = `${DOMAIN_ADD_ON_LABEL}: optional, ${STAGE_B_PRICE} after a Consultation alone.`;
 
-export const STAGE_B_CHECKBOX = `Add the domain pack (${STAGE_B_PRICE})`;
+export const STAGE_B_CHECKBOX = DOMAIN_ADD_ON_LINE_ITEM;
+
+/** Book-page checkbox helper. Included with Pilot or Launch. Not a waiver. */
+export const STAGE_B_HELPER =
+  'Attach your own domain to the share host. Optional at Consultation; included with Pilot or Launch.';
 
 /** Network book link. The pack is on the order. Do not say the fee was removed. */
-export const STAGE_B_ON_ORDER = 'Domain pack is on this order.';
+export const STAGE_B_ON_ORDER = `${DOMAIN_ADD_ON_LABEL} is on this order.`;
 
 export const STAGE_B_DETAIL =
   'Optional. Your share opens on a domain you already own, with the path note, proof-gap map, stack sketch, onboarding page, and a short walkthrough. We attach the DNS.';
@@ -31,24 +41,23 @@ export const CONSULTATION_HOLD_NOTE = 'Continuing to payment holds the slot for 
 export const NETWORK_LINK_USED = 'This network Consultation link has already been used.';
 
 export const CONSULTATION_AFTER_PAY =
-  'After payment and scheduling are confirmed, the Meet link is on your calendar invite.';
+  'After payment, the Google Meet link is in the confirmation email and on the calendar invite.';
 
 export const CONSULTATION_SUCCESS =
-  'Payment and scheduling confirmed. Look for your calendar invite with the Meet link.';
+  'Payment received. The Google Meet link is in your confirmation email and on the calendar invite.';
 
 export const CONSULTATION_MEET_FALLBACK = 'The Google Meet link is on the calendar invite.';
 
 export const CONSULTATION_PREP_BODY =
   'Send the system you want to look at and the question you want answered. A link is usually enough.';
 
-export const CONSULTATION_CANCEL =
-  'Checkout was canceled. Your temporary slot hold expires within 20 minutes.';
+export const CONSULTATION_CANCEL = 'No charge. The hold ends within 20 minutes.';
 
 export const CONSULTATION_CHANGE_POLICY = [
   'At least 24 hours before the scheduled start: choose a full refund of Consultation time or a free reschedule.',
   'With less than 24 hours’ notice, before the scheduled start: one free reschedule. No automatic refund of Consultation time.',
   'A no-show has no automatic refund. If Studio cancels, choose a full refund of Consultation time or a new date.',
-  'Undelivered domain-pack work is refundable. Delivered work follows its scope disclosed before work starts.',
+  `Undelivered ${DOMAIN_ADD_ON_LABEL} work is refundable. Delivered work follows its scope disclosed before work starts.`,
 ] as const;
 
 export const CONSULTATION_CHANGE_CONTACT = `Email ${CONTACT_EMAIL} with your booking reference to cancel or reschedule. Notice is measured from receipt of your email to the scheduled start.`;
@@ -112,7 +121,7 @@ export function consultationBookDueCents(
 }
 
 export function consultationStageLine(stageB: boolean): string {
-  if (stageB) return `The domain pack (${STAGE_B_PRICE}) is on this payment.`;
+  if (stageB) return `The ${DOMAIN_ADD_ON_LABEL} (${STAGE_B_PRICE}) is on this payment.`;
   return 'This payment is the consultation only.';
 }
 
@@ -192,6 +201,7 @@ export function confirmationText(booking: {
   if (booking.company) lines.push(`Company: ${booking.company}`);
   lines.push(
     consultationStageLine(booking.stage_b),
+    `Your session includes: ${CONSULTATION_DELIVERABLE}`,
     '',
     `Prep: ${CONSULTATION_PREP_BODY}`,
     'Changes:',
@@ -213,6 +223,7 @@ export function calendarInviteDescription(booking: {
   if (booking.company) lines.push(`Company: ${booking.company}`);
   lines.push(
     consultationStageLine(booking.stage_b),
+    `Your session includes: ${CONSULTATION_DELIVERABLE}`,
     `Prep: ${CONSULTATION_PREP_BODY}`,
     'Changes:',
     ...CONSULTATION_CHANGE_POLICY,

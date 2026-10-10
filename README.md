@@ -9,7 +9,7 @@ This is the customer-facing site for the **agency arm** of RevealUI Studio (serv
 | Site | Repo | Audience | Role |
 |---|---|---|---|
 | revealui.com | `RevealUIStudio/revealui` (`apps/marketing`) | Engineers evaluating the OSS platform | Drive install + adoption |
-| revealuistudio.com | **this repo** | Teams evaluating the product studio | Drive a 30-minute intro, one of three paid offers, and the studio blog |
+| revealuistudio.com | **this repo** | Teams evaluating the product studio | Drive a free 30-minute intro, Consultation, Pilot, Launch, optional Care, and the studio blog |
 | docs.revealui.com | `RevealUIStudio/revealui` (`apps/docs`) | Existing platform users | Product reference only. Blog is on Studio. Docs are product reference. |
 
 ## Stack
@@ -80,7 +80,7 @@ Strategy and design decisions are coordinated internally; see the founder for co
 ## Conventions
 
 - **Visual identity shares Cobalt tokens with RevealUI** — Tailwind tokens from `@revealui/presentation/tokens.css`, never overridden, so the site is system-adaptive (dark/light) automatically. **Typeface:** this site uses Geist / Geist Mono; the product marketing site on revealui.com uses Inter / Inter Tight / JetBrains Mono. Tokens and brand accent stay shared; fonts may diverge deliberately.
-- **Public site is a product-studio homepage plus the three-question calculator.** Defaults to "You will" (Studio). Consultation $300, Pilot $3,997 (includes 1 Adapter), Launch $14,500 (up to 3 Adapters). Adapter $2,497 is an add-on (extras, or while on Care) and is not sold alone. Stage B is $297 after Consultation alone and included at Pilot and Launch. They operate, or they pay to implement. Self-host hops to revealui.com (start free) with no product SKUs. Do not add Fleet / stamp / kit SKUs, $25k / $50k, or third-party booking hosts. The open-source product lives at revealui.com.
+- **Public site is a product-studio homepage plus the three-question calculator.** The calculator defaults to "Studio implements with me" and Pilot. Homepage cards are Consultation $300/hr, Pilot $3,997 (includes 1 Adapter; one receipted action you operate), and Launch $14,500 (up to 3 Adapters). Care is $1,997/mo, optional after Pilot or Launch, and not a homepage card. Adapter $2,497 is an add-on (extras, or while on Care) and is not sold alone. The public name for the $297 line is Domain add-on: after Consultation alone, included at Pilot and Launch. The SKU id stays stage-b. They operate, or they pay to implement. Self-host hops to revealui.com (start free) with no product SKUs. Do not add Fleet / stamp / kit SKUs, $25k / $50k, or third-party booking hosts. The open-source product lives at revealui.com.
 - **No "L.L.C." in any user-facing copy** except the legal-form footer line — brand surface is `RevealUI Studio`, not `RevealUI Studio L.L.C.`.
 
 ## Origin

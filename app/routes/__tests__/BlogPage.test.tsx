@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { Router, RouterProvider, Routes } from '@revealui/router';
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
+import { RouteHead } from '@/components/RouteHead';
 import { BLOG_DOCS_BOUNDARY, STUDIO_BLOG_HOME_H1, STUDIO_BLOG_HOME_SUB } from '@/lib/blog-copy';
 import { BlogPage } from '@/routes/BlogPage';
 import { BlogPostPage } from '@/routes/BlogPostPage';
@@ -19,6 +20,7 @@ function renderAt(path: string) {
   window.history.pushState({}, '', path);
   return render(
     <RouterProvider router={router}>
+      <RouteHead />
       <Routes />
     </RouterProvider>,
   );
@@ -31,7 +33,7 @@ describe('Studio blog routes', () => {
       screen.getByRole('heading', { level: 1, name: STUDIO_BLOG_HOME_H1 }),
     ).toBeInTheDocument();
     expect(screen.getByText(STUDIO_BLOG_HOME_SUB)).toBeInTheDocument();
-    const docs = screen.getByRole('link', { name: 'Docs' });
+    const docs = screen.getByRole('link', { name: 'RevealUI docs' });
     expect(docs).toHaveAttribute('href', 'https://docs.revealui.com');
     expect(docs.parentElement?.textContent).toBe(BLOG_DOCS_BOUNDARY);
     const essay = screen.getByRole('link', {
@@ -60,7 +62,7 @@ describe('Studio blog routes', () => {
     );
     const back = screen.getByRole('link', { name: 'Back to Blog' });
     expect(back).toHaveAttribute('href', '/blog');
-    const docs = screen.getByRole('link', { name: 'Docs' });
+    const docs = screen.getByRole('link', { name: 'RevealUI docs' });
     expect(docs).toHaveAttribute('href', 'https://docs.revealui.com');
     expect(docs.parentElement?.textContent).toContain(BLOG_DOCS_BOUNDARY);
   });
@@ -77,7 +79,12 @@ describe('Studio blog routes', () => {
   });
 
   it('does not publish a held essay', () => {
+    document.head.innerHTML =
+      '<link rel="canonical" href="https://revealuistudio.com/" /><meta property="og:url" content="https://revealuistudio.com/" />';
     renderAt('/blog/why-we-built-revealui');
     expect(screen.getByRole('heading', { level: 1, name: 'Page not found' })).toBeInTheDocument();
+    expect(document.title).toBe('404 | RevealUI Studio');
+    expect(document.querySelector('link[rel="canonical"]')).toBeNull();
+    expect(document.querySelector('meta[property="og:url"]')).toBeNull();
   });
 });

@@ -1,7 +1,7 @@
 // Demonstration content for the homepage receipt motif.
 // Static timestamps only (never Date.now()). Not live production data.
 // Shows how a studio engagement runs: intro booked, $300 Consultation
-// invoiced, notes delivered, audit-log records the receipt. No customer
+// paid when booked, notes delivered, audit-log records the receipt. No customer
 // name, no case study, no invented company.
 
 import type { AuditEvent } from '@revealui/presentation';

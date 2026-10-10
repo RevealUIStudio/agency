@@ -7,7 +7,9 @@
  */
 
 import type { StageBFee } from './consultation-booking';
-import { consultationDueCents } from './consultation-hours';
+import { CONSULTATION_UNIT_CENTS, consultationDueCents } from './consultation-hours';
+import { DOMAIN_ADD_ON_LABEL } from './domain-pack';
+import { CONSULTATION, CONSULTATION_PRICE, STAGE_B_CENTS, STAGE_B_PRICE } from './engagements';
 
 /** Live Consultation price. $300 per hour. Override with STRIPE_CONSULTATION_PRICE_ID. */
 export const DEFAULT_CONSULTATION_PRICE_ID = 'price_1TxpQTJz64n6uEibitNE5eJP' as const;
@@ -52,9 +54,69 @@ function randomIntegrationSuffix(length: number): string {
   return suffix;
 }
 
-export interface CheckoutLine {
-  readonly price: string;
+export interface CheckoutProductData {
+  readonly name: string;
+  readonly description: string;
+}
+
+export interface CheckoutPriceData {
+  readonly currency: 'usd';
+  readonly unitAmount: number;
+  readonly productData: CheckoutProductData;
+}
+
+/** Inline price, so Checkout shows this name instead of the Stripe Product record. */
+export interface CheckoutPriceDataLine {
   readonly quantity: number;
+  readonly priceData: CheckoutPriceData;
+}
+
+/**
+ * Existing Stripe Price. Used only when a product-restricted network coupon
+ * must apply to the domain add-on. Paid Checkout uses price_data instead.
+ */
+export interface CheckoutPriceIdLine {
+  readonly quantity: number;
+  readonly price: string;
+}
+
+export type CheckoutLine = CheckoutPriceDataLine | CheckoutPriceIdLine;
+
+export function consultationCheckoutDescription(hours: number): string {
+  const unit = hours === 1 ? 'hour' : 'hours';
+  return `${CONSULTATION_PRICE} per hour, ${hours} ${unit}`;
+}
+
+export function domainAddOnCheckoutDescription(): string {
+  return `Custom domain setup, ${STAGE_B_PRICE}. Included at Pilot and Launch.`;
+}
+
+export function consultationPriceDataLine(hours: number): CheckoutPriceDataLine {
+  return {
+    quantity: hours,
+    priceData: {
+      currency: 'usd',
+      unitAmount: CONSULTATION_UNIT_CENTS,
+      productData: {
+        name: CONSULTATION.name,
+        description: consultationCheckoutDescription(hours),
+      },
+    },
+  };
+}
+
+export function domainAddOnPriceDataLine(): CheckoutPriceDataLine {
+  return {
+    quantity: 1,
+    priceData: {
+      currency: 'usd',
+      unitAmount: STAGE_B_CENTS,
+      productData: {
+        name: DOMAIN_ADD_ON_LABEL,
+        description: domainAddOnCheckoutDescription(),
+      },
+    },
+  };
 }
 
 function refuseAdapterOnConsultationCheckout(price: string): void {
@@ -66,6 +128,7 @@ function refuseAdapterOnConsultationCheckout(price: string): void {
 export function consultationCheckoutLines(input: {
   readonly hours: number;
   readonly stageB: boolean;
+  readonly stageBFee?: StageBFee;
   readonly consultationPriceId?: string;
   readonly stageBPriceId?: string;
 }): readonly CheckoutLine[] {
@@ -75,17 +138,15 @@ export function consultationCheckoutLines(input: {
   const stageBPrice = input.stageBPriceId || DEFAULT_STAGE_B_PRICE_ID;
   refuseAdapterOnConsultationCheckout(consultationPrice);
   if (input.stageB) refuseAdapterOnConsultationCheckout(stageBPrice);
-  const lines: CheckoutLine[] = [
-    {
-      price: consultationPrice,
-      quantity: hours,
-    },
-  ];
-  if (input.stageB) {
+  const fee: StageBFee = input.stageBFee ?? (input.stageB ? 'paid_addon' : 'none');
+  const lines: CheckoutLine[] = [consultationPriceDataLine(hours)];
+  if (input.stageB && fee === 'waived_network') {
     lines.push({
       price: stageBPrice,
       quantity: 1,
     });
+  } else if (input.stageB) {
+    lines.push(domainAddOnPriceDataLine());
   }
   return lines;
 }
@@ -139,8 +200,24 @@ export function encodeCheckoutForm(input: {
     input.integrationIdentifier ?? consultationIntegrationIdentifier(),
   );
   input.lines.forEach((line, index) => {
-    params.set(`line_items[${index}][price]`, line.price);
     params.set(`line_items[${index}][quantity]`, String(line.quantity));
+    if ('priceData' in line) {
+      params.set(`line_items[${index}][price_data][currency]`, line.priceData.currency);
+      params.set(
+        `line_items[${index}][price_data][unit_amount]`,
+        String(line.priceData.unitAmount),
+      );
+      params.set(
+        `line_items[${index}][price_data][product_data][name]`,
+        line.priceData.productData.name,
+      );
+      params.set(
+        `line_items[${index}][price_data][product_data][description]`,
+        line.priceData.productData.description,
+      );
+      return;
+    }
+    params.set(`line_items[${index}][price]`, line.price);
   });
   if (stageBFee === 'waived_network') {
     params.set('discounts[0][coupon]', input.stageBNetworkCouponId?.trim() ?? '');

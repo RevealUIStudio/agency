@@ -3,14 +3,13 @@ import {
   CUSTOM_DOMAIN_CNAME_TARGET,
   customDomainTxtToken,
   type SharePack,
-  saveSharePack,
   verifyCustomDomain,
   withCustomDomain,
 } from '@/lib/share-stage-b';
 
 /**
- * Admin desk for a pack's custom domain. Shows the CNAME target and TXT token.
- * Record checks use the values typed here. Nothing is looked up or written at a registrar.
+ * Example DNS calculator. Caller state is an example, never a domain registry.
+ * Supplied records do not establish provider attachment or private client access.
  */
 export function CustomDomainDesk({
   pack,
@@ -30,7 +29,6 @@ export function CustomDomainDesk({
   const token = pack.customDomain ? customDomainTxtToken(pack.customDomain) : '';
 
   function commit(next: SharePack) {
-    saveSharePack(next);
     onPack(next);
   }
 
@@ -42,6 +40,9 @@ export function CustomDomainDesk({
         commit(verifyCustomDomain(pack, { cname: observedCname, txt: observedTxt }));
       }}
     >
+      <p role="status" className="text-sm text-muted-foreground">
+        Example DNS check. Supplied records do not attach or verify a client domain.
+      </p>
       <div>
         <label htmlFor="custom-domain" className="text-base font-semibold text-foreground">
           Custom domain

@@ -74,7 +74,8 @@ describe('HomePage', () => {
     expect(text).toContain('Pilot');
     expect(text).toContain('$3,997');
     expect(text).toContain('$2,497');
-    expect(text).toContain('domain pack is included');
+    expect(text).toContain('Domain add-on is included');
+    expect(text).not.toMatch(/\bdomain pack\b|\bstage b\b/i);
     expect(text).toContain('Launch');
     expect(text).not.toMatch(/\bHour\b/);
     expect(text).not.toMatch(/Starter Kit/i);

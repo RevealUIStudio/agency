@@ -5,11 +5,15 @@ import { LAUNCH_PACKAGE_PRICE } from '@revealui/contracts/pricing';
 import { describe, expect, it } from 'vitest';
 import {
   ADAPTER,
+  ADAPTER_CALC_LABEL,
+  ADAPTER_CARE_HELP,
   ADAPTER_CATEGORIES,
   ADAPTER_CENTS,
   ADAPTER_PRICE,
   ADAPTER_ROLE,
+  CARE_PRICE,
   CONSULTATION,
+  CONSULTATION_DELIVERABLE,
   CUSTOM_BUILD,
   FLEET_STAMP,
   LAUNCH,
@@ -29,6 +33,10 @@ describe('public studio offers', () => {
     expect(PUBLIC_OFFERS.map((offer) => offer.name)).toEqual(['Consultation', 'Pilot', 'Launch']);
     expect(CONSULTATION.name).toBe('Consultation');
     expect(CONSULTATION.price).toBe('$300');
+    expect(CONSULTATION.includes).toEqual([
+      'A focused review of your system',
+      CONSULTATION_DELIVERABLE,
+    ]);
     expect(PILOT.name).toBe('Pilot');
     expect(PILOT.price).toBe('$3,997');
     expect(LAUNCH.name).toBe('Launch');
@@ -68,7 +76,9 @@ describe('public studio offers', () => {
     expect(PILOT.tagline).toBe('One site. One receipted action you operate.');
     expect(PILOT.description).toMatch(/one receipted action you operate/i);
     expect(PILOT.description).toMatch(/Includes 1 Adapter/i);
-    expect(PILOT.description).toMatch(/The domain pack is included/i);
+    expect(PILOT.description).toMatch(/The Domain add-on is included/);
+    expect(PILOT.description).not.toMatch(/\bdomain pack\b/i);
+    expect(PILOT.includes).toContain('Domain add-on included');
     expect(PILOT.description).toMatch(/45 days/i);
     expect(PILOT.description).not.toMatch(/written plan/i);
     expect(PILOT.description).not.toMatch(/\bdemo\b/i);
@@ -106,16 +116,24 @@ describe('public studio offers', () => {
     expect(PILOT.description).toMatch(/Includes 1 Adapter/);
     expect(LAUNCH.description).toMatch(/up to 3 Adapters/);
     expect(ADAPTER.description).toMatch(/Not sold alone/);
-    expect(ADAPTER.description).toMatch(/while on Care/);
-    expect(ADAPTER_ROLE).toMatch(/leak/);
+    expect(ADAPTER.description).toMatch(/while on Care \(\$1,997\/mo\)/);
+    expect(ADAPTER_CARE_HELP).toBe(
+      'Scoped Adapter while on Care ($1,997/mo). $2,497. One tool category.',
+    );
+    expect(ADAPTER_CALC_LABEL).toBe('Adapter: one tool category, one custom integration');
+    expect(LAUNCH.notIncluded).toContain(`Care (${CARE_PRICE}), which is optional`);
+    expect(ADAPTER_ROLE).toBe(
+      'Pilot and Launch connect how leads find you, pay you, and get delivered to. An Adapter keeps one tool category on that work. It is not sold alone.',
+    );
+    expect(ADAPTER_ROLE).not.toMatch(/leak|lead desk/);
     expect(ADAPTER_ROLE).not.toMatch(/\u2014/);
     expect(ADAPTER_CATEGORIES).toBe(
       'field-service CRM / estimating / dispatch, gallery / proofing, shopping cart, phone / SMS, calendar, payments / wallets, or labs / fulfillment',
     );
     expect(ADAPTER.description).toBe(
-      `One custom integration to one tool category (${ADAPTER_CATEGORIES}). Governed read/write where scoped, the agent can act on it, a receipt proves the action, and a short runbook. Pilot includes 1. Launch includes up to 3. List price is for extras, or a scoped add while on Care. Not sold alone.`,
+      `One custom integration to one tool category (${ADAPTER_CATEGORIES}). Governed read/write where scoped, the agent can act on it, a receipt proves the action, and a short runbook. Pilot includes 1. Launch includes up to 3. List price is for extras. ${ADAPTER_CARE_HELP} Not sold alone.`,
     );
-    expect(ADAPTER.tagline).toBe('How the leak fix sticks. One tool category.');
+    expect(ADAPTER.tagline).toBe('One tool category on Pilot, Launch, or Care.');
   });
 
   it('pins monorepo metrics to MARKETING_METRICS §1 (2026-09-29)', () => {

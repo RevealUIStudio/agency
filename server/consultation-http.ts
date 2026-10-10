@@ -42,9 +42,15 @@ import {
   calendarFromEnv,
   consultationEnvFromProcess,
 } from './consultation-calendar';
+import { applyVerifiedRefund } from './consultation-fulfillment';
 import { deliverOwnerPaidNotice } from './consultation-owner-mail';
 import { type ConsultationThrottle, createConsultationThrottle } from './consultation-rate-limit';
-import { type StripePort, stripeFromEnv, verifyStripeSignature } from './consultation-stripe';
+import {
+  refundedCheckoutFromStripe,
+  type StripePort,
+  stripeFromEnv,
+  verifyStripeSignature,
+} from './consultation-stripe';
 import {
   createGoogleNetworkLedger,
   createMemoryNetworkLedger,
@@ -328,6 +334,7 @@ async function bookingView(request: Request, calendar: CalendarPort): Promise<Re
     return json(502, { error: 'calendar' });
   }
   if (!booking) return json(404, { error: 'booking-missing' });
+  if (booking.refund?.full) return json(404, { error: 'booking-refunded' });
   if (booking.status !== 'paid_scheduled') return json(200, { status: 'pending' });
   if (booking.stripe_session_id !== sessionId) return json(404, { error: 'booking-missing' });
   return json(200, {
@@ -367,6 +374,36 @@ async function webhook(
   }
   const event = payload && typeof payload === 'object' ? payload : null;
   const type = event && 'type' in event ? event.type : '';
+  if (type === 'charge.refunded' || type === 'refund.updated' || type === 'refund.created') {
+    const data = event && 'data' in event ? event.data : null;
+    const object = data && typeof data === 'object' && 'object' in data ? data.object : null;
+    const chargeId =
+      object && typeof object === 'object'
+        ? type === 'charge.refunded' && 'id' in object
+          ? object.id
+          : 'charge' in object
+            ? object.charge
+            : null
+        : null;
+    if (typeof chargeId !== 'string' || !/^ch_[a-zA-Z0-9]+$/.test(chargeId))
+      return json(400, { error: 'refund-payload' });
+    try {
+      const evidence = await refundedCheckoutFromStripe(env.stripeSecretKey, chargeId, fetchImpl);
+      if (!evidence) return json(200, { received: true, status: 'ignored' });
+      const result = await applyVerifiedRefund(evidence, {
+        calendar,
+        fetch: fetchImpl,
+        config: {
+          apiUrl: env.contentApiUrl,
+          deviceToken: env.contentDeviceToken,
+          stripeSecretKey: env.stripeSecretKey,
+        },
+      });
+      return json(200, { received: true, status: result.status });
+    } catch {
+      return json(503, { error: 'refund-reconciliation' });
+    }
+  }
   if (type !== 'checkout.session.completed') {
     return json(200, { received: true, status: 'ignored' });
   }

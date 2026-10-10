@@ -3,8 +3,10 @@
  * Web Crypto only, so the edge runtime does not need a Stripe SDK.
  */
 
+import { z } from 'zod';
 import type { Booking } from '../app/lib/consultation-booking';
 import { type CheckoutLine, encodeCheckoutForm } from '../app/lib/consultation-checkout';
+import { providerFetch } from './provider-http';
 
 const TOLERANCE_MS = 5 * 60 * 1000;
 
@@ -88,14 +90,18 @@ export async function createStripeCheckout(input: {
   readonly fetchImpl?: typeof fetch;
 }): Promise<{ id: string; url: string }> {
   const fetchImpl = input.fetchImpl ?? fetch;
-  const response = await fetchImpl('https://api.stripe.com/v1/checkout/sessions', {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${input.secretKey}`,
-      'content-type': 'application/x-www-form-urlencoded',
+  const response = await providerFetch(
+    'https://api.stripe.com/v1/checkout/sessions',
+    {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${input.secretKey}`,
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+      body: input.formBody,
     },
-    body: input.formBody,
-  });
+    fetchImpl,
+  );
   if (!response.ok) throw new Error(`stripe-checkout:${response.status}`);
   const payload: unknown = await response.json();
   if (!payload || typeof payload !== 'object') throw new Error('stripe-checkout:missing-url');
@@ -103,6 +109,110 @@ export async function createStripeCheckout(input: {
   const url = 'url' in payload && typeof payload.url === 'string' ? payload.url : '';
   if (!id || !url) throw new Error('stripe-checkout:missing-url');
   return { id, url };
+}
+
+/** Retrieve current provider truth; a signed event can still be stale or reordered. */
+export async function refundedCheckoutFromStripe(
+  secretKey: string | undefined,
+  chargeId: string,
+  fetchImpl: typeof fetch = fetch,
+) {
+  if (!secretKey || !/^ch_[a-zA-Z0-9]+$/.test(chargeId))
+    throw new Error('stripe-refund-unconfigured');
+  const get = async (path: string) => {
+    const response = await providerFetch(
+      `https://api.stripe.com/v1${path}`,
+      {
+        headers: { authorization: `Bearer ${secretKey}` },
+      },
+      fetchImpl,
+    );
+    if (!response.ok) throw new Error('stripe-refund-unavailable');
+    return response.json();
+  };
+  const charge = z
+    .object({
+      id: z.literal(chargeId),
+      payment_intent: z.string().regex(/^pi_[a-zA-Z0-9]+$/),
+      amount: z.number().int().positive(),
+      amount_refunded: z.number().int().nonnegative(),
+      currency: z.literal('usd'),
+    })
+    .parse(await get(`/charges/${encodeURIComponent(chargeId)}`));
+  if (charge.amount_refunded > charge.amount) throw new Error('stripe-refund-invalid');
+  const refundSchema = z.object({
+    id: z.string().regex(/^re_[a-zA-Z0-9]+$/),
+    charge: z.literal(chargeId),
+    amount: z.number().int().positive(),
+    currency: z.literal('usd'),
+    status: z.string(),
+  });
+  const refunds: z.infer<typeof refundSchema>[] = [];
+  const refundIds = new Set<string>();
+  let cursor = '';
+  for (let page = 0; page < 10; page += 1) {
+    const query = new URLSearchParams({ charge: chargeId, limit: '100' });
+    if (cursor) query.set('starting_after', cursor);
+    const result = z
+      .object({ has_more: z.boolean(), data: z.array(refundSchema) })
+      .parse(await get(`/refunds?${query}`));
+    for (const refund of result.data) {
+      if (refundIds.has(refund.id)) throw new Error('stripe-refund-invalid');
+      refundIds.add(refund.id);
+      refunds.push(refund);
+    }
+    if (!result.has_more) break;
+    const last = result.data.at(-1);
+    if (!last || page === 9) throw new Error('stripe-refund-incomplete');
+    cursor = last.id;
+  }
+  const succeeded = refunds.filter((refund) => refund.status === 'succeeded');
+  const refunded = succeeded.reduce((sum, refund) => sum + refund.amount, 0);
+  if (!refunded) return null;
+  if (
+    !Number.isSafeInteger(refunded) ||
+    refunded > charge.amount_refunded ||
+    refunded > charge.amount
+  )
+    throw new Error('stripe-refund-invalid');
+  const result = z
+    .object({
+      has_more: z.literal(false),
+      data: z.array(
+        z.object({
+          id: z.string(),
+          mode: z.string(),
+          payment_status: z.string(),
+          payment_intent: z.string().nullable(),
+          amount_total: z.number().nullable(),
+          metadata: z.record(z.string(), z.string()).nullable(),
+        }),
+      ),
+    })
+    .parse(
+      await get(
+        `/checkout/sessions?payment_intent=${encodeURIComponent(charge.payment_intent)}&limit=100`,
+      ),
+    );
+  const sessions = result.data.filter(
+    (session) =>
+      session.mode === 'payment' &&
+      session.payment_status === 'paid' &&
+      session.payment_intent === charge.payment_intent &&
+      session.metadata?.booking_id,
+  );
+  if (!sessions.length) return null;
+  if (sessions.length !== 1) throw new Error('stripe-refund-ambiguous');
+  const session = sessions[0];
+  if (!session || session.amount_total !== charge.amount || !session.id.startsWith('cs_'))
+    throw new Error('stripe-refund-binding');
+  return {
+    bookingId: session.metadata?.booking_id ?? '',
+    stripeSessionId: session.id,
+    chargeId,
+    amountRefunded: refunded,
+    full: refunded === charge.amount,
+  };
 }
 
 export function stripeFromEnv(

@@ -41,8 +41,6 @@ export interface ShareChrome {
   readonly subtitle: string;
 }
 
-const packsById = new Map<string, SharePack>();
-
 const FQDN_PATTERN = /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
 
 export function normalizeHostname(hostname: string): string {
@@ -58,18 +56,6 @@ export function createSharePack(slug: string, patch?: Partial<Omit<SharePack, 's
     chromeLevel: patch?.chromeLevel ?? 'studio',
     customDomainStatus: patch?.customDomainStatus ?? 'none',
   };
-}
-
-export function listSharePacks(): readonly SharePack[] {
-  return [...packsById.values()];
-}
-
-export function saveSharePack(pack: SharePack): void {
-  packsById.set(pack.id, pack);
-}
-
-export function clearSharePacks(): void {
-  packsById.clear();
 }
 
 /** Public TXT value the admin publishes. Deterministic so the desk can show it. */

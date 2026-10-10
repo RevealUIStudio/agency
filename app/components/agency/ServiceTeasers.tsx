@@ -1,5 +1,6 @@
 import { IconCheck, LinkButton } from '@revealui/presentation';
-import { ADAPTER, ADAPTER_ROLE, PUBLIC_OFFERS, STAGE_B_PRICE } from '@/lib/engagements';
+import { DOMAIN_ADD_ON_LABEL } from '@/lib/domain-pack';
+import { ADAPTER, ADAPTER_ROLE, CARE, PUBLIC_OFFERS, STAGE_B_PRICE } from '@/lib/engagements';
 import { CONSULTATION_BOOK_PATH, INTRO_CALL_URL } from '@/lib/site';
 
 export function ServiceTeasers() {
@@ -13,12 +14,12 @@ export function ServiceTeasers() {
           <p className="mt-4 text-base text-muted-foreground">
             Review the problem, test one action, or launch one business flow. Each engagement has a
             defined deliverable and payment terms. Consultation is paid when booking. Pilot and
-            Launch are invoiced after we agree on scope.
-            {ADAPTER_ROLE} An extra {ADAPTER.name} is {ADAPTER.price}. The domain pack is
-            {STAGE_B_PRICE} after Consultation alone, and included at Pilot and Launch.
+            Launch are invoiced after we agree on scope. {ADAPTER_ROLE} An extra {ADAPTER.name} is{' '}
+            {ADAPTER.price}. {DOMAIN_ADD_ON_LABEL} is {STAGE_B_PRICE} after Consultation alone, and
+            included at Pilot and Launch.
           </p>
         </div>
-        <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {PUBLIC_OFFERS.map((offer) => (
             <article
               key={offer.id}
@@ -70,6 +71,33 @@ export function ServiceTeasers() {
               </div>
             </article>
           ))}
+          <article
+            id={CARE.id}
+            className="flex flex-col rounded-2xl border border-border bg-card p-8 shadow-sm"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+              {CARE.tagline}
+            </p>
+            <h3 className="mt-2 text-xl font-bold text-foreground">{CARE.name}</h3>
+            <p className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
+              {CARE.price}
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground">{CARE.description}</p>
+            <p className="mt-6 flex-1 text-sm text-card-foreground">
+              {ADAPTER.name} lines can be added at {ADAPTER.price}. One tool category. Not sold
+              alone.
+            </p>
+            <div className="mt-8 border-t border-border pt-6">
+              <LinkButton
+                href="/contact"
+                appearance="outline"
+                variant="neutral"
+                className="w-full justify-center"
+              >
+                Ask about {CARE.name}
+              </LinkButton>
+            </div>
+          </article>
         </div>
       </div>
     </section>

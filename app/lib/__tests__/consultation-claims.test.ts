@@ -4,12 +4,14 @@ import { describe, expect, it } from 'vitest';
 import {
   CONSULTATION_AFTER_PAY,
   CONSULTATION_BOOK_INTRO,
+  CONSULTATION_CANCEL,
   CONSULTATION_SUCCESS,
   consultationStageLine,
   NETWORK_LINK_USED,
   STAGE_B_ADDON,
   STAGE_B_CHECKBOX,
   STAGE_B_DETAIL,
+  STAGE_B_HELPER,
   STAGE_B_ON_ORDER,
 } from '@/lib/consultation-buyer';
 
@@ -29,6 +31,20 @@ function walkTsx(dir: string, acc: string[] = []): string[] {
 }
 
 describe('consultation public claims', () => {
+  it('does not use the retired public name Stage B on buyer screens', () => {
+    const files = [
+      ...walkTsx(path.join(repoRoot, 'app/components')),
+      ...walkTsx(path.join(repoRoot, 'app/routes')),
+      path.join(repoRoot, 'app/App.tsx'),
+      path.join(repoRoot, 'app/lib/consultation-buyer.ts'),
+    ];
+    const hits: string[] = [];
+    for (const file of files) {
+      if (/\bStage B\b/.test(readFileSync(file, 'utf8'))) hits.push(path.relative(repoRoot, file));
+    }
+    expect(hits).toEqual([]);
+  });
+
   it('has no waive or free-fee copy on public screens', () => {
     const files = [
       ...walkTsx(path.join(repoRoot, 'app/components')),
@@ -49,18 +65,33 @@ describe('consultation public claims', () => {
     expect(source).not.toContain('calendar.google.com');
     expect(source).not.toContain('price_');
     expect(source).toContain('STAGE_B_CHECKBOX');
+    expect(source).toContain('STAGE_B_HELPER');
+    expect(source).not.toContain('STAGE_B_DETAIL');
+    expect(source).not.toContain('Add the domain pack');
     expect(source).toContain('CONSULTATION_SUCCESS');
-    expect(STAGE_B_CHECKBOX).toBe('Add the domain pack ($297)');
+    expect(STAGE_B_CHECKBOX).toBe('Domain add-on: $297');
+    expect(STAGE_B_HELPER).toBe(
+      'Attach your own domain to the share host. Optional at Consultation; included with Pilot or Launch.',
+    );
     expect(CONSULTATION_AFTER_PAY).toBe(
-      'After payment and scheduling are confirmed, the Meet link is on your calendar invite.',
+      'After payment, the Google Meet link is in the confirmation email and on the calendar invite.',
     );
     expect(CONSULTATION_SUCCESS).toBe(
-      'Payment and scheduling confirmed. Look for your calendar invite with the Meet link.',
+      'Payment received. The Google Meet link is in your confirmation email and on the calendar invite.',
     );
-    expect(CONSULTATION_SUCCESS).not.toContain('—');
+    expect(CONSULTATION_CANCEL).toBe('No charge. The hold ends within 20 minutes.');
+    for (const line of [
+      STAGE_B_CHECKBOX,
+      STAGE_B_HELPER,
+      CONSULTATION_AFTER_PAY,
+      CONSULTATION_SUCCESS,
+      CONSULTATION_CANCEL,
+      NETWORK_LINK_USED,
+    ]) {
+      expect(line).not.toContain('\u2014');
+      expect(line.replaceAll('Google Meet', '')).not.toMatch(/\bMeet\b/);
+    }
     expect(NETWORK_LINK_USED).toBe('This network Consultation link has already been used.');
-    expect(NETWORK_LINK_USED).not.toContain('—');
-    expect(NETWORK_LINK_USED.replaceAll('Google Meet', '')).not.toMatch(/Meet/);
   });
 
   it('keeps buyer strings free of a network fee leak', () => {
@@ -69,6 +100,7 @@ describe('consultation public claims', () => {
       CONSULTATION_BOOK_INTRO,
       STAGE_B_ADDON,
       STAGE_B_CHECKBOX,
+      STAGE_B_HELPER,
       STAGE_B_DETAIL,
       STAGE_B_ON_ORDER,
       consultationStageLine(true),
@@ -77,6 +109,6 @@ describe('consultation public claims', () => {
       NETWORK_LINK_USED,
     ];
     for (const line of lines) expect(line).not.toMatch(leak);
-    expect(STAGE_B_ON_ORDER).toBe('Domain pack is on this order.');
+    expect(STAGE_B_ON_ORDER).toBe('Domain add-on is on this order.');
   });
 });
