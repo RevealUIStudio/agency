@@ -1,0 +1,18 @@
+# Security-sensitive source and policy. GitHub requests a review from either
+# account; the protected test/main ruleset will require a code-owner approval.
+# This file owns itself so later policy edits require review.
+/.github/CODEOWNERS @joshua-v-dev @RevealUIStudio
+/.github/workflows/ @joshua-v-dev @RevealUIStudio
+
+# Existing leak-scan policy and secret-handling surfaces in this repo.
+/scripts/check-no-private-leaks.sh @joshua-v-dev @RevealUIStudio
+/scripts/check-client-leaks.sh @joshua-v-dev @RevealUIStudio
+/server/session.ts @joshua-v-dev @RevealUIStudio
+/api/session.ts @joshua-v-dev @RevealUIStudio
+/server/consultation-stripe.ts @joshua-v-dev @RevealUIStudio
+/api/stripe/webhook.ts @joshua-v-dev @RevealUIStudio
+/server/network-redeem.ts @joshua-v-dev @RevealUIStudio
+/app/lib/consultation-network-waive.ts @joshua-v-dev @RevealUIStudio
+/scripts/consultation-mint-network-link.ts @joshua-v-dev @RevealUIStudio
+/api/consultation/network-link.ts @joshua-v-dev @RevealUIStudio
+/server/audit-log.ts @joshua-v-dev @RevealUIStudio

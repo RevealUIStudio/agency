@@ -2,8 +2,9 @@
 # check-no-private-leaks.sh
 #
 # Scans the agency repo for references to private filesystem paths,
-# private repos, customer/prospect names, internal IDs, or machine-local
-# user homes that must not appear in this public-facing repo.
+# private repos, internal IDs, or machine-local user homes that must not
+# appear in this public-facing repo. Client and prospect names are scanned
+# by scripts/check-client-leaks.sh, not by this file.
 #
 # Exit 0 on clean. Exit 1 on any violation. Exit 2 on tool/setup error.
 #
@@ -16,10 +17,9 @@
 # Safe to rerun; read-only.
 #
 # Ported from revealui-studio/revskills/scripts/check-no-private-leaks.sh
-# 2026-05-16. Adds patterns for customer/prospect leakage and Vercel-
-# operator-catalog disclosure that the revskills canonical scanner does
-# not need to enforce (revskills has no Vercel link and no customer
-# references).
+# 2026-05-16. Adds Vercel operator-catalog patterns that the revskills
+# canonical scanner does not need. Client and prospect name coverage is
+# scripts/check-client-leaks.sh via the CLIENT_LEAK_PATTERNS org secret.
 
 set -uo pipefail
 
@@ -44,9 +44,8 @@ unset _path
 # Anchored where possible to keep false-positive noise low.
 #
 # REGEX-CONFIG-BOUNDARY: the regex strings below are config, not authored
-# predicates. The bash code that consumes them uses grep -E. Customer
-# names are literal-string patterns (no metacharacters) to keep the
-# false-positive rate low; the scanner's job is detection, not parsing.
+# predicates. The bash code that consumes them uses grep -E. Client and
+# prospect name lines do not belong in this array.
 PATTERNS=(
   # --- Canonical-scanner patterns (inherited from revskills) ---
   "abs-home-path|/home/[a-z][a-z0-9_-]+|absolute user home path (/home/<username>/...)"
@@ -62,15 +61,8 @@ PATTERNS=(
   "vercel-project-id|prj_[A-Za-z0-9]{16,}|Vercel project identifier"
   # --- Agency-specific additions (T0-15 leakage scan, 2026-05-16) ---
   "personal-email|joshua\\.v\\.dev@gmail|personal email (should be founder@revealui.com)"
-  # Customer/prospect names are literal strings (no regex alternation —
-  # the simple parser splits the entry on the FIRST `|`, so embedded `|`
-  # in a regex truncates the pattern). Multi-form names get one entry each.
-  "customer-allevia|Allevia|customer name (Allevia) — release only with written customer sign-off"
-  "customer-alleviafleet|AlleviaFleet|stamped-customer brand (AlleviaFleet)"
-  "prospect-stefan|Stefan Wilson|prospect contact (Stefan Wilson, Allevia CEO)"
-  "prospect-djones-name|Daniel B\\. Jones|prospect warm-intro contact (Daniel B. Jones)"
-  "prospect-djones-email|dbjones23|prospect warm-intro contact (Daniel B. Jones email handle)"
-  "venture-biotix|[Bb]iotix|paused internal venture (Biotix Wellness) — not a public reference"
+  # Client and prospect names are not listed here. Add lines to the
+  # CLIENT_LEAK_PATTERNS org secret, which scripts/check-client-leaks.sh reads.
   "bank-mercury|MercuryBank|operator bank disclosure (Mercury)"
   "anthropic-partner|Anthropic Partner Network|undisclosed partnership reference"
   "revvault-path-prod|revvault/prod/|revvault prod credential path"
