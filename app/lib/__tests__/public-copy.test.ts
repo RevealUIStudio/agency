@@ -23,6 +23,7 @@ import {
   CONSULTATION_DELIVERABLE,
   LAUNCH,
   PILOT,
+  PILOT_CREDIT_LINE,
   PUBLIC_OFFERS,
   STAGE_B_PRICE,
 } from '@/lib/engagements';
@@ -659,10 +660,33 @@ describe('public copy gates', () => {
     expect(jsonLd).toContain('"price": "3997"');
     expect(jsonLd).toContain('"price": "14500"');
     expect(jsonLd).not.toContain('"price": "3500"');
+    expect(jsonLd).not.toMatch(/Click-to-call|leftover site|One agent you run/);
+    const consultationOffer = jsonLd.slice(
+      jsonLd.indexOf('"name": "Consultation"'),
+      jsonLd.indexOf('"name": "Pilot"'),
+    );
+    expect(consultationOffer).toContain('"@type": "UnitPriceSpecification"');
+    expect(consultationOffer).toContain('"unitCode": "HUR"');
+    expect(consultationOffer).toContain('"unitText": "hour"');
+    expect(consultationOffer).toContain(CONSULTATION_DELIVERABLE);
+    expect(consultationOffer).toContain('$300 per hour');
+    const pilotOffer = jsonLd.slice(
+      jsonLd.indexOf('"name": "Pilot"'),
+      jsonLd.indexOf('"name": "Launch"'),
+    );
+    expect(pilotOffer).toContain('One receipted action you operate.');
+    expect(pilotOffer).toContain('The Domain add-on is included.');
+    expect(pilotOffer).toContain(PILOT_CREDIT_LINE);
+    const launchOffer = jsonLd.slice(
+      jsonLd.indexOf('"name": "Launch"'),
+      jsonLd.indexOf('"name": "Adapter"'),
+    );
+    expect(launchOffer).toContain('The Domain add-on is included.');
+    expect(launchOffer).toContain('30 days of async stabilization');
     expect(quote).toContain("DEFAULT_OUTCOME: Outcome = 'plan'");
     expect(quote).toContain("label: 'Consultation: $300/hr'");
     expect(quote).toContain(
-      "label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)'",
+      "label: 'Pilot: one site, one receipted action you operate (includes 1 Adapter)'",
     );
     expect(quote).toContain(
       "label: 'Launch: money path live on your accounts (includes up to 3 Adapters)'",
@@ -860,7 +884,7 @@ describe('public copy gates', () => {
     expect(PUBLIC_OFFERS).toHaveLength(3);
     expect(quote).toContain("label: 'Consultation: $300/hr'");
     expect(quote).toContain(
-      "label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)'",
+      "label: 'Pilot: one site, one receipted action you operate (includes 1 Adapter)'",
     );
     expect(quote).toContain(
       "label: 'Launch: money path live on your accounts (includes up to 3 Adapters)'",

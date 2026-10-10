@@ -66,6 +66,7 @@
       "@vitest/mocker": ">=4.1.11 <5",
       "@vitest/coverage-v8": ">=4.1.11 <5",
       "postcss": "8.5.25",
+      "source-map-js": "1.2.2",
       "nanoid@<3.3.18": "3.3.18",
       "undici": "7.29.1",
       "vite": "8.2.0",

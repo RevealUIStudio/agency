@@ -57,7 +57,7 @@ export const OUTCOME_OPTIONS = [
   { value: 'consultation', label: 'Consultation: $300/hr' },
   {
     value: 'plan',
-    label: 'Pilot: one site, one receipted action I operate (includes 1 Adapter)',
+    label: 'Pilot: one site, one receipted action you operate (includes 1 Adapter)',
   },
   {
     value: 'launch',
