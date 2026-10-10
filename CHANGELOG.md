@@ -1,5 +1,16 @@
 # @revealui-studio/agency
 
+## 0.3.6
+
+### Patch Changes
+
+- 5d530a2: Lock Consultation book Domain add-on and Google Meet copy.
+- 8bb1a68: Use the maintained Consultation deliverable across the offer, booking, confirmation, calendar invite, process page, and checklist. Keep optional domain-pack work separate from payment and scheduling confirmation.
+- 8bb1a68: Persist private consultation notes and the recommended next step through the maintained content API, with verified paid-booking and buyer identity, revision publication, authenticated client access, and explicit revocation. Reconcile verified refunds and Calendar cancellation, retaining session notes while partial refunds pause optional domain-pack material for review. Remove the process-local pack registry from client fulfillment and retain public examples only for the demo tenant.
+  
+  Attach and detach eligible consultation domains through the shared provider-verified content owner, preserving pending DNS instructions without reporting attachment or delivery. Resolve client hosts from current persisted mappings and redirect to the authenticated central viewer without forwarding credentials or serving demo material.
+- Price Consultation per hour in the homepage offer data, and describe Pilot as one receipted action the buyer operates.
+
 ## 0.3.5
 
 ### Patch Changes
