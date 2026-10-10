@@ -20,6 +20,10 @@ const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar';
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const KIND = 'studio-consultation';
 
+function slotHeld(booking: Booking | null): booking is Booking {
+  return booking?.status === 'slot_held';
+}
+
 export class SlotTakenError extends Error {
   constructor() {
     super('slot-taken');
@@ -623,7 +627,7 @@ export function createGoogleCalendar(
       });
       for (const event of events) {
         const booking = bookingFromEvent(event);
-        if (!booking || booking.status !== 'slot_held') continue;
+        if (!slotHeld(booking)) continue;
         if (Date.parse(booking.expires_at) > now.getTime()) continue;
         if (!booking.event_id) continue;
         const url = `${collection}/${encodeURIComponent(booking.event_id)}?sendUpdates=none`;
@@ -716,7 +720,7 @@ export function createGoogleCalendar(
     async release(bookingId) {
       const event = await findByBooking(bookingId);
       const booking = event ? bookingFromEvent(event) : null;
-      if (!booking || booking.status !== 'slot_held' || !booking.event_id) return;
+      if (!slotHeld(booking) || !booking.event_id) return;
       const token = await accessToken(env, fetchImpl, CALENDAR_SCOPE);
       await googleSend(
         `${collection}/${encodeURIComponent(booking.event_id)}?sendUpdates=none`,

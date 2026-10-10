@@ -14,7 +14,7 @@ Set these on the Preview project. Do not commit them.
 - `STRIPE_SECRET_KEY` — create the Checkout Session
 - `STRIPE_WEBHOOK_SECRET` — verify `POST /api/stripe/webhook`
 - `STRIPE_CONSULTATION_PRICE_ID` — optional. Default is the live Consultation price, $300 per hour, quantity = hours
-- `STRIPE_STAGE_B_PRICE_ID` — optional. Default is the live domain pack price, $297, only when the buyer checks the add-on. The buyer name is Domain pack. The SKU id stays stage-b.
+- `STRIPE_STAGE_B_PRICE_ID` — optional. Default is the live Domain add-on price, $297, only when the buyer checks the add-on. The buyer name is Domain add-on. The SKU id stays stage-b.
 - `PUBLIC_SITE_URL` — absolute origin for Checkout success and cancel URLs
 - `GOOGLE_CALENDAR_ID` — founder calendar id
 - `GOOGLE_OAUTH_CLIENT_ID`
@@ -53,7 +53,7 @@ One-time Workspace Admin step. After it propagates, an external calendar share i
 
 Vercel secrets, the Stripe webhook endpoint, and promote stay with the owner. Buyer confirmation stays a draft. `notify_owner_paid` sends to founder@revealui.com after the Google Meet write. It does not mail the buyer.
 
-The public book page has no credit control. Strangers still see an optional domain pack, default off. Network deals use a signed book link. The hosted invoice endpoint stays a separate owner path.
+The public book page has no credit control. Strangers still see an optional Domain add-on, default off. Network deals use a signed book link. The hosted invoice endpoint stays a separate owner path.
 
 ## Network waive at Checkout
 
